@@ -3,10 +3,12 @@ import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessageBox } from 'element-plus'
 import { useUserStore } from '@/stores/user'
+import { useThemeStore } from '@/stores/theme'
 
 const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
+const themeStore = useThemeStore()
 
 // 只展示当前角色有权访问的菜单项
 const menus = computed(() => {
@@ -59,6 +61,16 @@ async function handleLogout() {
       <el-header class="header">
         <div class="header-title">{{ route.meta.title }}</div>
         <div class="header-right">
+          <el-tooltip :content="`切换到${themeStore.isMo ? '云课笺' : '墨读'}皮肤`" placement="bottom">
+            <el-button
+              size="small"
+              round
+              data-testid="web-theme-toggle"
+              @click="themeStore.toggle()"
+            >
+              {{ themeStore.isMo ? '云课笺' : '墨读' }}
+            </el-button>
+          </el-tooltip>
           <el-link :underline="false" class="text-sub" @click="router.push('/m/course')">
             切换 H5 移动端
           </el-link>

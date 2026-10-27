@@ -133,7 +133,7 @@ async function reject(c) {
         color="#b06f00"
       />
 
-      <van-cell-group inset title="提交预习案例">
+      <van-cell-group inset title="提交预习案例" class="m-case-form">
         <van-field
           v-model="form.title"
           label="案例标题"
@@ -309,8 +309,10 @@ async function reject(c) {
 .m-pool-item {
   padding: 12px;
   margin-bottom: 10px;
-  background: #fff;
-  border-radius: 8px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
 }
 
 .m-pool-head {

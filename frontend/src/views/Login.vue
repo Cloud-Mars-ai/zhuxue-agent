@@ -120,16 +120,17 @@ async function handleSubmit() {
   place-items: center;
   min-height: 100vh;
   padding: 24px;
-  background: linear-gradient(135deg, #2f6feb 0%, #6f9ef5 50%, #eaf1ff 100%);
+  background: var(--login-bg);
 }
 
 .login-box {
   width: 100%;
   max-width: 420px;
   padding: 32px 28px;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
 }
 
 .brand {

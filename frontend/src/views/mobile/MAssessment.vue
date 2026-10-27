@@ -6,6 +6,7 @@ import { useUserStore } from '@/stores/user'
 import { useModelStore } from '@/stores/model'
 import { useAssessmentStore } from '@/stores/assessment'
 import { usePracticeStore } from '@/stores/practice'
+import { useThemeStore } from '@/stores/theme'
 import {
   generateAssessmentQuestion,
   reviewAssessmentAnswer,
@@ -17,6 +18,7 @@ const userStore = useUserStore()
 const modelStore = useModelStore()
 const assessmentStore = useAssessmentStore()
 const practiceStore = usePracticeStore()
+const themeStore = useThemeStore()
 
 const isStudent = computed(() => userStore.role === 'student')
 const isTeacher = computed(() => ['admin', 'teacher', 'ta'].includes(userStore.role))
@@ -209,6 +211,11 @@ function score(item) {
 const myItems = computed(() => assessmentStore.visibleItemsFor(userStore.user?.id))
 const answers = reactive({})
 const submitting = ref(false)
+
+// 学生视图栏目标题随皮肤切换：墨读下考核题目装帧为「面试函」
+const studentSectionTitle = computed(() =>
+  themeStore.isMo ? '面试函 · 我的题目' : '我的模拟面试题',
+)
 
 async function submitAnswer(entry) {
   const text = (answers[entry.item.id] || '').trim()
@@ -416,7 +423,7 @@ async function submitAnswer(entry) {
 
     <!-- ================= 学生视图 ================= -->
     <template v-else-if="isStudent">
-      <van-cell-group inset title="我的模拟面试题">
+      <van-cell-group inset :title="studentSectionTitle">
         <div v-if="myItems.length" class="m-student-items">
           <div v-for="entry in myItems" :key="entry.item.id" class="m-student-item">
             <div class="m-student-head">
@@ -428,7 +435,13 @@ async function submitAnswer(entry) {
                 得分 {{ entry.item.teacherScore }}
               </van-tag>
             </div>
-            <div class="m-student-question">{{ entry.item.question }}</div>
+            <div class="m-student-question">
+              {{ entry.item.question }}
+              <!-- 墨读皮肤：得分以朱砂圆形印章盖在「面试函」落款处 -->
+              <span v-if="entry.item.teacherScore != null" class="mo-stamp">
+                {{ entry.item.teacherScore }}
+              </span>
+            </div>
 
             <template v-if="entry.item.answer">
               <div class="m-review-answer">
@@ -439,13 +452,15 @@ async function submitAnswer(entry) {
               </div>
             </template>
             <template v-else>
-              <van-field
-                v-model="answers[entry.item.id]"
-                type="textarea"
-                rows="3"
-                autosize
-                placeholder="请像面对面试官一样，完整写下你的表达"
-              />
+              <div class="skin-paper">
+                <van-field
+                  v-model="answers[entry.item.id]"
+                  type="textarea"
+                  rows="3"
+                  autosize
+                  placeholder="请像面对面试官一样，完整写下你的表达"
+                />
+              </div>
               <div class="m-review-ops">
                 <van-button
                   size="mini"
@@ -568,8 +583,8 @@ async function submitAnswer(entry) {
   padding: 6px 10px;
   font-size: 12px;
   line-height: 1.7;
-  color: #b06f00;
-  background: #fdf6ec;
+  color: var(--warn);
+  background: var(--warn-soft);
   border-radius: 6px;
 }
 
@@ -638,13 +653,23 @@ async function submitAnswer(entry) {
 }
 
 .m-student-question {
+  position: relative;
   padding: 10px 12px;
   margin-bottom: 10px;
   font-size: 13px;
   line-height: 1.8;
   white-space: pre-wrap;
-  background: var(--bg-page);
-  border-radius: 8px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius);
+}
+
+/* 学生作答区：云课笺为圆角卡（墨读下由 skins.css 覆写为稿纸） */
+.skin-paper {
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  background: var(--card-bg);
 }
 
 .m-picker-footer {

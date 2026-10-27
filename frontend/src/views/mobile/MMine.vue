@@ -3,10 +3,12 @@ import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { showConfirmDialog, showToast } from 'vant'
 import { useUserStore, DISCIPLINE_OPTIONS } from '@/stores/user'
+import { useThemeStore, THEMES } from '@/stores/theme'
 import { COURSE } from '@/mock/data'
 
 const router = useRouter()
 const userStore = useUserStore()
+const themeStore = useThemeStore()
 
 const initial = computed(() => userStore.name.slice(0, 1))
 
@@ -17,6 +19,16 @@ const showDisciplinePicker = ref(false)
 const isStudent = computed(() => userStore.role === 'student')
 
 const disciplineLabel = computed(() => userStore.discipline || '未设置')
+
+// 界面皮肤（双皮肤方案：云课笺默认 / 墨读阅读模式）
+const showThemePicker = ref(false)
+
+function onThemeSelect(value) {
+  themeStore.setTheme(value)
+  showThemePicker.value = false
+  const t = THEMES.find((x) => x.value === value)
+  showToast(`已切换到「${t?.label || value}」皮肤`)
+}
 
 function onDisciplineConfirm({ selectedOptions }) {
   const value = selectedOptions[0]?.value
@@ -81,6 +93,20 @@ function toggleMock() {
       </van-cell>
     </van-cell-group>
 
+    <van-cell-group inset title="外观">
+      <van-cell
+        title="界面皮肤"
+        :label="themeStore.desc"
+        is-link
+        data-testid="skin-cell"
+        @click="showThemePicker = true"
+      >
+        <template #value>
+          <span class="theme-value">{{ themeStore.label }}</span>
+        </template>
+      </van-cell>
+    </van-cell-group>
+
     <van-cell-group v-if="isStudent" inset title="学科背景">
       <van-cell
         title="我的学科背景"
@@ -122,6 +148,34 @@ function toggleMock() {
         @cancel="showDisciplinePicker = false"
       />
     </van-popup>
+
+    <!-- 皮肤选择：两套设计方案的切换入口 -->
+    <van-popup v-model:show="showThemePicker" position="bottom" round>
+      <div class="theme-sheet">
+        <div class="theme-sheet-title">选择界面皮肤</div>
+        <van-cell
+          v-for="t in THEMES"
+          :key="t.value"
+          center
+          :title="t.label"
+          :label="t.desc"
+          :class="{ 'theme-option-on': themeStore.theme === t.value }"
+          @click="onThemeSelect(t.value)"
+        >
+          <template #right-icon>
+            <van-icon
+              v-if="themeStore.theme === t.value"
+              name="success"
+              color="var(--accent)"
+              size="18"
+            />
+          </template>
+        </van-cell>
+        <div class="theme-sheet-tip">
+          两套皮肤共用同一套信息架构与功能，仅更换视觉样式；「墨读」适合阅读与答辩演示。
+        </div>
+      </div>
+    </van-popup>
   </div>
 </template>
 
@@ -137,13 +191,41 @@ function toggleMock() {
   white-space: normal;
 }
 
+.theme-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.theme-sheet {
+  padding: 6px 0 14px;
+}
+
+.theme-sheet-title {
+  padding: 10px 16px 4px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.theme-option-on {
+  background: var(--accent-soft);
+}
+
+.theme-sheet-tip {
+  padding: 8px 16px 0;
+  font-size: 11px;
+  line-height: 1.7;
+  color: var(--text-sub);
+}
+
 .m-profile {
   display: flex;
   align-items: center;
   gap: 14px;
   padding: 22px 16px;
-  color: #fff;
-  background: linear-gradient(135deg, #2f6feb, #5b8def);
+  color: var(--hero-text);
+  background: var(--hero-bg);
 }
 
 .avatar {
@@ -165,6 +247,7 @@ function toggleMock() {
 .profile-text p {
   margin: 0;
   font-size: 12px;
+  color: var(--hero-sub);
   opacity: 0.9;
 }
 

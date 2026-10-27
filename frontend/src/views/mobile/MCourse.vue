@@ -27,8 +27,8 @@ const currentCase = computed(() => casesStore.currentCase())
         <van-progress
           :percentage="overallProgress"
           stroke-width="8"
-          color="#fff"
-          track-color="rgba(255,255,255,0.3)"
+          color="var(--hero-progress)"
+          track-color="var(--hero-track)"
         />
         <span class="m-progress-text">我的学习进度 {{ overallProgress }}%</span>
       </div>
@@ -97,34 +97,36 @@ const currentCase = computed(() => casesStore.currentCase())
 
 .m-hero {
   padding: 20px 16px;
-  color: #fff;
-  background: linear-gradient(135deg, #2f6feb, #5b8def);
+  color: var(--hero-text);
+  background: var(--hero-bg);
 }
 
 .m-hero h2 {
   margin: 0 0 4px;
   font-size: 20px;
+  font-family: var(--font-title);
 }
 
 .m-hero p {
   margin: 0 0 14px;
   font-size: 12px;
-  opacity: 0.9;
+  color: var(--hero-sub);
 }
 
 .m-progress-text {
   display: block;
   margin-top: 8px;
   font-size: 12px;
-  opacity: 0.9;
+  color: var(--hero-sub);
 }
 
 .m-case-banner {
   margin: 12px 12px 0;
   padding: 12px 14px;
-  background: linear-gradient(120deg, #fff7e8, #ffedd0);
-  border: 1px solid #f3d9a4;
-  border-radius: 10px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
 }
 
 .m-case-label {
@@ -133,28 +135,28 @@ const currentCase = computed(() => casesStore.currentCase())
   margin-bottom: 8px;
   font-size: 11px;
   font-weight: 600;
-  color: #b06f00;
-  background: #fff;
-  border-radius: 4px;
+  color: var(--warn);
+  background: var(--warn-soft);
+  border-radius: var(--radius-sm);
 }
 
 .m-case-title {
   font-size: 15px;
   font-weight: 600;
-  color: #7a5200;
+  color: var(--text-main);
 }
 
 .m-case-meta {
   margin: 2px 0 6px;
   font-size: 11px;
-  color: #a17400;
+  color: var(--text-sub);
 }
 
 .m-case-summary {
   margin: 0;
   font-size: 12px;
   line-height: 1.7;
-  color: #6b5410;
+  color: var(--text-sub);
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;

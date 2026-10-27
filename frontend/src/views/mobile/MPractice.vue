@@ -5,35 +5,23 @@ import { COURSE } from '@/mock/data'
 import { useUserStore } from '@/stores/user'
 import { useModelStore } from '@/stores/model'
 import { usePracticeStore } from '@/stores/practice'
+import { useThemeStore } from '@/stores/theme'
 import { generatePracticeQuestion, reviewPracticeAnswer, PRACTICE_TYPES } from '@/api/aiTasks'
 
 const userStore = useUserStore()
 const modelStore = useModelStore()
 const practiceStore = usePracticeStore()
+const themeStore = useThemeStore()
 
 const chapterOptions = computed(() => COURSE.chapters.map((c) => c.title))
 const isConfigured = computed(() => modelStore.isConfigured)
 const myRecords = computed(() => practiceStore.myRecords(userStore.user?.id))
 
-const showPicker = ref(false)
-const pickerField = ref('chapter')
+// 出题设置：章节 / 题型用 chips 一屏完成（方案二「云课笺」语汇）
 const form = ref({
   chapter: COURSE.chapters[2]?.title || '',
   type: PRACTICE_TYPES[0],
 })
-
-const pickerColumns = computed(() =>
-  pickerField.value === 'chapter'
-    ? chapterOptions.value
-    : PRACTICE_TYPES,
-)
-
-function onPickerConfirm({ selectedOptions }) {
-  const value = selectedOptions[0]?.value ?? selectedOptions[0]
-  if (pickerField.value === 'chapter') form.value.chapter = value
-  else form.value.type = value
-  showPicker.value = false
-}
 
 const question = ref('')
 const answer = ref('')
@@ -41,6 +29,11 @@ const feedback = ref('')
 const generating = ref(false)
 const reviewing = ref(false)
 const showFeedbackId = ref('')
+
+// 栏目标题随皮肤切换：墨读下反馈区改称「红批」
+const feedbackTitle = computed(() =>
+  themeStore.isMo ? '红批 · AI 三维反馈' : 'AI 三维反馈',
+)
 
 async function generate() {
   generating.value = true
@@ -127,22 +120,31 @@ function toggleFeedback(id) {
       color="#b06f00"
     />
 
-    <van-cell-group inset title="出题设置">
-      <van-cell
-        title="考查章节"
-        :value="form.chapter"
-        is-link
-        @click="pickerField = 'chapter'; showPicker = true"
-      />
-      <van-cell
-        title="题型"
-        :value="form.type"
-        is-link
-        @click="pickerField = 'type'; showPicker = true"
-      />
-    </van-cell-group>
-
-    <div class="m-gen-wrap">
+    <!-- 出题设置：chips 选择章节与题型 -->
+    <div class="m-setup">
+      <div class="m-section-label">出题设置</div>
+      <div class="m-chip-row">
+        <span
+          v-for="c in chapterOptions"
+          :key="c"
+          class="skin-chip"
+          :class="{ on: form.chapter === c }"
+          @click="form.chapter = c"
+        >
+          {{ c }}
+        </span>
+      </div>
+      <div class="m-chip-row">
+        <span
+          v-for="t in PRACTICE_TYPES"
+          :key="t"
+          class="skin-chip"
+          :class="{ on: form.type === t }"
+          @click="form.type = t"
+        >
+          {{ t }}
+        </span>
+      </div>
       <van-button
         block
         type="primary"
@@ -160,19 +162,25 @@ function toggleFeedback(id) {
 
     <van-skeleton v-if="generating" title :row="3" />
 
+    <!-- 本题情境：墨读皮肤下为报纸剪贴题卡（skins.css 覆写） -->
     <template v-if="question && !generating">
-      <van-cell-group inset title="本题情境">
+      <div class="m-q-section">
+        <div class="m-section-label">本题情境</div>
         <div class="m-question">{{ question }}</div>
-      </van-cell-group>
+      </div>
 
-      <van-cell-group inset title="我的作答">
-        <van-field
-          v-model="answer"
-          type="textarea"
-          rows="4"
-          autosize
-          placeholder="请像在课堂上回答老师一样，完整写下你的表达"
-        />
+      <!-- 我的作答：墨读皮肤下为横格稿纸 -->
+      <div class="m-answer-section">
+        <div class="m-section-label">我的作答</div>
+        <div class="skin-paper">
+          <van-field
+            v-model="answer"
+            type="textarea"
+            rows="4"
+            autosize
+            placeholder="请像在课堂上回答老师一样，完整写下你的表达"
+          />
+        </div>
         <div class="m-submit-wrap">
           <van-button
             block
@@ -184,12 +192,14 @@ function toggleFeedback(id) {
             提交并获取反馈
           </van-button>
         </div>
-      </van-cell-group>
+      </div>
     </template>
 
-    <van-cell-group v-if="feedback" inset title="AI 三维反馈">
+    <!-- AI 反馈：墨读皮肤下为红批批注框 -->
+    <div v-if="feedback" class="m-feedback-section">
+      <div class="m-section-label">{{ feedbackTitle }}</div>
       <div class="m-feedback">{{ feedback }}</div>
-    </van-cell-group>
+    </div>
 
     <van-cell-group inset title="我的练习记录">
       <van-cell
@@ -216,20 +226,33 @@ function toggleFeedback(id) {
       </van-cell>
       <van-empty v-if="!myRecords.length" description="还没有练习记录" image-size="60" />
     </van-cell-group>
-
-    <van-popup v-model:show="showPicker" position="bottom">
-      <van-picker
-        :columns="pickerColumns"
-        @confirm="onPickerConfirm"
-        @cancel="showPicker = false"
-      />
-    </van-popup>
   </div>
 </template>
 
 <style scoped>
-.m-gen-wrap {
-  padding: 12px 16px 0;
+/* 分区标签：两种皮肤下通用的小节题 */
+.m-section-label {
+  padding: 14px 16px 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.m-setup {
+  margin: 12px;
+  padding: 4px 14px 14px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+}
+
+.m-setup .m-section-label {
+  padding: 10px 0 6px;
+}
+
+.m-chip-row {
+  margin-bottom: 2px;
 }
 
 .m-discipline-tip {
@@ -238,22 +261,45 @@ function toggleFeedback(id) {
   color: var(--text-sub);
 }
 
+/* 本题情境：云课笺为圆角卡片（墨读覆写见块尾） */
 .m-question {
-  padding: 12px 16px;
+  margin: 0 12px;
+  padding: 14px 16px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
   font-size: 14px;
-  line-height: 1.9;
+  line-height: var(--question-leading);
   white-space: pre-wrap;
+  color: var(--text-main);
+}
+
+/* 我的作答：云课笺为圆角卡片包裹的输入区（墨读下为横格稿纸） */
+.skin-paper {
+  margin: 0 12px;
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  background: var(--card-bg);
 }
 
 .m-submit-wrap {
-  padding: 10px 16px 14px;
+  padding: 10px 12px 0;
 }
 
+/* AI 反馈：云课笺为圆角卡片（墨读下为红批批注框） */
 .m-feedback {
-  padding: 12px 16px;
+  margin: 0 12px;
+  padding: 14px 16px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
   font-size: 14px;
-  line-height: 1.9;
+  line-height: var(--question-leading);
   white-space: pre-wrap;
+  color: var(--text-main);
 }
 
 .m-pop-feedback {
@@ -264,5 +310,19 @@ function toggleFeedback(id) {
   font-size: 13px;
   line-height: 1.8;
   white-space: pre-wrap;
+}
+
+/* ---- 墨读皮肤覆写（置于块尾，特异性高于上方基础规则） ---- */
+html[data-theme='mo'] .m-q-section .m-section-label,
+html[data-theme='mo'] .m-answer-section .m-section-label {
+  display: none;
+}
+
+html[data-theme='mo'] .m-setup {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  margin: 6px 12px 0;
+  padding: 0 4px;
 }
 </style>

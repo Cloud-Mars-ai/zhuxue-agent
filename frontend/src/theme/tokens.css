@@ -1,0 +1,358 @@
+/* ============================================================
+ * 双皮肤设计令牌（《学生端 UI 双风格设计方案》落地）
+ * 方案二「云课笺」为默认皮肤：html[data-theme="yun"]
+ * 方案一「墨读」为阅读模式皮肤：html[data-theme="mo"]
+ * 两套皮肤共用同一套变量名，仅取值不同——切换皮肤不改变
+ * 信息架构与功能，只更换色彩 / 字体 / 圆角 / 阴影 / 插画。
+ *
+ * 注意：本文件必须在 style.css 之后引入，且选择器特异性
+ * 高于 :root，才能覆写 Vant / Element Plus 的默认变量。
+ * ============================================================ */
+
+/* ------------------------------------------------------------
+ * 方案二 · 云课笺（默认皮肤）
+ * 暖白纸底 + 纸白卡片 + 墨灰文字 + 焙茶橙主操作
+ * ------------------------------------------------------------ */
+:root,
+html[data-theme='yun'] {
+  /* —— 语义令牌 —— */
+  --page-bg: #faf9f6; /* 暖白 */
+  --card-bg: #ffffff; /* 纸白卡片 */
+  --card-border: #eae8e2;
+  --card-radius: 14px;
+  --card-shadow: 0 1px 3px rgba(20, 20, 20, 0.05);
+
+  --text-main: #2b2a28; /* 墨灰 */
+  --text-sub: #8a8880;
+  --text-faint: #9c9a92;
+
+  --accent: #e8590c; /* 焙茶橙：主操作 / 进度 */
+  --accent-deep: #d9480f;
+  --accent-soft: #fff0e6;
+  --accent-on: #ffffff;
+  --link: #3b5bdb; /* 黛蓝：链接 / 次操作 */
+
+  --ok: #2b8a3e;
+  --ok-soft: #ebfbee;
+  --warn: #b86e00;
+  --warn-soft: #fff4e0;
+  --danger: #e03131;
+  --danger-soft: #fff0f0;
+  --divider: #f1efe9;
+
+  --hero-bg: linear-gradient(135deg, #3a3835, #2b2a28);
+  --hero-text: #faf9f6;
+  --hero-sub: rgba(250, 249, 246, 0.72);
+  --hero-progress: #f59f00;
+  --hero-track: rgba(250, 249, 246, 0.28);
+  --login-bg: linear-gradient(135deg, #ffeedd 0%, #faf9f6 55%);
+
+  /* —— 字体与排版 —— */
+  --font-title: 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', -apple-system,
+    BlinkMacSystemFont, sans-serif;
+  --font-body: 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', -apple-system,
+    BlinkMacSystemFont, sans-serif;
+  --title-weight: 700;
+  --title-tracking: 0;
+  --body-leading: 1.8;
+  --question-leading: 1.9;
+
+  /* —— 形状与质感 —— */
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-pill: 999px;
+  --btn-radius: 10px;
+  --border-w: 1px;
+  --border-style: solid;
+  --paper-texture: none;
+  --hover-lift: translateY(-2px);
+
+  /* —— 兼容旧变量（历史页面引用） —— */
+  --brand: #e8590c;
+  --brand-light: #fff0e6;
+  --bg-page: #faf9f6;
+  --text-sub-legacy: #8a8880;
+  --border: #eae8e2;
+  --radius: 10px;
+
+  /* —— Vant 变量覆写 —— */
+  --van-primary-color: #e8590c;
+  --van-success-color: #2b8a3e;
+  --van-danger-color: #e03131;
+  --van-warning-color: #f59f00;
+  --van-text-color: #2b2a28;
+  --van-text-color-2: #8a8880;
+  --van-text-color-3: #9c9a92;
+  --van-background: #faf9f6;
+  --van-background-2: #ffffff;
+  --van-background-3: #f5f4f0;
+  --van-active-color: #f1efe9;
+  --van-border-color: #eae8e2;
+  --van-radius-sm: 10px;
+  --van-radius-md: 14px;
+  --van-radius-lg: 16px;
+  --van-button-radius: 10px;
+  --van-cell-background: #ffffff;
+  --van-cell-group-background: #ffffff;
+  --van-cell-group-inset-radius: 14px;
+  --van-cell-group-inset-padding: 0 12px;
+  --van-cell-group-inset-title-padding: 16px 16px 8px;
+  --van-cell-group-title-color: #2b2a28;
+  --van-cell-group-title-font-size: 14px;
+  --van-cell-text-color: #2b2a28;
+  --van-cell-label-color: #8a8880;
+  --van-cell-value-color: #8a8880;
+  --van-cell-border-color: #f1efe9;
+  --van-cell-right-icon-color: #c6c4bc;
+  --van-nav-bar-background: #faf9f6;
+  --van-nav-bar-title-text-color: #2b2a28;
+  --van-nav-bar-icon-color: #2b2a28;
+  --van-tabbar-background: #ffffff;
+  --van-tabbar-item-text-color: #8a8880;
+  --van-tabbar-item-active-color: #e8590c;
+  --van-tag-radius: 999px;
+  --van-tag-padding: 0 8px;
+  --van-tag-font-size: 11px;
+  --van-tag-line-height: 18px;
+  --van-popup-background: #ffffff;
+  --van-popup-round-radius: 16px;
+  --van-picker-background: #ffffff;
+  --van-picker-option-text-color: #2b2a28;
+  --van-picker-confirm-action-color: #e8590c;
+  --van-picker-cancel-action-color: #8a8880;
+  --van-notice-bar-background: #fff4e0;
+  --van-notice-bar-text-color: #b86e00;
+  --van-field-input-text-color: #2b2a28;
+  --van-field-placeholder-text-color: #9c9a92;
+  --van-progress-color: #e8590c;
+  --van-progress-background: #f1efe9;
+  --van-skeleton-paragraph-background: #f1efe9;
+  --van-skeleton-avatar-background: #f1efe9;
+  --van-checkbox-label-color: #2b2a28;
+  --van-checkbox-checked-icon-color: #e8590c;
+  --van-popover-light-background: #ffffff;
+  --van-popover-light-text-color: #2b2a28;
+  --van-popover-radius: 12px;
+
+  /* —— Element Plus 变量覆写 —— */
+  --el-color-primary: #e8590c;
+  --el-color-primary-dark-2: #d9480f;
+  --el-color-primary-light-3: #ec7a33;
+  --el-color-primary-light-5: #f19c62;
+  --el-color-primary-light-7: #f7c39b;
+  --el-color-primary-light-8: #fad7bd;
+  --el-color-primary-light-9: #fdebde;
+  --el-color-success: #2b8a3e;
+  --el-color-success-light-3: #4ba35c;
+  --el-color-success-light-5: #74bd82;
+  --el-color-success-light-7: #a9d9b3;
+  --el-color-success-light-8: #c3e4cb;
+  --el-color-success-light-9: #e7f6ea;
+  --el-color-warning: #f59f00;
+  --el-color-warning-light-3: #f7b233;
+  --el-color-warning-light-5: #f9c566;
+  --el-color-warning-light-7: #fbd99b;
+  --el-color-warning-light-8: #fce4bd;
+  --el-color-warning-light-9: #fef3de;
+  --el-color-danger: #e03131;
+  --el-color-danger-light-3: #e75a5a;
+  --el-color-danger-light-5: #ed8585;
+  --el-color-danger-light-7: #f3b5b5;
+  --el-color-danger-light-8: #f7cccc;
+  --el-color-danger-light-9: #fce8e8;
+  --el-color-info: #8a8880;
+  --el-color-info-light-3: #a3a199;
+  --el-color-info-light-5: #bbb9b3;
+  --el-color-info-light-7: #d5d3ce;
+  --el-color-info-light-8: #e2e1dd;
+  --el-color-info-light-9: #f1f0ed;
+  --el-bg-color: #ffffff;
+  --el-bg-color-page: #faf9f6;
+  --el-bg-color-overlay: #ffffff;
+  --el-text-color-primary: #2b2a28;
+  --el-text-color-regular: #5a574e;
+  --el-text-color-secondary: #8a8880;
+  --el-text-color-placeholder: #9c9a92;
+  --el-border-color: #eae8e2;
+  --el-border-color-light: #f1efe9;
+  --el-border-color-lighter: #f6f5f1;
+  --el-border-radius-base: 10px;
+  --el-border-radius-small: 8px;
+  --el-fill-color-blank: #ffffff;
+  --el-box-shadow-light: 0 1px 3px rgba(20, 20, 20, 0.05);
+  --el-box-shadow: 0 4px 16px rgba(20, 20, 20, 0.08);
+  --el-font-family: 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+}
+
+/* ------------------------------------------------------------
+ * 方案一 · 墨读（阅读模式皮肤）
+ * 纸米纸底 + 墨色文字边框 + 朱砂唯一强调色；衬线标题 +
+ * 斜体强调词；近直角、1px 墨框、虚线分隔、无投影。
+ * ------------------------------------------------------------ */
+html[data-theme='mo'] {
+  /* —— 语义令牌 —— */
+  --page-bg: #f7f3ea; /* 纸米 */
+  --card-bg: #fffefa; /* 纸白（微暖） */
+  --card-border: #1f1b16; /* 墨色细边框 */
+  --card-radius: 3px; /* 近直角 */
+  --card-shadow: none;
+
+  --text-main: #1f1b16; /* 墨 */
+  --text-sub: #6b6255; /* 赭墨 */
+  --text-faint: #a79c88;
+
+  --accent: #c0432b; /* 朱砂：唯一高饱和色 */
+  --accent-deep: #a6371f;
+  --accent-soft: #fbf1ec;
+  --accent-on: #fffefa;
+  --link: #2f4a4e; /* 黛青 */
+
+  --ok: #2f4a4e;
+  --ok-soft: #eef2f0;
+  --warn: #b06f00;
+  --warn-soft: #fdf6ec;
+  --danger: #c0432b;
+  --danger-soft: #fbf1ec;
+  --divider: #d8cfc0;
+
+  --hero-bg: #f7f3ea;
+  --hero-text: #1f1b16;
+  --hero-sub: #6b6255;
+  --hero-progress: #c0432b;
+  --hero-track: #e4dccb;
+  --login-bg: #f7f3ea;
+
+  /* —— 字体与排版 —— */
+  --font-title: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', 'SimSun', serif;
+  --font-body: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', 'SimSun', serif;
+  --title-weight: 700;
+  --title-tracking: 1px;
+  --body-leading: 2;
+  --question-leading: 2.05;
+
+  /* —— 形状与质感 —— */
+  --radius-sm: 3px;
+  --radius-md: 4px;
+  --radius-pill: 3px;
+  --btn-radius: 3px;
+  --border-w: 1px;
+  --border-style: solid;
+  --paper-texture: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  --hover-lift: none;
+
+  /* —— 兼容旧变量（历史页面引用） —— */
+  --brand: #c0432b;
+  --brand-light: #fbf1ec;
+  --bg-page: #f7f3ea;
+  --text-sub-legacy: #6b6255;
+  --border: #d8cfc0;
+  --radius: 4px;
+
+  /* —— Vant 变量覆写 —— */
+  --van-primary-color: #c0432b;
+  --van-success-color: #2f4a4e;
+  --van-danger-color: #c0432b;
+  --van-warning-color: #b06f00;
+  --van-text-color: #1f1b16;
+  --van-text-color-2: #6b6255;
+  --van-text-color-3: #a79c88;
+  --van-background: #f7f3ea;
+  --van-background-2: #fffefa;
+  --van-background-3: #f0eadd;
+  --van-active-color: #f0eadd;
+  --van-border-color: #d8cfc0;
+  --van-radius-sm: 3px;
+  --van-radius-md: 4px;
+  --van-radius-lg: 4px;
+  --van-button-radius: 3px;
+  --van-cell-background: #fffefa;
+  --van-cell-group-background: #fffefa;
+  --van-cell-group-inset-radius: 4px;
+  --van-cell-group-inset-padding: 0 12px;
+  --van-cell-group-inset-title-padding: 16px 16px 6px;
+  --van-cell-group-title-color: #1f1b16;
+  --van-cell-group-title-font-size: 13px;
+  --van-cell-text-color: #1f1b16;
+  --van-cell-label-color: #6b6255;
+  --van-cell-value-color: #6b6255;
+  --van-cell-border-color: #e4dccb;
+  --van-cell-right-icon-color: #a79c88;
+  --van-nav-bar-background: #f7f3ea;
+  --van-nav-bar-title-text-color: #1f1b16;
+  --van-nav-bar-icon-color: #1f1b16;
+  --van-tabbar-background: #fffefa;
+  --van-tabbar-item-text-color: #6b6255;
+  --van-tabbar-item-active-color: #c0432b;
+  --van-tag-radius: 3px;
+  --van-tag-padding: 0 7px;
+  --van-tag-font-size: 11px;
+  --van-tag-line-height: 17px;
+  --van-popup-background: #fffefa;
+  --van-popup-round-radius: 4px;
+  --van-picker-background: #fffefa;
+  --van-picker-option-text-color: #1f1b16;
+  --van-picker-confirm-action-color: #c0432b;
+  --van-picker-cancel-action-color: #6b6255;
+  --van-notice-bar-background: #fdf6ec;
+  --van-notice-bar-text-color: #7a5200;
+  --van-field-input-text-color: #1f1b16;
+  --van-field-placeholder-text-color: #a79c88;
+  --van-progress-color: #c0432b;
+  --van-progress-background: #e4dccb;
+  --van-skeleton-paragraph-background: #efe9dc;
+  --van-skeleton-avatar-background: #efe9dc;
+  --van-checkbox-label-color: #1f1b16;
+  --van-checkbox-checked-icon-color: #c0432b;
+  --van-popover-light-background: #fffefa;
+  --van-popover-light-text-color: #1f1b16;
+  --van-popover-radius: 3px;
+
+  /* —— Element Plus 变量覆写 —— */
+  --el-color-primary: #c0432b;
+  --el-color-primary-dark-2: #a6371f;
+  --el-color-primary-light-3: #cb5b41;
+  --el-color-primary-light-5: #d8816c;
+  --el-color-primary-light-7: #e7b5a8;
+  --el-color-primary-light-8: #eec9c0;
+  --el-color-primary-light-9: #f8e6e1;
+  --el-color-success: #2f4a4e;
+  --el-color-success-light-3: #4b6a6e;
+  --el-color-success-light-5: #6d8b8e;
+  --el-color-success-light-7: #a4b8ba;
+  --el-color-success-light-8: #bacdce;
+  --el-color-success-light-9: #e9efef;
+  --el-color-warning: #b06f00;
+  --el-color-warning-light-3: #c08c33;
+  --el-color-warning-light-5: #d0a966;
+  --el-color-warning-light-7: #e3cca6;
+  --el-color-warning-light-8: #ecd9bd;
+  --el-color-warning-light-9: #f8f0e2;
+  --el-color-danger: #c0432b;
+  --el-color-danger-light-3: #cb5b41;
+  --el-color-danger-light-5: #d8816c;
+  --el-color-danger-light-7: #e7b5a8;
+  --el-color-danger-light-8: #eec9c0;
+  --el-color-danger-light-9: #f8e6e1;
+  --el-color-info: #6b6255;
+  --el-color-info-light-3: #8a8175;
+  --el-color-info-light-5: #a9a194;
+  --el-color-info-light-7: #cac4b8;
+  --el-color-info-light-8: #d9d4ca;
+  --el-color-info-light-9: #efede7;
+  --el-bg-color: #fffefa;
+  --el-bg-color-page: #f7f3ea;
+  --el-bg-color-overlay: #fffefa;
+  --el-text-color-primary: #1f1b16;
+  --el-text-color-regular: #4a443b;
+  --el-text-color-secondary: #6b6255;
+  --el-text-color-placeholder: #a79c88;
+  --el-border-color: #d8cfc0;
+  --el-border-color-light: #e4dccb;
+  --el-border-color-lighter: #efe9dc;
+  --el-border-radius-base: 4px;
+  --el-border-radius-small: 3px;
+  --el-fill-color-blank: #fffefa;
+  --el-box-shadow-light: none;
+  --el-box-shadow: 0 1px 0 #1f1b16;
+  --el-font-family: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', 'SimSun', serif;
+}

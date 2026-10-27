@@ -1,8 +1,10 @@
 <script setup>
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
+import { useThemeStore } from '@/stores/theme'
 
 const route = useRoute()
+const themeStore = useThemeStore()
 
 // 底部标签栏，与 /m 下的子路由一一对应
 const tabs = [
@@ -12,11 +14,20 @@ const tabs = [
 ]
 
 const active = computed(() => tabs.findIndex((t) => t.path === route.path))
+
+// 皮肤快捷切换：显示目标皮肤名，点击即切换（云课笺 ⇄ 墨读）
+const switchLabel = computed(() => (themeStore.isMo ? '云课笺' : '墨读'))
 </script>
 
 <template>
   <div class="mobile-layout">
-    <van-nav-bar :title="route.meta.title || '人机协同助学'" fixed placeholder />
+    <van-nav-bar :title="route.meta.title || '人机协同助学'" fixed placeholder>
+      <template #right>
+        <span class="theme-toggle" data-testid="theme-toggle" @click="themeStore.toggle()">
+          {{ switchLabel }}
+        </span>
+      </template>
+    </van-nav-bar>
 
     <div class="mobile-body">
       <router-view />
@@ -42,5 +53,23 @@ const active = computed(() => tabs.findIndex((t) => t.path === route.path))
 
 .mobile-body {
   padding-bottom: 8px;
+}
+
+/* 导航栏皮肤切换：小号描边胶囊，跟随主题色 */
+.theme-toggle {
+  display: inline-block;
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--font-ui);
+  letter-spacing: 1px;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+}
+
+html[data-theme='mo'] .theme-toggle {
+  border-radius: 3px;
 }
 </style>

@@ -16,6 +16,21 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import App from './App.vue'
 import router from './router'
 import './style.css'
+// 双皮肤设计令牌与装饰层（须在 style.css 之后引入以覆写 UI 库变量）
+import './theme/tokens.css'
+import './theme/skins.css'
+// 首屏挂载前同步应用皮肤，避免主题闪烁
+import { THEME_KEY, DEFAULT_THEME } from './stores/theme'
+
+try {
+  const stored = window.localStorage.getItem(THEME_KEY)
+  document.documentElement.setAttribute(
+    'data-theme',
+    stored === 'mo' || stored === 'yun' ? stored : DEFAULT_THEME,
+  )
+} catch {
+  document.documentElement.setAttribute('data-theme', DEFAULT_THEME)
+}
 
 const app = createApp(App)
 

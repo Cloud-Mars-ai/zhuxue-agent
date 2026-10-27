@@ -182,7 +182,9 @@ function useSuggestion(s) {
   font-size: 14px;
   line-height: 1.7;
   border-radius: 12px;
-  background: #fff;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  color: var(--text-main);
 }
 
 .bubble-text {
@@ -190,8 +192,9 @@ function useSuggestion(s) {
 }
 
 .msg.user .bubble {
-  color: #fff;
-  background: var(--brand);
+  color: var(--accent-on);
+  background: var(--accent);
+  border-color: var(--accent);
 }
 
 .action-cards {
@@ -226,7 +229,7 @@ function useSuggestion(s) {
   align-items: center;
   gap: 8px;
   padding: 8px 12px;
-  background: #fff;
+  background: var(--card-bg);
   border-top: 1px solid var(--border);
 }
 
