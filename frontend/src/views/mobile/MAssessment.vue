@@ -7,6 +7,7 @@ import { useModelStore } from '@/stores/model'
 import { useAssessmentStore } from '@/stores/assessment'
 import { usePracticeStore } from '@/stores/practice'
 import { useThemeStore } from '@/stores/theme'
+import { renderMd } from '@/utils/md'
 import {
   generateAssessmentQuestion,
   reviewAssessmentAnswer,
@@ -217,6 +218,13 @@ const studentSectionTitle = computed(() =>
   themeStore.isMo ? '面试函 · 我的题目' : '我的模拟面试题',
 )
 
+// 提交按钮文案：墨读下作答即「寄出回信」
+const submitLabel = computed(() => (themeStore.isMo ? '寄出回信 →' : '提交作答'))
+
+// 学生作答/AI 反馈标签：墨读下按信笺往来措辞
+const answerLabel = computed(() => (themeStore.isMo ? '回信 · 我的作答' : '我的作答'))
+const feedbackLabel = computed(() => (themeStore.isMo ? '回信 · AI 反馈' : 'AI 反馈'))
+
 async function submitAnswer(entry) {
   const text = (answers[entry.item.id] || '').trim()
   if (!text) {
@@ -379,7 +387,7 @@ async function submitAnswer(entry) {
               <div class="m-review-label">学生作答</div>
               <p class="m-review-text">{{ item.answer }}</p>
               <div class="m-review-label">AI 反馈</div>
-              <p class="m-review-text">{{ item.aiFeedback }}</p>
+              <p class="m-review-text" v-html="renderMd(item.aiFeedback)"></p>
             </div>
 
             <div class="m-review-ops">
@@ -423,20 +431,47 @@ async function submitAnswer(entry) {
 
     <!-- ================= 学生视图 ================= -->
     <template v-else-if="isStudent">
+      <!-- 墨读报头：模拟面试函 · 信件编号（方案示意 A-3） -->
+      <div v-if="themeStore.isMo" class="mo-page-mast" data-testid="mo-assessment-mast">
+        <span class="mo-page-mast-brand">模拟面试<em>函</em></span>
+        <span class="mo-page-mast-no">LETTER NO.03</span>
+      </div>
+
       <van-cell-group inset :title="studentSectionTitle">
         <div v-if="myItems.length" class="m-student-items">
           <div v-for="entry in myItems" :key="entry.item.id" class="m-student-item">
             <div class="m-student-head">
-              <span class="m-student-chapter">{{ entry.task.scope.chapters.join('、') }}</span>
-              <van-tag :color="TASK_STATUS.published.color" plain>
-                {{ entry.task.scope.questionType }} · {{ entry.task.scope.difficulty }}
-              </van-tag>
-              <van-tag v-if="entry.item.teacherScore != null" color="#ee0a24" plain>
-                得分 {{ entry.item.teacherScore }}
-              </van-tag>
+              <span
+                class="m-student-dot"
+                :style="{ background: entry.item.answer ? '#2B8A3E' : '#E8590C' }"
+              />
+              <span class="m-student-main">
+                <span class="m-student-chapter">
+                  {{ entry.task.scope.chapters.join('、') }} · {{ entry.task.scope.questionType }} ·
+                  {{ entry.task.scope.difficulty }}
+                </span>
+                <span class="m-student-sub">
+                  {{ entry.item.answer ? '已作答 · AI 反馈已生成' : '1 道 · 待作答' }}
+                </span>
+              </span>
+              <span v-if="entry.item.teacherScore != null" class="skin-score">
+                {{ entry.item.teacherScore }} 分
+              </span>
+              <van-tag v-else color="#ee0a24" plain>待作答</van-tag>
             </div>
+
+            <!-- 题目：墨读装帧为面试函（收件人 / 此致敬礼 / 署名 / 得分印章） -->
             <div class="m-student-question">
-              {{ entry.item.question }}
+              <div v-if="themeStore.isMo" class="mo-letter-lt">
+                收件人：<b>{{ userStore.name }}</b>（{{ userStore.discipline || '未设置学科' }}） ·
+                范围：{{ entry.task.scope.chapters.join('、') }} · {{ entry.task.scope.questionType }} ·
+                难度 {{ entry.task.scope.difficulty }}
+              </div>
+              <p v-if="themeStore.isMo" class="mo-letter-body">
+                亲爱的同学：<br />　　{{ entry.item.question }}<br />　　此致 敬礼
+              </p>
+              <p v-else class="m-student-text">{{ entry.item.question }}</p>
+              <div v-if="themeStore.isMo" class="mo-letter-sign">——《管理学》课程组</div>
               <!-- 墨读皮肤：得分以朱砂圆形印章盖在「面试函」落款处 -->
               <span v-if="entry.item.teacherScore != null" class="mo-stamp">
                 {{ entry.item.teacherScore }}
@@ -445,10 +480,10 @@ async function submitAnswer(entry) {
 
             <template v-if="entry.item.answer">
               <div class="m-review-answer">
-                <div class="m-review-label">我的作答</div>
+                <div class="m-review-label">{{ answerLabel }}</div>
                 <p class="m-review-text">{{ entry.item.answer }}</p>
-                <div class="m-review-label">AI 反馈</div>
-                <p class="m-review-text">{{ entry.item.aiFeedback }}</p>
+                <div class="m-review-label">{{ feedbackLabel }}</div>
+                <p class="m-review-text m-student-feedback" v-html="renderMd(entry.item.aiFeedback)"></p>
               </div>
             </template>
             <template v-else>
@@ -468,7 +503,7 @@ async function submitAnswer(entry) {
                   :loading="submitting"
                   @click="submitAnswer(entry)"
                 >
-                  提交作答
+                  {{ submitLabel }}
                 </van-button>
               </div>
             </template>
@@ -641,15 +676,34 @@ async function submitAnswer(entry) {
 .m-student-head {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   flex-wrap: wrap;
   margin-bottom: 8px;
+}
+
+.m-student-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.m-student-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .m-student-chapter {
   font-size: 13px;
   font-weight: 600;
-  color: var(--brand);
+  color: var(--text-main);
+}
+
+.m-student-sub {
+  font-size: 11px;
+  color: var(--text-faint);
 }
 
 .m-student-question {
@@ -662,6 +716,14 @@ async function submitAnswer(entry) {
   background: var(--card-bg);
   border: 1px solid var(--card-border);
   border-radius: var(--card-radius);
+}
+
+.m-student-text {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.8;
+  white-space: pre-wrap;
+  color: var(--text-main);
 }
 
 /* 学生作答区：云课笺为圆角卡（墨读下由 skins.css 覆写为稿纸） */

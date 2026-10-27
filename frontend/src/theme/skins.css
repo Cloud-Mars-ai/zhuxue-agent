@@ -56,6 +56,407 @@ html[data-theme='yun'] .mo-stamp {
 }
 
 /* ============================================================
+ * 方案二 · 云课笺 共享组件（示意 B-1/B-2/B-3 语汇）
+ * 仅在云课笺皮肤下渲染，样式无需 data-theme 前缀
+ * ============================================================ */
+
+/* 状态徽章：浅底 + 同色系描边，全局状态语言 */
+.skin-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-family: var(--font-ui);
+  white-space: nowrap;
+}
+.skin-badge.run { background: #fff4e0; color: #b86e00; border: 1px solid #f5d9a8; }
+.skin-badge.dis { background: #eef2ff; color: #3b5bdb; border: 1px solid #c9d4f8; }
+.skin-badge.ok { background: #ebfbee; color: #2b8a3e; border: 1px solid #b9e4c4; }
+.skin-badge.new { background: #2b2a28; color: #fff; border: 1px solid #2b2a28; }
+.skin-badge.danger { background: #fff0f0; color: #e03131; border: 1px solid #ffc9c9; }
+
+/* 得分徽章（浅红，轻量呈现不制造压迫感） */
+.skin-score {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #fff0f0;
+  color: #e03131;
+  border: 1px solid #ffc9c9;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 进度环（问候区右上角） */
+.skin-ring {
+  width: 52px;
+  height: 52px;
+  flex: none;
+}
+
+/* 今日待办行：状态点 + 标题/副标 + 日期前缀 + Chevron */
+.yun-todo-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 2px;
+  border-bottom: 1px solid var(--divider);
+  cursor: pointer;
+}
+.yun-todo-row:last-child {
+  border-bottom: none;
+}
+.yun-todo-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex: none;
+}
+.yun-todo-main {
+  flex: 1;
+  min-width: 0;
+}
+.yun-todo-title {
+  display: block;
+  font-size: 13px;
+  color: var(--text-main);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.yun-todo-sub {
+  display: block;
+  font-size: 11px;
+  color: var(--text-faint);
+}
+.yun-todo-date {
+  font-size: 11.5px;
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+  flex: none;
+}
+.yun-todo-chev {
+  color: #c6c4bc;
+  font-size: 15px;
+  flex: none;
+  line-height: 1;
+}
+
+/* 四宫格快捷入口 */
+.yun-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.yun-entry {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius);
+  padding: 14px 10px;
+  text-align: center;
+  box-shadow: var(--card-shadow);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.yun-entry:hover {
+  transform: var(--hover-lift);
+}
+.yun-entry-ic {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  margin: 0 auto 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  font-family: var(--font-title);
+}
+.yun-entry-name {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+.yun-entry-sub {
+  font-size: 10.5px;
+  color: var(--text-faint);
+  margin-top: 2px;
+}
+
+/* ============================================================
+ * 方案一 · 墨读 共享组件（示意 A-1/A-2/A-3 语汇）
+ * 仅在墨读皮肤下渲染，样式无需 data-theme 前缀
+ * ============================================================ */
+
+/* —— 杂志封面式报头（课程主页） —— */
+.mo-mast {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 22px 12px;
+  border-bottom: 1px solid #1f1b16;
+}
+.mo-mast-brand {
+  font-family: var(--font-title);
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #1f1b16;
+  white-space: nowrap;
+}
+.mo-mast-brand em {
+  font-style: italic;
+  color: #c0432b;
+  margin-left: 2px;
+}
+.mo-mast-nav {
+  display: flex;
+  gap: 18px;
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+  letter-spacing: 2px;
+}
+.mo-mast-nav a {
+  color: #1f1b16;
+  cursor: pointer;
+  border-bottom: 1px solid transparent;
+  text-decoration: none;
+}
+.mo-mast-nav a:hover {
+  color: #c0432b;
+  border-bottom-color: #c0432b;
+}
+.mo-mast-week {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: #6b6255;
+  white-space: nowrap;
+}
+.mo-hero {
+  display: flex;
+  gap: 30px;
+  align-items: center;
+  padding: 30px 22px 22px;
+}
+.mo-hero-text {
+  flex: 1.25;
+  min-width: 0;
+}
+.mo-kicker {
+  font-family: var(--font-ui);
+  font-size: 10.5px;
+  letter-spacing: 3px;
+  color: #c0432b;
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+.mo-hero-title {
+  font-family: var(--font-title);
+  font-size: 44px;
+  line-height: 1.22;
+  margin: 0 0 14px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #1f1b16;
+}
+.mo-hero-title em {
+  font-style: italic;
+  color: #c0432b;
+}
+.mo-sub {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: #6b6255;
+  margin: 0 0 20px;
+  line-height: 1.9;
+}
+.mo-cta {
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  letter-spacing: 1px;
+  display: flex;
+  gap: 22px;
+  flex-wrap: wrap;
+}
+.mo-cta a {
+  color: #1f1b16;
+  border-bottom: 1px solid #1f1b16;
+  padding-bottom: 2px;
+  cursor: pointer;
+  text-decoration: none;
+}
+.mo-cta a:hover {
+  color: #c0432b;
+  border-bottom-color: #c0432b;
+}
+.mo-hero-art {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+}
+.mo-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  border-top: 1px dashed #b9af9e;
+  border-bottom: 1px dashed #b9af9e;
+  margin: 6px 22px 0;
+  padding: 8px 0;
+  font-family: var(--font-ui);
+  font-size: 10.5px;
+  letter-spacing: 4px;
+  color: #6b6255;
+}
+.mo-dots span {
+  padding: 0 14px;
+  border-right: 1px solid #b9af9e;
+}
+.mo-dots span:last-child {
+  border-right: none;
+}
+.mo-cols {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  margin: 20px 22px 4px;
+  border-top: 2px solid #1f1b16;
+  padding-top: 16px;
+}
+.mo-col {
+  padding: 0 18px;
+  border-right: 1px dashed #b9af9e;
+}
+.mo-col:first-child {
+  padding-left: 0;
+}
+.mo-col:last-child {
+  border-right: none;
+}
+.mo-col-no {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: #c0432b;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.mo-col-title {
+  font-family: var(--font-title);
+  margin: 0 0 8px;
+  font-size: 16.5px;
+  font-weight: 700;
+  color: #1f1b16;
+  line-height: 1.5;
+}
+.mo-col-text {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: #6b6255;
+  line-height: 1.85;
+  margin: 0 0 8px;
+}
+.mo-col-more {
+  font-family: var(--font-ui);
+  font-size: 11.5px;
+  color: #c0432b;
+  letter-spacing: 1px;
+  cursor: pointer;
+  display: inline-block;
+}
+.mo-col-more:hover {
+  border-bottom: 1px solid #c0432b;
+}
+.mo-col-num {
+  font-family: var(--font-title);
+  font-size: 30px;
+  font-weight: 700;
+  font-style: italic;
+  color: #1f1b16;
+  line-height: 1.2;
+  margin-bottom: 6px;
+}
+
+/* —— 页内报头（一人一题 / 考核等栏目页） —— */
+.mo-page-mast {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 4px 12px 0;
+  padding: 0 2px 10px;
+  border-bottom: 1px solid #1f1b16;
+}
+.mo-page-mast-brand {
+  font-family: var(--font-title);
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #1f1b16;
+}
+.mo-page-mast-brand em {
+  font-style: italic;
+  color: #c0432b;
+  margin-left: 2px;
+}
+.mo-page-mast-no {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: #c0432b;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* —— 面试函（考核页，示意 A-3；仅墨读渲染） —— */
+html[data-theme='mo'] .mo-letter-lt {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: #6b6255;
+  margin-bottom: 10px;
+}
+html[data-theme='mo'] .mo-letter-lt b {
+  color: #c0432b;
+}
+html[data-theme='mo'] .mo-letter-body {
+  font-family: var(--font-body);
+  font-size: 14.5px;
+  line-height: 2.1;
+  color: #1f1b16;
+  margin: 0;
+}
+html[data-theme='mo'] .mo-letter-sign {
+  text-align: right;
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: #6b6255;
+  margin-top: 12px;
+}
+
+/* —— 学生作答后的 AI 反馈：墨读下按红批装帧 —— */
+html[data-theme='mo'] .m-student-feedback {
+  border: 1px dashed #c0432b;
+  background: #fbf1ec;
+  color: #7a2e1d;
+  padding: 12px 14px;
+  border-radius: 3px;
+  font-family: var(--font-body);
+  line-height: 2;
+}
+
+/* ============================================================
  * 方案一 · 墨读（阅读模式）
  * ============================================================ */
 
@@ -67,91 +468,12 @@ html[data-theme='mo'] .web-layout .main {
   background-image: var(--paper-texture);
 }
 
-/* —— 栏目标题（van-cell-group 标题）改衬线排版 —— */
+/* —— 栏目组标题（van-cell-group 标题）改衬线排版 —— */
 html[data-theme='mo'] .van-cell-group__title {
   font-family: var(--font-title);
   font-weight: 700;
   letter-spacing: 1px;
   color: #1f1b16;
-}
-
-/* —— 课程主页 Hero：报头式 —— */
-html[data-theme='mo'] .m-hero {
-  background: #f7f3ea;
-  color: #1f1b16;
-  border-bottom: 1px solid #1f1b16;
-  padding: 16px 16px 14px;
-}
-
-html[data-theme='mo'] .m-hero h2 {
-  font-family: var(--font-title);
-  font-size: 23px;
-  font-weight: 700;
-  letter-spacing: 1px;
-}
-
-/* 斜体朱砂强调词，取自方案一「报名」处理 */
-html[data-theme='mo'] .m-hero h2::after {
-  content: '日课';
-  font-style: italic;
-  color: #c0432b;
-  margin-left: 8px;
-  font-size: 0.82em;
-}
-
-html[data-theme='mo'] .m-hero p {
-  color: #6b6255;
-  font-size: 12px;
-  opacity: 1;
-}
-
-html[data-theme='mo'] .m-progress-text {
-  color: #6b6255;
-  opacity: 1;
-}
-
-/* —— 本节课案例横幅：报纸剪贴风 —— */
-html[data-theme='mo'] .m-case-banner {
-  background: #fffefa;
-  border: 1px solid #1f1b16;
-  border-radius: 3px;
-  margin: 16px 12px 0;
-  padding: 18px 16px 14px;
-  position: relative;
-}
-
-/* 骑缝标签：CASE · 本节课案例 */
-html[data-theme='mo'] .m-case-banner::before {
-  content: 'CASE · 本节课案例';
-  position: absolute;
-  top: -8px;
-  left: 14px;
-  background: #f7f3ea;
-  padding: 0 8px;
-  font-family: var(--font-ui);
-  font-size: 10px;
-  letter-spacing: 3px;
-  color: #c0432b;
-  font-weight: 700;
-}
-
-html[data-theme='mo'] .m-case-label {
-  display: none;
-}
-
-html[data-theme='mo'] .m-case-title {
-  color: #1f1b16;
-  font-family: var(--font-title);
-  font-size: 17px;
-  font-weight: 700;
-}
-
-html[data-theme='mo'] .m-case-meta {
-  color: #6b6255;
-}
-
-html[data-theme='mo'] .m-case-summary {
-  color: #6b6255;
 }
 
 /* —— 一人一题：报纸剪贴题卡 —— */
@@ -230,7 +552,7 @@ html[data-theme='mo'] .m-student-question {
   background: #fffefa;
   border: 1px solid #1f1b16;
   border-radius: 3px;
-  padding: 22px 20px 26px;
+  padding: 22px 20px 46px;
   font-family: var(--font-body);
   line-height: 2.1;
   color: #1f1b16;
@@ -238,8 +560,8 @@ html[data-theme='mo'] .m-student-question {
 
 html[data-theme='mo'] .mo-stamp {
   position: absolute;
-  right: 14px;
-  bottom: 8px;
+  right: 16px;
+  bottom: 12px;
   width: 54px;
   height: 54px;
   border: 2.5px solid #c0432b;
@@ -324,6 +646,14 @@ html[data-theme='mo'] .van-cell-group--inset {
 /* ============================================================
  * Web 端（Element Plus）墨读覆写
  * ============================================================ */
+
+/* 卡片：纸白底 + 极淡墨边 */
+html[data-theme='mo'] .card {
+  background: #fffefa;
+  border: 1px solid #d8cfc0;
+  border-radius: 4px;
+}
+
 html[data-theme='mo'] .web-layout .aside,
 html[data-theme='mo'] .web-layout .header {
   background: #fffefa;
@@ -344,6 +674,63 @@ html[data-theme='mo'] .web-layout .logo-text {
 html[data-theme='mo'] .web-layout .header-title {
   font-family: var(--font-title);
   letter-spacing: 1px;
+}
+
+/* Web 一人一题：题卡改报纸剪贴 + 红批反馈（示意 A-2） */
+html[data-theme='mo'] .question-box {
+  background: #fffefa;
+  border: 1px solid #1f1b16;
+  border-radius: 3px;
+  position: relative;
+  font-family: var(--font-body);
+}
+
+html[data-theme='mo'] .question-box::before {
+  content: 'COLUMN · 一人一题';
+  position: absolute;
+  top: -8px;
+  left: 14px;
+  background: #fffefa;
+  padding: 0 8px;
+  font-family: var(--font-ui);
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: #c0432b;
+  font-weight: 700;
+}
+
+html[data-theme='mo'] .question-label {
+  color: #c0432b;
+  font-family: var(--font-ui);
+  letter-spacing: 2px;
+}
+
+html[data-theme='mo'] .answer-box {
+  background: #fffefa;
+  border: 1px solid #1f1b16;
+  border-radius: 3px;
+}
+
+html[data-theme='mo'] .feedback-box {
+  border: 1px dashed #c0432b;
+  background: #fbf1ec;
+  color: #7a2e1d;
+  font-family: var(--font-body);
+  line-height: 2;
+}
+
+/* Web 考核：面试函装帧（示意 A-3） */
+html[data-theme='mo'] .student-item {
+  border-color: #d8cfc0;
+  border-radius: 3px;
+}
+
+html[data-theme='mo'] .student-item-question {
+  background: #fffefa;
+  border: 1px solid #1f1b16;
+  border-radius: 3px;
+  padding: 20px 22px 46px;
+  font-family: var(--font-body);
 }
 
 /* 登录页：墨读下用墨框卡 + 衬线标题 */

@@ -5,6 +5,7 @@ import { COURSE } from '@/mock/data'
 import { useUserStore } from '@/stores/user'
 import { useModelStore } from '@/stores/model'
 import { useCasesStore } from '@/stores/cases'
+import { renderMd } from '@/utils/md'
 import { summarizeCase } from '@/api/aiTasks'
 
 const userStore = useUserStore()
@@ -195,7 +196,7 @@ const myCases = computed(() => casesStore.myCases(userStore.user?.id))
 
             <div v-if="aiSummary || aiTags.length" class="ai-result">
               <div class="ai-label">AI 整理结果</div>
-              <p v-if="aiSummary" class="ai-summary">{{ aiSummary }}</p>
+              <p v-if="aiSummary" class="ai-summary" v-html="renderMd(aiSummary)"></p>
               <div v-if="aiTags.length" class="ai-tags">
                 <el-tag v-for="t in aiTags" :key="t" size="small" type="success" effect="plain">
                   {{ t }}

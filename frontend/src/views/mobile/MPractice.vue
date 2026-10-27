@@ -6,6 +6,7 @@ import { useUserStore } from '@/stores/user'
 import { useModelStore } from '@/stores/model'
 import { usePracticeStore } from '@/stores/practice'
 import { useThemeStore } from '@/stores/theme'
+import { renderMd } from '@/utils/md'
 import { generatePracticeQuestion, reviewPracticeAnswer, PRACTICE_TYPES } from '@/api/aiTasks'
 
 const userStore = useUserStore()
@@ -34,6 +35,9 @@ const showFeedbackId = ref('')
 const feedbackTitle = computed(() =>
   themeStore.isMo ? '红批 · AI 三维反馈' : 'AI 三维反馈',
 )
+
+// 提交按钮文案随皮肤切换：墨读下交卷即「寄出」，云课笺直陈操作
+const submitLabel = computed(() => (themeStore.isMo ? '交卷 →' : '提交并获取反馈'))
 
 async function generate() {
   generating.value = true
@@ -113,6 +117,12 @@ function toggleFeedback(id) {
 
 <template>
   <div class="m-page">
+    <!-- 墨读报头：一人一题日练 · 栏目号（方案示意 A-2） -->
+    <div v-if="themeStore.isMo" class="mo-page-mast" data-testid="mo-practice-mast">
+      <span class="mo-page-mast-brand">一人一题<em>日练</em></span>
+      <span class="mo-page-mast-no">COLUMN 07</span>
+    </div>
+
     <van-notice-bar
       v-if="!isConfigured"
       text="尚未配置模型密钥，配置后即可使用 AI 出题与反馈（模型接入见 Web 端）"
@@ -153,7 +163,7 @@ function toggleFeedback(id) {
         :disabled="!isConfigured"
         @click="generate"
       >
-        {{ question ? '换一题' : 'AI 生成练习题' }}
+        AI 生成练习题
       </van-button>
       <p v-if="userStore.discipline" class="m-discipline-tip">
         学科背景：{{ userStore.discipline }}（题目情境将贴合你的背景）
@@ -165,8 +175,17 @@ function toggleFeedback(id) {
     <!-- 本题情境：墨读皮肤下为报纸剪贴题卡（skins.css 覆写） -->
     <template v-if="question && !generating">
       <div class="m-q-section">
-        <div class="m-section-label">本题情境</div>
-        <div class="m-question">{{ question }}</div>
+        <div class="m-q-head">
+          <span class="m-section-label">本题情境</span>
+          <span class="m-swap-link" @click="!generating && generate()">换一题</span>
+        </div>
+        <div class="m-question">
+          {{ question }}
+          <div class="m-q-foot">
+            <span class="m-q-tag">考查：{{ form.chapter }} · {{ form.type }} · 200 字内口述</span>
+            <span class="m-swap-link" @click="!generating && generate()">换一题</span>
+          </div>
+        </div>
       </div>
 
       <!-- 我的作答：墨读皮肤下为横格稿纸 -->
@@ -189,7 +208,7 @@ function toggleFeedback(id) {
             :loading="reviewing"
             @click="submit"
           >
-            提交并获取反馈
+            {{ submitLabel }}
           </van-button>
         </div>
       </div>
@@ -197,8 +216,11 @@ function toggleFeedback(id) {
 
     <!-- AI 反馈：墨读皮肤下为红批批注框 -->
     <div v-if="feedback" class="m-feedback-section">
-      <div class="m-section-label">{{ feedbackTitle }}</div>
-      <div class="m-feedback">{{ feedback }}</div>
+      <div class="m-feedback-head">
+        <span class="m-section-label">{{ feedbackTitle }}</span>
+        <span v-if="!themeStore.isMo" class="skin-badge ok">已完成 {{ myRecords.length }} 次</span>
+      </div>
+      <div class="m-feedback" v-html="renderMd(feedback)"></div>
     </div>
 
     <van-cell-group inset title="我的练习记录">
@@ -220,7 +242,7 @@ function toggleFeedback(id) {
                 查看反馈
               </van-button>
             </template>
-            <div class="m-pop-feedback">{{ feedbackRecord?.feedback }}</div>
+            <div class="m-pop-feedback" v-html="renderMd(feedbackRecord?.feedback)"></div>
           </van-popover>
         </template>
       </van-cell>
@@ -275,6 +297,55 @@ function toggleFeedback(id) {
   color: var(--text-main);
 }
 
+/* 题卡头部（云课笺）：小节标签 + 换一题 */
+.m-q-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px 8px;
+}
+
+.m-q-head .m-section-label {
+  padding: 0;
+}
+
+.m-swap-link {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  cursor: pointer;
+  font-family: var(--font-ui);
+  white-space: nowrap;
+}
+
+.m-swap-link:hover {
+  opacity: 0.8;
+}
+
+/* 题卡脚注（墨读）：考查标签 + 换一题，云课笺下隐藏 */
+.m-q-foot {
+  display: none;
+}
+
+.m-q-tag {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: #6b6255;
+}
+
+/* 反馈区头部：小节标签 + 完成次数徽章（云课笺） */
+.m-feedback-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: 16px;
+}
+
+.m-feedback-head .m-section-label {
+  padding-right: 0;
+}
+
 /* 我的作答：云课笺为圆角卡片包裹的输入区（墨读下为横格稿纸） */
 .skin-paper {
   margin: 0 12px;
@@ -313,7 +384,20 @@ function toggleFeedback(id) {
 }
 
 /* ---- 墨读皮肤覆写（置于块尾，特异性高于上方基础规则） ---- */
-html[data-theme='mo'] .m-q-section .m-section-label,
+html[data-theme='mo'] .m-q-head {
+  display: none;
+}
+
+html[data-theme='mo'] .m-q-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px dashed #b9af9e;
+}
+
 html[data-theme='mo'] .m-answer-section .m-section-label {
   display: none;
 }

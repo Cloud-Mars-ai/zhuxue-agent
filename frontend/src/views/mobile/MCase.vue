@@ -5,6 +5,7 @@ import { COURSE } from '@/mock/data'
 import { useUserStore } from '@/stores/user'
 import { useModelStore } from '@/stores/model'
 import { useCasesStore } from '@/stores/cases'
+import { renderMd } from '@/utils/md'
 import { summarizeCase } from '@/api/aiTasks'
 
 const userStore = useUserStore()
@@ -184,7 +185,7 @@ async function reject(c) {
       <van-cell-group v-if="aiSummary || aiTags.length" inset title="AI 整理结果">
         <van-cell>
           <template #title>
-            <div class="m-ai-summary">{{ aiSummary }}</div>
+            <div class="m-ai-summary" v-html="renderMd(aiSummary)"></div>
             <div class="m-ai-tags">
               <van-tag
                 v-for="t in aiTags"

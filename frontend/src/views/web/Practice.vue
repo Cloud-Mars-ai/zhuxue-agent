@@ -5,11 +5,17 @@ import { COURSE } from '@/mock/data'
 import { useUserStore } from '@/stores/user'
 import { useModelStore } from '@/stores/model'
 import { usePracticeStore } from '@/stores/practice'
+import { useThemeStore } from '@/stores/theme'
+import { renderMd } from '@/utils/md'
 import { generatePracticeQuestion, reviewPracticeAnswer, PRACTICE_TYPES } from '@/api/aiTasks'
 
 const userStore = useUserStore()
 const modelStore = useModelStore()
 const practiceStore = usePracticeStore()
+const themeStore = useThemeStore()
+
+// 提交按钮文案随皮肤切换：墨读下交卷即「寄出」
+const submitLabel = computed(() => (themeStore.isMo ? '交卷 →' : '提交并获取反馈'))
 
 // 章节选项取课程章节（去掉"第x章 "前缀只保留标题名太短，直接用完整标题）
 const chapterOptions = computed(() => COURSE.chapters.map((c) => c.title))
@@ -175,13 +181,13 @@ function formatTime(iso) {
               :loading="reviewing"
               @click="submit"
             >
-              提交并获取反馈
+              {{ submitLabel }}
             </el-button>
           </div>
 
           <div v-if="feedback" class="feedback-box">
             <div class="question-label">AI 三维反馈</div>
-            <div class="feedback-text">{{ feedback }}</div>
+            <div class="feedback-text" v-html="renderMd(feedback)"></div>
           </div>
         </div>
       </el-col>
@@ -204,7 +210,7 @@ function formatTime(iso) {
                 <template #reference>
                   <el-button link type="primary" size="small">查看反馈</el-button>
                 </template>
-                <div class="record-feedback">{{ r.feedback }}</div>
+                <div class="record-feedback" v-html="renderMd(r.feedback)"></div>
               </el-popover>
             </el-timeline-item>
           </el-timeline>

@@ -6,6 +6,8 @@ import { useUserStore } from '@/stores/user'
 import { useModelStore } from '@/stores/model'
 import { useAssessmentStore } from '@/stores/assessment'
 import { usePracticeStore } from '@/stores/practice'
+import { useThemeStore } from '@/stores/theme'
+import { renderMd } from '@/utils/md'
 import {
   generateAssessmentQuestion,
   reviewAssessmentAnswer,
@@ -17,10 +19,19 @@ const userStore = useUserStore()
 const modelStore = useModelStore()
 const assessmentStore = useAssessmentStore()
 const practiceStore = usePracticeStore()
+const themeStore = useThemeStore()
 
 const isStudent = computed(() => userStore.role === 'student')
 const isTeacher = computed(() => ['admin', 'teacher', 'ta'].includes(userStore.role))
 const isConfigured = computed(() => modelStore.isConfigured)
+
+// 学生视图文案随皮肤切换：墨读下考核题目装帧为「面试函」
+const studentSectionTitle = computed(() =>
+  themeStore.isMo ? '面试函 · 我的题目' : '我的模拟面试题',
+)
+const submitLabel = computed(() => (themeStore.isMo ? '寄出回信 →' : '提交作答'))
+const answerLabel = computed(() => (themeStore.isMo ? '回信 · 我的作答' : '我的作答'))
+const feedbackLabel = computed(() => (themeStore.isMo ? '回信 · AI 反馈' : 'AI 反馈'))
 
 const chapterOptions = computed(() => COURSE.chapters.map((c) => c.title))
 const groupOptions = computed(() => [...new Set(MOCK_STUDENTS.map((s) => s.group))])
@@ -451,7 +462,7 @@ async function submitAnswer(entry) {
                     <div class="pop-label">学生作答</div>
                     <p class="pop-text">{{ row.answer }}</p>
                     <div class="pop-label">AI 反馈</div>
-                    <p class="pop-text">{{ row.aiFeedback }}</p>
+                    <p class="pop-text" v-html="renderMd(row.aiFeedback)"></p>
                   </div>
                 </el-popover>
               </template>
@@ -514,7 +525,7 @@ async function submitAnswer(entry) {
       </el-alert>
 
       <div class="card">
-        <h3 class="card-title">我的模拟面试题（{{ myItems.length }}）</h3>
+        <h3 class="card-title">{{ studentSectionTitle }}（{{ myItems.length }}）</h3>
         <p class="card-desc">
           老师圈定范围后由 AI 生成、教师复核发布的个性化题目。作答后 AI 给出反馈，最终由教师评分。
         </p>
@@ -526,18 +537,34 @@ async function submitAnswer(entry) {
               <el-tag size="small" type="success" effect="plain">
                 {{ entry.task.scope.questionType }} · {{ entry.task.scope.difficulty }}
               </el-tag>
-              <el-tag v-if="entry.item.teacherScore != null" size="small" type="danger" effect="plain">
-                得分 {{ entry.item.teacherScore }}
-              </el-tag>
+              <span v-if="entry.item.teacherScore != null" class="skin-score">
+                {{ entry.item.teacherScore }} 分
+              </span>
             </div>
-            <div class="student-item-question">{{ entry.item.question }}</div>
+
+            <!-- 题目：墨读装帧为面试函（收件人 / 此致敬礼 / 署名 / 得分印章） -->
+            <div class="student-item-question">
+              <div v-if="themeStore.isMo" class="mo-letter-lt">
+                收件人：<b>{{ userStore.name }}</b>（{{ userStore.discipline || '未设置学科' }}） ·
+                范围：{{ entry.task.scope.chapters.join('、') }} · {{ entry.task.scope.questionType }} ·
+                难度 {{ entry.task.scope.difficulty }}
+              </div>
+              <p v-if="themeStore.isMo" class="mo-letter-body">
+                亲爱的同学：<br />　　{{ entry.item.question }}<br />　　此致 敬礼
+              </p>
+              <p v-else class="student-item-text">{{ entry.item.question }}</p>
+              <div v-if="themeStore.isMo" class="mo-letter-sign">——《管理学》课程组</div>
+              <span v-if="entry.item.teacherScore != null" class="mo-stamp">
+                {{ entry.item.teacherScore }}
+              </span>
+            </div>
 
             <template v-if="entry.item.answer">
               <div class="answer-block">
-                <div class="answer-label">我的作答</div>
+                <div class="answer-label">{{ answerLabel }}</div>
                 <p class="answer-text">{{ entry.item.answer }}</p>
-                <div class="answer-label">AI 反馈</div>
-                <p class="answer-text ai">{{ entry.item.aiFeedback }}</p>
+                <div class="answer-label">{{ feedbackLabel }}</div>
+                <p class="answer-text ai m-student-feedback" v-html="renderMd(entry.item.aiFeedback)"></p>
               </div>
             </template>
             <template v-else>
@@ -555,7 +582,7 @@ async function submitAnswer(entry) {
                 :loading="submitting"
                 @click="submitAnswer(entry)"
               >
-                提交作答
+                {{ submitLabel }}
               </el-button>
             </template>
           </div>
@@ -783,6 +810,7 @@ async function submitAnswer(entry) {
 }
 
 .student-item-question {
+  position: relative;
   padding: 12px 14px;
   margin-bottom: 12px;
   font-size: 14px;
@@ -790,6 +818,13 @@ async function submitAnswer(entry) {
   white-space: pre-wrap;
   background: var(--bg-page);
   border-radius: 8px;
+}
+
+.student-item-text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.9;
+  white-space: pre-wrap;
 }
 
 .submit-answer-btn {

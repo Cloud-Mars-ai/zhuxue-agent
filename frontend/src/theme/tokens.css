@@ -222,11 +222,11 @@ html[data-theme='mo'] {
   --hero-track: #e4dccb;
   --login-bg: #f7f3ea;
 
-  /* —— 字体与排版 —— */
+  /* —— 字体与排版（方案 1.4：大标题 36-44px/700 字距+2px，斜体强调词） —— */
   --font-title: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', 'SimSun', serif;
   --font-body: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', 'SimSun', serif;
   --title-weight: 700;
-  --title-tracking: 1px;
+  --title-tracking: 2px;
   --body-leading: 2;
   --question-leading: 2.05;
 
