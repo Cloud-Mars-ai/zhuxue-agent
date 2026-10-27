@@ -27,7 +27,10 @@ export default defineConfig(({ mode }) => {
     },
     server: {
       host: '0.0.0.0',
-      port: 5173,
+      // 公网部署时端口由沙箱注入 PORT 环境变量
+      port: Number(process.env.PORT) || 5173,
+      // 公网部署时请求经反向代理域名进来，需放行代理主机
+      allowedHosts: true,
       // 手机连同一局域网时可用 http://<本机IP>:5173/m/ 访问 H5 端
       proxy: {
         // 前端所有请求走 /api 前缀，由 Vite 转发到 FastAPI，避免跨域
@@ -36,6 +39,12 @@ export default defineConfig(({ mode }) => {
           changeOrigin: true,
         },
       },
+    },
+    preview: {
+      // 公网部署：预览服务监听 $PORT 并放行反向代理域名（否则 Vite 报 Blocked request）
+      host: '0.0.0.0',
+      port: Number(process.env.PORT) || 4173,
+      allowedHosts: true,
     },
     build: {
       outDir: isOffline ? 'dist-offline' : 'dist',

@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "build:offline": "vite build --mode offline",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "vite build && vite preview --host 0.0.0.0"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.2",
