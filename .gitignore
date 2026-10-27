@@ -44,3 +44,6 @@ Thumbs.db
 .workbuddy/
 output/
 .playwright-cli/
+
+# 公网部署工具生成的本地标记文件
+.wbapp_*.genie
