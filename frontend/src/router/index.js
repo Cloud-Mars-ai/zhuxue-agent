@@ -36,6 +36,30 @@ const routes = [
         meta: { title: '课程主页', icon: 'HomeFilled' },
       },
       {
+        path: 'ask',
+        name: 'Ask',
+        component: () => import('@/views/web/Ask.vue'),
+        meta: { title: 'AI 答疑', icon: 'ChatLineRound' },
+      },
+      {
+        path: 'practice',
+        name: 'Practice',
+        component: () => import('@/views/web/Practice.vue'),
+        meta: { title: '一人一题练习', icon: 'EditPen' },
+      },
+      {
+        path: 'cases',
+        name: 'Cases',
+        component: () => import('@/views/web/Cases.vue'),
+        meta: { title: '课前案例', icon: 'Files' },
+      },
+      {
+        path: 'assessment',
+        name: 'Assessment',
+        component: () => import('@/views/web/Assessment.vue'),
+        meta: { title: '课程考核', icon: 'Aim' },
+      },
+      {
         path: 'console',
         name: 'TeacherConsole',
         component: () => import('@/views/web/TeacherConsole.vue'),
@@ -59,6 +83,12 @@ const routes = [
         component: () => import('@/views/web/Statistics.vue'),
         meta: { title: '学情统计', icon: 'TrendCharts', roles: ['admin', 'teacher', 'ta'] },
       },
+      {
+        path: 'model',
+        name: 'ModelSettings',
+        component: () => import('@/views/web/ModelSettings.vue'),
+        meta: { title: '模型接入', icon: 'Connection', roles: ['admin', 'teacher'] },
+      },
     ],
   },
 
@@ -79,6 +109,24 @@ const routes = [
         name: 'MAsk',
         component: () => import('@/views/mobile/MAsk.vue'),
         meta: { title: '答疑', mobile: true },
+      },
+      {
+        path: 'practice',
+        name: 'MPractice',
+        component: () => import('@/views/mobile/MPractice.vue'),
+        meta: { title: '一人一题', mobile: true },
+      },
+      {
+        path: 'case',
+        name: 'MCase',
+        component: () => import('@/views/mobile/MCase.vue'),
+        meta: { title: '课前案例', mobile: true },
+      },
+      {
+        path: 'assessment',
+        name: 'MAssessment',
+        component: () => import('@/views/mobile/MAssessment.vue'),
+        meta: { title: '课程考核', mobile: true },
       },
       {
         path: 'mine',

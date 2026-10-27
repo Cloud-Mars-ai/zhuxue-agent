@@ -1,9 +1,13 @@
 <script setup>
 import { computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { COURSE, FORUM_POSTS } from '@/mock/data'
 import { useUserStore } from '@/stores/user'
+import { useCasesStore } from '@/stores/cases'
 
+const router = useRouter()
 const userStore = useUserStore()
+const casesStore = useCasesStore()
 
 const overallProgress = computed(() => {
   const list = COURSE.chapters
@@ -12,6 +16,9 @@ const overallProgress = computed(() => {
 })
 
 const latestPosts = computed(() => FORUM_POSTS.slice(0, 3))
+
+// 本节课案例：老师从案例池选用后，课堂主页置顶展示（M3）
+const currentCase = computed(() => casesStore.currentCase())
 
 // 学生看到自己的学习进度，教师看到班级整体情况
 const isStudent = computed(() => userStore.role === 'student')
@@ -43,6 +50,31 @@ const isStudent = computed(() => userStore.role === 'student')
         />
         <p class="text-sub">{{ isStudent ? '我的学习进度' : '班级平均进度' }}</p>
       </div>
+    </div>
+
+    <div v-if="currentCase" class="case-banner">
+      <div class="case-banner-label">本节课案例</div>
+      <div class="case-banner-body">
+        <div class="case-banner-title">{{ currentCase.title }}</div>
+        <div class="case-banner-meta">
+          {{ currentCase.chapter }} · 推荐人 {{ currentCase.submitter }}（{{ currentCase.discipline }}）
+        </div>
+        <p class="case-banner-summary">{{ currentCase.summary }}</p>
+        <div class="case-banner-tags">
+          <el-tag
+            v-for="t in currentCase.tags || []"
+            :key="t"
+            size="small"
+            effect="dark"
+            class="case-banner-tag"
+          >
+            {{ t }}
+          </el-tag>
+        </div>
+      </div>
+      <el-button class="case-banner-btn" size="small" @click="router.push('/cases')">
+        {{ isStudent ? '我也要提案例' : '管理案例池' }}
+      </el-button>
     </div>
 
     <el-row :gutter="16">
@@ -102,7 +134,7 @@ const isStudent = computed(() => userStore.role === 'student')
           <p class="text-sub">
             基于《管理学》教材与课件构建的知识库，支持课后答疑与苏格拉底式引导提问。
           </p>
-          <el-button type="primary" plain class="w-full">开始提问</el-button>
+          <el-button type="primary" plain class="w-full" @click="router.push('/ask')">开始提问</el-button>
         </div>
       </el-col>
     </el-row>
@@ -110,6 +142,68 @@ const isStudent = computed(() => userStore.role === 'student')
 </template>
 
 <style scoped>
+.case-banner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 18px;
+  margin-bottom: 16px;
+  background: linear-gradient(120deg, #fff7e8, #ffedd0);
+  border: 1px solid #f3d9a4;
+  border-radius: var(--radius);
+}
+
+.case-banner-label {
+  flex-shrink: 0;
+  padding: 6px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #b06f00;
+  background: #fff;
+  border: 1px solid #f3d9a4;
+  border-radius: 6px;
+}
+
+.case-banner-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.case-banner-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #7a5200;
+}
+
+.case-banner-meta {
+  margin: 2px 0 4px;
+  font-size: 12px;
+  color: #a17400;
+}
+
+.case-banner-summary {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.7;
+  color: #6b5410;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.case-banner-tags {
+  margin-top: 6px;
+}
+
+.case-banner-tag {
+  margin-right: 4px;
+}
+
+.case-banner-btn {
+  flex-shrink: 0;
+}
+
 .hero {
   display: flex;
   align-items: center;
@@ -199,6 +293,10 @@ const isStudent = computed(() => userStore.role === 'student')
   }
   .hero-meta {
     justify-content: center;
+  }
+  .case-banner {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 </style>

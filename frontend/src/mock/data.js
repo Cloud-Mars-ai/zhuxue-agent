@@ -28,7 +28,76 @@ export const MOCK_USERS = [
   { username: 'admin', password: '123456', name: '系统管理员', role: 'admin', id: 'A001' },
   { username: 'teacher', password: '123456', name: '王教授', role: 'teacher', id: 'T001' },
   { username: 'ta', password: '123456', name: '李助教', role: 'ta', id: 'T002' },
-  { username: 'student', password: '123456', name: '张同学', role: 'student', id: '2024010001' },
+  {
+    username: 'student',
+    password: '123456',
+    name: '张同学',
+    role: 'student',
+    id: '2024010001',
+    discipline: '管理类',
+  },
+  {
+    username: 'student2',
+    password: '123456',
+    name: '李骁',
+    role: 'student',
+    id: '2024010002',
+    discipline: '工科类',
+  },
+]
+
+/** 学科背景选项（M5 学科背景差异化引擎） */
+export const DISCIPLINE_OPTIONS = ['管理类', '工科类', '其他']
+
+/**
+ * 大班学生名单（教师端圈人选范围用）
+ * discipline: 管理类 / 工科类 / 其他 —— 决定 AI 出题与讲解的案例取材方向
+ */
+export const MOCK_STUDENTS = [
+  { id: '2024010001', name: '张同学', group: '第1组', discipline: '管理类' },
+  { id: '2024010002', name: '李骁', group: '第1组', discipline: '工科类' },
+  { id: '2024010003', name: '王浩然', group: '第1组', discipline: '管理类' },
+  { id: '2024010004', name: '陈思雨', group: '第2组', discipline: '管理类' },
+  { id: '2024010005', name: '刘一鸣', group: '第2组', discipline: '工科类' },
+  { id: '2024010006', name: '赵欣怡', group: '第2组', discipline: '管理类' },
+  { id: '2024010007', name: '孙志强', group: '第3组', discipline: '工科类' },
+  { id: '2024010008', name: '周子墨', group: '第3组', discipline: '管理类' },
+  { id: '2024010009', name: '吴佳琪', group: '第3组', discipline: '其他' },
+  { id: '2024010010', name: '郑宇轩', group: '第4组', discipline: '工科类' },
+  { id: '2024010011', name: '何雨桐', group: '第4组', discipline: '管理类' },
+  { id: '2024010012', name: '马俊杰', group: '第4组', discipline: '管理类' },
+]
+
+/** 案例池预置数据（M3，教师已选用一条作为课堂案例） */
+export const MOCK_CASES = [
+  {
+    id: 'c-1001',
+    title: '小米 SU7 交付风波中的跨部门协同',
+    chapter: '第4章 组织设计与组织变革',
+    link: '',
+    summary:
+      '小米汽车量产初期研发、供应链、交付三部门目标冲突，通过设立联合 PMO 与统一看板实现协同，可对应矩阵式组织与跨部门沟通机制。',
+    reason: '新闻热度高，学生有切身感知，适合讲横向协调机制。',
+    tags: ['组织协调', '矩阵结构'],
+    submitter: '陈思雨',
+    discipline: '管理类',
+    status: 'selected',
+    createdAt: '2026-10-20 21:14',
+  },
+  {
+    id: 'c-1002',
+    title: '某化工车间班组排班改革',
+    chapter: '第3章 决策与计划',
+    link: 'https://example.com/shift-reform',
+    summary:
+      '某石化车间原四班三倒响应慢，改用弹性班组+计划看板后异常响应时间缩短 40%，对应计划职能与决策程序。',
+    reason: '工科背景同学的实习见闻，贴近工程管理实际。',
+    tags: ['计划职能', '现场管理'],
+    submitter: '李骁',
+    discipline: '工科类',
+    status: 'pending',
+    createdAt: '2026-10-22 16:40',
+  },
 ]
 
 export const FORUM_POSTS = [

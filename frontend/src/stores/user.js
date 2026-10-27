@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { MOCK_USERS } from '@/mock/data'
+import { MOCK_USERS, MOCK_STUDENTS, DISCIPLINE_OPTIONS } from '@/mock/data'
 
 const STORAGE_KEY = 'ai-tutor-user'
 
@@ -50,6 +50,8 @@ export const ROLE_LABEL = {
   student: '学生',
 }
 
+export { DISCIPLINE_OPTIONS }
+
 export const useUserStore = defineStore('user', () => {
   const cached = loadFromStorage()
 
@@ -62,9 +64,31 @@ export const useUserStore = defineStore('user', () => {
   const roleLabel = computed(() => ROLE_LABEL[role.value] || '未登录')
   const name = computed(() => user.value?.name || '')
 
+  /**
+   * 学科背景（M5 差异化引擎的输入）
+   * 旧登录态可能没有该字段，回退到名单数据里查
+   */
+  const discipline = computed(() => {
+    const own = user.value?.discipline
+    if (own) return own
+    const id = user.value?.id
+    const found =
+      MOCK_USERS.find((u) => u.id === id) || MOCK_STUDENTS.find((s) => s.id === id)
+    return found?.discipline || ''
+  })
+
+  const isStudent = computed(() => role.value === 'student')
+
   function login(payload) {
     user.value = payload
     safeSetItem(STORAGE_KEY, JSON.stringify(payload))
+  }
+
+  /** 更新当前登录用户的学科背景（学生自助设置，立即持久化） */
+  function setDiscipline(value) {
+    if (!user.value) return
+    user.value = { ...user.value, discipline: value }
+    safeSetItem(STORAGE_KEY, JSON.stringify(user.value))
   }
 
   /**
@@ -107,7 +131,10 @@ export const useUserStore = defineStore('user', () => {
     role,
     roleLabel,
     name,
+    discipline,
+    isStudent,
     login,
+    setDiscipline,
     loginByUsername,
     logout,
     setMockMode,

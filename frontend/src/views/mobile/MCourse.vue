@@ -1,6 +1,9 @@
 <script setup>
 import { computed } from 'vue'
 import { COURSE, HOMEWORKS } from '@/mock/data'
+import { useCasesStore } from '@/stores/cases'
+
+const casesStore = useCasesStore()
 
 const overallProgress = computed(() => {
   const list = COURSE.chapters
@@ -10,6 +13,9 @@ const overallProgress = computed(() => {
 const upcoming = computed(() =>
   HOMEWORKS.filter((h) => h.status !== 'graded').slice(0, 2),
 )
+
+// 本节课案例：老师从案例池选用后置顶展示（M3）
+const currentCase = computed(() => casesStore.currentCase())
 </script>
 
 <template>
@@ -26,6 +32,29 @@ const upcoming = computed(() =>
         />
         <span class="m-progress-text">我的学习进度 {{ overallProgress }}%</span>
       </div>
+    </div>
+
+    <div v-if="currentCase" class="m-case-banner">
+      <div class="m-case-label">本节课案例</div>
+      <div class="m-case-title">{{ currentCase.title }}</div>
+      <div class="m-case-meta">
+        {{ currentCase.chapter }} · 推荐人 {{ currentCase.submitter }}（{{ currentCase.discipline }}）
+      </div>
+      <p class="m-case-summary">{{ currentCase.summary }}</p>
+      <div class="m-ai-tags">
+        <van-tag
+          v-for="t in currentCase.tags || []"
+          :key="t"
+          plain
+          type="warning"
+          class="m-ai-tag"
+        >
+          {{ t }}
+        </van-tag>
+      </div>
+      <van-button size="mini" plain type="primary" class="m-case-btn" :to="'/m/case'">
+        进入案例池
+      </van-button>
     </div>
 
     <van-cell-group inset title="待办作业">
@@ -88,6 +117,52 @@ const upcoming = computed(() =>
   margin-top: 8px;
   font-size: 12px;
   opacity: 0.9;
+}
+
+.m-case-banner {
+  margin: 12px 12px 0;
+  padding: 12px 14px;
+  background: linear-gradient(120deg, #fff7e8, #ffedd0);
+  border: 1px solid #f3d9a4;
+  border-radius: 10px;
+}
+
+.m-case-label {
+  display: inline-block;
+  padding: 2px 8px;
+  margin-bottom: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #b06f00;
+  background: #fff;
+  border-radius: 4px;
+}
+
+.m-case-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #7a5200;
+}
+
+.m-case-meta {
+  margin: 2px 0 6px;
+  font-size: 11px;
+  color: #a17400;
+}
+
+.m-case-summary {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.7;
+  color: #6b5410;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.m-case-btn {
+  margin-top: 10px;
 }
 
 .m-chapter-progress {

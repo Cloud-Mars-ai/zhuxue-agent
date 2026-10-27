@@ -1,18 +1,32 @@
 <script setup>
-import { ref, nextTick } from 'vue'
+import { ref, computed, nextTick } from 'vue'
+import { useRouter } from 'vue-router'
 import { showToast } from 'vant'
-import { CHAT_SAMPLE } from '@/mock/data'
+import { useUserStore } from '@/stores/user'
+import { sendChat } from '@/api/chat'
+import { matchIntent, buildTodoActions } from '@/utils/intent'
 
-const messages = ref([...CHAT_SAMPLE])
+const router = useRouter()
+const userStore = useUserStore()
+
+// 主动问候：进入答疑页即展示欢迎语与推荐操作
+const messages = ref([
+  {
+    role: 'assistant',
+    content:
+      '你好，我是小管同学，《管理学》课程的人机协同助学助手。\n' +
+      '可以直接向我提问知识点；也可以直接对我说："我想交作业"、"待办有哪些"、"开始一人一题练习"、"我要提案例"——我会带你直达对应页面。',
+  },
+])
 const input = ref('')
 const sending = ref(false)
 const listRef = ref()
 
-const suggestions = [
-  '什么是有限理性决策？',
-  '职能制和事业部制的区别？',
-  '帮我梳理第3章知识框架',
-]
+const suggestions = ['待办有哪些', '我想交作业', '开始一人一题练习', '什么是有限理性决策？']
+
+const disciplineTag = computed(() =>
+  userStore.isStudent && userStore.discipline ? userStore.discipline : '',
+)
 
 function scrollToBottom() {
   nextTick(() => {
@@ -21,7 +35,11 @@ function scrollToBottom() {
   })
 }
 
-function ask(text) {
+function go(action) {
+  if (action?.mobile) router.push(action.mobile)
+}
+
+async function ask(text) {
   const question = (text ?? input.value).trim()
   if (!question || sending.value) return
 
@@ -30,16 +48,28 @@ function ask(text) {
   sending.value = true
   scrollToBottom()
 
-  // 联调阶段：模拟 AI 响应延迟，接口就绪后改为调用 /agent/chat
-  setTimeout(() => {
-    messages.value.push({
-      role: 'assistant',
-      content:
-        '（仿真回复）后端智能体接口尚未接入。接入后此处会返回基于《管理学》教材知识库的解答，并附带出处页码。\n\n对接方式：把本文件的 setTimeout 替换为 post(\'/agent/chat\', { question })。',
-    })
+  // M1：本地意图规则优先命中，直接返回可点击操作卡片（不调用模型）
+  const intent = matchIntent(question)
+  if (intent) {
+    const reply = { role: 'assistant', content: intent.reply }
+    if (intent.dynamicTodos) reply.todos = buildTodoActions()
+    if (intent.actions) reply.actions = intent.actions
+    messages.value.push(reply)
     sending.value = false
     scrollToBottom()
-  }, 700)
+    return
+  }
+
+  try {
+    // 模型无记忆，每次携带完整对话历史（chat.js 内部会截取最近 20 条）
+    const reply = await sendChat(messages.value)
+    messages.value.push({ role: 'assistant', content: reply })
+  } catch (err) {
+    showToast(err.message || 'AI 助教暂时开小差了，请稍后再试')
+  } finally {
+    sending.value = false
+    scrollToBottom()
+  }
 }
 
 function useSuggestion(s) {
@@ -49,10 +79,35 @@ function useSuggestion(s) {
 
 <template>
   <div class="ask-page">
+    <div v-if="disciplineTag" class="discipline-tip">学科背景：{{ disciplineTag }}（讲解将贴合你的背景）</div>
     <div ref="listRef" class="msg-list">
       <div v-for="(m, i) in messages" :key="i" class="msg" :class="m.role">
         <div class="bubble">
           <span class="bubble-text">{{ m.content }}</span>
+          <div v-if="m.actions?.length" class="action-cards">
+            <van-button
+              v-for="a in m.actions"
+              :key="a.label"
+              size="small"
+              type="primary"
+              plain
+              @click="go(a)"
+            >
+              {{ a.label }}
+            </van-button>
+          </div>
+          <div v-if="m.todos?.length" class="action-cards">
+            <van-button
+              v-for="t in m.todos"
+              :key="t.key"
+              size="small"
+              type="primary"
+              plain
+              @click="go(t)"
+            >
+              {{ t.label }}｜{{ t.desc }}
+            </van-button>
+          </div>
         </div>
       </div>
       <div v-if="sending" class="msg assistant">
@@ -78,7 +133,7 @@ function useSuggestion(s) {
     <div class="input-bar">
       <van-field
         v-model="input"
-        placeholder="输入你的问题…"
+        placeholder="输入你的问题或指令…"
         class="input-field"
         @keyup.enter="ask()"
       />
@@ -98,6 +153,12 @@ function useSuggestion(s) {
   display: flex;
   flex-direction: column;
   height: calc(100vh - 96px);
+}
+
+.discipline-tip {
+  padding: 6px 12px 0;
+  font-size: 12px;
+  color: var(--text-sub);
 }
 
 .msg-list {
@@ -131,6 +192,13 @@ function useSuggestion(s) {
 .msg.user .bubble {
   color: #fff;
   background: var(--brand);
+}
+
+.action-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
 }
 
 .typing {

@@ -39,3 +39,8 @@ Thumbs.db
 *.njsproj
 *.sln
 *.sw?
+
+# WorkBuddy 工作区数据与文档流水线产物（本地留档，不进仓库）
+.workbuddy/
+output/
+.playwright-cli/
