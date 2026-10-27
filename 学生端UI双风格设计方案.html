@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>学生端 UI 双风格设计方案 · 人机协同助学智能体</title>
+<style>
+  :root{
+    --doc-ink:#2B2A28; --doc-sub:#6E6C66; --doc-line:#E7E4DE; --doc-bg:#F5F4F0;
+    --doc-accent:#B8432A;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--doc-bg);color:var(--doc-ink);
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Noto Sans SC",sans-serif;
+    line-height:1.8;font-size:15px;}
+  .page{max-width:1120px;margin:0 auto;background:#fff;padding:60px 68px 90px;
+    box-shadow:0 2px 24px rgba(0,0,0,.06);}
+  h1{font-size:34px;line-height:1.35;margin:0 0 10px;letter-spacing:.5px}
+  h2{font-size:24px;margin:64px 0 6px;padding-top:26px;border-top:2px solid var(--doc-ink);letter-spacing:.5px}
+  h3{font-size:18px;margin:36px 0 10px}
+  h4{font-size:15px;margin:22px 0 8px;color:var(--doc-ink)}
+  p{margin:8px 0}
+  .lead{font-size:16px;color:var(--doc-sub)}
+  .kicker{font-size:12px;letter-spacing:3px;color:var(--doc-accent);font-weight:600;margin-bottom:6px}
+  .cover-meta{display:flex;gap:26px;flex-wrap:wrap;font-size:13px;color:var(--doc-sub);margin-top:18px}
+  .cover-meta b{color:var(--doc-ink)}
+  .note{background:#FAF8F3;border:1px solid #EAE4D8;border-left:4px solid var(--doc-accent);
+    border-radius:0 8px 8px 0;padding:12px 16px;font-size:13.5px;color:#5A564E;margin:14px 0}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media (max-width:900px){.grid2,.grid3{grid-template-columns:1fr}.page{padding:32px 20px 60px}}
+  table.doc{width:100%;border-collapse:collapse;margin:14px 0;font-size:13.5px}
+  table.doc th{background:#F4F2EC;text-align:left;padding:9px 12px;border:1px solid var(--doc-line);font-weight:600;white-space:nowrap}
+  table.doc td{padding:9px 12px;border:1px solid var(--doc-line);vertical-align:top;line-height:1.7}
+  table.doc tr td:first-child{font-weight:600;white-space:nowrap}
+  ul.tight{margin:6px 0;padding-left:20px}
+  ul.tight li{margin:3px 0}
+  /* 色板 */
+  .swatches{display:flex;flex-wrap:wrap;gap:12px;margin:12px 0}
+  .sw{width:132px;border:1px solid var(--doc-line);border-radius:10px;overflow:hidden;background:#fff}
+  .sw .c{height:52px}
+  .sw .t{padding:7px 10px;font-size:12px;line-height:1.5}
+  .sw .t b{display:block;font-size:12.5px}
+  .sw .t span{color:var(--doc-sub);font-family:ui-monospace,Consolas,monospace;font-size:11px}
+  /* ============ 通用 mockup 外框 ============ */
+  .mock{border:1px solid var(--doc-line);border-radius:14px;overflow:hidden;background:#fff;margin:16px 0 6px;
+    box-shadow:0 1px 6px rgba(0,0,0,.05)}
+  .mock-bar{display:flex;align-items:center;gap:6px;padding:8px 12px;background:#F0EEE9;border-bottom:1px solid var(--doc-line)}
+  .mock-bar i{width:9px;height:9px;border-radius:50%;background:#D6D2CA;display:block}
+  .mock-bar span{margin-left:10px;font-size:11px;color:#9B978E;font-family:ui-monospace,Consolas,monospace}
+  .mock-cap{font-size:12px;color:var(--doc-sub);margin:0 0 20px}
+  .mock-cap b{color:var(--doc-ink)}
+  .mock-body{position:relative}
+
+  /* ============ 方案一 · 墨读（学报风） ============ */
+  .mk-a{background:#F7F3EA;color:#1F1B16;font-family:"Noto Serif SC","Songti SC","SimSun",serif;padding:0 0 22px}
+  .mk-a .a-nav{display:flex;align-items:baseline;justify-content:space-between;padding:18px 34px 14px;
+    border-bottom:1px solid #1F1B16}
+  .mk-a .a-brand{font-size:19px;font-weight:700;letter-spacing:1px}
+  .mk-a .a-brand em{font-style:italic;color:#C0432B;margin-left:2px}
+  .mk-a .a-nav nav{font-size:12.5px;letter-spacing:2px;color:#1F1B16;font-family:-apple-system,"PingFang SC",sans-serif}
+  .mk-a .a-nav nav a{color:#1F1B16;text-decoration:none;margin:0 9px;border-bottom:1px solid transparent}
+  .mk-a .a-nav nav a:hover{border-bottom-color:#C0432B;color:#C0432B}
+  .mk-a .a-nav .wk{font-size:11px;letter-spacing:2px;color:#6B6255;font-family:-apple-system,"PingFang SC",sans-serif}
+  .a-hero{display:flex;gap:30px;align-items:center;padding:34px 34px 26px}
+  .a-hero-text{flex:1.25;min-width:0}
+  .a-kicker{font-size:10.5px;letter-spacing:3px;color:#C0432B;font-weight:700;margin-bottom:14px;
+    font-family:-apple-system,"PingFang SC",sans-serif}
+  .a-hero-text h1{font-size:44px;line-height:1.22;margin:0 0 14px;font-weight:700;letter-spacing:2px}
+  .a-hero-text h1 em{font-style:italic;color:#C0432B}
+  .a-hero-text .a-sub{font-size:13px;color:#6B6255;margin:0 0 20px;line-height:1.9}
+  .a-cta{font-size:13.5px;letter-spacing:1px;font-family:-apple-system,"PingFang SC",sans-serif}
+  .a-cta a{color:#1F1B16;text-decoration:none;border-bottom:1px solid #1F1B16;padding-bottom:2px;margin-right:22px}
+  .a-cta a:hover{color:#C0432B;border-bottom-color:#C0432B}
+  .a-hero-art{flex:1;min-width:0;display:flex;justify-content:center}
+  .a-dots{display:flex;justify-content:center;gap:0;border-top:1px dashed #B9AF9E;border-bottom:1px dashed #B9AF9E;
+    margin:6px 34px 0;padding:8px 0;font-size:10.5px;letter-spacing:4px;color:#6B6255;
+    font-family:-apple-system,"PingFang SC",sans-serif}
+  .a-dots span{padding:0 14px;border-right:1px solid #B9AF9E}
+  .a-dots span:last-child{border-right:none}
+  .a-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin:22px 34px 0;border-top:2px solid #1F1B16;padding-top:16px}
+  .a-col{padding:0 18px;border-right:1px dashed #B9AF9E}
+  .a-col:first-child{padding-left:0}
+  .a-col:last-child{border-right:none}
+  .a-col .no{font-size:11px;letter-spacing:2px;color:#C0432B;font-weight:700;
+    font-family:-apple-system,"PingFang SC",sans-serif;margin-bottom:8px}
+  .a-col h4{margin:0 0 8px;font-size:16.5px;font-weight:700}
+  .a-col p{font-size:12px;color:#6B6255;line-height:1.85;margin:0 0 8px}
+  .a-col .a-more{font-size:11.5px;color:#C0432B;letter-spacing:1px;font-family:-apple-system,"PingFang SC",sans-serif}
+  .a-col .a-num{font-size:30px;font-weight:700;font-style:italic}
+  /* 报纸题卡 */
+  .a-qcard{background:#FFFEFA;border:1px solid #1F1B16;margin:18px 34px 0;padding:22px 26px;position:relative}
+  .a-qcard::before{content:"COLUMN 07";position:absolute;top:-9px;left:20px;background:#F7F3EA;padding:0 8px;
+    font-size:10px;letter-spacing:3px;color:#C0432B;font-weight:700;font-family:-apple-system,"PingFang SC",sans-serif}
+  .a-qcard .q{font-size:15.5px;line-height:2.05;margin:0 0 14px}
+  .a-qcard .q-foot{display:flex;justify-content:space-between;align-items:center;border-top:1px dashed #B9AF9E;padding-top:10px}
+  .a-qcard .q-tag{font-size:11px;letter-spacing:2px;color:#6B6255;font-family:-apple-system,"PingFang SC",sans-serif}
+  .a-btn{display:inline-block;border:1px solid #1F1B16;padding:5px 18px;font-size:12.5px;letter-spacing:2px;
+    color:#1F1B16;text-decoration:none;background:transparent;font-family:-apple-system,"PingFang SC",sans-serif}
+  .a-btn:hover{background:#1F1B16;color:#F7F3EA}
+  .a-btn.solid{background:#C0432B;border-color:#C0432B;color:#FFFEFA}
+  .a-btn.solid:hover{background:#1F1B16;border-color:#1F1B16}
+  /* 稿纸 */
+  .a-paper{margin:14px 34px 0;border:1px solid #1F1B16;background:
+    repeating-linear-gradient(#FFFEFA 0 30px,#E4DCCB 30px 31px);min-height:96px;padding:8px 14px}
+  .a-paper .ph{color:#A79C88;font-size:13px;font-family:-apple-system,"PingFang SC",sans-serif}
+  /* 红批 */
+  .a-mark{margin:16px 34px 0;border:1px dashed #C0432B;background:#FBF1EC;padding:16px 20px}
+  .a-mark .mk-t{font-size:11px;letter-spacing:3px;color:#C0432B;font-weight:700;margin-bottom:8px;
+    font-family:-apple-system,"PingFang SC",sans-serif}
+  .a-mark p{margin:0;font-size:13.5px;line-height:2;color:#7A2E1D}
+  .a-mark p b{color:#C0432B}
+  /* 面试函 */
+  .a-letter{margin:16px 34px 0;background:#FFFEFA;border:1px solid #1F1B16;padding:26px 30px}
+  .a-letter .lt{font-size:13px;letter-spacing:2px;color:#6B6255;margin-bottom:10px;
+    font-family:-apple-system,"PingFang SC",sans-serif}
+  .a-letter .lt b{color:#C0432B}
+  .a-letter .body{font-size:14.5px;line-height:2.1}
+  .a-letter .sign{text-align:right;font-size:13px;color:#6B6255;margin-top:12px}
+  .a-stamp{position:absolute;right:26px;bottom:20px;width:74px;height:74px;border:2.5px solid #C0432B;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;color:#C0432B;font-size:22px;font-weight:700;
+    transform:rotate(-12deg);opacity:.85;font-style:italic;letter-spacing:1px}
+  .a-letter-wrap{position:relative}
+
+  /* ============ 方案二 · 云课笺（卡片风） ============ */
+  .mk-b{background:#FAF9F6;color:#2B2A28;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Noto Sans SC",sans-serif;padding:20px 22px 24px}
+  .mk-b .b-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+  .mk-b .b-hi{font-size:17px;font-weight:700}
+  .mk-b .b-hi small{font-size:12px;font-weight:400;color:#8A8880;margin-left:8px}
+  .mk-b .b-badges{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:3px 10px;border-radius:999px;font-weight:600}
+  .badge.run{background:#FFF4E0;color:#B86E00;border:1px solid #F5D9A8}
+  .badge.dis{background:#EEF2FF;color:#3B5BDB;border:1px solid #C9D4F8}
+  .badge.ok{background:#EBFBEE;color:#2B8A3E;border:1px solid #B9E4C4}
+  .badge.new{background:#2B2A28;color:#FFF}
+  .b-card{background:#fff;border:1px solid #EAE8E2;border-radius:14px;padding:14px 16px;margin-bottom:12px;
+    box-shadow:0 1px 3px rgba(20,20,20,.05)}
+  .b-card .bt{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+  .b-card .bt .tt{font-size:13.5px;font-weight:700}
+  .b-card .bt .tt small{font-weight:400;color:#9C9A92;margin-left:6px;font-size:11.5px}
+  .b-row{display:flex;align-items:center;gap:10px;padding:9px 2px;border-bottom:1px solid #F1EFE9}
+  .b-row:last-child{border-bottom:none}
+  .b-row .dot{width:7px;height:7px;border-radius:50%;flex:none}
+  .b-row .rt{flex:1;min-width:0;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .b-row .rt small{display:block;font-size:11px;color:#9C9A92}
+  .b-row .date{font-size:11.5px;color:#9C9A92;font-family:ui-monospace,Consolas,monospace;flex:none}
+  .b-row .chev{color:#C6C4BC;font-size:15px;flex:none}
+  .b-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}
+  .b-entry{background:#fff;border:1px solid #EAE8E2;border-radius:14px;padding:14px 10px;text-align:center;
+    box-shadow:0 1px 3px rgba(20,20,20,.05);cursor:pointer;transition:transform .15s}
+  .b-entry:hover{transform:translateY(-2px)}
+  .b-entry .ic{width:34px;height:34px;border-radius:10px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;
+    font-size:15px;font-weight:700;color:#fff}
+  .b-entry .en{font-size:12.5px;font-weight:600}
+  .b-entry .es{font-size:10.5px;color:#9C9A92;margin-top:2px}
+  .b-chip{display:inline-block;font-size:11.5px;padding:4px 12px;border-radius:999px;border:1px solid #E0DED7;
+    background:#fff;color:#6E6C66;margin:0 6px 6px 0;cursor:pointer}
+  .b-chip.on{background:#2B2A28;color:#fff;border-color:#2B2A28}
+  .b-q{background:#fff;border:1px solid #EAE8E2;border-radius:14px;padding:16px 18px;margin-bottom:12px;
+    box-shadow:0 1px 3px rgba(20,20,20,.05)}
+  .b-q .qt{font-size:14px;line-height:1.9}
+  .b-btn{display:inline-block;background:#E8590C;color:#fff;font-size:12.5px;font-weight:600;border:none;
+    border-radius:10px;padding:8px 20px;cursor:pointer}
+  .b-btn.ghost{background:#fff;color:#2B2A28;border:1px solid #D8D5CD}
+  .b-fb{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .b-fb .f{background:#fff;border:1px solid #EAE8E2;border-radius:12px;padding:12px}
+  .b-fb .f .fn{font-size:12px;font-weight:700;margin-bottom:6px}
+  .b-fb .f .bar{height:5px;border-radius:3px;background:#F0EEE8;overflow:hidden;margin-bottom:6px}
+  .b-fb .f .bar i{display:block;height:100%;border-radius:3px}
+  .b-fb .f p{font-size:11px;color:#8A8880;margin:0;line-height:1.6}
+  .b-score{display:inline-flex;align-items:center;gap:4px;background:#FFF0F0;color:#E03131;border:1px solid #FFC9C9;
+    font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px}
+  .b-ring{width:52px;height:52px;flex:none}
+  /* 对比章节 */
+  .vs{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--doc-line);border-radius:14px;overflow:hidden;margin:16px 0}
+  .vs .col{padding:20px 22px}
+  .vs .col:first-child{border-right:1px solid var(--doc-line)}
+  .vs h4{margin-top:0}
+  /* IA 树 */
+  .ia{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:16px 0}
+  .ia-box{border:1px solid var(--doc-line);border-radius:14px;padding:16px 18px;background:#FCFBF8}
+  .ia-box h4{margin:0 0 10px;font-size:15px}
+  .ia-box .root{font-weight:700;font-size:13.5px;background:#2B2A28;color:#fff;display:inline-block;
+    padding:3px 12px;border-radius:8px;margin-bottom:10px}
+  .ia-tree{font-size:13px;line-height:2.05}
+  .ia-tree .l1{font-weight:700}
+  .ia-tree .l2{padding-left:22px;color:#5A574E}
+  .ia-tree .l3{padding-left:44px;color:#8A8880;font-size:12.5px}
+  .ia-tree .hl{background:#FDE8CE;padding:0 5px;border-radius:4px;color:#8A4B00;font-weight:600}
+  .ia-tree .new{background:#E7F5FF;padding:0 5px;border-radius:4px;color:#1864AB;font-weight:600}
+  .footer{margin-top:70px;padding-top:18px;border-top:1px solid var(--doc-line);font-size:12px;color:#9C9A92;
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  .tagline{font-size:12px;color:var(--doc-sub);letter-spacing:1px}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ================= 封面 ================= -->
+  <div class="kicker">UI DESIGN PROPOSAL · 学生端双风格</div>
+  <h1>学生端 UI 界面风格设计方案<br>——两套可选视觉体系与信息架构调整</h1>
+  <p class="lead">基于两张参考图的风格解码，为「人机协同助学智能体」学生端设计两套差异鲜明、可落地实现的完整 UI 方案，并给出学生端与教师端在信息架构与功能入口上的具体调整对比。</p>
+  <div class="cover-meta">
+    <span>项目：<b>人机协同助学智能体</b>（《管理学》· 2026 秋季学期）</span>
+    <span>版本：<b>v1.0</b></span>
+    <span>日期：<b>2026-10-27</b></span>
+    <span>适用范围：<b>学生端（Web + H5）</b></span>
+  </div>
+
+  <!-- ================= 0 设计输入 ================= -->
+  <h2>0 · 设计输入：两张参考图的风格解码</h2>
+  <div class="grid2">
+    <div class="b-card" style="margin:0">
+      <h4 style="margin-top:0">参考图一 · 个人作品集（Vanger Chan）</h4>
+      <ul class="tight">
+        <li><b>版式</b>：编辑排版（Editorial）——巨型衬线标题 + 斜体强调词，左右不对称双栏（文字 / 手绘插画）</li>
+        <li><b>色彩</b>：暖纸米色底、墨黑文字、一点朱砂红作强调</li>
+        <li><b>质感</b>：报纸 / 杂志 / 手账感，虚线分隔、小型大写字母标签、细边框</li>
+        <li><b>气质关键词</b>：人文、手工、个人化、阅读感强</li>
+      </ul>
+    </div>
+    <div class="b-card" style="margin:0">
+      <h4 style="margin-top:0">参考图二 · 博客「面试手记」</h4>
+      <ul class="tight">
+        <li><b>版式</b>：现代卡片（Warm Card）——圆角卡片、徽章标签（新企划·即将上线）、列表行 + 箭头 Chevron</li>
+        <li><b>色彩</b>：暖白纸底、纯白卡片、低饱和状态色</li>
+        <li><b>质感</b>：轻盈、清晰、工具化，信息密度高但有呼吸感</li>
+        <li><b>气质关键词</b>：清晰、轻量、高效、日课式陪伴</li>
+      </ul>
+    </div>
+  </div>
+  <div class="note">两套方案分别承接这两种气质：<b>方案一「墨读」</b>把学生端做成一本会更新的学习学报；<b>方案二「云课笺」</b>把学生端做成一张温暖的学习工作台。两者在字体、色彩、形状、插画、信息密度上全面区分，可独立选用，也可作为「双皮肤」共存（见第 5 节）。</div>
+
+  <!-- ================= 方案一 ================= -->
+  <h2>1 · 方案一「墨读」——学报 / 编辑排版风</h2>
+
+  <h3>1.1 设计理念</h3>
+  <p>把学生端做成一本<b>「会更新的学习学报」</b>：每一次预习是「读者来信」，每一道练习题是「今日专栏」，每一次 AI 反馈是「红批」，每一场模拟面试是一封「面试函」。用编辑排版的语法重新组织学习界面，让工具退后、让内容上前。</p>
+  <ul class="tight">
+    <li><b>阅读优先</b>：弱化控件装饰，用衬线大字、分栏、留白建立信息层级，界面像一页可以静心读下去的报纸</li>
+    <li><b>人文温度</b>：手绘线稿插画、纸感底色、墨色细边框，消解在线考试系统的紧张感与距离感</li>
+    <li><b>仪式感运营</b>：栏目化（COLUMN / LETTER / 日课）赋予重复行为以期待感，支撑「人人参与」的练习文化</li>
+  </ul>
+
+  <h3>1.2 适用场景</h3>
+  <ul class="tight">
+    <li><b>重内容、重阅读、重表达</b>的页面：AI 答疑、一人一题、案例研讨、考核作答</li>
+    <li><b>对外展示与答辩演示</b>：第一眼辨识度极高，「课程即刊物」的概念易于讲述，适合竞赛路演与课程宣传</li>
+    <li><b>人文气质课程</b>（管理学、经济学等经管类）：与学科气质同构</li>
+    <li>局限：高密度数据管理页（学情统计、复核台）不是其强项，此类页面建议沿用中性后台风格</li>
+  </ul>
+
+  <h3>1.3 配色方案</h3>
+  <div class="swatches">
+    <div class="sw"><div class="c" style="background:#F7F3EA"></div><div class="t"><b>纸米 Paper</b><span>#F7F3EA · 页面底色</span></div></div>
+    <div class="sw"><div class="c" style="background:#1F1B16"></div><div class="t"><b>墨色 Ink</b><span>#1F1B16 · 主文字/边框</span></div></div>
+    <div class="sw"><div class="c" style="background:#6B6255"></div><div class="t"><b>赭墨 Umber</b><span>#6B6255 · 次级文字</span></div></div>
+    <div class="sw"><div class="c" style="background:#C0432B"></div><div class="t"><b>朱砂 Cinnabar</b><span>#C0432B · 强调/交互/红批</span></div></div>
+    <div class="sw"><div class="c" style="background:#2F4A4E"></div><div class="t"><b>黛青 Indigo</b><span>#2F4A4E · 链接/辅助</span></div></div>
+    <div class="sw"><div class="c" style="background:#D8CFC0;border-bottom:1px solid #ccc"></div><div class="t"><b>分隔线 Rule</b><span>#D8CFC0 · 虚线分隔</span></div></div>
+  </div>
+  <p class="tagline">用色规则：全页仅朱砂一个高饱和色，只给「当前可操作 / AI 批注 / 关键数字」；其余全部墨色与赭墨层级，保证纸面安静。</p>
+
+  <h3>1.4 字体与排版规范</h3>
+  <table class="doc">
+    <tr><th>用途</th><th>字体</th><th>字号 / 字重</th><th>说明</th></tr>
+    <tr><td>页面大标题</td><td>Noto Serif SC / 思源宋体</td><td>36–44px / 700</td><td>字距 +2px，其中一个词用<b>斜体朱砂</b>强调（如「日课」）</td></tr>
+    <tr><td>栏目标题</td><td>思源宋体</td><td>20px / 700</td><td>栏目编号用小型大写 + 字距（COLUMN 07）</td></tr>
+    <tr><td>正文 / 题干</td><td>思源宋体 Light</td><td>14.5–15.5px / 400</td><td>行高 2.0–2.1，模拟印刷阅读</td></tr>
+    <tr><td>标签 / 导航</td><td>PingFang SC / 系统无衬线</td><td>11–12.5px / 600</td><td>字距 2–3px，替代参考图中的小型大写英文</td></tr>
+    <tr><td>数字 / 日期</td><td>衬线斜体</td><td>28px+ / 700 italic</td><td>进度、得分等关键数字用斜体衬线，成为「版面亮点」</td></tr>
+  </table>
+
+  <h3>1.5 关键界面元素</h3>
+  <table class="doc">
+    <tr><th>元素</th><th>说明</th></tr>
+    <tr><td>巨型衬线标题 + 斜体强调词</td><td>每页顶部「报名」：主标墨色 + 一个斜体朱砂词，取自参考图一 Vanger / <i>Chan</i> 的处理</td></tr>
+    <tr><td>手绘线稿插画区</td><td>页面右侧或顶部 1/3，SVG 线条画（读书的人、咖啡与笔记本、小狗），与内容弱相关、强氛围</td></tr>
+    <tr><td>虚线分隔 + 小型字距标签</td><td>替代分割线与 tab：如「预习 · 练习 · 考核 · 研讨」横向虚线导航脚注</td></tr>
+    <tr><td>报纸剪贴题卡</td><td>白卡 + 1px 墨框 + 顶部骑缝标签（COLUMN 07 · 一人一题），题干用衬线排印</td></tr>
+    <tr><td>红批反馈</td><td>AI 反馈不用聊天气泡，用朱砂虚线框 + 批注语气（「批阅：观点结构尚可……」），反馈像老师改作业</td></tr>
+    <tr><td>面试函 / 回信</td><td>考核题目装帧成信件：称呼、正文、「此致 敬礼」、得分圆形朱砂印章</td></tr>
+    <tr><td>稿纸作答区</td><td>作答区用横格稿纸纹理，暗示「手写表达」，呼应口语练习场景</td></tr>
+  </table>
+  <p class="tagline">形状与质感：圆角 2–4px（近直角）、不用投影、1px 墨色细边框、hover 用下划线滑入；整体叠加 3% 透明度纸纹噪点。</p>
+
+  <h3>1.6 学生端关键界面示意</h3>
+
+  <div class="mock">
+    <div class="mock-bar"><i></i><i></i><i></i><span>course.yanwu.app · 课程主页</span></div>
+    <div class="mock-body">
+      <div class="mk-a">
+        <div class="a-nav">
+          <span class="a-brand">管理学<em>日课</em></span>
+          <nav><a>答疑</a><a>练习</a><a>案例</a><a>考核</a><a>论坛</a></nav>
+          <span class="wk">WEEK 08 · 决策与计划</span>
+        </div>
+        <div class="a-hero">
+          <div class="a-hero-text">
+            <div class="a-kicker">BEIJING INSTITUTE OF CHEMICAL TECHNOLOGY · 2026 AUTUMN</div>
+            <h1>把每一天<br>过成<em>案例</em></h1>
+            <p class="a-sub">北京化工大学经管学院 ·《管理学》第 3 章 进行中（72%）<br>把每一次预习、练习与考核，都写成可复用的经验。</p>
+            <div class="a-cta"><a>进入今日之题 →</a><a>提交预习案例 →</a></div>
+          </div>
+          <div class="a-hero-art">
+            <svg width="240" height="190" viewBox="0 0 240 190" fill="none" stroke="#1F1B16" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M150 34 a26 26 0 1 1 0.1 0" fill="#F7F3EA"/>
+              <path d="M124 30 q26 -22 52 0 l4 8 q-30 -12 -60 0 z" fill="#C0432B" stroke="#C0432B"/>
+              <path d="M176 34 l24 6 -24 6" fill="#C0432B" stroke="#C0432B"/>
+              <circle cx="140" cy="36" r="3.2" fill="#1F1B16"/><circle cx="162" cy="36" r="3.2" fill="#1F1B16"/>
+              <path d="M146 48 q8 6 16 0"/>
+              <path d="M150 62 q-4 40 -22 62 l38 8 q10 -30 6 -66" fill="#F7F3EA"/>
+              <path d="M132 128 l-14 46 h84 l-10 -46" fill="#F7F3EA"/>
+              <path d="M120 174 h96" stroke="#C0432B"/>
+              <rect x="96" y="104" width="72" height="44" rx="3" fill="#FFFEFA"/>
+              <path d="M96 104 l36 -14 36 14" fill="#F7F3EA"/>
+              <circle cx="132" cy="126" r="7" stroke="#C0432B"/>
+              <path d="M60 158 q10 -22 30 -24 q-4 -14 8 -20 q10 16 -6 26 q22 2 30 22 q-16 -8 -30 -4 q-14 4 -32 0z" fill="#F7F3EA"/>
+              <circle cx="86" cy="136" r="2.6" fill="#1F1B16"/>
+              <path d="M28 178 q30 -10 60 0 t60 0" stroke="#B9AF9E" stroke-dasharray="4 6"/>
+            </svg>
+          </div>
+        </div>
+        <div class="a-dots"><span>预习</span><span>练习</span><span>考核</span><span>研讨</span></div>
+        <div class="a-cols">
+          <div class="a-col">
+            <div class="no">TODO · 今日待办</div>
+            <h4>三件事</h4>
+            <p>① 提交预习案例（今晚 22:00 截止）<br>② 完成一人一题练习 1 次<br>③ 模拟面试题待作答</p>
+            <span class="a-more">查看全部 →</span>
+          </div>
+          <div class="a-col">
+            <div class="no">CASE · 本节课案例</div>
+            <h4>小米 SU7 交付风波<br>中的跨部门协同</h4>
+            <p>陈思雨 推荐 · 管理类<br>对应第 4 章 横向协调机制，老师已选用。</p>
+            <span class="a-more">进入研讨 →</span>
+          </div>
+          <div class="a-col">
+            <div class="no">PROGRESS · 我的进度</div>
+            <div class="a-num">72%</div>
+            <p>第 3 章 决策与计划<br>练习 5 次 · 连续 3 天</p>
+            <span class="a-more">学习档案 →</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="mock-cap"><b>示意 A-1 课程主页</b>：杂志封面式 Hero + 三栏「目录」。左侧巨型衬线报名与斜体强调词，右侧手绘线稿，下方虚线脚注导航，信息以「栏目」而非「卡片」组织。</p>
+
+  <div class="mock">
+    <div class="mock-bar"><i></i><i></i><i></i><span>practice.yanwu.app · 一人一题</span></div>
+    <div class="mock-body">
+      <div class="mk-a">
+        <div class="a-nav">
+          <span class="a-brand">一人一题<em>日练</em></span>
+          <nav><a>第3章 决策与计划</a><a>题型：案例分析</a></nav>
+          <span class="wk">COLUMN 07</span>
+        </div>
+        <div class="a-qcard">
+          <p class="q">某连锁餐饮企业进入西南市场时，同时面临「直营保品质」与「加盟抢速度」两条路线。总经理办公室三次讨论未果，门店拓展计划被迫推迟。如果你是该公司的决策顾问，请用本章的决策过程理论，说明你会如何组织这次决策，并给出你推荐的路线与理由。</p>
+          <div class="q-foot"><span class="q-tag">考查：第 3 章 决策与计划 · 案例分析 · 200 字内口述</span><a class="a-btn">换一题</a></div>
+        </div>
+        <div class="a-paper"><span class="ph">在稿纸上写下你的口述作答……</span></div>
+        <div style="margin:14px 34px 0"><a class="a-btn solid">交卷 →</a></div>
+        <div class="a-mark">
+          <div class="mk-t">红批 · AI 三维反馈</div>
+          <p><b>观点结构</b>——能按「问题界定—方案比较—风险预案」展开，层次清楚；<b>理论运用</b>——引用了有限理性，但未点明「满意原则」与决策成本的关联；<b>表达逻辑</b>——结论前置做得不错。建议：结尾补一句「若信息收集更充分，我会如何修正」，体现决策的动态性。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="mock-cap"><b>示意 A-2 一人一题练习</b>：题目做成「报纸剪贴」，骑缝标签注明栏目号；作答区是横格稿纸；AI 反馈以「红批」装帧——反馈即批注，弱化机器感、强化师徒式对话。</p>
+
+  <div class="mock">
+    <div class="mock-bar"><i></i><i></i><i></i><span>assessment.yanwu.app · 课程考核</span></div>
+    <div class="mock-body">
+      <div class="mk-a">
+        <div class="a-nav">
+          <span class="a-brand">模拟面试<em>函</em></span>
+          <nav><a>我的题目 1</a><a>待作答</a></nav>
+          <span class="wk">LETTER NO.03</span>
+        </div>
+        <div class="a-letter-wrap">
+          <div class="a-letter">
+            <div class="lt">收件人：<b>张同学</b>（管理类） · 范围：第 3 章 · 情景案例题 · 难度 中等</div>
+            <p class="body">亲爱的同学：<br>　　你所在的项目组承接了一项工期 20 天的技术改造，第 10 天时核心供应商提出原材料涨价 15%。请现场口述你的应对决策过程：你会收集哪些信息、在多大权限内自主决策、何时必须上报，并说明依据。<br>　　此致 敬礼<br>——《管理学》课程组</p>
+            <div class="a-stamp">92</div>
+          </div>
+        </div>
+        <div class="a-paper"><span class="ph">像面对面试官一样，写下你的完整口述……</span></div>
+        <div style="margin:14px 34px 0"><a class="a-btn solid">寄出回信 →</a></div>
+        <div class="a-mark">
+          <div class="mk-t">回信 · AI 反馈</div>
+          <p><b>参考要点</b>：涨价属计划职能中的「前提条件变化」……<b>建议</b>：补充你对「上报前应准备几个备选方案」的思考。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="mock-cap"><b>示意 A-3 课程考核</b>：考核题目装帧为「面试函」——收件人、此致敬礼、朱砂圆形得分印章，把紧张的考试改写成一次正式的往来信笺；作答即「回信」。</p>
+
+  <!-- ================= 方案二 ================= -->
+  <h2>2 · 方案二「云课笺」——暖纸卡片 / 现代极简风</h2>
+
+  <h3>2.1 设计理念</h3>
+  <p>把学生端做成一张<b>「温暖的学习工作台」</b>：一屏一个任务，一张卡片一件事。用参考图二的语汇——徽章标签、圆角卡片、日期前缀列表、Chevron 引导——把五大学生功能（待办、练习、案例、考核、答疑）组织成清晰、可预期、低学习成本的日常流程。</p>
+  <ul class="tight">
+    <li><b>信息卡片化</b>：每张卡片只回答一个问题（做什么 / 怎么样 / 下一步），卡片即操作单元</li>
+    <li><b>状态可见</b>：徽章（第 8 周·进行中）、进度环、倒计时、状态点，让学习进度与待办一目了然</li>
+    <li><b>操作直达</b>：列表行右侧 Chevron + 主按钮，任何页面两步内到达核心功能</li>
+  </ul>
+
+  <h3>2.2 适用场景</h3>
+  <ul class="tight">
+    <li><b>功能型页面</b>：一人一题、案例提交、考核作答、作业管理——流程长、状态多，卡片式最稳</li>
+    <li><b>高频日常使用</b>：学生每天进入先看「今日待办」，卡片流的浏览效率最高</li>
+    <li><b>信息密度高</b>的场景：班级数据、练习记录、题目列表，网格与列表混排从容</li>
+    <li>局限：辨识度与「惊艳感」弱于方案一，视觉同质化风险需靠细节（暖纸色、手绘小图标、空状态插画）化解</li>
+  </ul>
+
+  <h3>2.3 配色方案</h3>
+  <div class="swatches">
+    <div class="sw"><div class="c" style="background:#FAF9F6;border-bottom:1px solid #eee"></div><div class="t"><b>暖白 Warm</b><span>#FAF9F6 · 页面底色</span></div></div>
+    <div class="sw"><div class="c" style="background:#FFFFFF;border-bottom:1px solid #eee"></div><div class="t"><b>纸白 Card</b><span>#FFFFFF · 卡片底</span></div></div>
+    <div class="sw"><div class="c" style="background:#2B2A28"></div><div class="t"><b>墨灰 Graphite</b><span>#2B2A28 · 主文字</span></div></div>
+    <div class="sw"><div class="c" style="background:#E8590C"></div><div class="t"><b>焙茶橙 Amber</b><span>#E8590C · 主操作/进度</span></div></div>
+    <div class="sw"><div class="c" style="background:#3B5BDB"></div><div class="t"><b>黛蓝 Indigo</b><span>#3B5BDB · 链接/次操作</span></div></div>
+    <div class="sw"><div class="c" style="background:#2B8A3E"></div><div class="t"><b>苔绿 Moss</b><span>#2B8A3E · 完成状态</span></div></div>
+    <div class="sw"><div class="c" style="background:#F59F00"></div><div class="t"><b>蜜黄 Honey</b><span>#F59F00 · 进行中</span></div></div>
+    <div class="sw"><div class="c" style="background:#E03131"></div><div class="t"><b>柿红 Persimmon</b><span>#E03131 · 预警/截止</span></div></div>
+  </div>
+  <p class="tagline">用色规则：主操作唯一橙色（焙茶橙），链接用黛蓝；状态色全部低饱和暖调（蜜黄/苔绿/柿红），徽章用「浅底 + 同色系描边」的浅色徽章，不用实色块。</p>
+
+  <h3>2.4 字体与排版规范</h3>
+  <table class="doc">
+    <tr><th>用途</th><th>字体</th><th>字号 / 字重</th><th>说明</th></tr>
+    <tr><td>问候语 / 页题</td><td>PingFang SC / Noto Sans SC</td><td>17–20px / 700</td><td>左侧问候 + 右侧徽章组</td></tr>
+    <tr><td>卡片标题</td><td>同上</td><td>13.5–14px / 700</td><td>可带 11.5px 灰色副标</td></tr>
+    <tr><td>正文 / 题干</td><td>同上</td><td>13–14px / 400</td><td>行高 1.8，左对齐</td></tr>
+    <tr><td>列表日期</td><td>等宽或 tabular-nums</td><td>11.5px / 400</td><td>「10月11日 · 标题」日期前缀，取自参考图二</td></tr>
+    <tr><td>徽章 / 标签</td><td>同上</td><td>11px / 600</td><td>全圆角胶囊，浅底描边</td></tr>
+    <tr><td>关键数字</td><td>tabular-nums</td><td>24–28px / 700</td><td>进度环、得分、倒计时</td></tr>
+  </table>
+
+  <h3>2.5 关键界面元素</h3>
+  <table class="doc">
+    <tr><th>元素</th><th>说明</th></tr>
+    <tr><td>状态徽章 Badge</td><td>「新企划·即将上线」转译为「第 8 周·进行中 / 待作答 / 已发布 / 已选用」，浅底胶囊是全局状态语言</td></tr>
+    <tr><td>圆角卡片</td><td>radius 14px、1px 边框 #EAE8E2、阴影 0 1px 3px rgba(20,20,20,.05)；hover 上浮 2px</td></tr>
+    <tr><td>日期前缀列表行</td><td>「10月11日 · Personal Agent 拆解……」→「10月11日 · 一人一题练习记录」，行尾 Chevron，用于待办 / 记录 / 任务列表</td></tr>
+    <tr><td>分类双栏</td><td>参考图二 Blog / Notes 双栏 → 学生端「学习 / 研讨」双栏：左动线右沉淀</td></tr>
+    <tr><td>浮动预览卡</td><td>hover 或长按题目/案例时弹出圆角预览卡（题目摘要、案例标签），与参考图二左下角浮动卡一致</td></tr>
+    <tr><td>进度环 + 分段条</td><td>章节进度用圆环（右上角问候区），练习记录用细分段条</td></tr>
+    <tr><td>选择 chips</td><td>章节 / 题型 / 难度用胶囊 chips（选中态墨底白字），替代下拉框，一屏内完成出题设置</td></tr>
+  </table>
+  <p class="tagline">形状与质感：圆角 10–16px 体系、柔和投影、hover 微上浮；整体暖白打底，杜绝纯灰的「后台感」。</p>
+
+  <h3>2.6 学生端关键界面示意</h3>
+
+  <div class="mock">
+    <div class="mock-bar"><i></i><i></i><i></i><span>course.yunkejian.app · 课程主页</span></div>
+    <div class="mock-body">
+      <div class="mk-b">
+        <div class="b-top">
+          <div class="b-hi">下午好，张同学 <small>《管理学》第 8 周</small></div>
+          <div class="b-badges">
+            <span class="badge run">● 第 3 章 进行中</span>
+            <span class="badge dis">学科背景：管理类</span>
+            <svg class="b-ring" viewBox="0 0 52 52"><circle cx="26" cy="26" r="22" fill="none" stroke="#F0EEE8" stroke-width="6"/><circle cx="26" cy="26" r="22" fill="none" stroke="#E8590C" stroke-width="6" stroke-linecap="round" stroke-dasharray="99.5 138.2" transform="rotate(-90 26 26)"/><text x="26" y="30" text-anchor="middle" font-size="12" font-weight="700" fill="#2B2A28">72%</text></svg>
+          </div>
+        </div>
+        <div class="b-card">
+          <div class="bt"><span class="tt">今日待办 <small>3 项 · 最早截止 今晚 22:00</small></span><span class="badge new">NEW</span></div>
+          <div class="b-row"><span class="dot" style="background:#E03131"></span><span class="rt">提交预习案例<small>老师将选用本节课案例</small></span><span class="date">今天 22:00</span><span class="chev">›</span></div>
+          <div class="b-row"><span class="dot" style="background:#F59F00"></span><span class="rt">一人一题练习 · 第 3 章<small>AI 出题 · 三维反馈</small></span><span class="date">今日</span><span class="chev">›</span></div>
+          <div class="b-row"><span class="dot" style="background:#3B5BDB"></span><span class="rt">模拟面试题 1 道待作答<small>已由老师复核发布</small></span><span class="date">10月29日</span><span class="chev">›</span></div>
+        </div>
+        <div class="b-grid">
+          <div class="b-entry"><div class="ic" style="background:#E8590C">题</div><div class="en">一人一题</div><div class="es">AI 出题练习</div></div>
+          <div class="b-entry"><div class="ic" style="background:#3B5BDB">例</div><div class="en">课前案例</div><div class="es">提交兴趣案例</div></div>
+          <div class="b-entry"><div class="ic" style="background:#2B8A3E">考</div><div class="en">课程考核</div><div class="es">模拟面试</div></div>
+          <div class="b-entry"><div class="ic" style="background:#F59F00">问</div><div class="en">AI 答疑</div><div class="es">小管同学</div></div>
+        </div>
+        <div class="b-card" style="margin-bottom:0">
+          <div class="bt"><span class="tt">本节课案例 <small>老师已选用</small></span><span class="badge ok">已选用</span></div>
+          <div style="font-size:13px;font-weight:600;margin-bottom:4px">小米 SU7 交付风波中的跨部门协同</div>
+          <div style="font-size:12px;color:#8A8880;line-height:1.7">陈思雨 推荐 · 对应第 4 章横向协调机制。研发、供应链、交付三部门目标冲突，通过联合 PMO 实现协同。</div>
+          <div style="margin-top:8px"><span class="b-chip on">进入研讨</span><span class="b-chip">查看案例池</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="mock-cap"><b>示意 B-1 课程主页</b>：问候 + 进度环开场，徽章标注周次与学科背景；「今日待办」卡片按截止紧迫度用状态点排序；四宫格快捷入口直达核心功能；本节课案例以带「已选用」徽章的卡片收尾。</p>
+
+  <div class="mock">
+    <div class="mock-bar"><i></i><i></i><i></i><span>practice.yunkejian.app · 一人一题</span></div>
+    <div class="mock-body">
+      <div class="mk-b">
+        <div class="b-card" style="margin-bottom:12px">
+          <div style="font-size:12.5px;font-weight:700;margin-bottom:8px">出题设置</div>
+          <span class="b-chip on">第3章 决策与计划</span><span class="b-chip">第4章 组织设计</span><span class="b-chip">第5章 领导与激励</span>
+          <div style="height:8px"></div>
+          <span class="b-chip on">案例分析</span><span class="b-chip">情景模拟</span><span class="b-chip">即兴演讲</span>
+          <div style="margin-top:10px;text-align:right"><button class="b-btn">AI 生成练习题</button></div>
+        </div>
+        <div class="b-q">
+          <div class="bt"><span class="tt">本题情境 <small>第 3 章 · 案例分析</small></span><button class="b-btn ghost">换一题</button></div>
+          <p class="qt">某连锁餐饮企业进入西南市场时，同时面临「直营保品质」与「加盟抢速度」两条路线。总经理办公室三次讨论未果，门店拓展计划被迫推迟。请用本章的决策过程理论，说明你会如何组织这次决策，并给出推荐路线与理由。</p>
+        </div>
+        <div class="b-q">
+          <div class="bt"><span class="tt">我的作答 <small>像在课堂上回答老师一样</small></span></div>
+          <div style="border:1px solid #EAE8E2;border-radius:10px;background:#FAF9F6;min-height:64px;padding:10px 12px;font-size:13px;color:#9C9A92">写下你的口述作答……</div>
+          <div style="margin-top:10px;text-align:right"><button class="b-btn">提交并获取反馈</button></div>
+        </div>
+        <div class="b-card" style="margin-bottom:0">
+          <div class="bt"><span class="tt">AI 三维反馈 <small>本次练习已计入过程性评价</small></span><span class="badge ok">已完成 5 次</span></div>
+          <div class="b-fb">
+            <div class="f"><div class="fn">观点结构</div><div class="bar"><i style="width:82%;background:#2B8A3E"></i></div><p>能按「问题—比较—预案」展开，层次清楚。</p></div>
+            <div class="f"><div class="fn">理论运用</div><div class="bar"><i style="width:64%;background:#F59F00"></i></div><p>引用有限理性，未点明与决策成本的关联。</p></div>
+            <div class="f"><div class="fn">表达逻辑</div><div class="bar"><i style="width:78%;background:#3B5BDB"></i></div><p>结论前置好，结尾可补动态修正。</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="mock-cap"><b>示意 B-2 一人一题练习</b>：chips 完成章节/题型选择，三张卡片依次完成「设置 → 作答 → 反馈」动线；三维反馈用三张带评分条的小卡并列，强弱一眼可读。</p>
+
+  <div class="mock">
+    <div class="mock-bar"><i></i><i></i><i></i><span>assessment.yunkejian.app · 课程考核</span></div>
+    <div class="mock-body">
+      <div class="mk-b">
+        <div class="b-card">
+          <div class="bt"><span class="tt">我的模拟面试题 <small>老师圈定范围 · AI 生成 · 复核发布</small></span><span class="badge ok">已发布</span></div>
+          <div class="b-row"><span class="dot" style="background:#E8590C"></span><span class="rt">第 3 章 · 情景案例题 · 中等<small>1 道 · 待作答</small></span><span class="date">10月29日截止</span><span class="chev">›</span></div>
+          <div class="b-row"><span class="dot" style="background:#2B8A3E"></span><span class="rt">第 4 章 · 情景案例题 · 基础<small>已作答 · AI 反馈已生成</small></span><span class="b-score">92 分</span></div>
+        </div>
+        <div class="b-q">
+          <div class="bt"><span class="tt">题目 <small>第 3 章 · 难度 中等</small></span><span class="badge run">待作答</span></div>
+          <p class="qt">你所在的项目组承接了一项工期 20 天的技术改造，第 10 天时核心供应商提出原材料涨价 15%。请现场口述你的应对决策过程：你会收集哪些信息、在多大权限内自主决策、何时必须上报，并说明依据。</p>
+          <div style="border:1px solid #EAE8E2;border-radius:10px;background:#FAF9F6;min-height:56px;padding:10px 12px;font-size:13px;color:#9C9A92">像面对面试官一样，写下你的完整口述……</div>
+          <div style="margin-top:10px;text-align:right"><button class="b-btn">提交作答</button></div>
+        </div>
+        <div class="b-card" style="margin-bottom:0">
+          <div class="bt"><span class="tt">AI 反馈 <small>结合教师复核参考要点</small></span><span class="badge ok">已完成</span></div>
+          <div style="font-size:12.5px;color:#5A574E;line-height:1.8">参考要点：涨价属计划职能中的「前提条件变化」……建议：补充你对「上报前应准备几个备选方案」的思考。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="mock-cap"><b>示意 B-3 课程考核</b>：任务卡片汇总「待作答 / 已得分」，题目卡 + 作答区 + AI 反馈卡构成标准三段式；得分用浅红徽章轻量呈现，不制造考试压迫感。</p>
+
+  <!-- ================= 3 对比 ================= -->
+  <h2>3 · 两套方案视觉对比</h2>
+  <table class="doc">
+    <tr><th style="width:110px">维度</th><th>方案一「墨读」学报风</th><th>方案二「云课笺」卡片风</th></tr>
+    <tr><td>整体气质</td><td>人文、阅读、仪式感</td><td>清晰、轻盈、日常陪伴</td></tr>
+    <tr><td>字体系统</td><td>衬线为主（思源宋体），斜体强调</td><td>无衬线为主（PingFang/Noto Sans），字重分层</td></tr>
+    <tr><td>主色</td><td>纸米 #F7F3EA + 墨 #1F1B16 + 朱砂 #C0432B</td><td>暖白 #FAF9F6 + 墨灰 #2B2A28 + 焙茶橙 #E8590C</td></tr>
+    <tr><td>形状语言</td><td>近直角、1px 墨框、虚线分隔</td><td>圆角 14px、柔和投影、胶囊徽章</td></tr>
+    <tr><td>插画</td><td>手绘线稿（SVG 线条画），版面级元素</td><td>小图标 + 空状态插画，辅助级元素</td></tr>
+    <tr><td>信息密度</td><td>低（一屏一个栏目，鼓励慢读）</td><td>中高（卡片网格 + 列表，效率优先）</td></tr>
+    <tr><td>交互反馈</td><td>下划线滑入、墨色反转</td><td>hover 上浮 2px、 chips 选中态</td></tr>
+    <tr><td>最佳页面</td><td>课程主页、答疑、一人一题、考核</td><td>待办中心、练习、案例、作业、记录</td></tr>
+    <tr><td>演示辨识度</td><td>★★★★★（答辩/宣传一眼记住）</td><td>★★★☆☆（精致但同质化风险）</td></tr>
+    <tr><td>实现成本</td><td>中（需定制衬线排版与插画）</td><td>低（Element Plus/Vant 默认卡片即可接近）</td></tr>
+  </table>
+
+  <!-- ================= 4 学生端 vs 教师端 ================= -->
+  <h2>4 · 学生端与教师端：信息架构与入口调整对比</h2>
+  <p>学生端与教师端<b>保持核心功能入口不变</b>（一人一题、课前案例、课程考核、AI 答疑、论坛、作业六大功能双向保留），但按角色重组入口位置与信息展示：学生端围绕<b>「学习动线」</b>，教师端围绕<b>「治理动线」</b>。</p>
+
+  <div class="ia">
+    <div class="ia-box">
+      <h4>学生端信息架构（学习动线）</h4>
+      <div class="root">今日待办（首页）</div>
+      <div class="ia-tree">
+        <div class="l1">课前预习</div>
+        <div class="l2">└ 提交兴趣案例 → <span class="hl">我的投稿箱</span></div>
+        <div class="l1">一人一题练习 <span class="new">入口前置</span></div>
+        <div class="l2">└ AI 出题 → 口述作答 → <span class="hl">红批/三维反馈</span> → 我的记录</div>
+        <div class="l1">课程作业</div>
+        <div class="l2">└ 待提交 / 已提交 / 成绩</div>
+        <div class="l1">课程考核</div>
+        <div class="l2">└ <span class="hl">我的答题卡</span>：待作答 → 作答 → AI 反馈 → 得分</div>
+        <div class="l1">AI 答疑（小管同学）</div>
+        <div class="l2">└ 问答 + <span class="hl">学科背景标签</span> + 意图直达卡片</div>
+        <div class="l1">研讨论坛</div>
+        <div class="l2">└ 按章节订阅 · 发帖 · 热议</div>
+        <div class="l1">我的</div>
+        <div class="l2">└ <span class="hl">学科背景设置</span> · 学习档案 · 练习日历</div>
+      </div>
+    </div>
+    <div class="ia-box">
+      <h4>教师端信息架构（治理动线）</h4>
+      <div class="root">待处理事项（首页）</div>
+      <div class="ia-tree">
+        <div class="l1">课前案例</div>
+        <div class="l2">└ <span class="hl">选稿台</span>：案例池筛选 / 排序 → 选用 / 驳回</div>
+        <div class="l1">课程考核</div>
+        <div class="l2">└ <span class="hl">出题阅卷台</span>：圈人定范围 → 复核 → 发布 → 评分</div>
+        <div class="l1">课程作业</div>
+        <div class="l2">└ 布置 · 催交 · 批改</div>
+        <div class="l1">一人一题 <span class="new">转为看板</span></div>
+        <div class="l2">└ 班级练习完成率 / 章节分布（教师不出题、不答题）</div>
+        <div class="l1">学情统计</div>
+        <div class="l2">└ 参与度趋势 · 章节掌握度 · 学生分层 · 预警</div>
+        <div class="l1">AI 答疑（小管同学）</div>
+        <div class="l2">└ 同左 + <span class="hl">高频问题洞察</span>入口</div>
+        <div class="l1">研讨论坛</div>
+        <div class="l2">└ 置顶 / 加精 / 章节管理</div>
+        <div class="l1">设置</div>
+        <div class="l2">└ 模型接入（收入设置，<span class="hl">退出主菜单</span>）· 课程配置</div>
+      </div>
+    </div>
+  </div>
+  <p class="mock-cap"><b>图 4-1 信息架构对比</b>：同一套功能树，两个角色的「根节点」不同——学生从<b>今天要做什么</b>出发，教师从<b>今天要处理什么</b>出发。<span style="background:#FDE8CE;padding:0 4px;border-radius:3px">橙色高亮</span>为入口性质变化，<span style="background:#E7F5FF;padding:0 4px;border-radius:3px">蓝色高亮</span>为位置调整。</p>
+
+  <h3>4.1 核心功能入口位置调整（逐页对比）</h3>
+  <table class="doc">
+    <tr><th style="width:120px">页面</th><th>学生端（调整后）</th><th>教师端（调整后）</th></tr>
+    <tr><td>课程主页</td><td>我的学习进度环 + 本节课案例 + <b>今日待办置顶</b> + 「开始练习」主按钮</td><td>班级平均进度 + <b>待复核角标</b>（案例 / 考核计数）+ 案例池与学情入口</td></tr>
+    <tr><td>导航顺序</td><td>课程主页 · AI 答疑 · <b>一人一题（第 3 位前置）</b> · 课前案例 · 课程考核 · 论坛 · 作业</td><td>课程主页 · <b>待办工作台</b> · 课前案例 · 课程考核 · 学情统计 · 论坛 · 作业 · 设置</td></tr>
+    <tr><td>一人一题</td><td>核心练习入口：出题 → 作答 → 反馈 → 我的记录</td><td>仅保留班级看板（完成率 / 章节分布），<b>移除出题与作答</b></td></tr>
+    <tr><td>课前案例</td><td><b>投稿箱视角</b>：提交表单 + AI 辅助整理 + 我的提交与状态</td><td><b>选稿台视角</b>：案例池 + 章节筛选 / 排序 + 选用 / 驳回</td></tr>
+    <tr><td>课程考核</td><td><b>答题卡视角</b>：我的题目 → 作答 → AI 反馈 → 得分</td><td><b>出题阅卷台</b>：圈人定范围 → AI 逐生出题 → 复核 → 发布 → 评分</td></tr>
+    <tr><td>AI 答疑</td><td>对话流 + 学科背景标签 + 意图跳转卡片（待办 / 作业 / 练习）</td><td>对话流 + 高频问题洞察 + 跳到统计页</td></tr>
+    <tr><td>论坛</td><td>按章节订阅、发帖、@同学</td><td>置顶 / 加精 / 章节管理（教师操作收纳进「管理」二级菜单）</td></tr>
+    <tr><td>我的 / 设置</td><td>学科背景、学习档案、练习日历</td><td>模型接入、课程配置、成员管理（模型接入从主菜单移入）</td></tr>
+  </table>
+
+  <h3>4.2 同一信息的学生端 / 教师端呈现差异</h3>
+  <table class="doc">
+    <tr><th style="width:110px">信息</th><th>学生端呈现</th><th>教师端呈现</th></tr>
+    <tr><td>学习进度</td><td>个人章节完成度 + 连续学习天数</td><td>班级平均进度 + 分布直方图</td></tr>
+    <tr><td>案例</td><td>我的投稿状态（待选用 / 已选用 / 已驳回）</td><td>案例池统计（按章节 / 学科 / 提交时间）</td></tr>
+    <tr><td>练习数据</td><td>我的最近三次反馈 + 章节覆盖</td><td>班级练习人次、章节分布、零练习预警名单</td></tr>
+    <tr><td>考核</td><td>我的题目、作答、AI 反馈、得分</td><td>待复核计数、已答率、分数分布、评分入口</td></tr>
+    <tr><td>答疑</td><td>我的对话历史</td><td>高频问题 TopN + 知识点缺口提示</td></tr>
+  </table>
+
+  <div class="note"><b>三条调整原则</b>：① <b>动线原则</b>——学生端按「预习 → 练习 → 作业 → 考核」的教学周排序，教师端按「待处理数量」排序；② <b>视角原则</b>——同一功能，学生看「我的」、教师看「班级的」（案例：投稿箱 / 选稿台；考核：答题卡 / 阅卷台）；③ <b>减负原则</b>——学生端不放任何管理操作与班级数据，教师端不放置障的答题入口，配置类收入「设置 / 我的」。</div>
+
+  <!-- ================= 5 落地建议 ================= -->
+  <h2>5 · 落地建议</h2>
+  <h3>5.1 组件映射（两套主题均可落地）</h3>
+  <table class="doc">
+    <tr><th>设计元素</th><th>方案一「墨读」</th><th>方案二「云课笺」</th></tr>
+    <tr><td>主题实现</td><td>Element Plus CSS 变量覆写 + 衬线字体栈；Vant ConfigProvider 主题</td><td>Element Plus / Vant 默认卡片规范微调（圆角 / 阴影 / 暖底色）</td></tr>
+    <tr><td>大标题</td><td>自定义 SerifTitle 组件（斜体强调词插槽）</td><td>标准标题 + 徽章行</td></tr>
+    <tr><td>题卡 / 任务卡</td><td>报纸剪贴卡片（骑缝标签 + 衬线排印）</td><td>标准圆角卡 + 状态徽章</td></tr>
+    <tr><td>AI 反馈</td><td>红批批注框（朱砂虚线 + 批注语气）</td><td>三维度评分小卡（评分条）</td></tr>
+    <tr><td>插画</td><td>手绘 SVG 线稿（约 6–8 幅，可复用）</td><td>线性小图标 + 空状态插画</td></tr>
+    <tr><td>预估工时</td><td>约 5–7 人日（主题 + 插画 + 定制组件）</td><td>约 2–3 人日（主题变量 + 卡片规整）</td></tr>
+  </table>
+  <h3>5.2 推荐路径</h3>
+  <ul class="tight">
+    <li><b>推荐「双皮肤」方案</b>：以<b>方案二「云课笺」为默认皮肤</b>（成本低、功能全、适合日常高频使用），将<b>方案一「墨读」制作为「阅读模式 / 主题皮肤」</b>——在答疑、一人一题、考核等重阅读页面可一键切换，兼顾日常效率与答辩演示的辨识度。</li>
+    <li>两套皮肤共用同一套信息架构（第 4 节）与组件接口，仅更换 design token（色彩 / 字体 / 圆角 / 阴影）与插画资源，切换不影响功能与数据。</li>
+    <li>若只能选一套：面向<b>竞赛答辩与课程宣传</b>选「墨读」；面向<b>真实教学使用与迭代</b>选「云课笺」。</li>
+  </ul>
+
+  <div class="footer">
+    <span>人机协同助学智能体 · 学生端 UI 双风格设计方案 v1.0</span>
+    <span>2026-10-27 · 供UI设计与前端实施使用</span>
+  </div>
+</div>
+</body>
+</html>
