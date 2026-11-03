@@ -54,3 +54,6 @@ video-analysis/
 # 临时截图
 ui-*.png
 shot-*.png
+
+# 公网部署用的构建副本
+deploy/public/
