@@ -1,0 +1,32 @@
+- generic [ref=e4]:
+  - generic [ref=e6]:
+    - generic [ref=e7]: 智
+    - generic [ref=e8]:
+      - heading "人机协同助学智能体" [level=1] [ref=e9]
+      - paragraph [ref=e10]: 面向经管课程全教学周期 · 《管理学》
+  - alert [ref=e11]:
+    - paragraph [ref=e13]:
+      - text: 当前为
+      - strong [ref=e14]: 仿真数据模式
+      - text: ，可直接用下方演示账号登录，无需后端服务。
+  - generic [ref=e15]:
+    - textbox "学号 / 工号" [ref=e24]
+    - textbox "密码" [ref=e35]
+    - generic [ref=e36]:
+      - generic [ref=e37]: 登录后进入
+      - radiogroup "登录后进入" [ref=e39]:
+        - generic [ref=e40]:
+          - radio "Web 端" [checked] [ref=e41]
+          - generic [ref=e42] [cursor=pointer]: Web 端
+        - generic [ref=e43]:
+          - radio "H5 移动端" [ref=e44]
+          - generic [ref=e45] [cursor=pointer]: H5 移动端
+    - button "登录" [ref=e46] [cursor=pointer]
+  - generic [ref=e48]:
+    - paragraph [ref=e49]: 演示账号（密码均为 123456）
+    - generic [ref=e50]:
+      - generic [ref=e51] [cursor=pointer]: 系统管理员 · admin
+      - generic [ref=e53] [cursor=pointer]: 王教授 · teacher
+      - generic [ref=e55] [cursor=pointer]: 李助教 · ta
+      - generic [ref=e57] [cursor=pointer]: 张同学 · student
+      - generic [ref=e59] [cursor=pointer]: 李骁 · student2

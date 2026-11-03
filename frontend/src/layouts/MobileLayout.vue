@@ -1,10 +1,13 @@
 <script setup>
 import { computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useThemeStore } from '@/stores/theme'
+import { useDeviceStore } from '@/stores/device'
 
 const route = useRoute()
+const router = useRouter()
 const themeStore = useThemeStore()
+const deviceStore = useDeviceStore()
 
 // 底部标签栏，与 /m 下的子路由一一对应
 const tabs = [
@@ -15,14 +18,21 @@ const tabs = [
 
 const active = computed(() => tabs.findIndex((t) => t.path === route.path))
 
-// 皮肤快捷切换：显示目标皮肤名，点击即切换（云课笺 ⇄ 墨读）
-const switchLabel = computed(() => (themeStore.isMo ? '云课笺' : '墨读'))
+// 皮肤快捷切换：显示目标皮肤名，点击即切换（纸感 ⇄ 夜读）
+const switchLabel = computed(() => (themeStore.isMo ? '纸感' : '夜读'))
+
+// 手动切换到电脑端：写入手动选择并跳转（之后该设备固定走 /，直至清除）
+function switchToWeb() {
+  deviceStore.setOverride('web')
+  router.push('/app/course')
+}
 </script>
 
 <template>
   <div class="mobile-layout">
     <van-nav-bar :title="route.meta.title || '人机协同助学'" fixed placeholder>
       <template #right>
+        <span class="web-switch" data-testid="web-switch" @click="switchToWeb">电脑端</span>
         <span class="theme-toggle" data-testid="theme-toggle" @click="themeStore.toggle()">
           {{ switchLabel }}
         </span>
@@ -51,6 +61,13 @@ const switchLabel = computed(() => (themeStore.isMo ? '云课笺' : '墨读'))
   box-shadow: 0 0 0 1px var(--border);
 }
 
+/* 平板宽度下手动进入 H5 时放宽容器，避免大片留白 */
+@media (min-width: 768px) {
+  .mobile-layout {
+    max-width: 640px;
+  }
+}
+
 .mobile-body {
   padding-bottom: 8px;
 }
@@ -69,7 +86,23 @@ const switchLabel = computed(() => (themeStore.isMo ? '云课笺' : '墨读'))
   cursor: pointer;
 }
 
+/* 导航栏「电脑端」入口：弱化文字按钮，不抢主题切换的视觉权重 */
+.web-switch {
+  display: inline-block;
+  margin-right: 10px;
+  font-size: 11px;
+  color: var(--text-sub);
+  cursor: pointer;
+}
+
+/* 右侧两个入口横向排列并垂直居中 */
+:deep(.van-nav-bar__right) {
+  display: flex;
+  align-items: center;
+}
+
 html[data-theme='mo'] .theme-toggle {
   border-radius: 3px;
 }
 </style>
+

@@ -19,8 +19,11 @@ import './style.css'
 // 双皮肤设计令牌与装饰层（须在 style.css 之后引入以覆写 UI 库变量）
 import './theme/tokens.css'
 import './theme/skins.css'
+// 设备自适应样式层（断点 / 字体 / 图片 / 触控，置于最后按端微调）
+import './style/responsive.css'
 // 首屏挂载前同步应用皮肤，避免主题闪烁
 import { THEME_KEY, DEFAULT_THEME } from './stores/theme'
+import { useDeviceStore } from './stores/device'
 
 try {
   const stored = window.localStorage.getItem(THEME_KEY)
@@ -35,6 +38,8 @@ try {
 const app = createApp(App)
 
 app.use(createPinia())
+// 挂载前完成设备检测：写入 <html data-device> 并监听断点变化
+useDeviceStore().init()
 app.use(router)
 app.use(ElementPlus, { locale: zhCn })
 app.use(Vant)

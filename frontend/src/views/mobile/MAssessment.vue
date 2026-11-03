@@ -213,15 +213,15 @@ const myItems = computed(() => assessmentStore.visibleItemsFor(userStore.user?.i
 const answers = reactive({})
 const submitting = ref(false)
 
-// 学生视图栏目标题随皮肤切换：墨读下考核题目装帧为「面试函」
+// 学生视图栏目标题随皮肤切换：夜读下考核题目装帧为「面试函」
 const studentSectionTitle = computed(() =>
   themeStore.isMo ? '面试函 · 我的题目' : '我的模拟面试题',
 )
 
-// 提交按钮文案：墨读下作答即「寄出回信」
+// 提交按钮文案：夜读下作答即「寄出回信」
 const submitLabel = computed(() => (themeStore.isMo ? '寄出回信 →' : '提交作答'))
 
-// 学生作答/AI 反馈标签：墨读下按信笺往来措辞
+// 学生作答/AI 反馈标签：夜读下按信笺往来措辞
 const answerLabel = computed(() => (themeStore.isMo ? '回信 · 我的作答' : '我的作答'))
 const feedbackLabel = computed(() => (themeStore.isMo ? '回信 · AI 反馈' : 'AI 反馈'))
 
@@ -255,8 +255,8 @@ async function submitAnswer(entry) {
       <van-notice-bar
         v-if="!isConfigured"
         text="配置模型密钥后即可使用 AI 智能出题（模型接入见 Web 端）"
-        background="#fdf6ec"
-        color="#b06f00"
+        background="var(--warn-soft)"
+        color="var(--warn)"
       />
 
       <van-cell-group inset title="出题范围">
@@ -431,7 +431,7 @@ async function submitAnswer(entry) {
 
     <!-- ================= 学生视图 ================= -->
     <template v-else-if="isStudent">
-      <!-- 墨读报头：模拟面试函 · 信件编号（方案示意 A-3） -->
+      <!-- 夜读报头：模拟面试函 · 信件编号（方案示意 A-3） -->
       <div v-if="themeStore.isMo" class="mo-page-mast" data-testid="mo-assessment-mast">
         <span class="mo-page-mast-brand">模拟面试<em>函</em></span>
         <span class="mo-page-mast-no">LETTER NO.03</span>
@@ -457,10 +457,10 @@ async function submitAnswer(entry) {
               <span v-if="entry.item.teacherScore != null" class="skin-score">
                 {{ entry.item.teacherScore }} 分
               </span>
-              <van-tag v-else color="#ee0a24" plain>待作答</van-tag>
+              <van-tag v-else color="var(--danger)" plain>待作答</van-tag>
             </div>
 
-            <!-- 题目：墨读装帧为面试函（收件人 / 此致敬礼 / 署名 / 得分印章） -->
+            <!-- 题目：夜读装帧为面试函（收件人 / 此致敬礼 / 署名 / 得分印章） -->
             <div class="m-student-question">
               <div v-if="themeStore.isMo" class="mo-letter-lt">
                 收件人：<b>{{ userStore.name }}</b>（{{ userStore.discipline || '未设置学科' }}） ·
@@ -472,7 +472,7 @@ async function submitAnswer(entry) {
               </p>
               <p v-else class="m-student-text">{{ entry.item.question }}</p>
               <div v-if="themeStore.isMo" class="mo-letter-sign">——《管理学》课程组</div>
-              <!-- 墨读皮肤：得分以朱砂圆形印章盖在「面试函」落款处 -->
+              <!-- 夜读皮肤：得分以朱砂圆形印章盖在「面试函」落款处 -->
               <span v-if="entry.item.teacherScore != null" class="mo-stamp">
                 {{ entry.item.teacherScore }}
               </span>
@@ -726,7 +726,7 @@ async function submitAnswer(entry) {
   color: var(--text-main);
 }
 
-/* 学生作答区：云课笺为圆角卡（墨读下由 skins.css 覆写为稿纸） */
+/* 学生作答区：运行台为圆角卡（夜读下由 skins.css 覆写为稿纸） */
 .skin-paper {
   border: 1px solid var(--card-border);
   border-radius: var(--card-radius);

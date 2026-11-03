@@ -14,7 +14,7 @@ const modelStore = useModelStore()
 const practiceStore = usePracticeStore()
 const themeStore = useThemeStore()
 
-// 提交按钮文案随皮肤切换：墨读下交卷即「寄出」
+// 提交按钮文案随皮肤切换：夜读下交卷即「寄出」
 const submitLabel = computed(() => (themeStore.isMo ? '交卷 →' : '提交并获取反馈'))
 
 // 章节选项取课程章节（去掉"第x章 "前缀只保留标题名太短，直接用完整标题）
@@ -111,12 +111,29 @@ function formatTime(iso) {
     <el-alert v-if="!isConfigured" type="warning" :closable="false" show-icon class="mb12">
       <template #title>
         尚未完成模型配置，
-        <el-link type="primary" :underline="false" @click="$router.push('/model')">
+        <el-link type="primary" :underline="false" @click="$router.push('/app/model')">
           去「模型接入」页面配置
         </el-link>
         后即可使用 AI 出题与反馈
       </template>
     </el-alert>
+
+    <div class="study-strip">
+      <div class="strip-main">
+        <div class="strip-title">先测后学，比直接看讲解更有效</div>
+        <div class="strip-sub">
+          合上资料做 5–20 道自测，提交后才看解析；测完可直接生成按主题重组的速查表。
+        </div>
+      </div>
+      <div class="strip-actions">
+        <el-button type="primary" plain size="small" @click="$router.push('/app/selftest')">
+          章节自测
+        </el-button>
+        <el-button plain size="small" @click="$router.push('/app/cheatsheet')">
+          备考速查表
+        </el-button>
+      </div>
+    </div>
 
     <el-row :gutter="16">
       <el-col :xs="24" :md="14">
@@ -228,6 +245,39 @@ function formatTime(iso) {
 
 .mb12 {
   margin-bottom: 12px;
+}
+
+.study-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--card-radius);
+}
+
+.strip-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.strip-sub {
+  margin-top: 3px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text-sub);
+}
+
+.strip-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .card-title {

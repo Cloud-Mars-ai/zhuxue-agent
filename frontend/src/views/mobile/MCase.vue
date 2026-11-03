@@ -130,8 +130,8 @@ async function reject(c) {
       <van-notice-bar
         v-if="!isConfigured"
         text="配置模型密钥后可使用 AI 辅助整理摘要与标签"
-        background="#fdf6ec"
-        color="#b06f00"
+        background="var(--warn-soft)"
+        color="var(--warn)"
       />
 
       <van-cell-group inset title="提交预习案例" class="m-case-form">

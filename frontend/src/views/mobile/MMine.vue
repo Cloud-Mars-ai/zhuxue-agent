@@ -20,7 +20,7 @@ const isStudent = computed(() => userStore.role === 'student')
 
 const disciplineLabel = computed(() => userStore.discipline || '未设置')
 
-// 界面皮肤（双皮肤方案：云课笺默认 / 墨读阅读模式）
+// 界面皮肤（双皮肤方案：运行台默认 / 夜读阅读模式）
 const showThemePicker = ref(false)
 
 function onThemeSelect(value) {
@@ -41,6 +41,9 @@ function onDisciplineConfirm({ selectedOptions }) {
 
 const tools = [
   { title: '一人一题练习', desc: 'AI 出题 · 三维反馈', path: '/m/practice', icon: 'edit' },
+  { title: '章节自测', desc: '先测后学 · 自动判分', path: '/m/selftest', icon: 'clock-o' },
+  { title: '备考速查表', desc: '按主题重组 · 可打印', path: '/m/cheatsheet', icon: 'notes-o' },
+  { title: '学习体检', desc: '盲区诊断 · 下一步建议', path: '/m/checkup', icon: 'chart-trending-o' },
   { title: '课前案例', desc: '提交兴趣案例 · 老师选用', path: '/m/case', icon: 'description' },
   { title: '课程考核', desc: 'AI 模拟面试题', path: '/m/assessment', icon: 'aim' },
   { title: 'AI 答疑', desc: '小管同学在线解答', path: '/m/ask', icon: 'chat' },
@@ -132,7 +135,7 @@ function toggleMock() {
           />
         </template>
       </van-cell>
-      <van-cell title="切换到 Web 端" is-link @click="router.push('/course')" />
+      <van-cell title="切换到 Web 端" is-link @click="router.push('/app/course')" />
       <van-cell title="关于系统" value="v0.1.0 竞赛演示版" />
     </van-cell-group>
 
@@ -172,7 +175,7 @@ function toggleMock() {
           </template>
         </van-cell>
         <div class="theme-sheet-tip">
-          两套皮肤共用同一套信息架构与功能，仅更换视觉样式；「墨读」适合阅读与答辩演示。
+          两套皮肤共用同一套信息架构与功能，仅更换视觉样式；「夜读」适合阅读与答辩演示。
         </div>
       </div>
     </van-popup>

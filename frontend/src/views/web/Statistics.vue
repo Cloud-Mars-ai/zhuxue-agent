@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { ref, onMounted, onBeforeUnmount, nextTick, watch } from 'vue'
 import * as echarts from 'echarts'
 import {
   STATS_WEEKLY,
@@ -7,41 +7,57 @@ import {
   STATS_STUDENT_LEVEL,
   COURSE,
 } from '@/mock/data'
+import { useThemeStore } from '@/stores/theme'
 
+const themeStore = useThemeStore()
 const trendRef = ref()
 const masteryRef = ref()
 const levelRef = ref()
 const charts = []
 
+/** 图表文本色跟随皮肤令牌，保证深色底上的可读性 */
+function chartTheme() {
+  const s = getComputedStyle(document.documentElement)
+  return {
+    text: s.getPropertyValue('--text-sub').trim() || '#6b6558',
+    line: s.getPropertyValue('--divider').trim() || '#eae3d5',
+    accent: s.getPropertyValue('--accent').trim() || '#3d5bd9',
+    ok: s.getPropertyValue('--ok').trim() || '#2f8f5b',
+    warn: s.getPropertyValue('--warn').trim() || '#b7791f',
+    danger: s.getPropertyValue('--danger').trim() || '#c0483c',
+  }
+}
+
 function renderTrend() {
+  const { text, line, accent, ok, warn } = chartTheme()
   const chart = echarts.init(trendRef.value)
   chart.setOption({
     tooltip: { trigger: 'axis' },
-    legend: { data: ['出勤人数', '课堂互动次数', '作业提交率(%)'], bottom: 0 },
+    legend: { data: ['出勤人数', '课堂互动次数', '作业提交率(%)'], bottom: 0, textStyle: { color: text } },
     grid: { left: 40, right: 20, top: 24, bottom: 48 },
-    xAxis: { type: 'category', data: STATS_WEEKLY.weeks },
-    yAxis: { type: 'value' },
+    xAxis: { type: 'category', data: STATS_WEEKLY.weeks, axisLabel: { color: text }, axisLine: { lineStyle: { color: line } } },
+    yAxis: { type: 'value', axisLabel: { color: text }, splitLine: { lineStyle: { color: line } } },
     series: [
       {
         name: '出勤人数',
         type: 'line',
         smooth: true,
         data: STATS_WEEKLY.attendance,
-        itemStyle: { color: '#2f6feb' },
+        itemStyle: { color: accent },
       },
       {
         name: '课堂互动次数',
         type: 'line',
         smooth: true,
         data: STATS_WEEKLY.interaction,
-        itemStyle: { color: '#67c23a' },
+        itemStyle: { color: ok },
       },
       {
         name: '作业提交率(%)',
         type: 'line',
         smooth: true,
         data: STATS_WEEKLY.homeworkRate,
-        itemStyle: { color: '#e6a23c' },
+        itemStyle: { color: warn },
       },
     ],
   })
@@ -49,12 +65,16 @@ function renderTrend() {
 }
 
 function renderMastery() {
+  const { text, line, accent } = chartTheme()
   const chart = echarts.init(masteryRef.value)
   chart.setOption({
     tooltip: {},
     radar: {
       indicator: STATS_CHAPTER_MASTERY.map((c) => ({ name: c.chapter, max: 100 })),
       radius: '65%',
+      axisName: { color: text },
+      splitLine: { lineStyle: { color: line } },
+      axisLine: { lineStyle: { color: line } },
     },
     series: [
       {
@@ -63,9 +83,9 @@ function renderMastery() {
           {
             value: STATS_CHAPTER_MASTERY.map((c) => c.mastery),
             name: '班级平均掌握度',
-            areaStyle: { color: 'rgba(47,111,235,0.25)' },
-            lineStyle: { color: '#2f6feb' },
-            itemStyle: { color: '#2f6feb' },
+            areaStyle: { color: `${accent}33` },
+            lineStyle: { color: accent },
+            itemStyle: { color: accent },
           },
         ],
       },
@@ -75,22 +95,35 @@ function renderMastery() {
 }
 
 function renderLevel() {
+  const { text, accent, ok, warn, danger } = chartTheme()
   const chart = echarts.init(levelRef.value)
   chart.setOption({
     tooltip: { trigger: 'item', formatter: '{b}: {c} 人 ({d}%)' },
-    legend: { bottom: 0, left: 'center' },
+    legend: { bottom: 0, left: 'center', textStyle: { color: text } },
     series: [
       {
         type: 'pie',
         radius: ['40%', '65%'],
         center: ['50%', '45%'],
         data: STATS_STUDENT_LEVEL,
-        label: { formatter: '{b}\n{c}人' },
-        color: ['#67c23a', '#2f6feb', '#e6a23c', '#f56c6c'],
+        label: { formatter: '{b}\n{c}人', color: text },
+        color: [ok, accent, warn, danger],
       },
     ],
   })
   charts.push(chart)
+}
+
+function renderAll() {
+  disposeAll()
+  renderTrend()
+  renderMastery()
+  renderLevel()
+}
+
+function disposeAll() {
+  charts.forEach((c) => c.dispose())
+  charts.length = 0
 }
 
 function resizeAll() {
@@ -99,17 +132,23 @@ function resizeAll() {
 
 onMounted(async () => {
   await nextTick()
-  renderTrend()
-  renderMastery()
-  renderLevel()
+  renderAll()
   window.addEventListener('resize', resizeAll)
 })
 
 onBeforeUnmount(() => {
   window.removeEventListener('resize', resizeAll)
-  charts.forEach((c) => c.dispose())
-  charts.length = 0
+  disposeAll()
 })
+
+/* 皮肤切换后重绘图表，文本色跟随新令牌 */
+watch(
+  () => themeStore.theme,
+  async () => {
+    await nextTick()
+    renderAll()
+  },
+)
 
 const weakChapters = STATS_CHAPTER_MASTERY.filter(
   (c) => c.mastery > 0 && c.mastery < 70,

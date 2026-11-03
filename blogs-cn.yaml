@@ -1,0 +1,186 @@
+- generic [ref=e3]:
+  - main [ref=e5]:
+    - generic [ref=e7]:
+      - paragraph [ref=e12]: 应用场景
+      - heading [level=1] [ref=e16]:
+        - text: 人工智能时代的
+        - generic [ref=e17]: 学习
+        - text: 指南
+    - generic [ref=e18]:
+      - generic [ref=e19]:
+        - generic [ref=e20]: 全部
+        - textbox "搜索" [ref=e28]
+      - generic [ref=e31]:
+        - link "Hyperknow 3分钟指南 创建学习资料 • 3 分钟" [ref=e35] [cursor=pointer]:
+          - /url: ./blogs/3-minute-guide-hyperknow
+          - generic [ref=e40]:
+            - paragraph [ref=e43]: Hyperknow 3分钟指南
+            - generic [ref=e50]:
+              - paragraph [ref=e52]: 创建学习资料
+              - paragraph [ref=e54]: •
+              - paragraph [ref=e56]: 3 分钟
+        - link [ref=e60] [cursor=pointer]:
+          - /url: ./blogs/ai-cheatsheet-generator
+          - img "一张空白的白色卡片，静静地安放在米色绗缝表面上，下方垫着一层柔软垂顺的铁锈色织物。" [ref=e65]
+          - generic [ref=e66]:
+            - paragraph [ref=e69]: AI 备考小抄生成器：将整本教科书转化为应考复习指南
+            - generic [ref=e76]:
+              - paragraph [ref=e78]: 创建学习资料
+              - paragraph [ref=e80]: •
+              - paragraph [ref=e82]: 5 分钟
+        - link [ref=e86] [cursor=pointer]:
+          - /url: ./blogs/get-explainer-video
+          - img "由 Hyperknow 生成的解释傅里叶变换的视频截图" [ref=e91]
+          - generic [ref=e92]:
+            - paragraph [ref=e95]: 输入一个主题。获取一个两分钟内解释该主题的视频。
+            - generic [ref=e102]:
+              - paragraph [ref=e104]: 可视化
+              - paragraph [ref=e106]: •
+              - paragraph [ref=e108]: 4 分钟
+        - link [ref=e112] [cursor=pointer]:
+          - /url: ./blogs/study-with-ai
+          - img "窗户旁的一张木质书桌，阳光洒在笔记本电脑、笔记本和装饰花瓶上。" [ref=e117]
+          - generic [ref=e118]:
+            - paragraph [ref=e121]: 如何利用人工智能学习，并让它替你学习
+            - generic [ref=e128]:
+              - paragraph [ref=e130]: 常规
+              - paragraph [ref=e132]: •
+              - paragraph [ref=e134]: 4 分钟
+        - link [ref=e138] [cursor=pointer]:
+          - /url: ./blogs/quizlet-alternative
+          - img "在纯色背景下，一个木质立方体在长方体边缘摇摇欲坠。" [ref=e143]
+          - generic [ref=e144]:
+            - paragraph [ref=e147]: 不再使用 Quizlet？现在真正管用的替代方案在这里
+            - generic [ref=e154]:
+              - paragraph [ref=e156]: 创建学习资料
+              - paragraph [ref=e158]: •
+              - paragraph [ref=e160]: 4 分钟
+        - link [ref=e164] [cursor=pointer]:
+          - /url: ./blogs/mcat-study-tips
+          - img "一张极简风格的木质书桌，上面放着一盏小台灯和一本打开的笔记本，位于一间光线明亮、色调温暖的房间内。" [ref=e169]
+          - generic [ref=e170]:
+            - paragraph [ref=e173]: 如何备考 MCAT：给有志于学医的学生的 12 个建议
+            - generic [ref=e180]:
+              - paragraph [ref=e182]: 常规
+              - paragraph [ref=e184]: •
+              - paragraph [ref=e186]: 3 分钟
+        - link [ref=e190] [cursor=pointer]:
+          - /url: ./blogs/how-to-study-organic-chemistry
+          - img "舒适的办公空间，配有木质书桌、一盏灯、几本书和一盆植物，温暖的阳光洒在上面。" [ref=e195]
+          - generic [ref=e196]:
+            - paragraph [ref=e199]: 如何学习有机化学：攻克这门多数学生畏惧课程的12个诀窍
+            - generic [ref=e206]:
+              - paragraph [ref=e208]: 常规
+              - paragraph [ref=e210]: •
+              - paragraph [ref=e212]: 15 分钟
+  - navigation [ref=e216]:
+    - generic [ref=e217]:
+      - link [ref=e220] [cursor=pointer]:
+        - /url: ./
+        - paragraph [ref=e223]: Hyperknow
+      - generic [ref=e224]:
+        - link [ref=e226] [cursor=pointer]:
+          - /url: ./
+          - paragraph [ref=e228]: 关于
+        - link [ref=e230] [cursor=pointer]:
+          - /url: ./#feature-small
+          - paragraph [ref=e232]: 功能
+        - link [ref=e234] [cursor=pointer]:
+          - /url: ./affiliate
+          - paragraph [ref=e236]: 成为分销合作伙伴
+        - link [ref=e238] [cursor=pointer]:
+          - /url: ./contact
+          - paragraph [ref=e240]: 联系我们
+        - link [ref=e242] [cursor=pointer]:
+          - /url: ./blogs
+          - paragraph [ref=e244]: 博客
+        - link [ref=e246] [cursor=pointer]:
+          - /url: https://agent.hyperknow.io/toolbox/internet-diagnostics
+          - paragraph [ref=e248]: 连接
+      - generic [ref=e250]:
+        - link [ref=e252] [cursor=pointer]:
+          - /url: https://agent.hyperknow.io
+          - generic [ref=e253]:
+            - paragraph [ref=e255]: 登录
+            - paragraph [ref=e257]: 登录
+        - link [ref=e259] [cursor=pointer]:
+          - /url: https://agent.hyperknow.io/signup
+          - generic [ref=e260]:
+            - paragraph [ref=e262]: 免费试用
+            - paragraph [ref=e264]: 免费试用
+  - contentinfo [ref=e269]:
+    - generic [ref=e271]:
+      - generic [ref=e272]:
+        - paragraph [ref=e274]: 产品
+        - generic [ref=e275]:
+          - link [ref=e277] [cursor=pointer]:
+            - /url: ./
+            - paragraph [ref=e279]: 首页
+          - link [ref=e281] [cursor=pointer]:
+            - /url: ./#feature-small
+            - paragraph [ref=e283]: 功能
+          - link [ref=e285] [cursor=pointer]:
+            - /url: ./#pricing
+            - paragraph [ref=e287]: 价格
+      - generic [ref=e288]:
+        - paragraph [ref=e290]: 公司
+        - generic [ref=e291]:
+          - link [ref=e293] [cursor=pointer]:
+            - /url: ./manifesto
+            - paragraph [ref=e295]: 我们的宣言
+          - link [ref=e297] [cursor=pointer]:
+            - /url: ./contact
+            - paragraph [ref=e299]: 联系我们
+          - link [ref=e301] [cursor=pointer]:
+            - /url: ./affiliate
+            - paragraph [ref=e303]: 成为合作伙伴
+            - heading "20% 佣金！" [level=6] [ref=e306]
+          - link [ref=e308] [cursor=pointer]:
+            - /url: ./blogs
+            - paragraph [ref=e310]: 博客
+      - generic [ref=e311]:
+        - paragraph [ref=e313]: 关注我们
+        - generic [ref=e314]:
+          - link [ref=e316] [cursor=pointer]:
+            - /url: https://www.instagram.com/hyperknow.io/
+            - paragraph [ref=e318]: Instagram
+          - link [ref=e320] [cursor=pointer]:
+            - /url: https://x.com/hyperknow_ai
+            - paragraph [ref=e322]: X
+          - link [ref=e324] [cursor=pointer]:
+            - /url: " https://xhslink.com/m/4xIIgKf12y5"
+            - paragraph [ref=e326]: 小红书
+          - link [ref=e328] [cursor=pointer]:
+            - /url: https://www.linkedin.com/company/hyper-know
+            - paragraph [ref=e330]: 领英
+          - link [ref=e332] [cursor=pointer]:
+            - /url: https://discord.com/invite/k4NdfvsfUr
+            - paragraph [ref=e334]: Discord
+      - generic [ref=e335]:
+        - paragraph [ref=e337]: 法律
+        - generic [ref=e338]:
+          - link [ref=e340] [cursor=pointer]:
+            - /url: ./terms-of-service
+            - paragraph [ref=e342]: 服务条款
+          - link [ref=e344] [cursor=pointer]:
+            - /url: ./privacy-policy
+            - paragraph [ref=e346]: 隐私政策
+    - generic [ref=e347]:
+      - generic [ref=e348]:
+        - generic [ref=e349]:
+          - link [ref=e351] [cursor=pointer]:
+            - /url: ./
+            - paragraph [ref=e354]: Hyperknow
+          - paragraph [ref=e356]: 子处理器包括 Stripe、Supabase、GCP 和 AWS。
+        - heading "从即时辅助到课程定制，利用 Hyperknow 从零开始学习任何知识。" [level=6] [ref=e359]
+      - generic [ref=e361]:
+        - paragraph [ref=e363]: © 2026 Hyperknow by Nutcracker AI Inc. 保留所有权利。
+        - generic [ref=e364]:
+          - link [ref=e366] [cursor=pointer]:
+            - /url: https://www.instagram.com/hyperknow.io/
+          - link [ref=e369] [cursor=pointer]:
+            - /url: https://www.linkedin.com/company/hyper-know
+          - link [ref=e372] [cursor=pointer]:
+            - /url: https://hyperknow.io
+          - link [ref=e375] [cursor=pointer]:
+            - /url: mailto:contact@hyperknow.io

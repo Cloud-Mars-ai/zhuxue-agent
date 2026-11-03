@@ -1,8 +1,10 @@
 <script setup>
 import { computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { COURSE, HOMEWORKS, RISK_STUDENTS, STATS_WEEKLY } from '@/mock/data'
 import { useUserStore } from '@/stores/user'
 
+const router = useRouter()
 const userStore = useUserStore()
 
 // 教师看全部，助教只看教学相关板块
@@ -42,9 +44,14 @@ const levelTagType = { 高: 'danger', 中: 'warning', 低: 'info' }
           <template v-if="!canPublish">（助教身份为只读，发布操作由教师执行）</template>
         </p>
       </div>
-      <el-button type="primary" :disabled="!canPublish">
-        <el-icon><Plus /></el-icon>发布新任务
-      </el-button>
+      <div class="head-actions">
+        <el-button plain @click="router.push('/app/materials')">
+          <el-icon><FolderOpened /></el-icon>课程资料库
+        </el-button>
+        <el-button type="primary" :disabled="!canPublish">
+          <el-icon><Plus /></el-icon>发布新任务
+        </el-button>
+      </div>
     </div>
 
     <el-row :gutter="16" class="stat-row">
@@ -122,6 +129,13 @@ const levelTagType = { 高: 'danger', 中: 'warning', 低: 'info' }
 
 .toolbar .page-title {
   margin-bottom: 4px;
+}
+
+.head-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .stat-row {

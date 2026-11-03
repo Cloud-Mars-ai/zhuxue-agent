@@ -26,6 +26,18 @@ body,
   min-height: 100%;
 }
 
+/* 落地页锚点跳转：平滑滚动并为固定导航留出偏移 */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 96px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
 body {
   background: var(--bg-page);
 }
@@ -47,7 +59,7 @@ a {
 }
 
 .card {
-  background: #fff;
+  background: var(--card-bg);
   border-radius: var(--radius);
   padding: 16px;
   margin-bottom: 16px;

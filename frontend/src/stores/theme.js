@@ -3,10 +3,10 @@ import { ref, computed } from 'vue'
 
 export const THEME_KEY = 'ai-tutor-theme'
 
-/** 双皮肤定义（《学生端 UI 双风格设计方案》第 5 节推荐路径） */
+/** 双皮肤定义（浅色纸感体系） */
 export const THEMES = [
-  { value: 'yun', label: '云课笺', desc: '暖纸卡片 · 默认皮肤 · 日常高频' },
-  { value: 'mo', label: '墨读', desc: '学报排版 · 阅读模式 · 重阅读页面' },
+  { value: 'yun', label: '纸感', desc: '浅卡其纸面 · 默认皮肤 · 日常学习工作台' },
+  { value: 'mo', label: '夜读', desc: '浅象牙纸 · 阅读模式 · 衬线排版与朱砂批注' },
 ]
 
 export const DEFAULT_THEME = 'yun'

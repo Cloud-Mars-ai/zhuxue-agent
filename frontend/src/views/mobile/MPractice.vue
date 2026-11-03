@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { showToast } from 'vant'
 import { COURSE } from '@/mock/data'
 import { useUserStore } from '@/stores/user'
@@ -13,12 +14,13 @@ const userStore = useUserStore()
 const modelStore = useModelStore()
 const practiceStore = usePracticeStore()
 const themeStore = useThemeStore()
+const router = useRouter()
 
 const chapterOptions = computed(() => COURSE.chapters.map((c) => c.title))
 const isConfigured = computed(() => modelStore.isConfigured)
 const myRecords = computed(() => practiceStore.myRecords(userStore.user?.id))
 
-// 出题设置：章节 / 题型用 chips 一屏完成（方案二「云课笺」语汇）
+// 出题设置：章节 / 题型用 chips 一屏完成（方案二「运行台」语汇）
 const form = ref({
   chapter: COURSE.chapters[2]?.title || '',
   type: PRACTICE_TYPES[0],
@@ -31,12 +33,12 @@ const generating = ref(false)
 const reviewing = ref(false)
 const showFeedbackId = ref('')
 
-// 栏目标题随皮肤切换：墨读下反馈区改称「红批」
+// 栏目标题随皮肤切换：夜读下反馈区改称「红批」
 const feedbackTitle = computed(() =>
   themeStore.isMo ? '红批 · AI 三维反馈' : 'AI 三维反馈',
 )
 
-// 提交按钮文案随皮肤切换：墨读下交卷即「寄出」，云课笺直陈操作
+// 提交按钮文案随皮肤切换：夜读下交卷即「寄出」，运行台直陈操作
 const submitLabel = computed(() => (themeStore.isMo ? '交卷 →' : '提交并获取反馈'))
 
 async function generate() {
@@ -117,7 +119,7 @@ function toggleFeedback(id) {
 
 <template>
   <div class="m-page">
-    <!-- 墨读报头：一人一题日练 · 栏目号（方案示意 A-2） -->
+    <!-- 夜读报头：一人一题日练 · 栏目号（方案示意 A-2） -->
     <div v-if="themeStore.isMo" class="mo-page-mast" data-testid="mo-practice-mast">
       <span class="mo-page-mast-brand">一人一题<em>日练</em></span>
       <span class="mo-page-mast-no">COLUMN 07</span>
@@ -126,9 +128,22 @@ function toggleFeedback(id) {
     <van-notice-bar
       v-if="!isConfigured"
       text="尚未配置模型密钥，配置后即可使用 AI 出题与反馈（模型接入见 Web 端）"
-      background="#fdf6ec"
-      color="#b06f00"
+      background="var(--warn-soft)"
+      color="var(--warn)"
     />
+
+    <div class="m-study-strip">
+      <div>
+        <div class="m-strip-title">先测后学</div>
+        <div class="m-strip-sub">5 题摸底，提交后才看解析</div>
+      </div>
+      <div class="m-strip-actions">
+        <van-button size="mini" type="primary" plain @click="router.push('/m/selftest')">
+          章节自测
+        </van-button>
+        <van-button size="mini" plain @click="router.push('/m/cheatsheet')">速查表</van-button>
+      </div>
+    </div>
 
     <!-- 出题设置：chips 选择章节与题型 -->
     <div class="m-setup">
@@ -172,7 +187,7 @@ function toggleFeedback(id) {
 
     <van-skeleton v-if="generating" title :row="3" />
 
-    <!-- 本题情境：墨读皮肤下为报纸剪贴题卡（skins.css 覆写） -->
+    <!-- 本题情境：夜读皮肤下为报纸剪贴题卡（skins.css 覆写） -->
     <template v-if="question && !generating">
       <div class="m-q-section">
         <div class="m-q-head">
@@ -188,7 +203,7 @@ function toggleFeedback(id) {
         </div>
       </div>
 
-      <!-- 我的作答：墨读皮肤下为横格稿纸 -->
+      <!-- 我的作答：夜读皮肤下为横格稿纸 -->
       <div class="m-answer-section">
         <div class="m-section-label">我的作答</div>
         <div class="skin-paper">
@@ -214,7 +229,7 @@ function toggleFeedback(id) {
       </div>
     </template>
 
-    <!-- AI 反馈：墨读皮肤下为红批批注框 -->
+    <!-- AI 反馈：夜读皮肤下为红批批注框 -->
     <div v-if="feedback" class="m-feedback-section">
       <div class="m-feedback-head">
         <span class="m-section-label">{{ feedbackTitle }}</span>
@@ -260,6 +275,37 @@ function toggleFeedback(id) {
   color: var(--text-main);
 }
 
+.m-study-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 12px 12px 0;
+  padding: 10px 12px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--card-radius);
+}
+
+.m-strip-title {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.m-strip-sub {
+  margin-top: 2px;
+  font-size: 10.5px;
+  color: var(--text-sub);
+}
+
+.m-strip-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
 .m-setup {
   margin: 12px;
   padding: 4px 14px 14px;
@@ -283,7 +329,7 @@ function toggleFeedback(id) {
   color: var(--text-sub);
 }
 
-/* 本题情境：云课笺为圆角卡片（墨读覆写见块尾） */
+/* 本题情境：运行台为圆角卡片（夜读覆写见块尾） */
 .m-question {
   margin: 0 12px;
   padding: 14px 16px;
@@ -297,7 +343,7 @@ function toggleFeedback(id) {
   color: var(--text-main);
 }
 
-/* 题卡头部（云课笺）：小节标签 + 换一题 */
+/* 题卡头部（运行台）：小节标签 + 换一题 */
 .m-q-head {
   display: flex;
   align-items: center;
@@ -322,7 +368,7 @@ function toggleFeedback(id) {
   opacity: 0.8;
 }
 
-/* 题卡脚注（墨读）：考查标签 + 换一题，云课笺下隐藏 */
+/* 题卡脚注（夜读）：考查标签 + 换一题，运行台下隐藏 */
 .m-q-foot {
   display: none;
 }
@@ -331,10 +377,10 @@ function toggleFeedback(id) {
   font-family: var(--font-ui);
   font-size: 11px;
   letter-spacing: 1px;
-  color: #6b6255;
+  color: var(--text-faint);
 }
 
-/* 反馈区头部：小节标签 + 完成次数徽章（云课笺） */
+/* 反馈区头部：小节标签 + 完成次数徽章（运行台） */
 .m-feedback-head {
   display: flex;
   align-items: center;
@@ -346,7 +392,7 @@ function toggleFeedback(id) {
   padding-right: 0;
 }
 
-/* 我的作答：云课笺为圆角卡片包裹的输入区（墨读下为横格稿纸） */
+/* 我的作答：运行台为圆角卡片包裹的输入区（夜读下为横格稿纸） */
 .skin-paper {
   margin: 0 12px;
   border: 1px solid var(--card-border);
@@ -359,7 +405,7 @@ function toggleFeedback(id) {
   padding: 10px 12px 0;
 }
 
-/* AI 反馈：云课笺为圆角卡片（墨读下为红批批注框） */
+/* AI 反馈：运行台为圆角卡片（夜读下为红批批注框） */
 .m-feedback {
   margin: 0 12px;
   padding: 14px 16px;
@@ -383,7 +429,7 @@ function toggleFeedback(id) {
   white-space: pre-wrap;
 }
 
-/* ---- 墨读皮肤覆写（置于块尾，特异性高于上方基础规则） ---- */
+/* ---- 夜读皮肤覆写（置于块尾，特异性高于上方基础规则） ---- */
 html[data-theme='mo'] .m-q-head {
   display: none;
 }
@@ -395,7 +441,7 @@ html[data-theme='mo'] .m-q-foot {
   gap: 10px;
   margin-top: 12px;
   padding-top: 10px;
-  border-top: 1px dashed #b9af9e;
+  border-top: 1px dashed var(--divider);
 }
 
 html[data-theme='mo'] .m-answer-section .m-section-label {

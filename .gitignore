@@ -47,3 +47,10 @@ output/
 
 # 公网部署工具生成的本地标记文件
 .wbapp_*.genie
+
+# 竞品视频抽帧分析产物
+video-analysis/
+
+# 临时截图
+ui-*.png
+shot-*.png

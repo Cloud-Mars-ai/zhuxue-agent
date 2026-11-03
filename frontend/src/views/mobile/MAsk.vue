@@ -1,13 +1,19 @@
 <script setup>
-import { ref, computed, nextTick } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, computed, nextTick, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { showToast } from 'vant'
+import { COURSE } from '@/mock/data'
 import { useUserStore } from '@/stores/user'
+import { usePersonaStore } from '@/stores/persona'
+import { isEnabled } from '@/config/flags'
 import { sendChat } from '@/api/chat'
 import { matchIntent, buildTodoActions } from '@/utils/intent'
+import { getDailyRecommendations } from '@/utils/recommend'
 
 const router = useRouter()
+const route = useRoute()
 const userStore = useUserStore()
+const personaStore = usePersonaStore()
 
 // 主动问候：进入答疑页即展示欢迎语与推荐操作
 const messages = ref([
@@ -22,7 +28,20 @@ const input = ref('')
 const sending = ref(false)
 const listRef = ref()
 
-const suggestions = ['待办有哪些', '我想交作业', '开始一人一题练习', '什么是有限理性决策？']
+const currentChapter = computed(
+  () => COURSE.chapters.find((c) => c.status === '进行中')?.title || COURSE.chapters[0]?.title || '',
+)
+
+const recommendations = computed(() =>
+  getDailyRecommendations(personaStore.data, currentChapter.value),
+)
+
+const knowledgeOn = computed(() => isEnabled('knowledgeBase'))
+
+function useRecommendation(rec) {
+  if (rec.to) router.push(rec.to)
+  else ask(rec.text)
+}
 
 const disciplineTag = computed(() =>
   userStore.isStudent && userStore.discipline ? userStore.discipline : '',
@@ -62,7 +81,11 @@ async function ask(text) {
 
   try {
     // 模型无记忆，每次携带完整对话历史（chat.js 内部会截取最近 20 条）
-    const reply = await sendChat(messages.value)
+    const reply = await sendChat(messages.value, {
+      useKnowledge: true,
+      chapter: currentChapter.value,
+      traceRefs: { chapter: currentChapter.value },
+    })
     messages.value.push({ role: 'assistant', content: reply })
   } catch (err) {
     showToast(err.message || 'AI 助教暂时开小差了，请稍后再试')
@@ -72,14 +95,19 @@ async function ask(text) {
   }
 }
 
-function useSuggestion(s) {
-  ask(s)
-}
+// 从课程主页带问题过来：进入即发送
+onMounted(() => {
+  const q = String(route.query.q || '').trim()
+  if (q) ask(q)
+})
 </script>
 
 <template>
   <div class="ask-page">
-    <div v-if="disciplineTag" class="discipline-tip">学科背景：{{ disciplineTag }}（讲解将贴合你的背景）</div>
+    <div v-if="disciplineTag || knowledgeOn" class="discipline-tip">
+      <span v-if="disciplineTag">学科背景：{{ disciplineTag }}（讲解将贴合你的背景）</span>
+      <span v-if="knowledgeOn"> · 课程材料已接入</span>
+    </div>
     <div ref="listRef" class="msg-list">
       <div v-for="(m, i) in messages" :key="i" class="msg" :class="m.role">
         <div class="bubble">
@@ -117,17 +145,20 @@ function useSuggestion(s) {
       </div>
     </div>
 
-    <div class="suggest">
-      <van-tag
-        v-for="s in suggestions"
-        :key="s"
-        plain
-        type="primary"
-        class="suggest-tag"
-        @click="useSuggestion(s)"
+    <div class="daily-reco">
+      <div class="daily-head">
+        <span>今天值得想一想</span>
+        <span class="daily-sub">每天刷新</span>
+      </div>
+      <div
+        v-for="r in recommendations"
+        :key="r.id"
+        class="daily-item"
+        @click="useRecommendation(r)"
       >
-        {{ s }}
-      </van-tag>
+        <div class="daily-text">{{ r.text }}</div>
+        <div class="daily-reason">{{ r.reason }}</div>
+      </div>
     </div>
 
     <div class="input-bar">
@@ -211,17 +242,45 @@ function useSuggestion(s) {
   color: var(--text-sub);
 }
 
-.suggest {
-  display: flex;
-  gap: 8px;
+.daily-reco {
   padding: 0 12px 8px;
-  overflow-x: auto;
 }
 
-.suggest-tag {
-  flex-shrink: 0;
-  padding: 5px 10px;
-  cursor: pointer;
+.daily-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.daily-sub {
+  font-size: 10.5px;
+  font-weight: 400;
+  color: var(--text-faint);
+}
+
+.daily-item {
+  padding: 9px 11px;
+  margin-bottom: 6px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+}
+
+.daily-text {
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--text-main);
+}
+
+.daily-reason {
+  margin-top: 3px;
+  font-size: 10.5px;
+  line-height: 1.5;
+  color: var(--text-faint);
 }
 
 .input-bar {

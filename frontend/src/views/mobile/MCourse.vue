@@ -1,19 +1,42 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { COURSE, HOMEWORKS } from '@/mock/data'
 import { useUserStore } from '@/stores/user'
+import { useModelStore } from '@/stores/model'
 import { useCasesStore } from '@/stores/cases'
 import { useAssessmentStore } from '@/stores/assessment'
 import { usePracticeStore } from '@/stores/practice'
+import { usePersonaStore } from '@/stores/persona'
 import { useThemeStore } from '@/stores/theme'
+import { diagnoseGaps } from '@/utils/diagnose'
+import { buildFeed } from '@/utils/feed'
 
 const router = useRouter()
 const userStore = useUserStore()
+const modelStore = useModelStore()
 const casesStore = useCasesStore()
 const assessmentStore = useAssessmentStore()
 const practiceStore = usePracticeStore()
+const personaStore = usePersonaStore()
 const themeStore = useThemeStore()
+
+const MOBILE_ROUTE = {
+  '/app/practice': '/m/practice',
+  '/app/selftest': '/m/selftest',
+  '/app/cheatsheet': '/m/cheatsheet',
+  '/app/checkup': '/m/checkup',
+  '/app/assessment': '/m/assessment',
+  '/app/cases': '/m/case',
+  '/app/ask': '/m/ask',
+  '/app/homework': '/m/course',
+}
+
+function toMobile(to) {
+  if (!to) return to
+  if (typeof to === 'string') return MOBILE_ROUTE[to] || to
+  return { ...to, path: MOBILE_ROUTE[to.path] || to.path }
+}
 
 const overallProgress = computed(() => {
   const list = COURSE.chapters
@@ -30,26 +53,13 @@ const currentCase = computed(() => casesStore.currentCase())
 const isStudent = computed(() => userStore.role === 'student')
 
 /* ==================================================
- * 双风格设计方案（示意 A-1 / B-1）数据
+ * 纸感首页数据
  * ================================================== */
-const greeting = computed(() => {
-  const h = new Date().getHours()
-  if (h < 6) return '凌晨好'
-  if (h < 12) return '上午好'
-  if (h < 18) return '下午好'
-  return '晚上好'
-})
-
 const currentChapter = computed(
   () => COURSE.chapters.find((c) => c.status === '进行中') || COURSE.chapters[0],
 )
 
 const heroProgress = computed(() => currentChapter.value?.progress ?? overallProgress.value)
-
-const ringDash = computed(() => {
-  const c = 2 * Math.PI * 22
-  return `${((heroProgress.value / 100) * c).toFixed(1)} ${c.toFixed(1)}`
-})
 
 const pendingAssessmentCount = computed(() => {
   if (!isStudent.value) return 0
@@ -61,35 +71,22 @@ const myPracticeCount = computed(() => {
   return practiceStore.myRecords(userStore.user?.id).length
 })
 
-// 今日待办行（方案示意 B-1）
+// 盲区诊断（本地规则）
+const gapReport = computed(() =>
+  diagnoseGaps({ persona: personaStore.data, studentName: userStore.name || '同学' }),
+)
+
+// 今日待办 = 主动学习 Feed（移动端路由转换）
 const todoRows = computed(() => {
   if (isStudent.value) {
-    const rows = [
-      {
-        dot: '#E03131',
-        title: '提交预习案例',
-        sub: '老师将选用本节课案例',
-        date: '今天 22:00',
-        to: '/m/case',
-      },
-      {
-        dot: '#F59F00',
-        title: `一人一题练习 · ${currentChapter.value?.title.replace(/^第\d+章\s*/, '') || '本章'}`,
-        sub: 'AI 出题 · 三维反馈',
-        date: '今日',
-        to: '/m/practice',
-      },
-    ]
-    if (pendingAssessmentCount.value > 0) {
-      rows.push({
-        dot: '#3B5BDB',
-        title: `模拟面试题 ${pendingAssessmentCount.value} 道待作答`,
-        sub: '已由老师复核发布',
-        date: '',
-        to: '/m/assessment',
-      })
-    }
-    return rows
+    return buildFeed({
+      persona: personaStore.data,
+      gaps: gapReport.value.gaps,
+      pendingAssessment: pendingAssessmentCount.value,
+      daysSincePractice: practiceStore.daysSinceLast(userStore.user?.id),
+      currentChapter: currentChapter.value?.title || '',
+      homeworks: HOMEWORKS,
+    }).map((r) => ({ ...r, to: toMobile(r.to) }))
   }
   const reviewCount = assessmentStore.tasks
     .flatMap((t) => t.items)
@@ -113,9 +110,13 @@ const quickEntries = computed(() =>
   isStudent.value
     ? [
         { ic: '题', color: '#E8590C', name: '一人一题', sub: 'AI 出题练习', to: '/m/practice' },
-        { ic: '例', color: '#3B5BDB', name: '课前案例', sub: '提交兴趣案例', to: '/m/case' },
+        { ic: '测', color: '#3B5BDB', name: '章节自测', sub: '先测后学', to: '/m/selftest' },
+        { ic: '表', color: '#9C36B5', name: '备考速查', sub: '按主题重组', to: '/m/cheatsheet' },
+        { ic: '检', color: '#2B8A3E', name: '学习体检', sub: '盲区与建议', to: '/m/checkup' },
+        { ic: '例', color: '#0C8599', name: '课前案例', sub: '提交兴趣案例', to: '/m/case' },
         { ic: '考', color: '#2B8A3E', name: '课程考核', sub: '模拟面试', to: '/m/assessment' },
         { ic: '问', color: '#F59F00', name: 'AI 答疑', sub: '小管同学', to: '/m/ask' },
+        { ic: '我', color: '#495057', name: '我的', sub: '背景与设置', to: '/m/mine' },
       ]
     : [
         { ic: '稿', color: '#3B5BDB', name: '案例选稿台', sub: '筛选 / 选用 / 驳回', to: '/m/case' },
@@ -123,12 +124,58 @@ const quickEntries = computed(() =>
         { ic: '问', color: '#F59F00', name: 'AI 答疑', sub: '小管同学', to: '/m/ask' },
       ],
 )
+
+const heroInput = ref('')
+const heroLine1 = computed(() => (isStudent.value ? '把这一章，' : '把这一周的教学，'))
+const heroLine2 = computed(() => (isStudent.value ? '学成你自己的' : '安排明白'))
+const mHeroSub = computed(() =>
+  isStudent.value
+    ? '从课前案例到考前速查，按你的进度与盲区安排下一步。'
+    : '从课程材料到班级盲区，把该处理的事排好序。',
+)
+
+const mHeroMaterials = computed(() =>
+  isStudent.value
+    ? [
+        { no: '1', title: '教学大纲', desc: '章节进度', to: '/m/course' },
+        { no: '2', title: '课程案例', desc: '预习与研讨', to: '/m/case' },
+        { no: '3', title: '学习记录', desc: '练习与盲区', to: '/m/checkup' },
+      ]
+    : [
+        { no: '1', title: '课程资料', desc: '课件与教材', to: '/m/course' },
+        { no: '2', title: '待选案例', desc: '学生提交', to: '/m/case' },
+        { no: '3', title: '待复核题', desc: 'AI 已生成', to: '/m/assessment' },
+      ],
+)
+
+const mHeroActions = computed(() =>
+  isStudent.value
+    ? [
+        { label: '章节自测', to: '/m/selftest' },
+        { label: '备考速查', to: '/m/cheatsheet' },
+        { label: '学习体检', to: '/m/checkup' },
+      ]
+    : [
+        { label: '教学主控台', to: '/m/course' },
+        { label: '课程资料', to: '/m/course' },
+        { label: '学情统计', to: '/m/course' },
+      ],
+)
+
+const mPrimary = computed(() => quickEntries.value.slice(0, 4))
+const mSecondary = computed(() => quickEntries.value.slice(4))
+
+function askHero() {
+  const q = heroInput.value.trim()
+  if (!q) return
+  router.push({ path: '/m/ask', query: { q } })
+}
 </script>
 
 <template>
   <div class="m-page">
     <!-- ==================================================
-      方案一 · 墨读：杂志封面式课程主页（示意 A-1）
+      方案一 · 夜读：杂志封面式课程主页（示意 A-1）
       ================================================== -->
     <section v-if="themeStore.isMo" class="mo-magazine" data-testid="mo-course-home">
       <div class="mo-mast">
@@ -156,26 +203,25 @@ const quickEntries = computed(() =>
             height="105"
             viewBox="0 0 240 190"
             fill="none"
-            stroke="#1F1B16"
             stroke-width="2.4"
             stroke-linecap="round"
             stroke-linejoin="round"
             aria-hidden="true"
           >
-            <path d="M150 34 a26 26 0 1 1 0.1 0" fill="#F7F3EA" />
-            <path d="M124 30 q26 -22 52 0 l4 8 q-30 -12 -60 0 z" fill="#C0432B" stroke="#C0432B" />
-            <path d="M176 34 l24 6 -24 6" fill="#C0432B" stroke="#C0432B" />
-            <circle cx="140" cy="36" r="3.2" fill="#1F1B16" /><circle cx="162" cy="36" r="3.2" fill="#1F1B16" />
+            <path d="M150 34 a26 26 0 1 1 0.1 0" class="f-body" />
+            <path d="M124 30 q26 -22 52 0 l4 8 q-30 -12 -60 0 z" class="f-accent" />
+            <path d="M176 34 l24 6 -24 6" class="f-accent" />
+            <circle cx="140" cy="36" r="3.2" class="f-ink" /><circle cx="162" cy="36" r="3.2" class="f-ink" />
             <path d="M146 48 q8 6 16 0" />
-            <path d="M150 62 q-4 40 -22 62 l38 8 q10 -30 6 -66" fill="#F7F3EA" />
-            <path d="M132 128 l-14 46 h84 l-10 -46" fill="#F7F3EA" />
-            <path d="M120 174 h96" stroke="#C0432B" />
-            <rect x="96" y="104" width="72" height="44" rx="3" fill="#FFFEFA" />
-            <path d="M96 104 l36 -14 36 14" fill="#F7F3EA" />
-            <circle cx="132" cy="126" r="7" stroke="#C0432B" />
-            <path d="M60 158 q10 -22 30 -24 q-4 -14 8 -20 q10 16 -6 26 q22 2 30 22 q-16 -8 -30 -4 q-14 4 -32 0z" fill="#F7F3EA" />
-            <circle cx="86" cy="136" r="2.6" fill="#1F1B16" />
-            <path d="M28 178 q30 -10 60 0 t60 0" stroke="#B9AF9E" stroke-dasharray="4 6" />
+            <path d="M150 62 q-4 40 -22 62 l38 8 q10 -30 6 -66" class="f-body" />
+            <path d="M132 128 l-14 46 h84 l-10 -46" class="f-body" />
+            <path d="M120 174 h96" class="s-accent" />
+            <rect x="96" y="104" width="72" height="44" rx="3" class="f-body" />
+            <path d="M96 104 l36 -14 36 14" class="f-body" />
+            <circle cx="132" cy="126" r="7" class="s-accent" />
+            <path d="M60 158 q10 -22 30 -24 q-4 -14 8 -20 q10 16 -6 26 q22 2 30 22 q-16 -8 -30 -4 q-14 4 -32 0z" class="f-body" />
+            <circle cx="86" cy="136" r="2.6" class="f-ink" />
+            <path d="M28 178 q30 -10 60 0 t60 0" class="s-dim" stroke-dasharray="4 6" />
           </svg>
         </div>
       </div>
@@ -188,9 +234,9 @@ const quickEntries = computed(() =>
           <template v-if="isStudent">
             <h4 class="mo-col-title">三件事</h4>
             <p class="mo-col-text">
-              ① 提交预习案例（今晚 22:00 截止）<br />
-              ② 完成一人一题练习 1 次<br />
-              ③ {{ pendingAssessmentCount > 0 ? `模拟面试题 ${pendingAssessmentCount} 道待作答` : '复盘最近一次红批' }}
+              <span v-for="(t, ti) in todoRows.slice(0, 3)" :key="ti">
+                {{ ['①', '②', '③'][ti] }} {{ t.title }}<br />
+              </span>
             </p>
           </template>
           <template v-else>
@@ -231,61 +277,118 @@ const quickEntries = computed(() =>
     </section>
 
     <!-- ==================================================
-      方案二 · 云课笺：问候 + 待办 + 四宫格（示意 B-1）
+      方案二 · 运行台：问候 + 待办 + 四宫格（示意 B-1）
       ================================================== -->
     <template v-else>
-      <section class="yun-top" data-testid="yun-greeting">
-        <div class="yun-hi">
-          {{ greeting }}，{{ userStore.name || '同学' }} <small>《{{ COURSE.name }}》第 8 周</small>
+      <section class="m-home-hero" data-testid="yun-greeting">
+        <div class="m-hero-tabs">
+          <span class="on">开始学习</span>
+          <span @click="router.push('/m/ask')">直接提问</span>
         </div>
-        <div class="yun-badges">
-          <span class="skin-badge run">● {{ currentChapter.title.replace(/^第\d+章\s*/, '') }} 进行中</span>
-          <span class="skin-badge dis">学科背景：{{ userStore.discipline || '未设置' }}</span>
-          <svg class="skin-ring" viewBox="0 0 52 52" aria-hidden="true">
-            <circle cx="26" cy="26" r="22" fill="none" stroke="#F0EEE8" stroke-width="6" />
-            <circle
-              cx="26"
-              cy="26"
-              r="22"
-              fill="none"
-              stroke="#E8590C"
-              stroke-width="6"
-              stroke-linecap="round"
-              :stroke-dasharray="ringDash"
-              transform="rotate(-90 26 26)"
-            />
-            <text x="26" y="30" text-anchor="middle" font-size="12" font-weight="700" fill="#2B2A28">
-              {{ heroProgress }}%
-            </text>
-          </svg>
-        </div>
-      </section>
+        <h1 class="m-hero-title">{{ heroLine1 }}<br />{{ heroLine2 }}</h1>
+        <p class="m-hero-sub">{{ mHeroSub }}</p>
 
-      <section class="m-card yun-todo" data-testid="yun-todo">
-        <div class="yun-card-head">
-          <span class="yun-card-title"
-            >今日待办 <small>{{ todoRows.length }} 项 · 最早截止 今晚 22:00</small></span
+        <div class="m-material-row">
+          <div
+            v-for="m in mHeroMaterials"
+            :key="m.title"
+            class="m-material-card"
+            @click="router.push(m.to)"
           >
-          <span class="skin-badge new">NEW</span>
+            <span class="m-material-no">{{ m.no }}</span>
+            <div class="m-material-main">
+              <div class="m-material-title">{{ m.title }}</div>
+              <div class="m-material-desc">{{ m.desc }}</div>
+            </div>
+            <span class="m-material-plus">+</span>
+          </div>
         </div>
-        <div v-for="(r, i) in todoRows" :key="i" class="yun-todo-row" @click="r.to && router.push(r.to)">
-          <span class="yun-todo-dot" :style="{ background: r.dot }" />
-          <span class="yun-todo-main">
-            <span class="yun-todo-title">{{ r.title }}</span>
-            <span class="yun-todo-sub">{{ r.sub }}</span>
-          </span>
-          <span v-if="r.date" class="yun-todo-date">{{ r.date }}</span>
-          <span class="yun-todo-chev">›</span>
+
+        <div class="m-ask-box">
+          <van-field
+            v-model="heroInput"
+            type="textarea"
+            rows="2"
+            autosize
+            placeholder="问一个问题，或说说你今天想学什么…"
+            class="m-ask-field"
+            @keyup.enter="askHero"
+          />
+          <div class="m-ask-tools">
+            <div class="m-ask-chips">
+              <span
+                v-for="a in mHeroActions"
+                :key="a.label"
+                class="skin-chip"
+                @click="router.push(a.to)"
+              >
+                {{ a.label }}
+              </span>
+            </div>
+            <div class="m-ask-right">
+              <span class="m-model">{{ modelStore.config.model }}</span>
+              <button class="m-send" :disabled="!heroInput.trim()" @click="askHero">↑</button>
+            </div>
+          </div>
+        </div>
+        <p class="m-hero-hint">不确定问什么？点「章节自测」，我先看看你卡在哪。</p>
+      </section>
+
+      <section class="m-card m-continue">
+        <div class="m-continue-head">
+          <span>继续学习</span>
+          <span class="skin-badge run">{{ currentChapter.status }}</span>
+        </div>
+        <div class="m-continue-title">{{ currentChapter.title }}</div>
+        <p class="m-continue-desc">本周进度 {{ heroProgress }}%，先立框架再做题。</p>
+        <van-progress :percentage="heroProgress" :show-pivot="false" stroke-width="5" />
+        <div class="m-continue-actions">
+          <van-button size="small" type="primary" @click="router.push('/m/selftest')">
+            先测这一章
+          </van-button>
+          <van-button size="small" plain @click="router.push('/m/cheatsheet')">
+            看速查表
+          </van-button>
         </div>
       </section>
 
-      <section class="yun-grid" data-testid="yun-grid">
-        <div v-for="e in quickEntries" :key="e.name" class="yun-entry" @click="router.push(e.to)">
-          <div class="yun-entry-ic" :style="{ background: e.color }">{{ e.ic }}</div>
-          <div class="yun-entry-name">{{ e.name }}</div>
-          <div class="yun-entry-sub">{{ e.sub }}</div>
+      <section class="m-card" data-testid="yun-todo">
+        <div class="m-feed-head">
+          <span>今天安排</span>
+          <span>{{ todoRows.length }} 项 · 按优先级</span>
+        </div>
+        <div
+          v-for="(r, i) in todoRows.slice(0, 3)"
+          :key="i"
+          class="m-feed-row"
+          @click="r.to && router.push(r.to)"
+        >
+          <span class="m-feed-dot" :style="{ background: r.dot }" />
+          <div class="m-feed-main">
+            <div class="m-feed-title">{{ r.title }}</div>
+            <div class="m-feed-sub">{{ r.sub }}</div>
+          </div>
+          <span class="m-feed-chev">›</span>
         </div>
       </section>
+
+      <section class="m-primary-grid" data-testid="yun-grid">
+        <div
+          v-for="e in mPrimary"
+          :key="e.name"
+          class="m-primary"
+          @click="router.push(e.to)"
+        >
+          <span class="m-primary-ic" :style="{ background: e.color }">{{ e.ic }}</span>
+          <div class="m-primary-main">
+            <div class="m-primary-name">{{ e.name }}</div>
+            <div class="m-primary-sub">{{ e.sub }}</div>
+          </div>
+        </div>
+      </section>
+      <div class="m-text-links">
+        <a v-for="l in mSecondary" :key="l.name" @click="router.push(l.to)">{{ l.name }}</a>
+      </div>
 
       <section v-if="currentCase" class="m-card yun-case" data-testid="yun-case">
         <div class="yun-card-head">
@@ -342,36 +445,324 @@ const quickEntries = computed(() =>
   padding-bottom: 12px;
 }
 
-/* —— 云课笺顶部（示意 B-1）—— */
-.yun-top {
+/* —— 纸感首页（对齐 HyperKnow 首屏）—— */
+.m-home-hero {
+  padding: 14px 16px 6px;
+  text-align: center;
+}
+
+.m-hero-tabs {
+  display: inline-flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.m-hero-tabs span {
+  padding: 5px 14px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 12px;
+  color: var(--text-sub);
+}
+
+.m-hero-tabs span.on {
+  background: var(--card-bg);
+  border-color: var(--card-border);
+  color: var(--text-main);
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(74, 62, 38, 0.08);
+}
+
+.m-hero-title {
+  margin: 0;
+  font-size: 28px;
+  line-height: 1.3;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+  color: var(--text-main);
+}
+
+.m-hero-sub {
+  margin: 8px 0 16px;
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--text-sub);
+}
+
+.m-material-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.m-material-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+}
+
+.m-material-no {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  color: var(--text-sub);
+  font-family: var(--font-mono);
+  font-size: 10px;
+}
+
+.m-material-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.m-material-title {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.m-material-desc {
+  margin-top: 1px;
+  font-size: 10.5px;
+  color: var(--text-faint);
+}
+
+.m-material-plus {
+  color: var(--text-faint);
+  font-size: 16px;
+}
+
+.m-ask-box {
+  padding: 10px 12px 8px;
+  text-align: left;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 14px;
+  box-shadow: var(--card-shadow);
+}
+
+.m-ask-field {
+  padding: 0;
+  background: transparent;
+}
+
+.m-ask-field :deep(.van-field__control) {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-main);
+}
+
+.m-ask-tools {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: 6px;
   flex-wrap: wrap;
-  padding: 14px 12px 4px;
+  margin-top: 6px;
 }
 
-.yun-hi {
-  font-size: 17px;
+.m-ask-chips {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.m-ask-chips .skin-chip {
+  margin: 0;
+  padding: 3px 8px;
+  font-size: 10.5px;
+}
+
+.m-ask-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.m-model {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  color: var(--text-faint);
+}
+
+.m-send {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-on);
+  font-size: 14px;
+}
+
+.m-send:disabled {
+  opacity: 0.35;
+}
+
+.m-hero-hint {
+  margin: 8px 0 0;
+  font-size: 10.5px;
+  color: var(--text-faint);
+}
+
+.m-continue {
+  margin-top: 4px;
+}
+
+.m-continue-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.m-continue-title {
+  margin: 2px 0;
+  font-size: 16px;
   font-weight: 700;
   color: var(--text-main);
 }
 
-.yun-hi small {
-  display: block;
+.m-continue-desc {
+  margin: 0 0 8px;
   font-size: 11.5px;
-  font-weight: 400;
-  color: var(--text-faint);
-  margin-left: 0;
-  margin-top: 2px;
+  color: var(--text-sub);
 }
 
-.yun-badges {
+.m-continue-actions {
   display: flex;
-  gap: 6px;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.m-feed-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.m-feed-head span:last-child {
+  font-size: 10.5px;
+  font-weight: 400;
+  color: var(--text-faint);
+}
+
+.m-feed-row {
+  display: flex;
   align-items: center;
+  gap: 8px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--divider);
+}
+
+.m-feed-row:last-child {
+  border-bottom: none;
+}
+
+.m-feed-dot {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.m-feed-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.m-feed-title {
+  font-size: 12px;
+  color: var(--text-main);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.m-feed-sub {
+  font-size: 10.5px;
+  color: var(--text-faint);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.m-feed-chev {
+  color: var(--text-faint);
+  font-size: 14px;
+}
+
+.m-primary-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 0 12px 8px;
+}
+
+.m-primary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+}
+
+.m-primary-ic {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.m-primary-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.m-primary-sub {
+  font-size: 10px;
+  color: var(--text-faint);
+}
+
+.m-text-links {
+  display: flex;
+  gap: 14px;
   flex-wrap: wrap;
+  margin: 0 16px 12px;
+  font-size: 11.5px;
+  color: var(--text-sub);
+}
+
+.m-text-links a {
+  padding-bottom: 1px;
+  border-bottom: 1px dashed var(--divider);
 }
 
 .m-card {
@@ -433,13 +824,13 @@ const quickEntries = computed(() =>
 }
 
 /* ==================================================
- * 墨读杂志封面：移动端适配（示意 A-1）
+ * 夜读杂志封面：移动端适配（示意 A-1）
  * 置于块尾覆盖 skins.css 的共享定义
  * ================================================== */
 .mo-magazine {
   margin: 12px;
-  background: #f7f3ea;
-  border: 1px solid #1f1b16;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   border-radius: 3px;
   padding-bottom: 14px;
 }
@@ -484,6 +875,27 @@ const quickEntries = computed(() =>
   align-self: center;
 }
 
+/* 手绘线稿插图：线条/填充全部走令牌，随皮肤（夜读深色）自适应 */
+.mo-hero-art svg {
+  stroke: var(--text-main);
+}
+.mo-hero-art .f-body {
+  fill: var(--surface-2);
+}
+.mo-hero-art .f-accent {
+  fill: var(--accent);
+  stroke: var(--accent);
+}
+.mo-hero-art .f-ink {
+  fill: var(--text-main);
+}
+.mo-hero-art .s-accent {
+  stroke: var(--accent);
+}
+.mo-hero-art .s-dim {
+  stroke: var(--text-sub);
+}
+
 .mo-dots {
   margin: 4px 14px 0;
   font-size: 10px;
@@ -499,7 +911,7 @@ const quickEntries = computed(() =>
 .mo-col {
   padding: 12px 0 0;
   border-right: none;
-  border-top: 1px dashed #b9af9e;
+  border-top: 1px dashed var(--divider);
 }
 
 .mo-col:first-child {

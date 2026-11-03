@@ -49,8 +49,9 @@ const server = createServer(async (req, res) => {
   try {
     const urlPath = decodeURIComponent(new URL(req.url, 'http://localhost').pathname)
 
-    // 相对 base 深链接修正：/<任意一段>/assets/... → /assets/...，/<任意一段>/favicon.svg → /favicon.svg
-    const fixed = urlPath.match(/^\/[^/]+\/(assets\/.+|favicon\.svg)$/)
+    // 相对 base 深链接修正：/<任意一段或两段>/assets/... → /assets/...，
+    // 对应 /m/course 与 /app/course 两級深链接；favicon.svg 同理
+    const fixed = urlPath.match(/^\/(?:[^/]+\/){1,2}(assets\/.+|favicon\.svg)$/)
     let filePath = normalize(join(distDir, fixed ? `/${fixed[1]}` : urlPath))
 
     // 防目录穿越

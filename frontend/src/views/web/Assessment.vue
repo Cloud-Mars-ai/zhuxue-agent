@@ -25,7 +25,7 @@ const isStudent = computed(() => userStore.role === 'student')
 const isTeacher = computed(() => ['admin', 'teacher', 'ta'].includes(userStore.role))
 const isConfigured = computed(() => modelStore.isConfigured)
 
-// 学生视图文案随皮肤切换：墨读下考核题目装帧为「面试函」
+// 学生视图文案随皮肤切换：夜读下考核题目装帧为「面试函」
 const studentSectionTitle = computed(() =>
   themeStore.isMo ? '面试函 · 我的题目' : '我的模拟面试题',
 )
@@ -288,7 +288,7 @@ async function submitAnswer(entry) {
       <el-alert v-if="!isConfigured" type="warning" :closable="false" show-icon class="mb12">
         <template #title>
           尚未完成模型配置，
-          <el-link type="primary" :underline="false" @click="$router.push('/model')">
+          <el-link type="primary" :underline="false" @click="$router.push('/app/model')">
             去「模型接入」页面配置
           </el-link>
           后即可使用 AI 智能出题
@@ -542,7 +542,7 @@ async function submitAnswer(entry) {
               </span>
             </div>
 
-            <!-- 题目：墨读装帧为面试函（收件人 / 此致敬礼 / 署名 / 得分印章） -->
+            <!-- 题目：夜读装帧为面试函（收件人 / 此致敬礼 / 署名 / 得分印章） -->
             <div class="student-item-question">
               <div v-if="themeStore.isMo" class="mo-letter-lt">
                 收件人：<b>{{ userStore.name }}</b>（{{ userStore.discipline || '未设置学科' }}） ·

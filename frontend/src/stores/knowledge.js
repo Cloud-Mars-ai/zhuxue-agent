@@ -1,0 +1,217 @@
+import { defineStore } from 'pinia'
+import { ref, computed } from 'vue'
+import { COURSE_OUTLINE, outlineToText } from '@/mock/courseOutline'
+import { idbGet, idbSet } from '@/repositories/db'
+
+/**
+ * 课程知识库（S3 轻量版）
+ *
+ * - 材料必须由教师确认（confirmedBy: 'teacher'）才进入 AI 上下文；
+ * - 切片在内存中完成，按章节/关键词检索 top-k，不把整门课塞进窗口；
+ * - 存储走 IndexedDB，localStorage 只作为降级。
+ */
+
+const STORAGE_KEY = 'knowledge-materials-v1'
+const MAX_CONTEXT_CHARS = 2000
+const TOP_K = 3
+
+function seedMaterials() {
+  const now = new Date().toISOString()
+  return COURSE_OUTLINE.map((c) => ({
+    id: `m-ch${c.id}`,
+    title: `${c.title} · 课程纲要（教师确认稿）`,
+    chapter: c.title,
+    text: outlineToText([c]),
+    confirmedBy: 'teacher',
+    seeded: true,
+    updatedAt: now,
+  }))
+}
+
+/** 按行聚合成不超过 maxLen 的片段 */
+function chunkText(text, maxLen = 420) {
+  const lines = String(text || '')
+    .split(/\n+/)
+    .map((l) => l.trim())
+    .filter(Boolean)
+  const chunks = []
+  let buf = ''
+  lines.forEach((line) => {
+    if ((buf + line).length > maxLen && buf) {
+      chunks.push(buf)
+      buf = line
+    } else {
+      buf = buf ? `${buf}\n${line}` : line
+    }
+  })
+  if (buf) chunks.push(buf)
+  return chunks
+}
+
+/** 中文按 2 字滑窗，英文按单词，构造检索词 */
+function queryTerms(query) {
+  const q = String(query || '').toLowerCase()
+  const terms = new Set()
+  const words = q.match(/[a-z0-9]{2,}/g) || []
+  words.forEach((w) => terms.add(w))
+  const han = q.replace(/[^\u4e00-\u9fa5]/g, '')
+  for (let i = 0; i + 2 <= han.length; i += 1) {
+    terms.add(han.slice(i, i + 2))
+  }
+  // 常见虚词不参与打分
+  ;['的是', '什么', '怎么', '为什', '么是', '可以', '一下'].forEach((t) => terms.delete(t))
+  return [...terms].slice(0, 40)
+}
+
+export const useKnowledgeStore = defineStore('knowledge', () => {
+  const materials = ref([])
+  const loaded = ref(false)
+  let loadingPromise = null
+
+  const stats = computed(() => {
+    const chars = materials.value.reduce((n, m) => n + (m.text?.length || 0), 0)
+    return { count: materials.value.length, chars }
+  })
+
+  const allChunks = computed(() => {
+    const list = []
+    materials.value.forEach((m) => {
+      chunkText(m.text).forEach((text, i) => {
+        list.push({
+          id: `${m.id}-${i}`,
+          materialId: m.id,
+          title: m.title,
+          chapter: m.chapter,
+          text,
+        })
+      })
+    })
+    return list
+  })
+
+  async function load() {
+    if (loaded.value) return
+    if (loadingPromise) return loadingPromise
+    loadingPromise = (async () => {
+      const saved = await idbGet(STORAGE_KEY)
+      if (Array.isArray(saved)) {
+        materials.value = saved
+      } else {
+        materials.value = seedMaterials()
+        await idbSet(STORAGE_KEY, materials.value)
+      }
+      loaded.value = true
+    })()
+    return loadingPromise
+  }
+
+  async function ensureLoaded() {
+    if (!loaded.value) await load()
+    return materials.value
+  }
+
+  async function persist() {
+    await idbSet(STORAGE_KEY, materials.value)
+  }
+
+  async function addMaterial({ title, chapter, text }) {
+    const item = {
+      id: `m-${Date.now().toString(36)}`,
+      title: title.trim() || `${chapter} 补充材料`,
+      chapter,
+      text: text.trim(),
+      confirmedBy: 'teacher',
+      seeded: false,
+      updatedAt: new Date().toISOString(),
+    }
+    materials.value = [item, ...materials.value]
+    await persist()
+    return item
+  }
+
+  async function updateMaterial(id, patch) {
+    materials.value = materials.value.map((m) =>
+      m.id === id ? { ...m, ...patch, updatedAt: new Date().toISOString() } : m,
+    )
+    await persist()
+  }
+
+  async function removeMaterial(id) {
+    materials.value = materials.value.filter((m) => m.id !== id)
+    await persist()
+  }
+
+  async function resetToOutline() {
+    materials.value = seedMaterials()
+    await persist()
+  }
+
+  /**
+   * 构造检索上下文
+   * @returns {{text:string, chunks:Array}}
+   */
+  async function buildContext({ chapter = '', query = '' } = {}) {
+    await ensureLoaded()
+    const pool = allChunks.value.filter((c) => c.materialId)
+    if (!pool.length) return { text: '', chunks: [] }
+
+    const terms = queryTerms(query)
+    const scored = pool.map((c) => {
+      let score = 0
+      if (chapter && c.chapter === chapter) score += 6
+      terms.forEach((t) => {
+        if (c.text.toLowerCase().includes(t)) score += 2
+        if (c.title.toLowerCase().includes(t)) score += 1
+      })
+      return { ...c, score }
+    })
+
+    let picked = scored
+      .filter((c) => c.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, TOP_K)
+
+    // 没有命中时，回退到该章前 2 片，保证"讲这一章"仍有材料
+    if (!picked.length) {
+      picked = pool.filter((c) => !chapter || c.chapter === chapter).slice(0, 2)
+    }
+
+    let used = 0
+    const chosen = []
+    picked.forEach((c) => {
+      if (used + c.text.length > MAX_CONTEXT_CHARS) return
+      chosen.push(c)
+      used += c.text.length
+    })
+
+    if (!chosen.length) return { text: '', chunks: [] }
+
+    const text =
+      '【课程材料 · 仅可依据以下内容】\n' +
+      chosen
+        .map((c, i) => `[材料${i + 1}｜${c.title}｜${c.chapter}]\n${c.text}`)
+        .join('\n\n') +
+      '\n\n【材料使用规则】优先使用上述材料回答；材料未覆盖时明确说"课程材料未涉及"，不要编造；引用时在句末标注（来源：材料标题）。'
+
+    return { text, chunks: chosen }
+  }
+
+  function byChapter(chapter) {
+    return materials.value.filter((m) => m.chapter === chapter)
+  }
+
+  return {
+    materials,
+    loaded,
+    stats,
+    allChunks,
+    load,
+    ensureLoaded,
+    addMaterial,
+    updateMaterial,
+    removeMaterial,
+    resetToOutline,
+    buildContext,
+    byChapter,
+  }
+})

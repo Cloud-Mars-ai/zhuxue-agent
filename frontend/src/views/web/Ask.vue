@@ -1,15 +1,21 @@
 <script setup>
-import { ref, computed, nextTick } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, computed, nextTick, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
+import { COURSE } from '@/mock/data'
 import { useModelStore } from '@/stores/model'
 import { useUserStore } from '@/stores/user'
+import { usePersonaStore } from '@/stores/persona'
+import { isEnabled } from '@/config/flags'
 import { sendChat } from '@/api/chat'
 import { matchIntent, buildTodoActions } from '@/utils/intent'
+import { getDailyRecommendations } from '@/utils/recommend'
 
 const router = useRouter()
+const route = useRoute()
 const modelStore = useModelStore()
 const userStore = useUserStore()
+const personaStore = usePersonaStore()
 
 // 主动问候：进入答疑页即展示欢迎语与推荐操作
 const WELCOME = {
@@ -24,12 +30,21 @@ const input = ref('')
 const sending = ref(false)
 const listRef = ref()
 
-const suggestions = [
-  '待办有哪些',
-  '我想交作业',
-  '开始一人一题练习',
-  '什么是有限理性决策？',
-]
+const currentChapter = computed(
+  () => COURSE.chapters.find((c) => c.status === '进行中')?.title || COURSE.chapters[0]?.title || '',
+)
+
+// 主动式提问：基于练习记录与画像，每天刷新；规则优先，不依赖模型
+const recommendations = computed(() =>
+  getDailyRecommendations(personaStore.data, currentChapter.value),
+)
+
+const knowledgeOn = computed(() => isEnabled('knowledgeBase'))
+
+function useRecommendation(rec) {
+  if (rec.to) router.push(rec.to)
+  else ask(rec.text)
+}
 
 const isConfigured = computed(() => modelStore.isConfigured)
 const disciplineTag = computed(() =>
@@ -70,7 +85,11 @@ async function ask(text) {
 
   try {
     // 模型无记忆，每次携带完整对话历史（chat.js 内部会截取最近 20 条）
-    const reply = await sendChat(messages.value)
+    const reply = await sendChat(messages.value, {
+      useKnowledge: true,
+      chapter: currentChapter.value,
+      traceRefs: { chapter: currentChapter.value },
+    })
     messages.value.push({ role: 'assistant', content: reply })
   } catch (err) {
     ElMessage.error(err.message || 'AI 助教暂时无法回答，请稍后再试')
@@ -91,6 +110,12 @@ function handleEnter(e) {
     ask()
   }
 }
+
+// 从课程主页的大输入框带问题过来：进入即发送
+onMounted(() => {
+  const q = String(route.query.q || '').trim()
+  if (q) ask(q)
+})
 </script>
 
 <template>
@@ -102,6 +127,9 @@ function handleEnter(e) {
         <el-tag v-if="disciplineTag" size="small" type="info" effect="plain" class="ml8">
           学科背景：{{ disciplineTag }}
         </el-tag>
+        <el-tag v-if="knowledgeOn" size="small" type="success" effect="plain" class="ml8">
+          课程材料已接入
+        </el-tag>
       </span>
       <el-button text type="primary" @click="clearChat">清空对话</el-button>
     </div>
@@ -109,7 +137,7 @@ function handleEnter(e) {
     <el-alert v-if="!isConfigured" type="warning" :closable="false" show-icon class="config-tip">
       <template #title>
         尚未完成模型配置，
-        <el-link type="primary" :underline="false" @click="router.push('/model')">
+        <el-link type="primary" :underline="false" @click="router.push('/app/model')">
           去「模型接入」页面配置
         </el-link>
         （意图跳转与待办查询不受影响）
@@ -154,17 +182,22 @@ function handleEnter(e) {
       </div>
     </div>
 
-    <div class="suggest">
-      <span class="suggest-label">试试说：</span>
-      <el-tag
-        v-for="s in suggestions"
-        :key="s"
-        class="suggest-tag"
-        effect="plain"
-        @click="ask(s)"
-      >
-        {{ s }}
-      </el-tag>
+    <div class="daily-reco">
+      <div class="daily-head">
+        <span class="daily-title">今天值得想一想</span>
+        <span class="daily-sub">基于你的练习记录 · 每天刷新</span>
+      </div>
+      <div class="daily-list">
+        <div
+          v-for="r in recommendations"
+          :key="r.id"
+          class="daily-item"
+          @click="useRecommendation(r)"
+        >
+          <div class="daily-text">{{ r.text }}</div>
+          <div class="daily-reason">{{ r.reason }}</div>
+        </div>
+      </div>
     </div>
 
     <div class="input-bar">
@@ -240,7 +273,7 @@ function handleEnter(e) {
   font-size: 14px;
   line-height: 1.8;
   border-radius: 12px;
-  background: #fff;
+  background: var(--card-bg);
   border: 1px solid var(--border);
 }
 
@@ -249,7 +282,7 @@ function handleEnter(e) {
 }
 
 .msg.user .bubble {
-  color: #fff;
+  color: var(--accent-on);
   background: var(--brand);
   border-color: var(--brand);
 }
@@ -295,20 +328,65 @@ function handleEnter(e) {
   }
 }
 
-.suggest {
+.daily-reco {
+  padding: 8px 0 10px;
+}
+
+.daily-head {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   gap: 8px;
-  padding: 8px 0;
+  margin-bottom: 8px;
 }
 
-.suggest-label {
+.daily-title {
   font-size: 13px;
-  color: var(--text-sub);
+  font-weight: 600;
+  color: var(--text-main);
 }
 
-.suggest-tag {
+.daily-sub {
+  font-size: 11.5px;
+  color: var(--text-faint);
+}
+
+.daily-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.daily-item {
+  padding: 10px 12px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
   cursor: pointer;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.daily-item:hover {
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.daily-text {
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--text-main);
+}
+
+.daily-reason {
+  margin-top: 5px;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--text-faint);
+}
+
+@media (max-width: 900px) {
+  .daily-list {
+    grid-template-columns: 1fr;
+  }
 }
 
 .input-bar {
@@ -316,7 +394,7 @@ function handleEnter(e) {
   align-items: flex-end;
   gap: 8px;
   padding: 10px;
-  background: #fff;
+  background: var(--card-bg);
   border: 1px solid var(--border);
   border-radius: 8px;
 }
