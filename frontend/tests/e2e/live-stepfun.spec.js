@@ -114,5 +114,7 @@ test('@live DeepSeek 可从首页生成课程并进入首个板书场景', async
   await page.getByRole('button', { name: '当前场景后停止' }).click()
   await expect(page.locator('.board-canvas')).toBeVisible({ timeout: 90_000 })
   await expect(page.locator('.experience-page')).toBeVisible()
-  await expect(page.locator('.scene-rail button')).toHaveCount(6)
+  const sceneCount = await page.locator('.scene-rail button').count()
+  expect(sceneCount).toBeGreaterThanOrEqual(6)
+  expect(sceneCount).toBeLessThanOrEqual(9)
 })

@@ -33,6 +33,7 @@
 ### 产品链路
 
 - `npm run test:e2e`：23/23 通过；
+- `npm run test:e2e:live`：5/5 通过；
 - 常规构建 `npm run build`：通过；
 - 单文件离线构建 `npm run build:offline`：通过；
 - `npm audit --omit=dev`：0 个已知漏洞；
