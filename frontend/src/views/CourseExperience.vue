@@ -562,14 +562,15 @@ function backToStudio() {
 }
 
 .landscape-board {
-  overflow: auto;
+  overflow: visible;
   padding: 8px;
   background: var(--surface-2);
   border-radius: var(--radius-md);
 }
 
 .landscape-board :deep(.board-canvas) {
-  min-width: 1050px;
+  width: 100%;
+  min-width: 0;
   box-shadow: 0 10px 34px color-mix(in srgb, var(--text-main) 6%, transparent);
 }
 
@@ -734,8 +735,8 @@ function backToStudio() {
     grid-template-columns: 1fr;
   }
 
-  .landscape-board :deep(.board-canvas) {
-    min-width: 860px;
+  .landscape-board {
+    padding: 4px;
   }
 }
 </style>

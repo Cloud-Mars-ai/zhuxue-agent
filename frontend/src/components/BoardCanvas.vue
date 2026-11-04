@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 const props = defineProps({
   lesson: { type: Object, default: null },
@@ -9,6 +9,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['answer'])
+const selectedAnswers = ref({})
 
 const visibleBlocks = computed(() =>
   (props.lesson?.blocks || []).slice(0, Math.max(0, props.visibleCount)),
@@ -22,8 +23,16 @@ function toneLabel(tone) {
 
 function chooseAnswer(question, option) {
   if (!props.interactive) return
+  selectedAnswers.value = { ...selectedAnswers.value, [question]: option }
   emit('answer', { question, option })
 }
+
+watch(
+  () => props.lesson,
+  () => {
+    selectedAnswers.value = {}
+  },
+)
 </script>
 
 <template>
@@ -114,12 +123,17 @@ function chooseAnswer(question, option) {
                 :key="option"
                 type="button"
                 :disabled="!interactive"
+                :class="{ selected: selectedAnswers[block.prompt] === option }"
+                :aria-pressed="selectedAnswers[block.prompt] === option"
                 @click="chooseAnswer(block.prompt, option)"
               >
                 <span>{{ String.fromCharCode(65 + optionIndex) }}</span>
                 {{ option }}
               </button>
             </div>
+            <p v-if="selectedAnswers[block.prompt]" class="question-selection">
+              已选择「{{ selectedAnswers[block.prompt] }}」。可以继续在对话栏补充你的判断依据。
+            </p>
             <p class="question-tip">也可以直接在右侧输入自己的判断。</p>
           </div>
         </template>
@@ -143,10 +157,6 @@ function chooseAnswer(question, option) {
   font-size: 15px;
   line-height: 1.82;
   letter-spacing: 0.015em;
-}
-
-.board-canvas.is-landscape {
-  min-width: 1050px;
 }
 
 .board-canvas.is-landscape .board-blocks {
@@ -431,6 +441,12 @@ th {
   border-color: var(--board-accent);
 }
 
+.question-options button.selected {
+  color: var(--board-heading);
+  background: var(--board-accent-soft);
+  border-color: var(--board-accent);
+}
+
 .question-options button span {
   width: 21px;
   height: 21px;
@@ -447,6 +463,13 @@ th {
   margin: 11px 0 0;
   color: var(--board-faint);
   font-size: 10.5px;
+}
+
+.question-selection {
+  margin: 9px 0 0;
+  color: var(--board-heading-alt);
+  font-size: 11px;
+  line-height: 1.6;
 }
 
 .block-enter-active {
@@ -476,12 +499,8 @@ th {
     grid-column: 1;
   }
 
-  .board-canvas.is-landscape {
-    min-width: 860px;
-  }
-
   .board-canvas.is-landscape .board-blocks {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr;
   }
 }
 </style>

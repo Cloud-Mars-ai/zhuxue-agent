@@ -247,6 +247,14 @@ test('教师可用两阶段编排生成课程并进入板书场景', async ({ pa
   await expect(page.locator('.board-canvas')).toBeVisible()
   await expect(page.locator('.scene-rail button')).toHaveCount(6)
   await expect(page.locator('.lesson-frame')).toBeVisible()
+  const boardOverflow = await page.locator('.landscape-board').evaluate(
+    (element) => element.scrollWidth - element.clientWidth,
+  )
+  expect(boardOverflow).toBeLessThanOrEqual(1)
+
+  await page.locator('.question-options button').first().click()
+  await expect(page.locator('.question-options button').first()).toHaveClass(/selected/)
+  await expect(page.locator('.question-selection')).toBeVisible()
 
   await page.reload({ waitUntil: 'domcontentloaded' })
   await expect(page).toHaveURL(/\/learn\/course-/)
@@ -291,6 +299,10 @@ test('学生可从 H5 首页直接生成课程大纲', async ({ page }) => {
   await expect(page).toHaveURL(/\/m\/studio\?project=/)
   await expect(page.locator('.outline-row').first()).toBeVisible()
   await expect(page.getByText('演示缓存大纲')).toBeVisible()
+
+  await page.getByTestId('studio-generate-course').click()
+  await expect(page).toHaveURL(/\/learn\/course-/)
+  await expect(page.getByTestId('board-canvas')).toBeVisible()
 })
 
 test('学生可下载生成板书', async ({ page }) => {
