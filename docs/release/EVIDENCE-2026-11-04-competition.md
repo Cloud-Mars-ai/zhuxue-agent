@@ -15,8 +15,8 @@
 ### 公网入口
 
 - GitHub Pages 根路径：`https://cloud-mars-ai.github.io/zhuxue-agent/`
-- 教师工作台：`https://cloud-mars-ai.github.io/zhuxue-agent/app/competition`
-- 学生 H5：`https://cloud-mars-ai.github.io/zhuxue-agent/m/competition`
+- 教师工作台：`https://cloud-mars-ai.github.io/zhuxue-agent/#/app/competition`
+- 学生 H5：`https://cloud-mars-ai.github.io/zhuxue-agent/#/m/competition`
 - GitHub Release：`https://github.com/Cloud-Mars-ai/zhuxue-agent/releases/tag/v0.7-competition`
 - GitHub Pages 构建状态：`built`，深链接在真实浏览器中渲染成功，页面无 JavaScript 错误。
 

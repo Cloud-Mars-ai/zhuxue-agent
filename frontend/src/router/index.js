@@ -5,6 +5,7 @@ import { useDeviceStore } from '@/stores/device'
 // 双击 dist/index.html 离线演示时是 file:// 协议，
 // 该协议下 history 模式无法工作，自动降级为 hash 模式（URL 带 #）
 const isFileProtocol = window.location.protocol === 'file:'
+const forceHashHistory = import.meta.env.VITE_ROUTER_MODE === 'hash'
 
 /**
  * 角色说明
@@ -329,7 +330,10 @@ const historyBase =
     : import.meta.env.BASE_URL
 
 const router = createRouter({
-  history: isFileProtocol ? createWebHashHistory() : createWebHistory(historyBase),
+  history:
+    isFileProtocol || forceHashHistory
+      ? createWebHashHistory(historyBase)
+      : createWebHistory(historyBase),
   routes,
 })
 

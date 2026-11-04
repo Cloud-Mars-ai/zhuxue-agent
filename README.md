@@ -5,8 +5,8 @@
 ## 在线入口
 
 - 公网演示：https://cloud-mars-ai.github.io/zhuxue-agent/
-- 智慧学伴工作台：https://cloud-mars-ai.github.io/zhuxue-agent/app/competition
-- 学生移动端：https://cloud-mars-ai.github.io/zhuxue-agent/m/competition
+- 智慧学伴工作台：https://cloud-mars-ai.github.io/zhuxue-agent/#/app/competition
+- 学生移动端：https://cloud-mars-ai.github.io/zhuxue-agent/#/m/competition
 - 代码仓库：https://github.com/Cloud-Mars-ai/zhuxue-agent
 - 交付 Release：https://github.com/Cloud-Mars-ai/zhuxue-agent/releases/tag/v0.7-competition
 
