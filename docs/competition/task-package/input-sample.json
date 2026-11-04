@@ -1,0 +1,417 @@
+{
+  "meta": {
+    "id": "math7-development-sample",
+    "version": "math7-competition-v1",
+    "seed": 20261104,
+    "title": "七年级数学 · 智慧学伴开发样例",
+    "grade": "七年级",
+    "subject": "数学",
+    "sourceType": "development-sample",
+    "official": false,
+    "disclaimer": "当前数据由固定种子生成，仅用于开发和演示。正式评测须以赛方发布的数据包及字段说明为准。",
+    "generatedAt": "2026-11-04T12:00:00.000Z"
+  },
+  "students": [
+    {
+      "id": "S001",
+      "displayName": "林晓禾",
+      "group": "A组",
+      "grade": "七年级"
+    },
+    {
+      "id": "S002",
+      "displayName": "周予安",
+      "group": "B组",
+      "grade": "七年级"
+    },
+    {
+      "id": "S003",
+      "displayName": "陈知夏",
+      "group": "C组",
+      "grade": "七年级"
+    },
+    {
+      "id": "S004",
+      "displayName": "赵清川",
+      "group": "A组",
+      "grade": "七年级"
+    },
+    {
+      "id": "S005",
+      "displayName": "许星遥",
+      "group": "B组",
+      "grade": "七年级"
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q-NUM-01",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-01",
+      "materialId": "MAT-NUM-01",
+      "type": "choice",
+      "difficulty": 1,
+      "stem": "下列各数中，属于负数的是（ ）",
+      "answer": "-3",
+      "concepts": [
+        "负数"
+      ]
+    },
+    {
+      "id": "Q-NUM-02",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-01",
+      "materialId": "MAT-NUM-02",
+      "type": "choice",
+      "difficulty": 1,
+      "stem": "数轴上原点表示的数是（ ）",
+      "answer": "0",
+      "concepts": [
+        "数轴"
+      ]
+    },
+    {
+      "id": "Q-NUM-03",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-01",
+      "materialId": "MAT-NUM-02",
+      "type": "choice",
+      "difficulty": 2,
+      "stem": "在数轴上，位于原点右侧且距离原点 4 个单位的数是（ ）",
+      "answer": "4",
+      "concepts": [
+        "数轴",
+        "正数"
+      ]
+    },
+    {
+      "id": "Q-NUM-04",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-01",
+      "materialId": "MAT-NUM-01",
+      "type": "judgment",
+      "difficulty": 2,
+      "stem": "“所有整数都是有理数”是否正确？",
+      "answer": "正确",
+      "concepts": [
+        "有理数"
+      ]
+    },
+    {
+      "id": "Q-NUM-05",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-02",
+      "materialId": "MAT-NUM-04",
+      "type": "calculation",
+      "difficulty": 1,
+      "stem": "-7 的相反数是____。",
+      "answer": "7",
+      "concepts": [
+        "相反数"
+      ]
+    },
+    {
+      "id": "Q-NUM-06",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-02",
+      "materialId": "MAT-NUM-03",
+      "type": "calculation",
+      "difficulty": 1,
+      "stem": "|-12|=____。",
+      "answer": "12",
+      "concepts": [
+        "绝对值"
+      ]
+    }
+  ],
+  "learningRecords": [
+    {
+      "id": "R00001",
+      "studentId": "S001",
+      "questionId": "Q-EQA-12",
+      "materialId": "MAT-EQA-05",
+      "requirementId": "REQ-EQA-03",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T16:00:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00002",
+      "studentId": "S001",
+      "questionId": "Q-EXP-11",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T19:11:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00003",
+      "studentId": "S001",
+      "questionId": "Q-NUM-06",
+      "materialId": "MAT-NUM-03",
+      "requirementId": "REQ-NUM-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T22:22:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00004",
+      "studentId": "S001",
+      "questionId": "Q-EXP-16",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-17T01:33:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00005",
+      "studentId": "S001",
+      "questionId": "Q-EXP-16",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T18:44:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00006",
+      "studentId": "S001",
+      "questionId": "Q-EXP-02",
+      "materialId": "MAT-EXP-02",
+      "requirementId": "REQ-EXP-01",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T21:55:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00007",
+      "studentId": "S001",
+      "questionId": "Q-EQA-01",
+      "materialId": "MAT-EQA-01",
+      "requirementId": "REQ-EQA-01",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-17T00:06:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00008",
+      "studentId": "S001",
+      "questionId": "Q-EQA-05",
+      "materialId": "MAT-EQA-03",
+      "requirementId": "REQ-EQA-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T17:17:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00009",
+      "studentId": "S001",
+      "questionId": "Q-EXP-01",
+      "materialId": "MAT-EXP-01",
+      "requirementId": "REQ-EXP-01",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T20:28:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00010",
+      "studentId": "S001",
+      "questionId": "Q-EXP-08",
+      "materialId": "MAT-EXP-03",
+      "requirementId": "REQ-EXP-02",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T23:39:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00011",
+      "studentId": "S001",
+      "questionId": "Q-EQA-01",
+      "materialId": "MAT-EQA-01",
+      "requirementId": "REQ-EQA-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T16:50:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00012",
+      "studentId": "S001",
+      "questionId": "Q-EXP-04",
+      "materialId": "MAT-EXP-01",
+      "requirementId": "REQ-EXP-01",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T19:01:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00013",
+      "studentId": "S001",
+      "questionId": "Q-NUM-02",
+      "materialId": "MAT-NUM-02",
+      "requirementId": "REQ-NUM-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T22:12:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00014",
+      "studentId": "S002",
+      "questionId": "Q-NUM-06",
+      "materialId": "MAT-NUM-03",
+      "requirementId": "REQ-NUM-02",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T17:07:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00015",
+      "studentId": "S002",
+      "questionId": "Q-EXP-03",
+      "materialId": "MAT-EXP-02",
+      "requirementId": "REQ-EXP-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T20:18:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00016",
+      "studentId": "S002",
+      "questionId": "Q-NUM-02",
+      "materialId": "MAT-NUM-02",
+      "requirementId": "REQ-NUM-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T23:29:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00017",
+      "studentId": "S002",
+      "questionId": "Q-EQA-01",
+      "materialId": "MAT-EQA-01",
+      "requirementId": "REQ-EQA-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T16:40:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00018",
+      "studentId": "S002",
+      "questionId": "Q-EQA-08",
+      "materialId": "MAT-EQA-04",
+      "requirementId": "REQ-EQA-02",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T19:51:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00019",
+      "studentId": "S002",
+      "questionId": "Q-EQA-10",
+      "materialId": "MAT-EQA-05",
+      "requirementId": "REQ-EQA-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T22:02:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00020",
+      "studentId": "S002",
+      "questionId": "Q-EQA-03",
+      "materialId": "MAT-EQA-02",
+      "requirementId": "REQ-EQA-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-17T01:13:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00021",
+      "studentId": "S002",
+      "questionId": "Q-NUM-04",
+      "materialId": "MAT-NUM-01",
+      "requirementId": "REQ-NUM-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T18:24:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00022",
+      "studentId": "S002",
+      "questionId": "Q-EXP-14",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T21:35:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00023",
+      "studentId": "S002",
+      "questionId": "Q-EQA-01",
+      "materialId": "MAT-EQA-01",
+      "requirementId": "REQ-EQA-01",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-17T00:46:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00024",
+      "studentId": "S002",
+      "questionId": "Q-EQA-01",
+      "materialId": "MAT-EQA-01",
+      "requirementId": "REQ-EQA-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T17:57:00.000Z",
+      "source": "development-sample-generator"
+    }
+  ]
+}

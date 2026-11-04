@@ -1,0 +1,7 @@
+﻿"recordId","rawIndex","code","severity","message","action"
+"R00005","411","duplicate_record_id","error","记录编号重复","保留首条，忽略重复记录"
+"R-Q-UNKNOWN-STUDENT","412","unknown_reference","error","学生编号不存在","保留原始行，不进入分析"
+"R-Q-UNKNOWN-QUESTION","413","unknown_reference","error","题目编号不存在","保留原始行，不进入分析"
+"R-Q-NEGATIVE-SCORE","414","invalid_value","error","得分超出 0..满分范围","保留原始行，不进入分析"
+"R-Q-MISSING-STUDENT-FIELD","415","missing_required_field","error","学生编号为空","保留原始行，不进入分析"
+"R-Q-BAD-STATUS","416","invalid_value","error","作答状态无法识别","保留原始行，不进入分析"

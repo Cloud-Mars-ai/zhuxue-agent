@@ -1,0 +1,6546 @@
+{
+  "meta": {
+    "id": "math7-development-sample",
+    "version": "math7-competition-v1",
+    "seed": 20261104,
+    "title": "七年级数学 · 智慧学伴开发样例",
+    "grade": "七年级",
+    "subject": "数学",
+    "sourceType": "development-sample",
+    "official": false,
+    "disclaimer": "当前数据由固定种子生成，仅用于开发和演示。正式评测须以赛方发布的数据包及字段说明为准。",
+    "generatedAt": "2026-11-04T12:00:00.000Z"
+  },
+  "topics": [
+    {
+      "id": "NUM",
+      "title": "有理数",
+      "summary": "建立数轴、相反数、绝对值和有理数四则运算之间的联系。",
+      "requirementIds": [
+        "REQ-NUM-01",
+        "REQ-NUM-02",
+        "REQ-NUM-03"
+      ]
+    },
+    {
+      "id": "EXP",
+      "title": "整式",
+      "summary": "用字母表示数量关系，理解整式、同类项与整式加减。",
+      "requirementIds": [
+        "REQ-EXP-01",
+        "REQ-EXP-02",
+        "REQ-EXP-03"
+      ]
+    },
+    {
+      "id": "EQA",
+      "title": "一元一次方程",
+      "summary": "从等式性质到方程求解，再到用方程解决实际问题。",
+      "requirementIds": [
+        "REQ-EQA-01",
+        "REQ-EQA-02",
+        "REQ-EQA-03"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "REQ-NUM-01",
+      "topicId": "NUM",
+      "code": "NUM-01",
+      "title": "理解有理数的意义",
+      "content": "认识正数、负数和零，理解有理数在数轴上的表示。",
+      "expectation": "能根据数轴比较有理数大小，并解释相反数、绝对值的意义。",
+      "sourceRef": "开发样例·课程标准模块：数与代数",
+      "prerequisiteIds": [],
+      "nextRequirementIds": [
+        "REQ-NUM-02",
+        "REQ-NUM-03"
+      ],
+      "materialIds": [
+        "MAT-NUM-01",
+        "MAT-NUM-02"
+      ],
+      "questionIds": [
+        "Q-NUM-01",
+        "Q-NUM-02",
+        "Q-NUM-03",
+        "Q-NUM-04"
+      ]
+    },
+    {
+      "id": "REQ-NUM-02",
+      "topicId": "NUM",
+      "code": "NUM-02",
+      "title": "数轴、相反数与绝对值",
+      "content": "用数轴、相反数和绝对值描述有理数的位置与距离。",
+      "expectation": "能在数轴上表示有理数，正确求相反数与绝对值，并进行大小比较。",
+      "sourceRef": "开发样例·课程标准模块：数与代数",
+      "prerequisiteIds": [
+        "REQ-NUM-01"
+      ],
+      "nextRequirementIds": [
+        "REQ-NUM-03"
+      ],
+      "materialIds": [
+        "MAT-NUM-03",
+        "MAT-NUM-04"
+      ],
+      "questionIds": [
+        "Q-NUM-05",
+        "Q-NUM-06",
+        "Q-NUM-07",
+        "Q-NUM-08"
+      ]
+    },
+    {
+      "id": "REQ-NUM-03",
+      "topicId": "NUM",
+      "code": "NUM-03",
+      "title": "有理数的四则运算",
+      "content": "掌握有理数加减乘除与混合运算的法则和运算顺序。",
+      "expectation": "能说明符号如何确定，按顺序完成混合运算，并检查结果的合理性。",
+      "sourceRef": "开发样例·课程标准模块：数与代数",
+      "prerequisiteIds": [
+        "REQ-NUM-02"
+      ],
+      "nextRequirementIds": [],
+      "materialIds": [
+        "MAT-NUM-05",
+        "MAT-NUM-06"
+      ],
+      "questionIds": [
+        "Q-NUM-09",
+        "Q-NUM-10",
+        "Q-NUM-11",
+        "Q-NUM-12",
+        "Q-NUM-13",
+        "Q-NUM-14",
+        "Q-NUM-15",
+        "Q-NUM-16",
+        "Q-NUM-17",
+        "Q-NUM-18",
+        "Q-NUM-19",
+        "Q-NUM-20"
+      ]
+    },
+    {
+      "id": "REQ-EXP-01",
+      "topicId": "EXP",
+      "code": "EXP-01",
+      "title": "用字母表示数量关系",
+      "content": "理解字母表示数，能根据文字关系列出代数式。",
+      "expectation": "能把实际情境中的数量关系准确转化为代数式，并说明每个字母的含义。",
+      "sourceRef": "开发样例·课程标准模块：代数式",
+      "prerequisiteIds": [
+        "REQ-NUM-03"
+      ],
+      "nextRequirementIds": [
+        "REQ-EXP-02",
+        "REQ-EXP-03"
+      ],
+      "materialIds": [
+        "MAT-EXP-01",
+        "MAT-EXP-02"
+      ],
+      "questionIds": [
+        "Q-EXP-01",
+        "Q-EXP-02",
+        "Q-EXP-03",
+        "Q-EXP-04"
+      ]
+    },
+    {
+      "id": "REQ-EXP-02",
+      "topicId": "EXP",
+      "code": "EXP-02",
+      "title": "整式、单项式与多项式",
+      "content": "辨析单项式、多项式和整式，理解系数、次数与项。",
+      "expectation": "能指出单项式的系数和次数，识别多项式的项与次数。",
+      "sourceRef": "开发样例·课程标准模块：整式",
+      "prerequisiteIds": [
+        "REQ-EXP-01"
+      ],
+      "nextRequirementIds": [
+        "REQ-EXP-03"
+      ],
+      "materialIds": [
+        "MAT-EXP-03",
+        "MAT-EXP-04"
+      ],
+      "questionIds": [
+        "Q-EXP-05",
+        "Q-EXP-06",
+        "Q-EXP-07",
+        "Q-EXP-08"
+      ]
+    },
+    {
+      "id": "REQ-EXP-03",
+      "topicId": "EXP",
+      "code": "EXP-03",
+      "title": "同类项与整式加减",
+      "content": "识别同类项，掌握合并同类项和去括号后的整式加减。",
+      "expectation": "能依据同类项定义正确合并，处理括号符号，并完成整式加减。",
+      "sourceRef": "开发样例·课程标准模块：整式",
+      "prerequisiteIds": [
+        "REQ-EXP-02"
+      ],
+      "nextRequirementIds": [],
+      "materialIds": [
+        "MAT-EXP-05",
+        "MAT-EXP-06"
+      ],
+      "questionIds": [
+        "Q-EXP-09",
+        "Q-EXP-10",
+        "Q-EXP-11",
+        "Q-EXP-12",
+        "Q-EXP-13",
+        "Q-EXP-14",
+        "Q-EXP-15",
+        "Q-EXP-16",
+        "Q-EXP-17",
+        "Q-EXP-18",
+        "Q-EXP-19",
+        "Q-EXP-20"
+      ]
+    },
+    {
+      "id": "REQ-EQA-01",
+      "topicId": "EQA",
+      "code": "EQA-01",
+      "title": "等式与方程",
+      "content": "理解等式性质，区分代数式、等式和方程。",
+      "expectation": "能判断一个式子是否为方程，并依据等式性质进行等价变形。",
+      "sourceRef": "开发样例·课程标准模块：方程与不等式",
+      "prerequisiteIds": [
+        "REQ-EXP-03"
+      ],
+      "nextRequirementIds": [
+        "REQ-EQA-02",
+        "REQ-EQA-03"
+      ],
+      "materialIds": [
+        "MAT-EQA-01",
+        "MAT-EQA-02"
+      ],
+      "questionIds": [
+        "Q-EQA-01",
+        "Q-EQA-02",
+        "Q-EQA-03",
+        "Q-EQA-04"
+      ]
+    },
+    {
+      "id": "REQ-EQA-02",
+      "topicId": "EQA",
+      "code": "EQA-02",
+      "title": "解一元一次方程",
+      "content": "掌握移项、合并同类项、去括号和系数化为 1。",
+      "expectation": "能按等价变形步骤求解一元一次方程，并代回检验。",
+      "sourceRef": "开发样例·课程标准模块：方程与不等式",
+      "prerequisiteIds": [
+        "REQ-EQA-01"
+      ],
+      "nextRequirementIds": [
+        "REQ-EQA-03"
+      ],
+      "materialIds": [
+        "MAT-EQA-03",
+        "MAT-EQA-04"
+      ],
+      "questionIds": [
+        "Q-EQA-05",
+        "Q-EQA-06",
+        "Q-EQA-07",
+        "Q-EQA-08"
+      ]
+    },
+    {
+      "id": "REQ-EQA-03",
+      "topicId": "EQA",
+      "code": "EQA-03",
+      "title": "一元一次方程的应用",
+      "content": "从实际问题中提炼未知量和等量关系，建立并解释方程。",
+      "expectation": "能说明未知量、等量关系和求解结果的实际意义。",
+      "sourceRef": "开发样例·课程标准模块：方程与不等式",
+      "prerequisiteIds": [
+        "REQ-EQA-02"
+      ],
+      "nextRequirementIds": [],
+      "materialIds": [
+        "MAT-EQA-05",
+        "MAT-EQA-06"
+      ],
+      "questionIds": [
+        "Q-EQA-09",
+        "Q-EQA-10",
+        "Q-EQA-11",
+        "Q-EQA-12",
+        "Q-EQA-13",
+        "Q-EQA-14",
+        "Q-EQA-15",
+        "Q-EQA-16",
+        "Q-EQA-17",
+        "Q-EQA-18",
+        "Q-EQA-19",
+        "Q-EQA-20"
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "id": "MAT-NUM-01",
+      "topicId": "NUM",
+      "requirementIds": [
+        "REQ-NUM-01"
+      ],
+      "type": "course_requirement",
+      "title": "有理数与数轴：课程要求",
+      "sourceRef": "开发样例·课程标准模块",
+      "locator": "数与代数·有理数·要求 1",
+      "content": "能在具体情境中认识负数，理解有理数及其大小关系；会用数轴表示有理数。"
+    },
+    {
+      "id": "MAT-NUM-02",
+      "topicId": "NUM",
+      "requirementIds": [
+        "REQ-NUM-01"
+      ],
+      "type": "explainer",
+      "title": "为什么要从数轴理解有理数",
+      "sourceRef": "开发样例·配套学习材料",
+      "locator": "第 1 章 1.1 节，P2-4",
+      "content": "数轴把数的大小、方向和距离放在同一幅图中。原点、正方向和单位长度是数轴的三要素。"
+    },
+    {
+      "id": "MAT-NUM-03",
+      "topicId": "NUM",
+      "requirementIds": [
+        "REQ-NUM-02"
+      ],
+      "type": "worked_example",
+      "title": "相反数与绝对值例析",
+      "sourceRef": "开发样例·例题材料",
+      "locator": "第 1 章 1.2 节，例 3-例 5",
+      "content": "相反数关注符号相反、距离相同；绝对值只关注到原点的距离。比较负数时，绝对值大的反而小。"
+    },
+    {
+      "id": "MAT-NUM-04",
+      "topicId": "NUM",
+      "requirementIds": [
+        "REQ-NUM-02"
+      ],
+      "type": "exercise_set",
+      "title": "数轴与绝对值基础练习",
+      "sourceRef": "开发样例·配套练习",
+      "locator": "练习 1.2，题 1-8",
+      "content": "覆盖数轴读数、相反数、绝对值和有理数大小比较。"
+    },
+    {
+      "id": "MAT-NUM-05",
+      "topicId": "NUM",
+      "requirementIds": [
+        "REQ-NUM-03"
+      ],
+      "type": "explainer",
+      "title": "有理数四则运算的符号规则",
+      "sourceRef": "开发样例·配套学习材料",
+      "locator": "第 1 章 1.3-1.4 节",
+      "content": "先确定符号，再处理绝对值。混合运算遵循先乘除后加减，有括号先算括号。"
+    },
+    {
+      "id": "MAT-NUM-06",
+      "topicId": "NUM",
+      "requirementIds": [
+        "REQ-NUM-03"
+      ],
+      "type": "worked_example",
+      "title": "有理数混合运算错例",
+      "sourceRef": "开发样例·错例材料",
+      "locator": "第 1 章复习，P24",
+      "content": "常见错误包括漏看负号、把减负数当作减法、先加减后乘除以及括号前负号处理错误。"
+    },
+    {
+      "id": "MAT-EXP-01",
+      "topicId": "EXP",
+      "requirementIds": [
+        "REQ-EXP-01"
+      ],
+      "type": "course_requirement",
+      "title": "用字母表示数：课程要求",
+      "sourceRef": "开发样例·课程标准模块",
+      "locator": "代数式·要求 1",
+      "content": "理解用字母表示数的意义，能根据数量关系列出代数式并解释字母的实际含义。"
+    },
+    {
+      "id": "MAT-EXP-02",
+      "topicId": "EXP",
+      "requirementIds": [
+        "REQ-EXP-01"
+      ],
+      "type": "worked_example",
+      "title": "从文字关系到代数式",
+      "sourceRef": "开发样例·例题材料",
+      "locator": "第 2 章 2.1 节，例 1-例 4",
+      "content": "先找数量、再找关系、最后检查单位和运算顺序。例如“比 x 的 2 倍少 3”写作 2x-3。"
+    },
+    {
+      "id": "MAT-EXP-03",
+      "topicId": "EXP",
+      "requirementIds": [
+        "REQ-EXP-02"
+      ],
+      "type": "explainer",
+      "title": "单项式、多项式与整式",
+      "sourceRef": "开发样例·配套学习材料",
+      "locator": "第 2 章 2.2 节",
+      "content": "单项式的数字因数是系数，所有字母指数之和是次数；几个单项式的和是多项式；两者统称整式。"
+    },
+    {
+      "id": "MAT-EXP-04",
+      "topicId": "EXP",
+      "requirementIds": [
+        "REQ-EXP-02"
+      ],
+      "type": "exercise_set",
+      "title": "整式概念辨析练习",
+      "sourceRef": "开发样例·配套练习",
+      "locator": "练习 2.2，题 1-10",
+      "content": "区分整式与非整式，识别系数、次数、项和常数项。"
+    },
+    {
+      "id": "MAT-EXP-05",
+      "topicId": "EXP",
+      "requirementIds": [
+        "REQ-EXP-03"
+      ],
+      "type": "explainer",
+      "title": "同类项与去括号",
+      "sourceRef": "开发样例·配套学习材料",
+      "locator": "第 2 章 2.3 节",
+      "content": "所含字母相同且相同字母指数也相同的是同类项。括号前是负号时，括号内各项都要变号。"
+    },
+    {
+      "id": "MAT-EXP-06",
+      "topicId": "EXP",
+      "requirementIds": [
+        "REQ-EXP-03"
+      ],
+      "type": "worked_example",
+      "title": "整式加减的分步示范",
+      "sourceRef": "开发样例·例题材料",
+      "locator": "第 2 章 2.4 节，例 6-例 9",
+      "content": "先标出同类项，再决定是否去括号，最后合并系数。每一步都保留原式，便于检查符号。"
+    },
+    {
+      "id": "MAT-EQA-01",
+      "topicId": "EQA",
+      "requirementIds": [
+        "REQ-EQA-01"
+      ],
+      "type": "course_requirement",
+      "title": "等式与方程：课程要求",
+      "sourceRef": "开发样例·课程标准模块",
+      "locator": "方程与不等式·要求 1",
+      "content": "理解等式的基本性质，能判断方程，体会方程是刻画数量关系的模型。"
+    },
+    {
+      "id": "MAT-EQA-02",
+      "topicId": "EQA",
+      "requirementIds": [
+        "REQ-EQA-01"
+      ],
+      "type": "explainer",
+      "title": "等式性质与等价变形",
+      "sourceRef": "开发样例·配套学习材料",
+      "locator": "第 3 章 3.1 节",
+      "content": "等式两边同时加、减、乘同一个数，或除以同一个非零数，等式仍成立。"
+    },
+    {
+      "id": "MAT-EQA-03",
+      "topicId": "EQA",
+      "requirementIds": [
+        "REQ-EQA-02"
+      ],
+      "type": "worked_example",
+      "title": "解一元一次方程的标准步骤",
+      "sourceRef": "开发样例·例题材料",
+      "locator": "第 3 章 3.2 节，例 1-例 7",
+      "content": "去分母、去括号、移项、合并同类项、系数化为 1；最后把解代回原方程检验。"
+    },
+    {
+      "id": "MAT-EQA-04",
+      "topicId": "EQA",
+      "requirementIds": [
+        "REQ-EQA-02"
+      ],
+      "type": "exercise_set",
+      "title": "一元一次方程阶梯练习",
+      "sourceRef": "开发样例·配套练习",
+      "locator": "练习 3.2，题 1-15",
+      "content": "从移项到去括号，再到含分母方程，按难度递进。"
+    },
+    {
+      "id": "MAT-EQA-05",
+      "topicId": "EQA",
+      "requirementIds": [
+        "REQ-EQA-03"
+      ],
+      "type": "explainer",
+      "title": "列方程找等量关系",
+      "sourceRef": "开发样例·配套学习材料",
+      "locator": "第 3 章 3.3 节",
+      "content": "先设未知数，再用同一件事的两种表达建立等式。关键是让等号两边单位一致、含义相同。"
+    },
+    {
+      "id": "MAT-EQA-06",
+      "topicId": "EQA",
+      "requirementIds": [
+        "REQ-EQA-03"
+      ],
+      "type": "worked_example",
+      "title": "行程与分配问题建模",
+      "sourceRef": "开发样例·例题材料",
+      "locator": "第 3 章 3.4 节，例 8-例 12",
+      "content": "行程问题围绕路程、速度和时间建立关系；分配问题围绕总量守恒建立关系。"
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q-NUM-01",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-01",
+      "materialId": "MAT-NUM-01",
+      "type": "choice",
+      "difficulty": 1,
+      "stem": "下列各数中，属于负数的是（ ）",
+      "answer": "-3",
+      "concepts": [
+        "负数"
+      ]
+    },
+    {
+      "id": "Q-NUM-02",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-01",
+      "materialId": "MAT-NUM-02",
+      "type": "choice",
+      "difficulty": 1,
+      "stem": "数轴上原点表示的数是（ ）",
+      "answer": "0",
+      "concepts": [
+        "数轴"
+      ]
+    },
+    {
+      "id": "Q-NUM-03",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-01",
+      "materialId": "MAT-NUM-02",
+      "type": "choice",
+      "difficulty": 2,
+      "stem": "在数轴上，位于原点右侧且距离原点 4 个单位的数是（ ）",
+      "answer": "4",
+      "concepts": [
+        "数轴",
+        "正数"
+      ]
+    },
+    {
+      "id": "Q-NUM-04",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-01",
+      "materialId": "MAT-NUM-01",
+      "type": "judgment",
+      "difficulty": 2,
+      "stem": "“所有整数都是有理数”是否正确？",
+      "answer": "正确",
+      "concepts": [
+        "有理数"
+      ]
+    },
+    {
+      "id": "Q-NUM-05",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-02",
+      "materialId": "MAT-NUM-04",
+      "type": "calculation",
+      "difficulty": 1,
+      "stem": "-7 的相反数是____。",
+      "answer": "7",
+      "concepts": [
+        "相反数"
+      ]
+    },
+    {
+      "id": "Q-NUM-06",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-02",
+      "materialId": "MAT-NUM-03",
+      "type": "calculation",
+      "difficulty": 1,
+      "stem": "|-12|=____。",
+      "answer": "12",
+      "concepts": [
+        "绝对值"
+      ]
+    },
+    {
+      "id": "Q-NUM-07",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-02",
+      "materialId": "MAT-NUM-03",
+      "type": "choice",
+      "difficulty": 2,
+      "stem": "比较 -5 与 -2 的大小，正确的是（ ）",
+      "answer": "-5 < -2",
+      "concepts": [
+        "有理数比较",
+        "绝对值"
+      ]
+    },
+    {
+      "id": "Q-NUM-08",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-02",
+      "materialId": "MAT-NUM-04",
+      "type": "calculation",
+      "difficulty": 2,
+      "stem": "若 |x|=6，则 x=____。",
+      "answer": "6 或 -6",
+      "concepts": [
+        "绝对值"
+      ]
+    },
+    {
+      "id": "Q-NUM-09",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-03",
+      "materialId": "MAT-NUM-05",
+      "type": "calculation",
+      "difficulty": 1,
+      "stem": "(-7)+(6)=____。",
+      "answer": "-1",
+      "concepts": [
+        "有理数加法"
+      ]
+    },
+    {
+      "id": "Q-NUM-10",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-03",
+      "materialId": "MAT-NUM-05",
+      "type": "calculation",
+      "difficulty": 1,
+      "stem": "(-3)-(3)=____。",
+      "answer": "-6",
+      "concepts": [
+        "有理数减法"
+      ]
+    },
+    {
+      "id": "Q-NUM-11",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-03",
+      "materialId": "MAT-NUM-05",
+      "type": "calculation",
+      "difficulty": 1,
+      "stem": "(7)×(4)=____。",
+      "answer": "28",
+      "concepts": [
+        "有理数乘法"
+      ]
+    },
+    {
+      "id": "Q-NUM-12",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-03",
+      "materialId": "MAT-NUM-05",
+      "type": "calculation",
+      "difficulty": 1,
+      "stem": "(-7)÷-1=____。",
+      "answer": "7",
+      "concepts": [
+        "有理数除法"
+      ]
+    },
+    {
+      "id": "Q-NUM-13",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-03",
+      "materialId": "MAT-NUM-05",
+      "type": "calculation",
+      "difficulty": 2,
+      "stem": "3+(5)×2=____。",
+      "answer": "13",
+      "concepts": [
+        "混合运算",
+        "运算顺序"
+      ]
+    },
+    {
+      "id": "Q-NUM-14",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-03",
+      "materialId": "MAT-NUM-05",
+      "type": "calculation",
+      "difficulty": 2,
+      "stem": "(-8+-7)×(5)=____。",
+      "answer": "-75",
+      "concepts": [
+        "混合运算",
+        "括号"
+      ]
+    },
+    {
+      "id": "Q-NUM-15",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-03",
+      "materialId": "MAT-NUM-05",
+      "type": "calculation",
+      "difficulty": 2,
+      "stem": "-8+|5|=____。",
+      "answer": "-3",
+      "concepts": [
+        "绝对值",
+        "加法"
+      ]
+    },
+    {
+      "id": "Q-NUM-16",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-03",
+      "materialId": "MAT-NUM-05",
+      "type": "calculation",
+      "difficulty": 2,
+      "stem": "(7)×(-3)+2=____。",
+      "answer": "-19",
+      "concepts": [
+        "混合运算"
+      ]
+    },
+    {
+      "id": "Q-NUM-17",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-03",
+      "materialId": "MAT-NUM-05",
+      "type": "calculation",
+      "difficulty": 3,
+      "stem": "2-5=____。",
+      "answer": "-3",
+      "concepts": [
+        "减法"
+      ]
+    },
+    {
+      "id": "Q-NUM-18",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-03",
+      "materialId": "MAT-NUM-05",
+      "type": "calculation",
+      "difficulty": 3,
+      "stem": "(2)÷6=____（结果用分数表示）。",
+      "answer": "2/6",
+      "concepts": [
+        "除法",
+        "分数"
+      ]
+    },
+    {
+      "id": "Q-NUM-19",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-03",
+      "materialId": "MAT-NUM-05",
+      "type": "calculation",
+      "difficulty": 3,
+      "stem": "-(8)+(-9)-(-3)=____。",
+      "answer": "-14",
+      "concepts": [
+        "加减混合"
+      ]
+    },
+    {
+      "id": "Q-NUM-20",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-03",
+      "materialId": "MAT-NUM-05",
+      "type": "calculation",
+      "difficulty": 3,
+      "stem": "(8)×(-5)÷(4)=____（结果用分数表示）。",
+      "answer": "-40/4",
+      "concepts": [
+        "乘除混合"
+      ]
+    },
+    {
+      "id": "Q-EXP-01",
+      "topicId": "EXP",
+      "requirementId": "REQ-EXP-01",
+      "materialId": "MAT-EXP-01",
+      "type": "choice",
+      "difficulty": 1,
+      "stem": "“a 的 3 倍与 2 的差”可表示为（ ）",
+      "answer": "3a-2",
+      "concepts": [
+        "列代数式"
+      ]
+    },
+    {
+      "id": "Q-EXP-02",
+      "topicId": "EXP",
+      "requirementId": "REQ-EXP-01",
+      "materialId": "MAT-EXP-02",
+      "type": "calculation",
+      "difficulty": 1,
+      "stem": "苹果每千克 p 元，买 4 千克需要____元。",
+      "answer": "4p",
+      "concepts": [
+        "字母表示数"
+      ]
+    },
+    {
+      "id": "Q-EXP-03",
+      "topicId": "EXP",
+      "requirementId": "REQ-EXP-01",
+      "materialId": "MAT-EXP-02",
+      "type": "choice",
+      "difficulty": 2,
+      "stem": "若每支笔 x 元，买 3 支后付 20 元，应找回（ ）元。",
+      "answer": "20-3x",
+      "concepts": [
+        "列代数式"
+      ]
+    },
+    {
+      "id": "Q-EXP-04",
+      "topicId": "EXP",
+      "requirementId": "REQ-EXP-01",
+      "materialId": "MAT-EXP-01",
+      "type": "judgment",
+      "difficulty": 2,
+      "stem": "在代数式中，同一字母表示同一个数。",
+      "answer": "正确",
+      "concepts": [
+        "字母表示数"
+      ]
+    },
+    {
+      "id": "Q-EXP-05",
+      "topicId": "EXP",
+      "requirementId": "REQ-EXP-02",
+      "materialId": "MAT-EXP-04",
+      "type": "choice",
+      "difficulty": 1,
+      "stem": "单项式 -5x²y 的系数是（ ）",
+      "answer": "-5",
+      "concepts": [
+        "单项式",
+        "系数"
+      ]
+    },
+    {
+      "id": "Q-EXP-06",
+      "topicId": "EXP",
+      "requirementId": "REQ-EXP-02",
+      "materialId": "MAT-EXP-03",
+      "type": "calculation",
+      "difficulty": 2,
+      "stem": "单项式 -5x²y 的次数是____。",
+      "answer": "3",
+      "concepts": [
+        "单项式",
+        "次数"
+      ]
+    },
+    {
+      "id": "Q-EXP-07",
+      "topicId": "EXP",
+      "requirementId": "REQ-EXP-02",
+      "materialId": "MAT-EXP-04",
+      "type": "choice",
+      "difficulty": 2,
+      "stem": "下列式子中，是多项式的是（ ）",
+      "answer": "x²-2x+1",
+      "concepts": [
+        "多项式"
+      ]
+    },
+    {
+      "id": "Q-EXP-08",
+      "topicId": "EXP",
+      "requirementId": "REQ-EXP-02",
+      "materialId": "MAT-EXP-03",
+      "type": "judgment",
+      "difficulty": 2,
+      "stem": "2x+1 的常数项是 1。",
+      "answer": "正确",
+      "concepts": [
+        "多项式",
+        "项"
+      ]
+    },
+    {
+      "id": "Q-EXP-09",
+      "topicId": "EXP",
+      "requirementId": "REQ-EXP-03",
+      "materialId": "MAT-EXP-05",
+      "type": "calculation",
+      "difficulty": 1,
+      "stem": "5x 与 7x 合并同类项得____。",
+      "answer": "12x",
+      "concepts": [
+        "同类项"
+      ]
+    },
+    {
+      "id": "Q-EXP-10",
+      "topicId": "EXP",
+      "requirementId": "REQ-EXP-03",
+      "materialId": "MAT-EXP-05",
+      "type": "calculation",
+      "difficulty": 1,
+      "stem": "2x² 与 2x 是同类项吗？",
+      "answer": "不是",
+      "concepts": [
+        "同类项"
+      ]
+    },
+    {
+      "id": "Q-EXP-11",
+      "topicId": "EXP",
+      "requirementId": "REQ-EXP-03",
+      "materialId": "MAT-EXP-05",
+      "type": "calculation",
+      "difficulty": 1,
+      "stem": "8a+5a=____。",
+      "answer": "13a",
+      "concepts": [
+        "合并同类项"
+      ]
+    },
+    {
+      "id": "Q-EXP-12",
+      "topicId": "EXP",
+      "requirementId": "REQ-EXP-03",
+      "materialId": "MAT-EXP-05",
+      "type": "calculation",
+      "difficulty": 1,
+      "stem": "-(2x-1)=____。",
+      "answer": "-2x+1",
+      "concepts": [
+        "去括号"
+      ]
+    },
+    {
+      "id": "Q-EXP-13",
+      "topicId": "EXP",
+      "requirementId": "REQ-EXP-03",
+      "materialId": "MAT-EXP-05",
+      "type": "calculation",
+      "difficulty": 2,
+      "stem": "5x+(2x-2)=____。",
+      "answer": "7x-2",
+      "concepts": [
+        "整式加减"
+      ]
+    },
+    {
+      "id": "Q-EXP-14",
+      "topicId": "EXP",
+      "requirementId": "REQ-EXP-03",
+      "materialId": "MAT-EXP-05",
+      "type": "calculation",
+      "difficulty": 2,
+      "stem": "8x-(5x-3)=____。",
+      "answer": "3x+3",
+      "concepts": [
+        "整式加减",
+        "去括号"
+      ]
+    },
+    {
+      "id": "Q-EXP-15",
+      "topicId": "EXP",
+      "requirementId": "REQ-EXP-03",
+      "materialId": "MAT-EXP-05",
+      "type": "calculation",
+      "difficulty": 2,
+      "stem": "2(2x+1)-3x=____。",
+      "answer": "1x+2",
+      "concepts": [
+        "整式加减"
+      ]
+    },
+    {
+      "id": "Q-EXP-16",
+      "topicId": "EXP",
+      "requirementId": "REQ-EXP-03",
+      "materialId": "MAT-EXP-05",
+      "type": "calculation",
+      "difficulty": 2,
+      "stem": "若 8x+6x=(14)x，依据是____。",
+      "answer": "合并同类项",
+      "concepts": [
+        "合并同类项"
+      ]
+    },
+    {
+      "id": "Q-EXP-17",
+      "topicId": "EXP",
+      "requirementId": "REQ-EXP-03",
+      "materialId": "MAT-EXP-05",
+      "type": "calculation",
+      "difficulty": 3,
+      "stem": "3a² 与 4a² 的和是____。",
+      "answer": "7a²",
+      "concepts": [
+        "同类项"
+      ]
+    },
+    {
+      "id": "Q-EXP-18",
+      "topicId": "EXP",
+      "requirementId": "REQ-EXP-03",
+      "materialId": "MAT-EXP-05",
+      "type": "calculation",
+      "difficulty": 3,
+      "stem": "(x+4)-(x-7)=____。",
+      "answer": "11",
+      "concepts": [
+        "整式减法"
+      ]
+    },
+    {
+      "id": "Q-EXP-19",
+      "topicId": "EXP",
+      "requirementId": "REQ-EXP-03",
+      "materialId": "MAT-EXP-05",
+      "type": "calculation",
+      "difficulty": 3,
+      "stem": "2a-3a+7a=____。",
+      "answer": "6a",
+      "concepts": [
+        "合并同类项"
+      ]
+    },
+    {
+      "id": "Q-EXP-20",
+      "topicId": "EXP",
+      "requirementId": "REQ-EXP-03",
+      "materialId": "MAT-EXP-05",
+      "type": "calculation",
+      "difficulty": 3,
+      "stem": "当 x=4 时，2x-5=____。",
+      "answer": "2*4-5",
+      "concepts": [
+        "代数式求值"
+      ]
+    },
+    {
+      "id": "Q-EQA-01",
+      "topicId": "EQA",
+      "requirementId": "REQ-EQA-01",
+      "materialId": "MAT-EQA-01",
+      "type": "choice",
+      "difficulty": 1,
+      "stem": "下列式子中是方程的是（ ）",
+      "answer": "x+3=8",
+      "concepts": [
+        "方程"
+      ]
+    },
+    {
+      "id": "Q-EQA-02",
+      "topicId": "EQA",
+      "requirementId": "REQ-EQA-01",
+      "materialId": "MAT-EQA-02",
+      "type": "judgment",
+      "difficulty": 1,
+      "stem": "等式两边同时加同一个数，等式仍成立。",
+      "answer": "正确",
+      "concepts": [
+        "等式性质"
+      ]
+    },
+    {
+      "id": "Q-EQA-03",
+      "topicId": "EQA",
+      "requirementId": "REQ-EQA-01",
+      "materialId": "MAT-EQA-02",
+      "type": "calculation",
+      "difficulty": 2,
+      "stem": "若 x-4=3，则 x=____。",
+      "answer": "7",
+      "concepts": [
+        "等式性质"
+      ]
+    },
+    {
+      "id": "Q-EQA-04",
+      "topicId": "EQA",
+      "requirementId": "REQ-EQA-01",
+      "materialId": "MAT-EQA-01",
+      "type": "choice",
+      "difficulty": 2,
+      "stem": "方程与等式的区别是（ ）",
+      "answer": "方程必须含未知数",
+      "concepts": [
+        "方程",
+        "等式"
+      ]
+    },
+    {
+      "id": "Q-EQA-05",
+      "topicId": "EQA",
+      "requirementId": "REQ-EQA-02",
+      "materialId": "MAT-EQA-03",
+      "type": "calculation",
+      "difficulty": 1,
+      "stem": "解方程：x+5=12，x=____。",
+      "answer": "7",
+      "concepts": [
+        "移项"
+      ]
+    },
+    {
+      "id": "Q-EQA-06",
+      "topicId": "EQA",
+      "requirementId": "REQ-EQA-02",
+      "materialId": "MAT-EQA-04",
+      "type": "calculation",
+      "difficulty": 2,
+      "stem": "解方程：2x-3=9，x=____。",
+      "answer": "6",
+      "concepts": [
+        "移项",
+        "系数化为1"
+      ]
+    },
+    {
+      "id": "Q-EQA-07",
+      "topicId": "EQA",
+      "requirementId": "REQ-EQA-02",
+      "materialId": "MAT-EQA-03",
+      "type": "calculation",
+      "difficulty": 2,
+      "stem": "解方程：3(x-1)=12，x=____。",
+      "answer": "5",
+      "concepts": [
+        "去括号"
+      ]
+    },
+    {
+      "id": "Q-EQA-08",
+      "topicId": "EQA",
+      "requirementId": "REQ-EQA-02",
+      "materialId": "MAT-EQA-04",
+      "type": "calculation",
+      "difficulty": 3,
+      "stem": "解方程：x/2+1=4，x=____。",
+      "answer": "6",
+      "concepts": [
+        "去分母"
+      ]
+    },
+    {
+      "id": "Q-EQA-09",
+      "topicId": "EQA",
+      "requirementId": "REQ-EQA-03",
+      "materialId": "MAT-EQA-05",
+      "type": "application",
+      "difficulty": 1,
+      "stem": "某数的 4 倍加 3 等于 39，这个数是____。",
+      "answer": "9",
+      "concepts": [
+        "列方程"
+      ]
+    },
+    {
+      "id": "Q-EQA-10",
+      "topicId": "EQA",
+      "requirementId": "REQ-EQA-03",
+      "materialId": "MAT-EQA-05",
+      "type": "application",
+      "difficulty": 1,
+      "stem": "小明有 x 元，买书花去 12 元后还剩 5 元，列方程为____。",
+      "answer": "x-12=5",
+      "concepts": [
+        "等量关系"
+      ]
+    },
+    {
+      "id": "Q-EQA-11",
+      "topicId": "EQA",
+      "requirementId": "REQ-EQA-03",
+      "materialId": "MAT-EQA-05",
+      "type": "application",
+      "difficulty": 1,
+      "stem": "一根绳子剪去 10 米后还剩 8 米，原长 x=____。",
+      "answer": "18",
+      "concepts": [
+        "方程应用"
+      ]
+    },
+    {
+      "id": "Q-EQA-12",
+      "topicId": "EQA",
+      "requirementId": "REQ-EQA-03",
+      "materialId": "MAT-EQA-05",
+      "type": "application",
+      "difficulty": 1,
+      "stem": "甲速 6 千米/时，2 小时行____千米。",
+      "answer": "12",
+      "concepts": [
+        "行程问题"
+      ]
+    },
+    {
+      "id": "Q-EQA-13",
+      "topicId": "EQA",
+      "requirementId": "REQ-EQA-03",
+      "materialId": "MAT-EQA-05",
+      "type": "application",
+      "difficulty": 2,
+      "stem": "路程 30 千米，速度 x 千米/时，3 小时到达，列方程为____。",
+      "answer": "3x=30",
+      "concepts": [
+        "行程问题"
+      ]
+    },
+    {
+      "id": "Q-EQA-14",
+      "topicId": "EQA",
+      "requirementId": "REQ-EQA-03",
+      "materialId": "MAT-EQA-05",
+      "type": "application",
+      "difficulty": 2,
+      "stem": "某数的 2 倍少 7 等于 8，这个数是____。",
+      "answer": "7.5",
+      "concepts": [
+        "方程应用"
+      ]
+    },
+    {
+      "id": "Q-EQA-15",
+      "topicId": "EQA",
+      "requirementId": "REQ-EQA-03",
+      "materialId": "MAT-EQA-05",
+      "type": "application",
+      "difficulty": 2,
+      "stem": "x 的 5 倍与 4 的差为 0，则 x=____。",
+      "answer": "0.8",
+      "concepts": [
+        "方程应用"
+      ]
+    },
+    {
+      "id": "Q-EQA-16",
+      "topicId": "EQA",
+      "requirementId": "REQ-EQA-03",
+      "materialId": "MAT-EQA-05",
+      "type": "application",
+      "difficulty": 2,
+      "stem": "3 件同样商品共 40 元，每件 x 元，列方程为____。",
+      "answer": "3x=40",
+      "concepts": [
+        "等量关系"
+      ]
+    },
+    {
+      "id": "Q-EQA-17",
+      "topicId": "EQA",
+      "requirementId": "REQ-EQA-03",
+      "materialId": "MAT-EQA-05",
+      "type": "application",
+      "difficulty": 3,
+      "stem": "一个长方形长 4，宽 x，周长 20，列方程为____。",
+      "answer": "2(4+x)=20",
+      "concepts": [
+        "几何建模"
+      ]
+    },
+    {
+      "id": "Q-EQA-18",
+      "topicId": "EQA",
+      "requirementId": "REQ-EQA-03",
+      "materialId": "MAT-EQA-05",
+      "type": "application",
+      "difficulty": 3,
+      "stem": "某数加上 4 再乘 2 得 16，这个数是____。",
+      "answer": "4",
+      "concepts": [
+        "列方程"
+      ]
+    },
+    {
+      "id": "Q-EQA-19",
+      "topicId": "EQA",
+      "requirementId": "REQ-EQA-03",
+      "materialId": "MAT-EQA-05",
+      "type": "application",
+      "difficulty": 3,
+      "stem": "x 的 3 倍等于 24，x=____。",
+      "answer": "8",
+      "concepts": [
+        "解方程"
+      ]
+    },
+    {
+      "id": "Q-EQA-20",
+      "topicId": "EQA",
+      "requirementId": "REQ-EQA-03",
+      "materialId": "MAT-EQA-05",
+      "type": "application",
+      "difficulty": 3,
+      "stem": "若 5x+3=18，则 x=____。",
+      "answer": "3",
+      "concepts": [
+        "解方程"
+      ]
+    }
+  ],
+  "students": [
+    {
+      "id": "S001",
+      "displayName": "林晓禾",
+      "group": "A组",
+      "grade": "七年级"
+    },
+    {
+      "id": "S002",
+      "displayName": "周予安",
+      "group": "B组",
+      "grade": "七年级"
+    },
+    {
+      "id": "S003",
+      "displayName": "陈知夏",
+      "group": "C组",
+      "grade": "七年级"
+    },
+    {
+      "id": "S004",
+      "displayName": "赵清川",
+      "group": "A组",
+      "grade": "七年级"
+    },
+    {
+      "id": "S005",
+      "displayName": "许星遥",
+      "group": "B组",
+      "grade": "七年级"
+    },
+    {
+      "id": "S006",
+      "displayName": "沈嘉树",
+      "group": "C组",
+      "grade": "七年级"
+    },
+    {
+      "id": "S007",
+      "displayName": "顾明澈",
+      "group": "A组",
+      "grade": "七年级"
+    },
+    {
+      "id": "S008",
+      "displayName": "苏念一",
+      "group": "B组",
+      "grade": "七年级"
+    },
+    {
+      "id": "S009",
+      "displayName": "唐乐言",
+      "group": "C组",
+      "grade": "七年级"
+    },
+    {
+      "id": "S010",
+      "displayName": "韩若宁",
+      "group": "A组",
+      "grade": "七年级"
+    },
+    {
+      "id": "S011",
+      "displayName": "叶书宁",
+      "group": "B组",
+      "grade": "七年级"
+    },
+    {
+      "id": "S012",
+      "displayName": "程亦舟",
+      "group": "C组",
+      "grade": "七年级"
+    },
+    {
+      "id": "S013",
+      "displayName": "陆知远",
+      "group": "A组",
+      "grade": "七年级"
+    },
+    {
+      "id": "S014",
+      "displayName": "江可欣",
+      "group": "B组",
+      "grade": "七年级"
+    },
+    {
+      "id": "S015",
+      "displayName": "何予辰",
+      "group": "C组",
+      "grade": "七年级"
+    },
+    {
+      "id": "S016",
+      "displayName": "方雨桐",
+      "group": "A组",
+      "grade": "七年级"
+    },
+    {
+      "id": "S017",
+      "displayName": "高云舒",
+      "group": "B组",
+      "grade": "七年级"
+    },
+    {
+      "id": "S018",
+      "displayName": "罗一诺",
+      "group": "C组",
+      "grade": "七年级"
+    },
+    {
+      "id": "S019",
+      "displayName": "魏思齐",
+      "group": "A组",
+      "grade": "七年级"
+    },
+    {
+      "id": "S020",
+      "displayName": "谢知微",
+      "group": "B组",
+      "grade": "七年级"
+    },
+    {
+      "id": "S021",
+      "displayName": "梁景行",
+      "group": "C组",
+      "grade": "七年级"
+    },
+    {
+      "id": "S022",
+      "displayName": "蒋言溪",
+      "group": "A组",
+      "grade": "七年级"
+    },
+    {
+      "id": "S023",
+      "displayName": "宋南乔",
+      "group": "B组",
+      "grade": "七年级"
+    },
+    {
+      "id": "S024",
+      "displayName": "杜清和",
+      "group": "C组",
+      "grade": "七年级"
+    },
+    {
+      "id": "S025",
+      "displayName": "夏予宁",
+      "group": "A组",
+      "grade": "七年级"
+    },
+    {
+      "id": "S026",
+      "displayName": "钟书言",
+      "group": "B组",
+      "grade": "七年级"
+    },
+    {
+      "id": "S027",
+      "displayName": "白知遥",
+      "group": "C组",
+      "grade": "七年级"
+    },
+    {
+      "id": "S028",
+      "displayName": "邵安澜",
+      "group": "A组",
+      "grade": "七年级"
+    },
+    {
+      "id": "S029",
+      "displayName": "秦乐知",
+      "group": "B组",
+      "grade": "七年级"
+    },
+    {
+      "id": "S030",
+      "displayName": "孟星河",
+      "group": "C组",
+      "grade": "七年级"
+    }
+  ],
+  "taskConditions": [
+    {
+      "id": "TASK-01",
+      "title": "学习内容与要求梳理",
+      "audience": [
+        "teacher",
+        "student"
+      ],
+      "scope": [
+        "NUM",
+        "EXP",
+        "EQA"
+      ],
+      "constraints": [
+        "保留材料出处",
+        "说明要求之间的必要联系"
+      ]
+    },
+    {
+      "id": "TASK-02",
+      "title": "个体与群体学情分析",
+      "audience": [
+        "teacher",
+        "student"
+      ],
+      "scope": [
+        "NUM",
+        "EXP",
+        "EQA"
+      ],
+      "constraints": [
+        "缺失记录不等于未掌握",
+        "结论必须附统计依据"
+      ]
+    },
+    {
+      "id": "TASK-03",
+      "title": "个性化学习建议",
+      "audience": [
+        "teacher",
+        "student"
+      ],
+      "scope": [
+        "NUM",
+        "EXP",
+        "EQA"
+      ],
+      "constraints": [
+        "对应具体材料与练习",
+        "说明理由和先后顺序",
+        "教师可调整"
+      ]
+    }
+  ],
+  "learningRecords": [
+    {
+      "id": "R00001",
+      "studentId": "S001",
+      "questionId": "Q-EQA-12",
+      "materialId": "MAT-EQA-05",
+      "requirementId": "REQ-EQA-03",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T16:00:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00002",
+      "studentId": "S001",
+      "questionId": "Q-EXP-11",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T19:11:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00003",
+      "studentId": "S001",
+      "questionId": "Q-NUM-06",
+      "materialId": "MAT-NUM-03",
+      "requirementId": "REQ-NUM-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T22:22:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00004",
+      "studentId": "S001",
+      "questionId": "Q-EXP-16",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-17T01:33:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00005",
+      "studentId": "S001",
+      "questionId": "Q-EXP-16",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T18:44:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00006",
+      "studentId": "S001",
+      "questionId": "Q-EXP-02",
+      "materialId": "MAT-EXP-02",
+      "requirementId": "REQ-EXP-01",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T21:55:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00007",
+      "studentId": "S001",
+      "questionId": "Q-EQA-01",
+      "materialId": "MAT-EQA-01",
+      "requirementId": "REQ-EQA-01",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-17T00:06:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00008",
+      "studentId": "S001",
+      "questionId": "Q-EQA-05",
+      "materialId": "MAT-EQA-03",
+      "requirementId": "REQ-EQA-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T17:17:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00009",
+      "studentId": "S001",
+      "questionId": "Q-EXP-01",
+      "materialId": "MAT-EXP-01",
+      "requirementId": "REQ-EXP-01",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T20:28:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00010",
+      "studentId": "S001",
+      "questionId": "Q-EXP-08",
+      "materialId": "MAT-EXP-03",
+      "requirementId": "REQ-EXP-02",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T23:39:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00011",
+      "studentId": "S001",
+      "questionId": "Q-EQA-01",
+      "materialId": "MAT-EQA-01",
+      "requirementId": "REQ-EQA-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T16:50:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00012",
+      "studentId": "S001",
+      "questionId": "Q-EXP-04",
+      "materialId": "MAT-EXP-01",
+      "requirementId": "REQ-EXP-01",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T19:01:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00013",
+      "studentId": "S001",
+      "questionId": "Q-NUM-02",
+      "materialId": "MAT-NUM-02",
+      "requirementId": "REQ-NUM-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T22:12:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00014",
+      "studentId": "S002",
+      "questionId": "Q-NUM-06",
+      "materialId": "MAT-NUM-03",
+      "requirementId": "REQ-NUM-02",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T17:07:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00015",
+      "studentId": "S002",
+      "questionId": "Q-EXP-03",
+      "materialId": "MAT-EXP-02",
+      "requirementId": "REQ-EXP-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T20:18:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00016",
+      "studentId": "S002",
+      "questionId": "Q-NUM-02",
+      "materialId": "MAT-NUM-02",
+      "requirementId": "REQ-NUM-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T23:29:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00017",
+      "studentId": "S002",
+      "questionId": "Q-EQA-01",
+      "materialId": "MAT-EQA-01",
+      "requirementId": "REQ-EQA-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T16:40:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00018",
+      "studentId": "S002",
+      "questionId": "Q-EQA-08",
+      "materialId": "MAT-EQA-04",
+      "requirementId": "REQ-EQA-02",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T19:51:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00019",
+      "studentId": "S002",
+      "questionId": "Q-EQA-10",
+      "materialId": "MAT-EQA-05",
+      "requirementId": "REQ-EQA-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T22:02:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00020",
+      "studentId": "S002",
+      "questionId": "Q-EQA-03",
+      "materialId": "MAT-EQA-02",
+      "requirementId": "REQ-EQA-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-17T01:13:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00021",
+      "studentId": "S002",
+      "questionId": "Q-NUM-04",
+      "materialId": "MAT-NUM-01",
+      "requirementId": "REQ-NUM-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T18:24:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00022",
+      "studentId": "S002",
+      "questionId": "Q-EXP-14",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T21:35:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00023",
+      "studentId": "S002",
+      "questionId": "Q-EQA-01",
+      "materialId": "MAT-EQA-01",
+      "requirementId": "REQ-EQA-01",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-17T00:46:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00024",
+      "studentId": "S002",
+      "questionId": "Q-EQA-01",
+      "materialId": "MAT-EQA-01",
+      "requirementId": "REQ-EQA-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T17:57:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00025",
+      "studentId": "S002",
+      "questionId": "Q-EQA-07",
+      "materialId": "MAT-EQA-03",
+      "requirementId": "REQ-EQA-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T20:08:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00026",
+      "studentId": "S002",
+      "questionId": "Q-EQA-05",
+      "materialId": "MAT-EQA-03",
+      "requirementId": "REQ-EQA-02",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T23:19:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00027",
+      "studentId": "S002",
+      "questionId": "Q-EXP-06",
+      "materialId": "MAT-EXP-03",
+      "requirementId": "REQ-EXP-02",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T16:30:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00028",
+      "studentId": "S003",
+      "questionId": "Q-EQA-20",
+      "materialId": "MAT-EQA-05",
+      "requirementId": "REQ-EQA-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T18:14:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00029",
+      "studentId": "S003",
+      "questionId": "Q-EQA-03",
+      "materialId": "MAT-EQA-02",
+      "requirementId": "REQ-EQA-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T21:25:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00030",
+      "studentId": "S003",
+      "questionId": "Q-NUM-08",
+      "materialId": "MAT-NUM-04",
+      "requirementId": "REQ-NUM-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-18T00:36:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00031",
+      "studentId": "S003",
+      "questionId": "Q-EQA-01",
+      "materialId": "MAT-EQA-01",
+      "requirementId": "REQ-EQA-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-17T17:47:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00032",
+      "studentId": "S003",
+      "questionId": "Q-EQA-02",
+      "materialId": "MAT-EQA-02",
+      "requirementId": "REQ-EQA-01",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-17T20:58:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00033",
+      "studentId": "S003",
+      "questionId": "Q-EXP-08",
+      "materialId": "MAT-EXP-03",
+      "requirementId": "REQ-EXP-02",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-17T23:09:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00034",
+      "studentId": "S003",
+      "questionId": "Q-EXP-01",
+      "materialId": "MAT-EXP-01",
+      "requirementId": "REQ-EXP-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-17T16:20:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00035",
+      "studentId": "S003",
+      "questionId": "Q-NUM-04",
+      "materialId": "MAT-NUM-01",
+      "requirementId": "REQ-NUM-01",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-17T19:31:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00036",
+      "studentId": "S003",
+      "questionId": "Q-EXP-13",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-17T22:42:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00037",
+      "studentId": "S003",
+      "questionId": "Q-EQA-08",
+      "materialId": "MAT-EQA-04",
+      "requirementId": "REQ-EQA-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-18T01:53:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00038",
+      "studentId": "S003",
+      "questionId": "Q-EQA-13",
+      "materialId": "MAT-EQA-05",
+      "requirementId": "REQ-EQA-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-17T18:04:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00039",
+      "studentId": "S003",
+      "questionId": "Q-EXP-14",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-17T21:15:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00040",
+      "studentId": "S003",
+      "questionId": "Q-NUM-14",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-18T00:26:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00041",
+      "studentId": "S003",
+      "questionId": "Q-EQA-08",
+      "materialId": "MAT-EQA-04",
+      "requirementId": "REQ-EQA-02",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-17T17:37:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00042",
+      "studentId": "S003",
+      "questionId": "Q-EXP-05",
+      "materialId": "MAT-EXP-04",
+      "requirementId": "REQ-EXP-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-17T20:48:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00043",
+      "studentId": "S004",
+      "questionId": "Q-EQA-03",
+      "materialId": "MAT-EQA-02",
+      "requirementId": "REQ-EQA-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-17T19:21:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00044",
+      "studentId": "S004",
+      "questionId": "Q-EQA-07",
+      "materialId": "MAT-EQA-03",
+      "requirementId": "REQ-EQA-02",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-17T22:32:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00045",
+      "studentId": "S004",
+      "questionId": "Q-EXP-06",
+      "materialId": "MAT-EXP-03",
+      "requirementId": "REQ-EXP-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-18T01:43:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00046",
+      "studentId": "S004",
+      "questionId": "Q-EXP-07",
+      "materialId": "MAT-EXP-04",
+      "requirementId": "REQ-EXP-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-17T18:54:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00047",
+      "studentId": "S004",
+      "questionId": "Q-EQA-02",
+      "materialId": "MAT-EQA-02",
+      "requirementId": "REQ-EQA-01",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-17T21:05:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00048",
+      "studentId": "S004",
+      "questionId": "Q-EQA-05",
+      "materialId": "MAT-EQA-03",
+      "requirementId": "REQ-EQA-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-18T00:16:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00049",
+      "studentId": "S004",
+      "questionId": "Q-EQA-07",
+      "materialId": "MAT-EQA-03",
+      "requirementId": "REQ-EQA-02",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-17T17:27:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00050",
+      "studentId": "S004",
+      "questionId": "Q-NUM-07",
+      "materialId": "MAT-NUM-03",
+      "requirementId": "REQ-NUM-02",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-17T20:38:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00051",
+      "studentId": "S004",
+      "questionId": "Q-EQA-02",
+      "materialId": "MAT-EQA-02",
+      "requirementId": "REQ-EQA-01",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-17T23:49:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00052",
+      "studentId": "S004",
+      "questionId": "Q-NUM-18",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-17T16:00:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00053",
+      "studentId": "S004",
+      "questionId": "Q-EQA-04",
+      "materialId": "MAT-EQA-01",
+      "requirementId": "REQ-EQA-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-17T19:11:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00054",
+      "studentId": "S004",
+      "questionId": "Q-NUM-06",
+      "materialId": "MAT-NUM-03",
+      "requirementId": "REQ-NUM-02",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-17T22:22:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00055",
+      "studentId": "S004",
+      "questionId": "Q-NUM-01",
+      "materialId": "MAT-NUM-01",
+      "requirementId": "REQ-NUM-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-18T01:33:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00056",
+      "studentId": "S004",
+      "questionId": "Q-EQA-06",
+      "materialId": "MAT-EQA-04",
+      "requirementId": "REQ-EQA-02",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-17T18:44:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00057",
+      "studentId": "S004",
+      "questionId": "Q-EXP-06",
+      "materialId": "MAT-EXP-03",
+      "requirementId": "REQ-EXP-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-17T21:55:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00058",
+      "studentId": "S004",
+      "questionId": "Q-NUM-05",
+      "materialId": "MAT-NUM-04",
+      "requirementId": "REQ-NUM-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-18T00:06:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00059",
+      "studentId": "S005",
+      "questionId": "Q-EXP-08",
+      "materialId": "MAT-EXP-03",
+      "requirementId": "REQ-EXP-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-17T20:28:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00060",
+      "studentId": "S005",
+      "questionId": "Q-EXP-03",
+      "materialId": "MAT-EXP-02",
+      "requirementId": "REQ-EXP-01",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-17T23:39:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00061",
+      "studentId": "S005",
+      "questionId": "Q-NUM-07",
+      "materialId": "MAT-NUM-03",
+      "requirementId": "REQ-NUM-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-17T16:50:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00062",
+      "studentId": "S005",
+      "questionId": "Q-EQA-04",
+      "materialId": "MAT-EQA-01",
+      "requirementId": "REQ-EQA-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-17T19:01:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00063",
+      "studentId": "S005",
+      "questionId": "Q-EQA-02",
+      "materialId": "MAT-EQA-02",
+      "requirementId": "REQ-EQA-01",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-18T22:12:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00064",
+      "studentId": "S005",
+      "questionId": "Q-NUM-14",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-19T01:23:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00065",
+      "studentId": "S005",
+      "questionId": "Q-NUM-05",
+      "materialId": "MAT-NUM-04",
+      "requirementId": "REQ-NUM-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-18T18:34:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00066",
+      "studentId": "S005",
+      "questionId": "Q-EQA-03",
+      "materialId": "MAT-EQA-02",
+      "requirementId": "REQ-EQA-01",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-18T21:45:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00067",
+      "studentId": "S005",
+      "questionId": "Q-EXP-08",
+      "materialId": "MAT-EXP-03",
+      "requirementId": "REQ-EXP-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-19T00:56:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00068",
+      "studentId": "S005",
+      "questionId": "Q-EXP-16",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-18T17:07:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00069",
+      "studentId": "S005",
+      "questionId": "Q-EXP-04",
+      "materialId": "MAT-EXP-01",
+      "requirementId": "REQ-EXP-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-18T20:18:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00070",
+      "studentId": "S005",
+      "questionId": "Q-NUM-04",
+      "materialId": "MAT-NUM-01",
+      "requirementId": "REQ-NUM-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-18T23:29:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00071",
+      "studentId": "S005",
+      "questionId": "Q-EQA-20",
+      "materialId": "MAT-EQA-05",
+      "requirementId": "REQ-EQA-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-18T16:40:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00072",
+      "studentId": "S006",
+      "questionId": "Q-EXP-04",
+      "materialId": "MAT-EXP-01",
+      "requirementId": "REQ-EXP-01",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-18T21:35:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00073",
+      "studentId": "S006",
+      "questionId": "Q-NUM-06",
+      "materialId": "MAT-NUM-03",
+      "requirementId": "REQ-NUM-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-19T00:46:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00074",
+      "studentId": "S006",
+      "questionId": "Q-NUM-03",
+      "materialId": "MAT-NUM-02",
+      "requirementId": "REQ-NUM-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-18T17:57:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00075",
+      "studentId": "S006",
+      "questionId": "Q-NUM-05",
+      "materialId": "MAT-NUM-04",
+      "requirementId": "REQ-NUM-02",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-18T20:08:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00076",
+      "studentId": "S006",
+      "questionId": "Q-EXP-04",
+      "materialId": "MAT-EXP-01",
+      "requirementId": "REQ-EXP-01",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-18T23:19:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00077",
+      "studentId": "S006",
+      "questionId": "Q-EXP-07",
+      "materialId": "MAT-EXP-04",
+      "requirementId": "REQ-EXP-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-18T16:30:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00078",
+      "studentId": "S006",
+      "questionId": "Q-EQA-04",
+      "materialId": "MAT-EQA-01",
+      "requirementId": "REQ-EQA-01",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-18T19:41:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00079",
+      "studentId": "S006",
+      "questionId": "Q-NUM-07",
+      "materialId": "MAT-NUM-03",
+      "requirementId": "REQ-NUM-02",
+      "status": "missing",
+      "score": null,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-18T22:52:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00080",
+      "studentId": "S006",
+      "questionId": "Q-NUM-02",
+      "materialId": "MAT-NUM-02",
+      "requirementId": "REQ-NUM-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-19T01:03:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00081",
+      "studentId": "S006",
+      "questionId": "Q-NUM-17",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-18T18:14:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00082",
+      "studentId": "S006",
+      "questionId": "Q-EQA-16",
+      "materialId": "MAT-EQA-05",
+      "requirementId": "REQ-EQA-03",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-18T21:25:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00083",
+      "studentId": "S006",
+      "questionId": "Q-EXP-13",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-19T00:36:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00084",
+      "studentId": "S006",
+      "questionId": "Q-NUM-19",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-18T17:47:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00085",
+      "studentId": "S006",
+      "questionId": "Q-EXP-06",
+      "materialId": "MAT-EXP-03",
+      "requirementId": "REQ-EXP-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-18T20:58:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00086",
+      "studentId": "S007",
+      "questionId": "Q-EXP-01",
+      "materialId": "MAT-EXP-01",
+      "requirementId": "REQ-EXP-01",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-18T22:42:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00087",
+      "studentId": "S007",
+      "questionId": "Q-NUM-09",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-19T01:53:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00088",
+      "studentId": "S007",
+      "questionId": "Q-NUM-07",
+      "materialId": "MAT-NUM-03",
+      "requirementId": "REQ-NUM-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-18T18:04:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00089",
+      "studentId": "S007",
+      "questionId": "Q-EQA-08",
+      "materialId": "MAT-EQA-04",
+      "requirementId": "REQ-EQA-02",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-18T21:15:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00090",
+      "studentId": "S007",
+      "questionId": "Q-EXP-11",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-19T00:26:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00091",
+      "studentId": "S007",
+      "questionId": "Q-EQA-05",
+      "materialId": "MAT-EQA-03",
+      "requirementId": "REQ-EQA-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-18T17:37:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00092",
+      "studentId": "S007",
+      "questionId": "Q-NUM-06",
+      "materialId": "MAT-NUM-03",
+      "requirementId": "REQ-NUM-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-19T20:48:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00093",
+      "studentId": "S007",
+      "questionId": "Q-EQA-15",
+      "materialId": "MAT-EQA-05",
+      "requirementId": "REQ-EQA-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-19T23:59:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00094",
+      "studentId": "S007",
+      "questionId": "Q-EQA-02",
+      "materialId": "MAT-EQA-02",
+      "requirementId": "REQ-EQA-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-19T16:10:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00095",
+      "studentId": "S007",
+      "questionId": "Q-EQA-01",
+      "materialId": "MAT-EQA-01",
+      "requirementId": "REQ-EQA-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-19T19:21:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00096",
+      "studentId": "S007",
+      "questionId": "Q-EXP-04",
+      "materialId": "MAT-EXP-01",
+      "requirementId": "REQ-EXP-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-19T22:32:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00097",
+      "studentId": "S007",
+      "questionId": "Q-NUM-04",
+      "materialId": "MAT-NUM-01",
+      "requirementId": "REQ-NUM-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-20T01:43:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00098",
+      "studentId": "S007",
+      "questionId": "Q-EXP-06",
+      "materialId": "MAT-EXP-03",
+      "requirementId": "REQ-EXP-02",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-19T18:54:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00099",
+      "studentId": "S007",
+      "questionId": "Q-NUM-03",
+      "materialId": "MAT-NUM-02",
+      "requirementId": "REQ-NUM-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-19T21:05:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00100",
+      "studentId": "S007",
+      "questionId": "Q-NUM-20",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-20T00:16:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00101",
+      "studentId": "S008",
+      "questionId": "Q-NUM-16",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-19T23:49:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00102",
+      "studentId": "S008",
+      "questionId": "Q-EQA-14",
+      "materialId": "MAT-EQA-05",
+      "requirementId": "REQ-EQA-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-19T16:00:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00103",
+      "studentId": "S008",
+      "questionId": "Q-EXP-19",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-19T19:11:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00104",
+      "studentId": "S008",
+      "questionId": "Q-NUM-07",
+      "materialId": "MAT-NUM-03",
+      "requirementId": "REQ-NUM-02",
+      "status": "missing",
+      "score": null,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-19T22:22:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00105",
+      "studentId": "S008",
+      "questionId": "Q-EQA-06",
+      "materialId": "MAT-EQA-04",
+      "requirementId": "REQ-EQA-02",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-20T01:33:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00106",
+      "studentId": "S008",
+      "questionId": "Q-EXP-10",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "missing",
+      "score": null,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-19T18:44:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00107",
+      "studentId": "S008",
+      "questionId": "Q-NUM-18",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-19T21:55:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00108",
+      "studentId": "S008",
+      "questionId": "Q-EXP-05",
+      "materialId": "MAT-EXP-04",
+      "requirementId": "REQ-EXP-02",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-20T00:06:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00109",
+      "studentId": "S008",
+      "questionId": "Q-NUM-15",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-19T17:17:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00110",
+      "studentId": "S008",
+      "questionId": "Q-NUM-02",
+      "materialId": "MAT-NUM-02",
+      "requirementId": "REQ-NUM-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-19T20:28:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00111",
+      "studentId": "S008",
+      "questionId": "Q-EXP-05",
+      "materialId": "MAT-EXP-04",
+      "requirementId": "REQ-EXP-02",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-19T23:39:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00112",
+      "studentId": "S008",
+      "questionId": "Q-EXP-03",
+      "materialId": "MAT-EXP-02",
+      "requirementId": "REQ-EXP-01",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-19T16:50:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00113",
+      "studentId": "S008",
+      "questionId": "Q-NUM-12",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-19T19:01:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00114",
+      "studentId": "S008",
+      "questionId": "Q-EXP-01",
+      "materialId": "MAT-EXP-01",
+      "requirementId": "REQ-EXP-01",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-19T22:12:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00115",
+      "studentId": "S008",
+      "questionId": "Q-NUM-07",
+      "materialId": "MAT-NUM-03",
+      "requirementId": "REQ-NUM-02",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-20T01:23:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00116",
+      "studentId": "S008",
+      "questionId": "Q-EQA-11",
+      "materialId": "MAT-EQA-05",
+      "requirementId": "REQ-EQA-03",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-19T18:34:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00117",
+      "studentId": "S009",
+      "questionId": "Q-NUM-20",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-20T00:56:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00118",
+      "studentId": "S009",
+      "questionId": "Q-EXP-03",
+      "materialId": "MAT-EXP-02",
+      "requirementId": "REQ-EXP-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-19T17:07:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00119",
+      "studentId": "S009",
+      "questionId": "Q-EQA-01",
+      "materialId": "MAT-EQA-01",
+      "requirementId": "REQ-EQA-01",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-19T20:18:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00120",
+      "studentId": "S009",
+      "questionId": "Q-EQA-05",
+      "materialId": "MAT-EQA-03",
+      "requirementId": "REQ-EQA-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-19T23:29:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00121",
+      "studentId": "S009",
+      "questionId": "Q-EXP-01",
+      "materialId": "MAT-EXP-01",
+      "requirementId": "REQ-EXP-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-19T16:40:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00122",
+      "studentId": "S009",
+      "questionId": "Q-EXP-08",
+      "materialId": "MAT-EXP-03",
+      "requirementId": "REQ-EXP-02",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-19T19:51:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00123",
+      "studentId": "S009",
+      "questionId": "Q-EXP-14",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-19T22:02:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00124",
+      "studentId": "S009",
+      "questionId": "Q-NUM-05",
+      "materialId": "MAT-NUM-04",
+      "requirementId": "REQ-NUM-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-20T01:13:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00125",
+      "studentId": "S009",
+      "questionId": "Q-EXP-12",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-20T18:24:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00126",
+      "studentId": "S009",
+      "questionId": "Q-EQA-02",
+      "materialId": "MAT-EQA-02",
+      "requirementId": "REQ-EQA-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-20T21:35:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00127",
+      "studentId": "S009",
+      "questionId": "Q-NUM-20",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-21T00:46:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00128",
+      "studentId": "S009",
+      "questionId": "Q-EXP-06",
+      "materialId": "MAT-EXP-03",
+      "requirementId": "REQ-EXP-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-20T17:57:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00129",
+      "studentId": "S009",
+      "questionId": "Q-EQA-08",
+      "materialId": "MAT-EQA-04",
+      "requirementId": "REQ-EQA-02",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-20T20:08:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00130",
+      "studentId": "S010",
+      "questionId": "Q-EQA-09",
+      "materialId": "MAT-EQA-05",
+      "requirementId": "REQ-EQA-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-21T01:03:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00131",
+      "studentId": "S010",
+      "questionId": "Q-EXP-13",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-20T18:14:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00132",
+      "studentId": "S010",
+      "questionId": "Q-NUM-03",
+      "materialId": "MAT-NUM-02",
+      "requirementId": "REQ-NUM-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-20T21:25:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00133",
+      "studentId": "S010",
+      "questionId": "Q-NUM-17",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-21T00:36:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00134",
+      "studentId": "S010",
+      "questionId": "Q-EXP-08",
+      "materialId": "MAT-EXP-03",
+      "requirementId": "REQ-EXP-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-20T17:47:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00135",
+      "studentId": "S010",
+      "questionId": "Q-EQA-16",
+      "materialId": "MAT-EQA-05",
+      "requirementId": "REQ-EQA-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-20T20:58:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00136",
+      "studentId": "S010",
+      "questionId": "Q-EXP-10",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-20T23:09:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00137",
+      "studentId": "S010",
+      "questionId": "Q-NUM-08",
+      "materialId": "MAT-NUM-04",
+      "requirementId": "REQ-NUM-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-20T16:20:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00138",
+      "studentId": "S010",
+      "questionId": "Q-NUM-03",
+      "materialId": "MAT-NUM-02",
+      "requirementId": "REQ-NUM-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-20T19:31:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00139",
+      "studentId": "S010",
+      "questionId": "Q-EXP-10",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-20T22:42:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00140",
+      "studentId": "S010",
+      "questionId": "Q-EQA-08",
+      "materialId": "MAT-EQA-04",
+      "requirementId": "REQ-EQA-02",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-21T01:53:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00141",
+      "studentId": "S010",
+      "questionId": "Q-EXP-06",
+      "materialId": "MAT-EXP-03",
+      "requirementId": "REQ-EXP-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-20T18:04:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00142",
+      "studentId": "S010",
+      "questionId": "Q-EQA-08",
+      "materialId": "MAT-EQA-04",
+      "requirementId": "REQ-EQA-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-20T21:15:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00143",
+      "studentId": "S010",
+      "questionId": "Q-EQA-09",
+      "materialId": "MAT-EQA-05",
+      "requirementId": "REQ-EQA-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-21T00:26:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00144",
+      "studentId": "S011",
+      "questionId": "Q-EQA-16",
+      "materialId": "MAT-EQA-05",
+      "requirementId": "REQ-EQA-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-20T16:10:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00145",
+      "studentId": "S011",
+      "questionId": "Q-NUM-07",
+      "materialId": "MAT-NUM-03",
+      "requirementId": "REQ-NUM-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-20T19:21:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00146",
+      "studentId": "S011",
+      "questionId": "Q-EXP-20",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-20T22:32:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00147",
+      "studentId": "S011",
+      "questionId": "Q-EQA-07",
+      "materialId": "MAT-EQA-03",
+      "requirementId": "REQ-EQA-02",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-21T01:43:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00148",
+      "studentId": "S011",
+      "questionId": "Q-NUM-02",
+      "materialId": "MAT-NUM-02",
+      "requirementId": "REQ-NUM-01",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-20T18:54:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00149",
+      "studentId": "S011",
+      "questionId": "Q-EXP-15",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-20T21:05:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00150",
+      "studentId": "S011",
+      "questionId": "Q-NUM-03",
+      "materialId": "MAT-NUM-02",
+      "requirementId": "REQ-NUM-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-21T00:16:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00151",
+      "studentId": "S011",
+      "questionId": "Q-EXP-02",
+      "materialId": "MAT-EXP-02",
+      "requirementId": "REQ-EXP-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-20T17:27:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00152",
+      "studentId": "S011",
+      "questionId": "Q-EXP-10",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-20T20:38:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00153",
+      "studentId": "S011",
+      "questionId": "Q-EQA-04",
+      "materialId": "MAT-EQA-01",
+      "requirementId": "REQ-EQA-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-20T23:49:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00154",
+      "studentId": "S011",
+      "questionId": "Q-EQA-09",
+      "materialId": "MAT-EQA-05",
+      "requirementId": "REQ-EQA-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-21T16:00:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00155",
+      "studentId": "S011",
+      "questionId": "Q-EXP-19",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-21T19:11:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00156",
+      "studentId": "S011",
+      "questionId": "Q-EQA-08",
+      "materialId": "MAT-EQA-04",
+      "requirementId": "REQ-EQA-02",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-21T22:22:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00157",
+      "studentId": "S011",
+      "questionId": "Q-NUM-03",
+      "materialId": "MAT-NUM-02",
+      "requirementId": "REQ-NUM-01",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-22T01:33:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00158",
+      "studentId": "S011",
+      "questionId": "Q-EQA-05",
+      "materialId": "MAT-EQA-03",
+      "requirementId": "REQ-EQA-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-21T18:44:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00159",
+      "studentId": "S012",
+      "questionId": "Q-NUM-01",
+      "materialId": "MAT-NUM-01",
+      "requirementId": "REQ-NUM-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-21T17:17:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00160",
+      "studentId": "S012",
+      "questionId": "Q-NUM-05",
+      "materialId": "MAT-NUM-04",
+      "requirementId": "REQ-NUM-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-21T20:28:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00161",
+      "studentId": "S012",
+      "questionId": "Q-NUM-06",
+      "materialId": "MAT-NUM-03",
+      "requirementId": "REQ-NUM-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-21T23:39:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00162",
+      "studentId": "S012",
+      "questionId": "Q-NUM-04",
+      "materialId": "MAT-NUM-01",
+      "requirementId": "REQ-NUM-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-21T16:50:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00163",
+      "studentId": "S012",
+      "questionId": "Q-EQA-02",
+      "materialId": "MAT-EQA-02",
+      "requirementId": "REQ-EQA-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-21T19:01:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00164",
+      "studentId": "S012",
+      "questionId": "Q-EXP-06",
+      "materialId": "MAT-EXP-03",
+      "requirementId": "REQ-EXP-02",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-21T22:12:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00165",
+      "studentId": "S012",
+      "questionId": "Q-EQA-04",
+      "materialId": "MAT-EQA-01",
+      "requirementId": "REQ-EQA-01",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-22T01:23:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00166",
+      "studentId": "S012",
+      "questionId": "Q-NUM-08",
+      "materialId": "MAT-NUM-04",
+      "requirementId": "REQ-NUM-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-21T18:34:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00167",
+      "studentId": "S012",
+      "questionId": "Q-EXP-10",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-21T21:45:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00168",
+      "studentId": "S012",
+      "questionId": "Q-NUM-16",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-22T00:56:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00169",
+      "studentId": "S012",
+      "questionId": "Q-EQA-05",
+      "materialId": "MAT-EQA-03",
+      "requirementId": "REQ-EQA-02",
+      "status": "missing",
+      "score": null,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-21T17:07:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00170",
+      "studentId": "S012",
+      "questionId": "Q-NUM-19",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-21T20:18:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00171",
+      "studentId": "S012",
+      "questionId": "Q-EXP-16",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-21T23:29:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00172",
+      "studentId": "S012",
+      "questionId": "Q-EXP-08",
+      "materialId": "MAT-EXP-03",
+      "requirementId": "REQ-EXP-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-21T16:40:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00173",
+      "studentId": "S012",
+      "questionId": "Q-EXP-06",
+      "materialId": "MAT-EXP-03",
+      "requirementId": "REQ-EXP-02",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-21T19:51:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00174",
+      "studentId": "S012",
+      "questionId": "Q-EXP-16",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-21T22:02:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00175",
+      "studentId": "S013",
+      "questionId": "Q-EXP-06",
+      "materialId": "MAT-EXP-03",
+      "requirementId": "REQ-EXP-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-21T18:24:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00176",
+      "studentId": "S013",
+      "questionId": "Q-NUM-05",
+      "materialId": "MAT-NUM-04",
+      "requirementId": "REQ-NUM-02",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-21T21:35:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00177",
+      "studentId": "S013",
+      "questionId": "Q-NUM-05",
+      "materialId": "MAT-NUM-04",
+      "requirementId": "REQ-NUM-02",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-22T00:46:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00178",
+      "studentId": "S013",
+      "questionId": "Q-EQA-05",
+      "materialId": "MAT-EQA-03",
+      "requirementId": "REQ-EQA-02",
+      "status": "missing",
+      "score": null,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-21T17:57:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00179",
+      "studentId": "S013",
+      "questionId": "Q-EXP-02",
+      "materialId": "MAT-EXP-02",
+      "requirementId": "REQ-EXP-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-21T20:08:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00180",
+      "studentId": "S013",
+      "questionId": "Q-NUM-12",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-21T23:19:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00181",
+      "studentId": "S013",
+      "questionId": "Q-NUM-19",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-21T16:30:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00182",
+      "studentId": "S013",
+      "questionId": "Q-EQA-06",
+      "materialId": "MAT-EQA-04",
+      "requirementId": "REQ-EQA-02",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-21T19:41:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00183",
+      "studentId": "S013",
+      "questionId": "Q-EQA-19",
+      "materialId": "MAT-EQA-05",
+      "requirementId": "REQ-EQA-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-21T22:52:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00184",
+      "studentId": "S013",
+      "questionId": "Q-NUM-14",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-22T01:03:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00185",
+      "studentId": "S013",
+      "questionId": "Q-EQA-20",
+      "materialId": "MAT-EQA-05",
+      "requirementId": "REQ-EQA-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-21T18:14:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00186",
+      "studentId": "S013",
+      "questionId": "Q-EQA-03",
+      "materialId": "MAT-EQA-02",
+      "requirementId": "REQ-EQA-01",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-21T21:25:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00187",
+      "studentId": "S013",
+      "questionId": "Q-NUM-09",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-23T00:36:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00188",
+      "studentId": "S014",
+      "questionId": "Q-NUM-04",
+      "materialId": "MAT-NUM-01",
+      "requirementId": "REQ-NUM-01",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-22T19:31:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00189",
+      "studentId": "S014",
+      "questionId": "Q-EQA-08",
+      "materialId": "MAT-EQA-04",
+      "requirementId": "REQ-EQA-02",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-22T22:42:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00190",
+      "studentId": "S014",
+      "questionId": "Q-EQA-03",
+      "materialId": "MAT-EQA-02",
+      "requirementId": "REQ-EQA-01",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-23T01:53:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00191",
+      "studentId": "S014",
+      "questionId": "Q-NUM-07",
+      "materialId": "MAT-NUM-03",
+      "requirementId": "REQ-NUM-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-22T18:04:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00192",
+      "studentId": "S014",
+      "questionId": "Q-EXP-06",
+      "materialId": "MAT-EXP-03",
+      "requirementId": "REQ-EXP-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-22T21:15:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00193",
+      "studentId": "S014",
+      "questionId": "Q-EXP-06",
+      "materialId": "MAT-EXP-03",
+      "requirementId": "REQ-EXP-02",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-23T00:26:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00194",
+      "studentId": "S014",
+      "questionId": "Q-EQA-01",
+      "materialId": "MAT-EQA-01",
+      "requirementId": "REQ-EQA-01",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-22T17:37:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00195",
+      "studentId": "S014",
+      "questionId": "Q-EQA-01",
+      "materialId": "MAT-EQA-01",
+      "requirementId": "REQ-EQA-01",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-22T20:48:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00196",
+      "studentId": "S014",
+      "questionId": "Q-EQA-06",
+      "materialId": "MAT-EQA-04",
+      "requirementId": "REQ-EQA-02",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-22T23:59:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00197",
+      "studentId": "S014",
+      "questionId": "Q-NUM-11",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-22T16:10:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00198",
+      "studentId": "S014",
+      "questionId": "Q-EXP-05",
+      "materialId": "MAT-EXP-04",
+      "requirementId": "REQ-EXP-02",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-22T19:21:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00199",
+      "studentId": "S014",
+      "questionId": "Q-NUM-02",
+      "materialId": "MAT-NUM-02",
+      "requirementId": "REQ-NUM-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-22T22:32:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00200",
+      "studentId": "S014",
+      "questionId": "Q-NUM-05",
+      "materialId": "MAT-NUM-04",
+      "requirementId": "REQ-NUM-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-23T01:43:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00201",
+      "studentId": "S014",
+      "questionId": "Q-NUM-08",
+      "materialId": "MAT-NUM-04",
+      "requirementId": "REQ-NUM-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-22T18:54:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00202",
+      "studentId": "S015",
+      "questionId": "Q-EXP-03",
+      "materialId": "MAT-EXP-02",
+      "requirementId": "REQ-EXP-01",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-22T20:38:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00203",
+      "studentId": "S015",
+      "questionId": "Q-EQA-09",
+      "materialId": "MAT-EQA-05",
+      "requirementId": "REQ-EQA-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-22T23:49:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00204",
+      "studentId": "S015",
+      "questionId": "Q-EQA-06",
+      "materialId": "MAT-EQA-04",
+      "requirementId": "REQ-EQA-02",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-22T16:00:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00205",
+      "studentId": "S015",
+      "questionId": "Q-EXP-20",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-22T19:11:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00206",
+      "studentId": "S015",
+      "questionId": "Q-EXP-11",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-22T22:22:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00207",
+      "studentId": "S015",
+      "questionId": "Q-NUM-20",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-23T01:33:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00208",
+      "studentId": "S015",
+      "questionId": "Q-EXP-13",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-22T18:44:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00209",
+      "studentId": "S015",
+      "questionId": "Q-EXP-14",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-22T21:55:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00210",
+      "studentId": "S015",
+      "questionId": "Q-NUM-07",
+      "materialId": "MAT-NUM-03",
+      "requirementId": "REQ-NUM-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-23T00:06:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00211",
+      "studentId": "S015",
+      "questionId": "Q-EQA-08",
+      "materialId": "MAT-EQA-04",
+      "requirementId": "REQ-EQA-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-22T17:17:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00212",
+      "studentId": "S015",
+      "questionId": "Q-NUM-05",
+      "materialId": "MAT-NUM-04",
+      "requirementId": "REQ-NUM-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-22T20:28:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00213",
+      "studentId": "S015",
+      "questionId": "Q-EQA-02",
+      "materialId": "MAT-EQA-02",
+      "requirementId": "REQ-EQA-01",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-22T23:39:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00214",
+      "studentId": "S015",
+      "questionId": "Q-NUM-20",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-22T16:50:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00215",
+      "studentId": "S015",
+      "questionId": "Q-EQA-03",
+      "materialId": "MAT-EQA-02",
+      "requirementId": "REQ-EQA-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-22T19:01:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00216",
+      "studentId": "S015",
+      "questionId": "Q-EQA-04",
+      "materialId": "MAT-EQA-01",
+      "requirementId": "REQ-EQA-01",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-23T22:12:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00217",
+      "studentId": "S016",
+      "questionId": "Q-EXP-06",
+      "materialId": "MAT-EXP-03",
+      "requirementId": "REQ-EXP-02",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-22T21:45:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00218",
+      "studentId": "S016",
+      "questionId": "Q-EQA-06",
+      "materialId": "MAT-EQA-04",
+      "requirementId": "REQ-EQA-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-24T00:56:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00219",
+      "studentId": "S016",
+      "questionId": "Q-NUM-02",
+      "materialId": "MAT-NUM-02",
+      "requirementId": "REQ-NUM-01",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-23T17:07:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00220",
+      "studentId": "S016",
+      "questionId": "Q-NUM-10",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-23T20:18:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00221",
+      "studentId": "S016",
+      "questionId": "Q-NUM-17",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-23T23:29:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00222",
+      "studentId": "S016",
+      "questionId": "Q-EXP-11",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-23T16:40:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00223",
+      "studentId": "S016",
+      "questionId": "Q-NUM-03",
+      "materialId": "MAT-NUM-02",
+      "requirementId": "REQ-NUM-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-23T19:51:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00224",
+      "studentId": "S016",
+      "questionId": "Q-NUM-13",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-23T22:02:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00225",
+      "studentId": "S016",
+      "questionId": "Q-NUM-18",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-24T01:13:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00226",
+      "studentId": "S016",
+      "questionId": "Q-NUM-03",
+      "materialId": "MAT-NUM-02",
+      "requirementId": "REQ-NUM-01",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-23T18:24:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00227",
+      "studentId": "S016",
+      "questionId": "Q-EQA-08",
+      "materialId": "MAT-EQA-04",
+      "requirementId": "REQ-EQA-02",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-23T21:35:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00228",
+      "studentId": "S016",
+      "questionId": "Q-EXP-14",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-24T00:46:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00229",
+      "studentId": "S016",
+      "questionId": "Q-EQA-01",
+      "materialId": "MAT-EQA-01",
+      "requirementId": "REQ-EQA-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-23T17:57:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00230",
+      "studentId": "S016",
+      "questionId": "Q-NUM-17",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-23T20:08:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00231",
+      "studentId": "S016",
+      "questionId": "Q-NUM-05",
+      "materialId": "MAT-NUM-04",
+      "requirementId": "REQ-NUM-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-23T23:19:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00232",
+      "studentId": "S016",
+      "questionId": "Q-EXP-15",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-23T16:30:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00233",
+      "studentId": "S017",
+      "questionId": "Q-NUM-09",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-23T22:52:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00234",
+      "studentId": "S017",
+      "questionId": "Q-NUM-05",
+      "materialId": "MAT-NUM-04",
+      "requirementId": "REQ-NUM-02",
+      "status": "missing",
+      "score": null,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-24T01:03:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00235",
+      "studentId": "S017",
+      "questionId": "Q-NUM-20",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-23T18:14:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00236",
+      "studentId": "S017",
+      "questionId": "Q-EXP-09",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-23T21:25:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00237",
+      "studentId": "S017",
+      "questionId": "Q-EXP-06",
+      "materialId": "MAT-EXP-03",
+      "requirementId": "REQ-EXP-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-24T00:36:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00238",
+      "studentId": "S017",
+      "questionId": "Q-NUM-17",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-23T17:47:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00239",
+      "studentId": "S017",
+      "questionId": "Q-EXP-01",
+      "materialId": "MAT-EXP-01",
+      "requirementId": "REQ-EXP-01",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-23T20:58:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00240",
+      "studentId": "S017",
+      "questionId": "Q-EXP-15",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-23T23:09:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00241",
+      "studentId": "S017",
+      "questionId": "Q-NUM-18",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-23T16:20:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00242",
+      "studentId": "S017",
+      "questionId": "Q-NUM-09",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-23T19:31:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00243",
+      "studentId": "S017",
+      "questionId": "Q-EXP-07",
+      "materialId": "MAT-EXP-04",
+      "requirementId": "REQ-EXP-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-23T22:42:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00244",
+      "studentId": "S017",
+      "questionId": "Q-EXP-01",
+      "materialId": "MAT-EXP-01",
+      "requirementId": "REQ-EXP-01",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-24T01:53:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00245",
+      "studentId": "S017",
+      "questionId": "Q-EQA-04",
+      "materialId": "MAT-EQA-01",
+      "requirementId": "REQ-EQA-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-23T18:04:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00246",
+      "studentId": "S018",
+      "questionId": "Q-EXP-18",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-23T23:59:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00247",
+      "studentId": "S018",
+      "questionId": "Q-EQA-07",
+      "materialId": "MAT-EQA-03",
+      "requirementId": "REQ-EQA-02",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-23T16:10:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00248",
+      "studentId": "S018",
+      "questionId": "Q-NUM-07",
+      "materialId": "MAT-NUM-03",
+      "requirementId": "REQ-NUM-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-23T19:21:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00249",
+      "studentId": "S018",
+      "questionId": "Q-EQA-04",
+      "materialId": "MAT-EQA-01",
+      "requirementId": "REQ-EQA-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-24T22:32:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00250",
+      "studentId": "S018",
+      "questionId": "Q-EXP-19",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-25T01:43:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00251",
+      "studentId": "S018",
+      "questionId": "Q-NUM-03",
+      "materialId": "MAT-NUM-02",
+      "requirementId": "REQ-NUM-01",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-24T18:54:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00252",
+      "studentId": "S018",
+      "questionId": "Q-EXP-01",
+      "materialId": "MAT-EXP-01",
+      "requirementId": "REQ-EXP-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-24T21:05:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00253",
+      "studentId": "S018",
+      "questionId": "Q-EXP-04",
+      "materialId": "MAT-EXP-01",
+      "requirementId": "REQ-EXP-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-25T00:16:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00254",
+      "studentId": "S018",
+      "questionId": "Q-EXP-08",
+      "materialId": "MAT-EXP-03",
+      "requirementId": "REQ-EXP-02",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-24T17:27:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00255",
+      "studentId": "S018",
+      "questionId": "Q-NUM-07",
+      "materialId": "MAT-NUM-03",
+      "requirementId": "REQ-NUM-02",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-24T20:38:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00256",
+      "studentId": "S018",
+      "questionId": "Q-EXP-09",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-24T23:49:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00257",
+      "studentId": "S018",
+      "questionId": "Q-NUM-04",
+      "materialId": "MAT-NUM-01",
+      "requirementId": "REQ-NUM-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-24T16:00:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00258",
+      "studentId": "S018",
+      "questionId": "Q-EXP-02",
+      "materialId": "MAT-EXP-02",
+      "requirementId": "REQ-EXP-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-24T19:11:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00259",
+      "studentId": "S018",
+      "questionId": "Q-EQA-15",
+      "materialId": "MAT-EQA-05",
+      "requirementId": "REQ-EQA-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-24T22:22:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00260",
+      "studentId": "S019",
+      "questionId": "Q-EQA-10",
+      "materialId": "MAT-EQA-05",
+      "requirementId": "REQ-EQA-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-25T00:06:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00261",
+      "studentId": "S019",
+      "questionId": "Q-EXP-01",
+      "materialId": "MAT-EXP-01",
+      "requirementId": "REQ-EXP-01",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-24T17:17:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00262",
+      "studentId": "S019",
+      "questionId": "Q-EQA-20",
+      "materialId": "MAT-EQA-05",
+      "requirementId": "REQ-EQA-03",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-24T20:28:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00263",
+      "studentId": "S019",
+      "questionId": "Q-NUM-08",
+      "materialId": "MAT-NUM-04",
+      "requirementId": "REQ-NUM-02",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-24T23:39:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00264",
+      "studentId": "S019",
+      "questionId": "Q-EQA-19",
+      "materialId": "MAT-EQA-05",
+      "requirementId": "REQ-EQA-03",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-24T16:50:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00265",
+      "studentId": "S019",
+      "questionId": "Q-EXP-03",
+      "materialId": "MAT-EXP-02",
+      "requirementId": "REQ-EXP-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-24T19:01:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00266",
+      "studentId": "S019",
+      "questionId": "Q-EQA-03",
+      "materialId": "MAT-EQA-02",
+      "requirementId": "REQ-EQA-01",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-24T22:12:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00267",
+      "studentId": "S019",
+      "questionId": "Q-EQA-06",
+      "materialId": "MAT-EQA-04",
+      "requirementId": "REQ-EQA-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-25T01:23:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00268",
+      "studentId": "S019",
+      "questionId": "Q-EXP-07",
+      "materialId": "MAT-EXP-04",
+      "requirementId": "REQ-EXP-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-24T18:34:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00269",
+      "studentId": "S019",
+      "questionId": "Q-NUM-01",
+      "materialId": "MAT-NUM-01",
+      "requirementId": "REQ-NUM-01",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-24T21:45:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00270",
+      "studentId": "S019",
+      "questionId": "Q-EQA-04",
+      "materialId": "MAT-EQA-01",
+      "requirementId": "REQ-EQA-01",
+      "status": "missing",
+      "score": null,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-25T00:56:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00271",
+      "studentId": "S019",
+      "questionId": "Q-EXP-05",
+      "materialId": "MAT-EXP-04",
+      "requirementId": "REQ-EXP-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-24T17:07:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00272",
+      "studentId": "S019",
+      "questionId": "Q-EQA-07",
+      "materialId": "MAT-EQA-03",
+      "requirementId": "REQ-EQA-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-24T20:18:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00273",
+      "studentId": "S019",
+      "questionId": "Q-NUM-02",
+      "materialId": "MAT-NUM-02",
+      "requirementId": "REQ-NUM-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-24T23:29:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00274",
+      "studentId": "S019",
+      "questionId": "Q-EXP-07",
+      "materialId": "MAT-EXP-04",
+      "requirementId": "REQ-EXP-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-24T16:40:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00275",
+      "studentId": "S020",
+      "questionId": "Q-NUM-19",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-25T01:13:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00276",
+      "studentId": "S020",
+      "questionId": "Q-EXP-03",
+      "materialId": "MAT-EXP-02",
+      "requirementId": "REQ-EXP-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-24T18:24:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00277",
+      "studentId": "S020",
+      "questionId": "Q-EQA-06",
+      "materialId": "MAT-EQA-04",
+      "requirementId": "REQ-EQA-02",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-24T21:35:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00278",
+      "studentId": "S020",
+      "questionId": "Q-NUM-11",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-25T00:46:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00279",
+      "studentId": "S020",
+      "questionId": "Q-EXP-05",
+      "materialId": "MAT-EXP-04",
+      "requirementId": "REQ-EXP-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-24T17:57:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00280",
+      "studentId": "S020",
+      "questionId": "Q-EQA-07",
+      "materialId": "MAT-EQA-03",
+      "requirementId": "REQ-EQA-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-25T20:08:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00281",
+      "studentId": "S020",
+      "questionId": "Q-NUM-11",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-25T23:19:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00282",
+      "studentId": "S020",
+      "questionId": "Q-EQA-12",
+      "materialId": "MAT-EQA-05",
+      "requirementId": "REQ-EQA-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-25T16:30:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00283",
+      "studentId": "S020",
+      "questionId": "Q-EXP-19",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-25T19:41:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00284",
+      "studentId": "S020",
+      "questionId": "Q-EXP-04",
+      "materialId": "MAT-EXP-01",
+      "requirementId": "REQ-EXP-01",
+      "status": "missing",
+      "score": null,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-25T22:52:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00285",
+      "studentId": "S020",
+      "questionId": "Q-NUM-08",
+      "materialId": "MAT-NUM-04",
+      "requirementId": "REQ-NUM-02",
+      "status": "missing",
+      "score": null,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-26T01:03:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00286",
+      "studentId": "S020",
+      "questionId": "Q-EQA-04",
+      "materialId": "MAT-EQA-01",
+      "requirementId": "REQ-EQA-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-25T18:14:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00287",
+      "studentId": "S020",
+      "questionId": "Q-EXP-06",
+      "materialId": "MAT-EXP-03",
+      "requirementId": "REQ-EXP-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-25T21:25:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00288",
+      "studentId": "S020",
+      "questionId": "Q-EXP-12",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-26T00:36:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00289",
+      "studentId": "S020",
+      "questionId": "Q-EQA-06",
+      "materialId": "MAT-EQA-04",
+      "requirementId": "REQ-EQA-02",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-25T17:47:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00290",
+      "studentId": "S020",
+      "questionId": "Q-EXP-04",
+      "materialId": "MAT-EXP-01",
+      "requirementId": "REQ-EXP-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-25T20:58:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00291",
+      "studentId": "S021",
+      "questionId": "Q-EQA-15",
+      "materialId": "MAT-EQA-05",
+      "requirementId": "REQ-EQA-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-25T16:20:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00292",
+      "studentId": "S021",
+      "questionId": "Q-EXP-20",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-25T19:31:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00293",
+      "studentId": "S021",
+      "questionId": "Q-NUM-07",
+      "materialId": "MAT-NUM-03",
+      "requirementId": "REQ-NUM-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-25T22:42:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00294",
+      "studentId": "S021",
+      "questionId": "Q-EXP-01",
+      "materialId": "MAT-EXP-01",
+      "requirementId": "REQ-EXP-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-26T01:53:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00295",
+      "studentId": "S021",
+      "questionId": "Q-EQA-05",
+      "materialId": "MAT-EQA-03",
+      "requirementId": "REQ-EQA-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-25T18:04:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00296",
+      "studentId": "S021",
+      "questionId": "Q-NUM-03",
+      "materialId": "MAT-NUM-02",
+      "requirementId": "REQ-NUM-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-25T21:15:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00297",
+      "studentId": "S021",
+      "questionId": "Q-EXP-04",
+      "materialId": "MAT-EXP-01",
+      "requirementId": "REQ-EXP-01",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-26T00:26:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00298",
+      "studentId": "S021",
+      "questionId": "Q-EQA-02",
+      "materialId": "MAT-EQA-02",
+      "requirementId": "REQ-EQA-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-25T17:37:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00299",
+      "studentId": "S021",
+      "questionId": "Q-EXP-03",
+      "materialId": "MAT-EXP-02",
+      "requirementId": "REQ-EXP-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-25T20:48:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00300",
+      "studentId": "S021",
+      "questionId": "Q-EXP-15",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-25T23:59:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00301",
+      "studentId": "S021",
+      "questionId": "Q-EXP-12",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-25T16:10:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00302",
+      "studentId": "S021",
+      "questionId": "Q-EQA-11",
+      "materialId": "MAT-EQA-05",
+      "requirementId": "REQ-EQA-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-25T19:21:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00303",
+      "studentId": "S021",
+      "questionId": "Q-EQA-08",
+      "materialId": "MAT-EQA-04",
+      "requirementId": "REQ-EQA-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-25T22:32:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00304",
+      "studentId": "S022",
+      "questionId": "Q-EXP-17",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-25T17:27:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00305",
+      "studentId": "S022",
+      "questionId": "Q-EQA-08",
+      "materialId": "MAT-EQA-04",
+      "requirementId": "REQ-EQA-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-25T20:38:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00306",
+      "studentId": "S022",
+      "questionId": "Q-EXP-08",
+      "materialId": "MAT-EXP-03",
+      "requirementId": "REQ-EXP-02",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-25T23:49:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00307",
+      "studentId": "S022",
+      "questionId": "Q-EQA-02",
+      "materialId": "MAT-EQA-02",
+      "requirementId": "REQ-EQA-01",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-25T16:00:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00308",
+      "studentId": "S022",
+      "questionId": "Q-EQA-04",
+      "materialId": "MAT-EQA-01",
+      "requirementId": "REQ-EQA-01",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-25T19:11:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00309",
+      "studentId": "S022",
+      "questionId": "Q-EQA-04",
+      "materialId": "MAT-EQA-01",
+      "requirementId": "REQ-EQA-01",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-25T22:22:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00310",
+      "studentId": "S022",
+      "questionId": "Q-NUM-20",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-26T01:33:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00311",
+      "studentId": "S022",
+      "questionId": "Q-EXP-18",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-26T18:44:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00312",
+      "studentId": "S022",
+      "questionId": "Q-EQA-16",
+      "materialId": "MAT-EQA-05",
+      "requirementId": "REQ-EQA-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-26T21:55:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00313",
+      "studentId": "S022",
+      "questionId": "Q-NUM-08",
+      "materialId": "MAT-NUM-04",
+      "requirementId": "REQ-NUM-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-27T00:06:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00314",
+      "studentId": "S022",
+      "questionId": "Q-EQA-11",
+      "materialId": "MAT-EQA-05",
+      "requirementId": "REQ-EQA-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-26T17:17:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00315",
+      "studentId": "S022",
+      "questionId": "Q-EXP-12",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-26T20:28:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00316",
+      "studentId": "S022",
+      "questionId": "Q-EXP-06",
+      "materialId": "MAT-EXP-03",
+      "requirementId": "REQ-EXP-02",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-26T23:39:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00317",
+      "studentId": "S022",
+      "questionId": "Q-EQA-07",
+      "materialId": "MAT-EQA-03",
+      "requirementId": "REQ-EQA-02",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-26T16:50:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00318",
+      "studentId": "S023",
+      "questionId": "Q-EQA-05",
+      "materialId": "MAT-EQA-03",
+      "requirementId": "REQ-EQA-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-26T18:34:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00319",
+      "studentId": "S023",
+      "questionId": "Q-EXP-07",
+      "materialId": "MAT-EXP-04",
+      "requirementId": "REQ-EXP-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-26T21:45:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00320",
+      "studentId": "S023",
+      "questionId": "Q-NUM-13",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "missing",
+      "score": null,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-27T00:56:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00321",
+      "studentId": "S023",
+      "questionId": "Q-NUM-07",
+      "materialId": "MAT-NUM-03",
+      "requirementId": "REQ-NUM-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-26T17:07:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00322",
+      "studentId": "S023",
+      "questionId": "Q-EQA-11",
+      "materialId": "MAT-EQA-05",
+      "requirementId": "REQ-EQA-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-26T20:18:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00323",
+      "studentId": "S023",
+      "questionId": "Q-EQA-02",
+      "materialId": "MAT-EQA-02",
+      "requirementId": "REQ-EQA-01",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-26T23:29:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00324",
+      "studentId": "S023",
+      "questionId": "Q-NUM-06",
+      "materialId": "MAT-NUM-03",
+      "requirementId": "REQ-NUM-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-26T16:40:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00325",
+      "studentId": "S023",
+      "questionId": "Q-EQA-08",
+      "materialId": "MAT-EQA-04",
+      "requirementId": "REQ-EQA-02",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-26T19:51:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00326",
+      "studentId": "S023",
+      "questionId": "Q-EQA-03",
+      "materialId": "MAT-EQA-02",
+      "requirementId": "REQ-EQA-01",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-26T22:02:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00327",
+      "studentId": "S023",
+      "questionId": "Q-EXP-03",
+      "materialId": "MAT-EXP-02",
+      "requirementId": "REQ-EXP-01",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-27T01:13:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00328",
+      "studentId": "S023",
+      "questionId": "Q-EQA-01",
+      "materialId": "MAT-EQA-01",
+      "requirementId": "REQ-EQA-01",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-26T18:24:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00329",
+      "studentId": "S023",
+      "questionId": "Q-EQA-15",
+      "materialId": "MAT-EQA-05",
+      "requirementId": "REQ-EQA-03",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-26T21:35:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00330",
+      "studentId": "S023",
+      "questionId": "Q-EXP-02",
+      "materialId": "MAT-EXP-02",
+      "requirementId": "REQ-EXP-01",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-27T00:46:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00331",
+      "studentId": "S023",
+      "questionId": "Q-EQA-07",
+      "materialId": "MAT-EQA-03",
+      "requirementId": "REQ-EQA-02",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-26T17:57:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00332",
+      "studentId": "S023",
+      "questionId": "Q-EQA-10",
+      "materialId": "MAT-EQA-05",
+      "requirementId": "REQ-EQA-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-26T20:08:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00333",
+      "studentId": "S024",
+      "questionId": "Q-EQA-07",
+      "materialId": "MAT-EQA-03",
+      "requirementId": "REQ-EQA-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-26T19:41:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00334",
+      "studentId": "S024",
+      "questionId": "Q-EQA-18",
+      "materialId": "MAT-EQA-05",
+      "requirementId": "REQ-EQA-03",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-26T22:52:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00335",
+      "studentId": "S024",
+      "questionId": "Q-EXP-04",
+      "materialId": "MAT-EXP-01",
+      "requirementId": "REQ-EXP-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-27T01:03:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00336",
+      "studentId": "S024",
+      "questionId": "Q-NUM-20",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-26T18:14:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00337",
+      "studentId": "S024",
+      "questionId": "Q-EQA-04",
+      "materialId": "MAT-EQA-01",
+      "requirementId": "REQ-EQA-01",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-26T21:25:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00338",
+      "studentId": "S024",
+      "questionId": "Q-EQA-14",
+      "materialId": "MAT-EQA-05",
+      "requirementId": "REQ-EQA-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-27T00:36:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00339",
+      "studentId": "S024",
+      "questionId": "Q-NUM-07",
+      "materialId": "MAT-NUM-03",
+      "requirementId": "REQ-NUM-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-26T17:47:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00340",
+      "studentId": "S024",
+      "questionId": "Q-EXP-04",
+      "materialId": "MAT-EXP-01",
+      "requirementId": "REQ-EXP-01",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-26T20:58:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00341",
+      "studentId": "S024",
+      "questionId": "Q-NUM-04",
+      "materialId": "MAT-NUM-01",
+      "requirementId": "REQ-NUM-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-26T23:09:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00342",
+      "studentId": "S024",
+      "questionId": "Q-EXP-12",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-27T16:20:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00343",
+      "studentId": "S024",
+      "questionId": "Q-EXP-09",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-27T19:31:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00344",
+      "studentId": "S024",
+      "questionId": "Q-NUM-10",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-27T22:42:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00345",
+      "studentId": "S024",
+      "questionId": "Q-EQA-08",
+      "materialId": "MAT-EQA-04",
+      "requirementId": "REQ-EQA-02",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-28T01:53:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00346",
+      "studentId": "S024",
+      "questionId": "Q-EQA-08",
+      "materialId": "MAT-EQA-04",
+      "requirementId": "REQ-EQA-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-27T18:04:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00347",
+      "studentId": "S024",
+      "questionId": "Q-NUM-07",
+      "materialId": "MAT-NUM-03",
+      "requirementId": "REQ-NUM-02",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-27T21:15:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00348",
+      "studentId": "S024",
+      "questionId": "Q-EXP-16",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-28T00:26:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00349",
+      "studentId": "S025",
+      "questionId": "Q-EQA-20",
+      "materialId": "MAT-EQA-05",
+      "requirementId": "REQ-EQA-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-27T20:48:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00350",
+      "studentId": "S025",
+      "questionId": "Q-NUM-08",
+      "materialId": "MAT-NUM-04",
+      "requirementId": "REQ-NUM-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-27T23:59:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00351",
+      "studentId": "S025",
+      "questionId": "Q-EXP-07",
+      "materialId": "MAT-EXP-04",
+      "requirementId": "REQ-EXP-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-27T16:10:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00352",
+      "studentId": "S025",
+      "questionId": "Q-EXP-02",
+      "materialId": "MAT-EXP-02",
+      "requirementId": "REQ-EXP-01",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-27T19:21:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00353",
+      "studentId": "S025",
+      "questionId": "Q-EXP-08",
+      "materialId": "MAT-EXP-03",
+      "requirementId": "REQ-EXP-02",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-27T22:32:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00354",
+      "studentId": "S025",
+      "questionId": "Q-EXP-06",
+      "materialId": "MAT-EXP-03",
+      "requirementId": "REQ-EXP-02",
+      "status": "missing",
+      "score": null,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-28T01:43:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00355",
+      "studentId": "S025",
+      "questionId": "Q-NUM-19",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-27T18:54:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00356",
+      "studentId": "S025",
+      "questionId": "Q-NUM-10",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-27T21:05:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00357",
+      "studentId": "S025",
+      "questionId": "Q-EQA-18",
+      "materialId": "MAT-EQA-05",
+      "requirementId": "REQ-EQA-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-28T00:16:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00358",
+      "studentId": "S025",
+      "questionId": "Q-EXP-04",
+      "materialId": "MAT-EXP-01",
+      "requirementId": "REQ-EXP-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-27T17:27:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00359",
+      "studentId": "S025",
+      "questionId": "Q-EQA-07",
+      "materialId": "MAT-EQA-03",
+      "requirementId": "REQ-EQA-02",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-27T20:38:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00360",
+      "studentId": "S025",
+      "questionId": "Q-EXP-12",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-27T23:49:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00361",
+      "studentId": "S025",
+      "questionId": "Q-EQA-01",
+      "materialId": "MAT-EQA-01",
+      "requirementId": "REQ-EQA-01",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-27T16:00:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00362",
+      "studentId": "S026",
+      "questionId": "Q-NUM-01",
+      "materialId": "MAT-NUM-01",
+      "requirementId": "REQ-NUM-01",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-27T21:55:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00363",
+      "studentId": "S026",
+      "questionId": "Q-EQA-18",
+      "materialId": "MAT-EQA-05",
+      "requirementId": "REQ-EQA-03",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-28T00:06:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00364",
+      "studentId": "S026",
+      "questionId": "Q-EXP-20",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-27T17:17:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00365",
+      "studentId": "S026",
+      "questionId": "Q-EQA-16",
+      "materialId": "MAT-EQA-05",
+      "requirementId": "REQ-EQA-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-27T20:28:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00366",
+      "studentId": "S026",
+      "questionId": "Q-EQA-19",
+      "materialId": "MAT-EQA-05",
+      "requirementId": "REQ-EQA-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-27T23:39:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00367",
+      "studentId": "S026",
+      "questionId": "Q-EXP-20",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-27T16:50:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00368",
+      "studentId": "S026",
+      "questionId": "Q-EXP-03",
+      "materialId": "MAT-EXP-02",
+      "requirementId": "REQ-EXP-01",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-27T19:01:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00369",
+      "studentId": "S026",
+      "questionId": "Q-EQA-01",
+      "materialId": "MAT-EQA-01",
+      "requirementId": "REQ-EQA-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-27T22:12:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00370",
+      "studentId": "S026",
+      "questionId": "Q-EQA-12",
+      "materialId": "MAT-EQA-05",
+      "requirementId": "REQ-EQA-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-28T01:23:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00371",
+      "studentId": "S026",
+      "questionId": "Q-EQA-20",
+      "materialId": "MAT-EQA-05",
+      "requirementId": "REQ-EQA-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-27T18:34:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00372",
+      "studentId": "S026",
+      "questionId": "Q-NUM-04",
+      "materialId": "MAT-NUM-01",
+      "requirementId": "REQ-NUM-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-27T21:45:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00373",
+      "studentId": "S026",
+      "questionId": "Q-NUM-09",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-29T00:56:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00374",
+      "studentId": "S026",
+      "questionId": "Q-EQA-01",
+      "materialId": "MAT-EQA-01",
+      "requirementId": "REQ-EQA-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-28T17:07:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00375",
+      "studentId": "S026",
+      "questionId": "Q-NUM-02",
+      "materialId": "MAT-NUM-02",
+      "requirementId": "REQ-NUM-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-28T20:18:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00376",
+      "studentId": "S027",
+      "questionId": "Q-NUM-03",
+      "materialId": "MAT-NUM-02",
+      "requirementId": "REQ-NUM-01",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-28T22:02:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00377",
+      "studentId": "S027",
+      "questionId": "Q-EQA-16",
+      "materialId": "MAT-EQA-05",
+      "requirementId": "REQ-EQA-03",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-29T01:13:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00378",
+      "studentId": "S027",
+      "questionId": "Q-NUM-08",
+      "materialId": "MAT-NUM-04",
+      "requirementId": "REQ-NUM-02",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-28T18:24:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00379",
+      "studentId": "S027",
+      "questionId": "Q-EXP-05",
+      "materialId": "MAT-EXP-04",
+      "requirementId": "REQ-EXP-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-28T21:35:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00380",
+      "studentId": "S027",
+      "questionId": "Q-EQA-07",
+      "materialId": "MAT-EQA-03",
+      "requirementId": "REQ-EQA-02",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-29T00:46:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00381",
+      "studentId": "S027",
+      "questionId": "Q-NUM-05",
+      "materialId": "MAT-NUM-04",
+      "requirementId": "REQ-NUM-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-28T17:57:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00382",
+      "studentId": "S027",
+      "questionId": "Q-EQA-02",
+      "materialId": "MAT-EQA-02",
+      "requirementId": "REQ-EQA-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-28T20:08:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00383",
+      "studentId": "S027",
+      "questionId": "Q-EQA-07",
+      "materialId": "MAT-EQA-03",
+      "requirementId": "REQ-EQA-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-28T23:19:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00384",
+      "studentId": "S027",
+      "questionId": "Q-NUM-08",
+      "materialId": "MAT-NUM-04",
+      "requirementId": "REQ-NUM-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-28T16:30:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00385",
+      "studentId": "S027",
+      "questionId": "Q-EQA-05",
+      "materialId": "MAT-EQA-03",
+      "requirementId": "REQ-EQA-02",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-28T19:41:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00386",
+      "studentId": "S027",
+      "questionId": "Q-EQA-03",
+      "materialId": "MAT-EQA-02",
+      "requirementId": "REQ-EQA-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-28T22:52:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00387",
+      "studentId": "S027",
+      "questionId": "Q-EQA-08",
+      "materialId": "MAT-EQA-04",
+      "requirementId": "REQ-EQA-02",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-29T01:03:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00388",
+      "studentId": "S027",
+      "questionId": "Q-NUM-04",
+      "materialId": "MAT-NUM-01",
+      "requirementId": "REQ-NUM-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-28T18:14:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00389",
+      "studentId": "S027",
+      "questionId": "Q-EQA-04",
+      "materialId": "MAT-EQA-01",
+      "requirementId": "REQ-EQA-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-28T21:25:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00390",
+      "studentId": "S027",
+      "questionId": "Q-NUM-10",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-29T00:36:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00391",
+      "studentId": "S028",
+      "questionId": "Q-NUM-04",
+      "materialId": "MAT-NUM-01",
+      "requirementId": "REQ-NUM-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-28T23:09:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00392",
+      "studentId": "S028",
+      "questionId": "Q-NUM-06",
+      "materialId": "MAT-NUM-03",
+      "requirementId": "REQ-NUM-02",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-28T16:20:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00393",
+      "studentId": "S028",
+      "questionId": "Q-EQA-03",
+      "materialId": "MAT-EQA-02",
+      "requirementId": "REQ-EQA-01",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-28T19:31:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00394",
+      "studentId": "S028",
+      "questionId": "Q-NUM-04",
+      "materialId": "MAT-NUM-01",
+      "requirementId": "REQ-NUM-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-28T22:42:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00395",
+      "studentId": "S028",
+      "questionId": "Q-NUM-19",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-29T01:53:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00396",
+      "studentId": "S028",
+      "questionId": "Q-NUM-11",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-28T18:04:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00397",
+      "studentId": "S028",
+      "questionId": "Q-EXP-08",
+      "materialId": "MAT-EXP-03",
+      "requirementId": "REQ-EXP-02",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-28T21:15:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00398",
+      "studentId": "S028",
+      "questionId": "Q-EXP-01",
+      "materialId": "MAT-EXP-01",
+      "requirementId": "REQ-EXP-01",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-29T00:26:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00399",
+      "studentId": "S028",
+      "questionId": "Q-NUM-07",
+      "materialId": "MAT-NUM-03",
+      "requirementId": "REQ-NUM-02",
+      "status": "missing",
+      "score": null,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-28T17:37:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00400",
+      "studentId": "S028",
+      "questionId": "Q-EXP-01",
+      "materialId": "MAT-EXP-01",
+      "requirementId": "REQ-EXP-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-28T20:48:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00401",
+      "studentId": "S028",
+      "questionId": "Q-NUM-11",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-28T23:59:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00402",
+      "studentId": "S028",
+      "questionId": "Q-EQA-05",
+      "materialId": "MAT-EQA-03",
+      "requirementId": "REQ-EQA-02",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-28T16:10:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00403",
+      "studentId": "S028",
+      "questionId": "Q-NUM-10",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-28T19:21:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00404",
+      "studentId": "S028",
+      "questionId": "Q-NUM-11",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-29T22:32:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00405",
+      "studentId": "S028",
+      "questionId": "Q-NUM-17",
+      "materialId": "MAT-NUM-05",
+      "requirementId": "REQ-NUM-03",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-30T01:43:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00406",
+      "studentId": "S028",
+      "questionId": "Q-EXP-01",
+      "materialId": "MAT-EXP-01",
+      "requirementId": "REQ-EXP-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-29T18:54:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00407",
+      "studentId": "S029",
+      "questionId": "Q-NUM-02",
+      "materialId": "MAT-NUM-02",
+      "requirementId": "REQ-NUM-01",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-30T00:16:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00408",
+      "studentId": "S029",
+      "questionId": "Q-EXP-02",
+      "materialId": "MAT-EXP-02",
+      "requirementId": "REQ-EXP-01",
+      "status": "missing",
+      "score": null,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-29T17:27:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00409",
+      "studentId": "S030",
+      "questionId": "Q-EQA-08",
+      "materialId": "MAT-EQA-04",
+      "requirementId": "REQ-EQA-02",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-30T01:23:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00410",
+      "studentId": "S030",
+      "questionId": "Q-EQA-08",
+      "materialId": "MAT-EQA-04",
+      "requirementId": "REQ-EQA-02",
+      "status": "missing",
+      "score": null,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-29T18:34:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00411",
+      "studentId": "S030",
+      "questionId": "Q-EXP-04",
+      "materialId": "MAT-EXP-01",
+      "requirementId": "REQ-EXP-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-29T21:45:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R00005",
+      "studentId": "S001",
+      "questionId": "Q-EXP-16",
+      "materialId": "MAT-EXP-05",
+      "requirementId": "REQ-EXP-03",
+      "status": "partial",
+      "score": 5,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-16T18:44:00.000Z",
+      "source": "development-sample-generator"
+    },
+    {
+      "id": "R-Q-UNKNOWN-STUDENT",
+      "studentId": "S-UNKNOWN",
+      "questionId": "Q-NUM-01",
+      "materialId": "MAT-NUM-01",
+      "requirementId": "REQ-NUM-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-15T09:20:00.000Z",
+      "source": "quality-fixture"
+    },
+    {
+      "id": "R-Q-UNKNOWN-QUESTION",
+      "studentId": "S001",
+      "questionId": "Q-NOT-FOUND",
+      "materialId": "MAT-NOT-FOUND",
+      "requirementId": "REQ-NUM-01",
+      "status": "incorrect",
+      "score": 0,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-15T09:25:00.000Z",
+      "source": "quality-fixture"
+    },
+    {
+      "id": "R-Q-NEGATIVE-SCORE",
+      "studentId": "S002",
+      "questionId": "Q-NUM-01",
+      "materialId": "MAT-NUM-01",
+      "requirementId": "REQ-NUM-01",
+      "status": "partial",
+      "score": -2,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-15T09:30:00.000Z",
+      "source": "quality-fixture"
+    },
+    {
+      "id": "R-Q-MISSING-STUDENT-FIELD",
+      "studentId": "",
+      "questionId": "Q-EXP-01",
+      "materialId": "MAT-EXP-01",
+      "requirementId": "REQ-EXP-01",
+      "status": "correct",
+      "score": 10,
+      "maxScore": 10,
+      "attemptedAt": "2026-10-15T09:35:00.000Z",
+      "source": "quality-fixture"
+    },
+    {
+      "id": "R-Q-BAD-STATUS",
+      "studentId": "S003",
+      "questionId": "Q-EQA-01",
+      "materialId": "MAT-EQA-01",
+      "requirementId": "REQ-EQA-01",
+      "status": "unreadable",
+      "score": 6,
+      "maxScore": 10,
+      "attemptedAt": "not-a-date",
+      "source": "quality-fixture"
+    }
+  ]
+}

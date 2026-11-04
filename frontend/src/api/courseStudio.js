@@ -4,6 +4,7 @@ import { PROMPT_VERSION } from './prompts/shared'
 import { isEnabled } from '@/config/flags'
 import { useKnowledgeStore } from '@/stores/knowledge'
 import { useModelStore } from '@/stores/model'
+import { useCompetitionStore } from '@/stores/competition'
 import { getOutlineByTitle, outlineToText } from '@/mock/courseOutline'
 import {
   buildLocalCourseBlueprint,
@@ -11,6 +12,7 @@ import {
   normalizeCourseBlueprint,
   normalizeCourseSceneContent,
 } from '@/utils/courseStudio'
+import { buildCompetitionSceneContent } from '@/competition/analysis'
 
 export const COURSE_STUDIO_VERSION = 'openmaic-10a92d6-adapt-v1'
 export const COURSE_PROMPT_VERSION = `${PROMPT_VERSION}-course-studio-v1`
@@ -168,6 +170,30 @@ export async function generateCourseBlueprint({
 }
 
 async function sceneSources(project, outline) {
+  if (project.domain === 'math7') {
+    try {
+      const competition = useCompetitionStore()
+      await competition.load()
+      const wanted = new Set(outline.sourceChunkIds || [])
+      const materials = competition.dataset.materials.filter((item) => wanted.has(item.id))
+      return {
+        text: materials
+          .map(
+            (material) =>
+              `[${material.id}｜${material.title}｜${material.locator}]\n${material.content}`,
+          )
+          .join('\n\n'),
+        chunks: materials.map((material) => ({
+          id: material.id,
+          title: material.title,
+          chapter: material.locator,
+          text: material.content,
+        })),
+      }
+    } catch {
+      // 继续尝试普通知识库
+    }
+  }
   try {
     const knowledge = useKnowledgeStore()
     const ids = outline.sourceChunkIds?.length ? outline.sourceChunkIds : project.sourceChunkIds
@@ -201,9 +227,18 @@ export async function generateCourseScene({ project, outline, previousScene = nu
   const allowedSourceIds = sources.chunks.map((chunk) => chunk.id)
   const context = { project, outline, allowedSourceIds }
 
+  const localCompetitionContent =
+    project.domain === 'math7'
+      ? buildCompetitionSceneContent(
+          useCompetitionStore().dataset,
+          outline,
+          project.mode,
+        )
+      : null
+
   if (!modelReady()) {
     return {
-      content: buildLocalCourseSceneContent(project, outline),
+      content: localCompetitionContent || buildLocalCourseSceneContent(project, outline),
       sources: sourceSummary(sources.chunks),
       fallback: true,
       error: null,
@@ -242,7 +277,7 @@ export async function generateCourseScene({ project, outline, previousScene = nu
     if (!isEnabled('offlineFallback')) throw error
     console.warn(`[course-studio] ${outline.type} scene fell back:`, error)
     return {
-      content: buildLocalCourseSceneContent(project, outline),
+      content: localCompetitionContent || buildLocalCourseSceneContent(project, outline),
       sources: sourceSummary(sources.chunks),
       fallback: true,
       error,

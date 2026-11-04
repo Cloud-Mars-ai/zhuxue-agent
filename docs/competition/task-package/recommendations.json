@@ -1,0 +1,6708 @@
+[
+  {
+    "id": "REC-S001-math7-analysis-v1",
+    "studentId": "S001",
+    "studentName": "林晓禾",
+    "status": "ready",
+    "summary": "优先处理 3 个已确认薄弱要求，按前置、重讲、检索、迁移顺序推进。",
+    "scope": "本建议只适用于当前数据集、当前课程标准范围与当前记录时间窗口。",
+    "uncertainty": "有效观察 13 条，要求覆盖率 89%。",
+    "actions": [
+      {
+        "id": "REC-S001-RELEARN-1",
+        "type": "relearn",
+        "title": "重讲：用字母表示数量关系",
+        "description": "重点澄清「字母表示数、列代数式」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EXP-01",
+        "materialIds": [
+          "MAT-EXP-01",
+          "MAT-EXP-02"
+        ],
+        "questionIds": [
+          "Q-EXP-01",
+          "Q-EXP-02"
+        ],
+        "reason": "该要求得分率 0%，出现 3 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00006",
+          "R00009",
+          "R00012"
+        ],
+        "estimatedMinutes": 12,
+        "order": 1
+      },
+      {
+        "id": "REC-S001-RETRIEVE-1",
+        "type": "retrieval",
+        "title": "检索练习：EXP-01",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EXP-01",
+        "materialIds": [
+          "MAT-EXP-01"
+        ],
+        "questionIds": [
+          "Q-EXP-01",
+          "Q-EXP-02",
+          "Q-EXP-03",
+          "Q-EXP-04"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00006",
+          "R00009",
+          "R00012"
+        ],
+        "estimatedMinutes": 15,
+        "order": 2
+      },
+      {
+        "id": "REC-S001-PRE-2",
+        "type": "prerequisite",
+        "title": "先补前置：用字母表示数量关系",
+        "description": "先恢复前置要求的判断依据，再学习「整式、单项式与多项式」。",
+        "requirementId": "REQ-EXP-01",
+        "materialIds": [
+          "MAT-EXP-01",
+          "MAT-EXP-02"
+        ],
+        "questionIds": [
+          "Q-EXP-01",
+          "Q-EXP-02"
+        ],
+        "reason": "前置要求得分率 0%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [
+          "R00006",
+          "R00009",
+          "R00012"
+        ],
+        "estimatedMinutes": 10,
+        "order": 3
+      },
+      {
+        "id": "REC-S001-RELEARN-2",
+        "type": "relearn",
+        "title": "重讲：整式、单项式与多项式",
+        "description": "重点澄清「多项式、项」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EXP-02",
+        "materialIds": [
+          "MAT-EXP-03",
+          "MAT-EXP-04"
+        ],
+        "questionIds": [
+          "Q-EXP-05",
+          "Q-EXP-06"
+        ],
+        "reason": "该要求得分率 50%，出现 0 次错误和 1 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00010"
+        ],
+        "estimatedMinutes": 12,
+        "order": 4
+      },
+      {
+        "id": "REC-S001-RETRIEVE-2",
+        "type": "retrieval",
+        "title": "检索练习：EXP-02",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EXP-02",
+        "materialIds": [
+          "MAT-EXP-04"
+        ],
+        "questionIds": [
+          "Q-EXP-05",
+          "Q-EXP-06",
+          "Q-EXP-07",
+          "Q-EXP-08"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00010"
+        ],
+        "estimatedMinutes": 15,
+        "order": 5
+      },
+      {
+        "id": "REC-S001-RELEARN-3",
+        "type": "relearn",
+        "title": "重讲：等式与方程",
+        "description": "重点澄清「方程」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EQA-01",
+        "materialIds": [
+          "MAT-EQA-02",
+          "MAT-EQA-02"
+        ],
+        "questionIds": [
+          "Q-EQA-01",
+          "Q-EQA-02"
+        ],
+        "reason": "该要求得分率 50%，出现 1 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00007"
+        ],
+        "estimatedMinutes": 12,
+        "order": 6
+      },
+      {
+        "id": "REC-S001-RETRIEVE-3",
+        "type": "retrieval",
+        "title": "检索练习：EQA-01",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EQA-01",
+        "materialIds": [
+          "MAT-EQA-01"
+        ],
+        "questionIds": [
+          "Q-EQA-01",
+          "Q-EQA-02",
+          "Q-EQA-03",
+          "Q-EQA-04"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00007"
+        ],
+        "estimatedMinutes": 15,
+        "order": 7
+      }
+    ],
+    "evidenceRefs": [
+      "R00001",
+      "R00002",
+      "R00003",
+      "R00004",
+      "R00005",
+      "R00006",
+      "R00007",
+      "R00008",
+      "R00009",
+      "R00010",
+      "R00011",
+      "R00012",
+      "R00013"
+    ],
+    "version": "math7-analysis-v1"
+  },
+  {
+    "id": "REC-S002-math7-analysis-v1",
+    "studentId": "S002",
+    "studentName": "周予安",
+    "status": "ready",
+    "summary": "优先处理 3 个已确认薄弱要求，按前置、重讲、检索、迁移顺序推进。",
+    "scope": "本建议只适用于当前数据集、当前课程标准范围与当前记录时间窗口。",
+    "uncertainty": "有效观察 14 条，要求覆盖率 89%。",
+    "actions": [
+      {
+        "id": "REC-S002-PRE-1",
+        "type": "prerequisite",
+        "title": "先补前置：理解有理数的意义",
+        "description": "先恢复前置要求的判断依据，再学习「数轴、相反数与绝对值」。",
+        "requirementId": "REQ-NUM-01",
+        "materialIds": [
+          "MAT-NUM-01",
+          "MAT-NUM-02"
+        ],
+        "questionIds": [
+          "Q-NUM-01",
+          "Q-NUM-02"
+        ],
+        "reason": "前置要求得分率 100%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [],
+        "estimatedMinutes": 10,
+        "order": 1
+      },
+      {
+        "id": "REC-S002-RELEARN-1",
+        "type": "relearn",
+        "title": "重讲：数轴、相反数与绝对值",
+        "description": "重点澄清「绝对值」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-NUM-02",
+        "materialIds": [
+          "MAT-NUM-03",
+          "MAT-NUM-03"
+        ],
+        "questionIds": [
+          "Q-NUM-05",
+          "Q-NUM-06"
+        ],
+        "reason": "该要求得分率 0%，出现 1 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00014"
+        ],
+        "estimatedMinutes": 12,
+        "order": 2
+      },
+      {
+        "id": "REC-S002-RETRIEVE-1",
+        "type": "retrieval",
+        "title": "检索练习：NUM-02",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-NUM-02",
+        "materialIds": [
+          "MAT-NUM-04"
+        ],
+        "questionIds": [
+          "Q-NUM-05",
+          "Q-NUM-06",
+          "Q-NUM-07",
+          "Q-NUM-08"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00014"
+        ],
+        "estimatedMinutes": 15,
+        "order": 3
+      },
+      {
+        "id": "REC-S002-PRE-2",
+        "type": "prerequisite",
+        "title": "先补前置：用字母表示数量关系",
+        "description": "先恢复前置要求的判断依据，再学习「整式、单项式与多项式」。",
+        "requirementId": "REQ-EXP-01",
+        "materialIds": [
+          "MAT-EXP-01",
+          "MAT-EXP-02"
+        ],
+        "questionIds": [
+          "Q-EXP-01",
+          "Q-EXP-02"
+        ],
+        "reason": "前置要求得分率 100%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [],
+        "estimatedMinutes": 10,
+        "order": 4
+      },
+      {
+        "id": "REC-S002-RELEARN-2",
+        "type": "relearn",
+        "title": "重讲：整式、单项式与多项式",
+        "description": "重点澄清「单项式、次数」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EXP-02",
+        "materialIds": [
+          "MAT-EXP-03",
+          "MAT-EXP-04"
+        ],
+        "questionIds": [
+          "Q-EXP-05",
+          "Q-EXP-06"
+        ],
+        "reason": "该要求得分率 0%，出现 1 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00027"
+        ],
+        "estimatedMinutes": 12,
+        "order": 5
+      },
+      {
+        "id": "REC-S002-RETRIEVE-2",
+        "type": "retrieval",
+        "title": "检索练习：EXP-02",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EXP-02",
+        "materialIds": [
+          "MAT-EXP-04"
+        ],
+        "questionIds": [
+          "Q-EXP-05",
+          "Q-EXP-06",
+          "Q-EXP-07",
+          "Q-EXP-08"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00027"
+        ],
+        "estimatedMinutes": 15,
+        "order": 6
+      },
+      {
+        "id": "REC-S002-RELEARN-3",
+        "type": "relearn",
+        "title": "重讲：理解有理数的意义",
+        "description": "回到课程要求与示例，重建概念边界。",
+        "requirementId": "REQ-NUM-01",
+        "materialIds": [
+          "MAT-NUM-02",
+          "MAT-NUM-02"
+        ],
+        "questionIds": [
+          "Q-NUM-01",
+          "Q-NUM-02"
+        ],
+        "reason": "该要求得分率 100%，出现 0 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [],
+        "estimatedMinutes": 12,
+        "order": 7
+      },
+      {
+        "id": "REC-S002-RETRIEVE-3",
+        "type": "retrieval",
+        "title": "检索练习：NUM-01",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-NUM-01",
+        "materialIds": [
+          "MAT-NUM-01"
+        ],
+        "questionIds": [
+          "Q-NUM-01",
+          "Q-NUM-02",
+          "Q-NUM-03",
+          "Q-NUM-04"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [],
+        "estimatedMinutes": 15,
+        "order": 8
+      }
+    ],
+    "evidenceRefs": [
+      "R00014",
+      "R00015",
+      "R00016",
+      "R00017",
+      "R00018",
+      "R00019",
+      "R00020",
+      "R00021",
+      "R00022",
+      "R00023",
+      "R00024",
+      "R00025",
+      "R00026",
+      "R00027"
+    ],
+    "version": "math7-analysis-v1"
+  },
+  {
+    "id": "REC-S003-math7-analysis-v1",
+    "studentId": "S003",
+    "studentName": "陈知夏",
+    "status": "ready",
+    "summary": "优先处理 3 个已确认薄弱要求，按前置、重讲、检索、迁移顺序推进。",
+    "scope": "本建议只适用于当前数据集、当前课程标准范围与当前记录时间窗口。",
+    "uncertainty": "有效观察 15 条，要求覆盖率 100%。",
+    "actions": [
+      {
+        "id": "REC-S003-PRE-1",
+        "type": "prerequisite",
+        "title": "先补前置：解一元一次方程",
+        "description": "先恢复前置要求的判断依据，再学习「一元一次方程的应用」。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-03",
+          "MAT-EQA-04"
+        ],
+        "questionIds": [
+          "Q-EQA-05"
+        ],
+        "reason": "前置要求得分率 75%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [
+          "R00041"
+        ],
+        "estimatedMinutes": 10,
+        "order": 1
+      },
+      {
+        "id": "REC-S003-RELEARN-1",
+        "type": "relearn",
+        "title": "重讲：一元一次方程的应用",
+        "description": "重点澄清「解方程、行程问题」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EQA-03",
+        "materialIds": [
+          "MAT-EQA-05",
+          "MAT-EQA-06"
+        ],
+        "questionIds": [
+          "Q-EQA-09",
+          "Q-EQA-10"
+        ],
+        "reason": "该要求得分率 0%，出现 2 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00028",
+          "R00038"
+        ],
+        "estimatedMinutes": 12,
+        "order": 2
+      },
+      {
+        "id": "REC-S003-RETRIEVE-1",
+        "type": "retrieval",
+        "title": "检索练习：EQA-03",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EQA-03",
+        "materialIds": [
+          "MAT-EQA-05"
+        ],
+        "questionIds": [
+          "Q-EQA-09",
+          "Q-EQA-10",
+          "Q-EQA-11",
+          "Q-EQA-12"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00028",
+          "R00038"
+        ],
+        "estimatedMinutes": 15,
+        "order": 3
+      },
+      {
+        "id": "REC-S003-TRANSFER-1",
+        "type": "transfer",
+        "title": "变式迁移：一元一次方程的应用",
+        "description": "换情境、换问法完成变式题，解释为什么仍使用同一等量关系或运算规则。",
+        "requirementId": "REQ-EQA-03",
+        "materialIds": [
+          "MAT-EQA-05"
+        ],
+        "questionIds": [
+          "Q-EQA-13",
+          "Q-EQA-14",
+          "Q-EQA-15"
+        ],
+        "reason": "基础检索通过后，需要验证能否迁移到新情境。",
+        "completionStandard": "能写出求解过程，并用一句话说明适用范围。",
+        "evidenceRefs": [
+          "R00028",
+          "R00038"
+        ],
+        "estimatedMinutes": 15,
+        "order": 4
+      },
+      {
+        "id": "REC-S003-PRE-2",
+        "type": "prerequisite",
+        "title": "先补前置：数轴、相反数与绝对值",
+        "description": "先恢复前置要求的判断依据，再学习「有理数的四则运算」。",
+        "requirementId": "REQ-NUM-02",
+        "materialIds": [
+          "MAT-NUM-03",
+          "MAT-NUM-04"
+        ],
+        "questionIds": [
+          "Q-NUM-05",
+          "Q-NUM-06"
+        ],
+        "reason": "前置要求得分率 100%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [],
+        "estimatedMinutes": 10,
+        "order": 5
+      },
+      {
+        "id": "REC-S003-RELEARN-2",
+        "type": "relearn",
+        "title": "重讲：有理数的四则运算",
+        "description": "重点澄清「混合运算、括号」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-NUM-03",
+        "materialIds": [
+          "MAT-NUM-05",
+          "MAT-NUM-06"
+        ],
+        "questionIds": [
+          "Q-NUM-09",
+          "Q-NUM-10"
+        ],
+        "reason": "该要求得分率 0%，出现 1 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00040"
+        ],
+        "estimatedMinutes": 12,
+        "order": 6
+      },
+      {
+        "id": "REC-S003-RETRIEVE-2",
+        "type": "retrieval",
+        "title": "检索练习：NUM-03",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-NUM-03",
+        "materialIds": [
+          "MAT-NUM-05"
+        ],
+        "questionIds": [
+          "Q-NUM-09",
+          "Q-NUM-10",
+          "Q-NUM-11",
+          "Q-NUM-12"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00040"
+        ],
+        "estimatedMinutes": 15,
+        "order": 7
+      },
+      {
+        "id": "REC-S003-TRANSFER-2",
+        "type": "transfer",
+        "title": "变式迁移：有理数的四则运算",
+        "description": "换情境、换问法完成变式题，解释为什么仍使用同一等量关系或运算规则。",
+        "requirementId": "REQ-NUM-03",
+        "materialIds": [
+          "MAT-NUM-05"
+        ],
+        "questionIds": [
+          "Q-NUM-13",
+          "Q-NUM-14",
+          "Q-NUM-15"
+        ],
+        "reason": "基础检索通过后，需要验证能否迁移到新情境。",
+        "completionStandard": "能写出求解过程，并用一句话说明适用范围。",
+        "evidenceRefs": [
+          "R00040"
+        ],
+        "estimatedMinutes": 15,
+        "order": 8
+      },
+      {
+        "id": "REC-S003-RELEARN-3",
+        "type": "relearn",
+        "title": "重讲：理解有理数的意义",
+        "description": "重点澄清「有理数」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-NUM-01",
+        "materialIds": [
+          "MAT-NUM-02",
+          "MAT-NUM-02"
+        ],
+        "questionIds": [
+          "Q-NUM-01",
+          "Q-NUM-02"
+        ],
+        "reason": "该要求得分率 50%，出现 0 次错误和 1 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00035"
+        ],
+        "estimatedMinutes": 12,
+        "order": 9
+      },
+      {
+        "id": "REC-S003-RETRIEVE-3",
+        "type": "retrieval",
+        "title": "检索练习：NUM-01",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-NUM-01",
+        "materialIds": [
+          "MAT-NUM-01"
+        ],
+        "questionIds": [
+          "Q-NUM-01",
+          "Q-NUM-02",
+          "Q-NUM-03",
+          "Q-NUM-04"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00035"
+        ],
+        "estimatedMinutes": 15,
+        "order": 10
+      }
+    ],
+    "evidenceRefs": [
+      "R00028",
+      "R00029",
+      "R00030",
+      "R00031",
+      "R00032",
+      "R00033",
+      "R00034",
+      "R00035",
+      "R00036",
+      "R00037",
+      "R00038",
+      "R00039",
+      "R00040",
+      "R00041",
+      "R00042"
+    ],
+    "version": "math7-analysis-v1"
+  },
+  {
+    "id": "REC-S004-math7-analysis-v1",
+    "studentId": "S004",
+    "studentName": "赵清川",
+    "status": "ready",
+    "summary": "优先处理 3 个已确认薄弱要求，按前置、重讲、检索、迁移顺序推进。",
+    "scope": "本建议只适用于当前数据集、当前课程标准范围与当前记录时间窗口。",
+    "uncertainty": "有效观察 16 条，要求覆盖率 67%。",
+    "actions": [
+      {
+        "id": "REC-S004-RELEARN-1",
+        "type": "relearn",
+        "title": "重讲：解一元一次方程",
+        "description": "重点澄清「去括号、移项」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-03",
+          "MAT-EQA-03"
+        ],
+        "questionIds": [
+          "Q-EQA-05",
+          "Q-EQA-06"
+        ],
+        "reason": "该要求得分率 38%，出现 2 次错误和 1 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00044",
+          "R00049",
+          "R00056"
+        ],
+        "estimatedMinutes": 12,
+        "order": 1
+      },
+      {
+        "id": "REC-S004-RETRIEVE-1",
+        "type": "retrieval",
+        "title": "检索练习：EQA-02",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-03"
+        ],
+        "questionIds": [
+          "Q-EQA-05",
+          "Q-EQA-06",
+          "Q-EQA-07"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00044",
+          "R00049",
+          "R00056"
+        ],
+        "estimatedMinutes": 15,
+        "order": 2
+      },
+      {
+        "id": "REC-S004-TRANSFER-1",
+        "type": "transfer",
+        "title": "变式迁移：解一元一次方程",
+        "description": "换情境、换问法完成变式题，解释为什么仍使用同一等量关系或运算规则。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-04"
+        ],
+        "questionIds": [
+          "Q-EQA-08"
+        ],
+        "reason": "基础检索通过后，需要验证能否迁移到新情境。",
+        "completionStandard": "能写出求解过程，并用一句话说明适用范围。",
+        "evidenceRefs": [
+          "R00044",
+          "R00049",
+          "R00056"
+        ],
+        "estimatedMinutes": 15,
+        "order": 3
+      },
+      {
+        "id": "REC-S004-PRE-2",
+        "type": "prerequisite",
+        "title": "先补前置：理解有理数的意义",
+        "description": "先恢复前置要求的判断依据，再学习「数轴、相反数与绝对值」。",
+        "requirementId": "REQ-NUM-01",
+        "materialIds": [
+          "MAT-NUM-01",
+          "MAT-NUM-02"
+        ],
+        "questionIds": [
+          "Q-NUM-01",
+          "Q-NUM-02"
+        ],
+        "reason": "前置要求得分率 100%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [],
+        "estimatedMinutes": 10,
+        "order": 4
+      },
+      {
+        "id": "REC-S004-RELEARN-2",
+        "type": "relearn",
+        "title": "重讲：数轴、相反数与绝对值",
+        "description": "重点澄清「绝对值、有理数比较」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-NUM-02",
+        "materialIds": [
+          "MAT-NUM-03",
+          "MAT-NUM-03"
+        ],
+        "questionIds": [
+          "Q-NUM-05",
+          "Q-NUM-06"
+        ],
+        "reason": "该要求得分率 50%，出现 1 次错误和 1 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00050",
+          "R00054"
+        ],
+        "estimatedMinutes": 12,
+        "order": 5
+      },
+      {
+        "id": "REC-S004-RETRIEVE-2",
+        "type": "retrieval",
+        "title": "检索练习：NUM-02",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-NUM-02",
+        "materialIds": [
+          "MAT-NUM-04"
+        ],
+        "questionIds": [
+          "Q-NUM-05",
+          "Q-NUM-06",
+          "Q-NUM-07",
+          "Q-NUM-08"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00050",
+          "R00054"
+        ],
+        "estimatedMinutes": 15,
+        "order": 6
+      },
+      {
+        "id": "REC-S004-PRE-3",
+        "type": "prerequisite",
+        "title": "先补前置：数轴、相反数与绝对值",
+        "description": "先恢复前置要求的判断依据，再学习「有理数的四则运算」。",
+        "requirementId": "REQ-NUM-02",
+        "materialIds": [
+          "MAT-NUM-03",
+          "MAT-NUM-04"
+        ],
+        "questionIds": [
+          "Q-NUM-05",
+          "Q-NUM-06"
+        ],
+        "reason": "前置要求得分率 50%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [
+          "R00050",
+          "R00054"
+        ],
+        "estimatedMinutes": 10,
+        "order": 7
+      },
+      {
+        "id": "REC-S004-RELEARN-3",
+        "type": "relearn",
+        "title": "重讲：有理数的四则运算",
+        "description": "重点澄清「除法、分数」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-NUM-03",
+        "materialIds": [
+          "MAT-NUM-05",
+          "MAT-NUM-06"
+        ],
+        "questionIds": [
+          "Q-NUM-09",
+          "Q-NUM-10"
+        ],
+        "reason": "该要求得分率 50%，出现 0 次错误和 1 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00052"
+        ],
+        "estimatedMinutes": 12,
+        "order": 8
+      },
+      {
+        "id": "REC-S004-RETRIEVE-3",
+        "type": "retrieval",
+        "title": "检索练习：NUM-03",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-NUM-03",
+        "materialIds": [
+          "MAT-NUM-05"
+        ],
+        "questionIds": [
+          "Q-NUM-09",
+          "Q-NUM-10",
+          "Q-NUM-11",
+          "Q-NUM-12"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00052"
+        ],
+        "estimatedMinutes": 15,
+        "order": 9
+      },
+      {
+        "id": "REC-S004-TRANSFER-3",
+        "type": "transfer",
+        "title": "变式迁移：有理数的四则运算",
+        "description": "换情境、换问法完成变式题，解释为什么仍使用同一等量关系或运算规则。",
+        "requirementId": "REQ-NUM-03",
+        "materialIds": [
+          "MAT-NUM-05"
+        ],
+        "questionIds": [
+          "Q-NUM-13",
+          "Q-NUM-14",
+          "Q-NUM-15"
+        ],
+        "reason": "基础检索通过后，需要验证能否迁移到新情境。",
+        "completionStandard": "能写出求解过程，并用一句话说明适用范围。",
+        "evidenceRefs": [
+          "R00052"
+        ],
+        "estimatedMinutes": 15,
+        "order": 10
+      }
+    ],
+    "evidenceRefs": [
+      "R00043",
+      "R00044",
+      "R00045",
+      "R00046",
+      "R00047",
+      "R00048",
+      "R00049",
+      "R00050",
+      "R00051",
+      "R00052",
+      "R00053",
+      "R00054",
+      "R00055",
+      "R00056",
+      "R00057",
+      "R00058"
+    ],
+    "version": "math7-analysis-v1"
+  },
+  {
+    "id": "REC-S005-math7-analysis-v1",
+    "studentId": "S005",
+    "studentName": "许星遥",
+    "status": "ready",
+    "summary": "优先处理 3 个已确认薄弱要求，按前置、重讲、检索、迁移顺序推进。",
+    "scope": "本建议只适用于当前数据集、当前课程标准范围与当前记录时间窗口。",
+    "uncertainty": "有效观察 13 条，要求覆盖率 89%。",
+    "actions": [
+      {
+        "id": "REC-S005-RELEARN-1",
+        "type": "relearn",
+        "title": "重讲：一元一次方程的应用",
+        "description": "重点澄清「解方程」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EQA-03",
+        "materialIds": [
+          "MAT-EQA-05",
+          "MAT-EQA-06"
+        ],
+        "questionIds": [
+          "Q-EQA-09",
+          "Q-EQA-10"
+        ],
+        "reason": "该要求得分率 0%，出现 1 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00071"
+        ],
+        "estimatedMinutes": 12,
+        "order": 1
+      },
+      {
+        "id": "REC-S005-RETRIEVE-1",
+        "type": "retrieval",
+        "title": "检索练习：EQA-03",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EQA-03",
+        "materialIds": [
+          "MAT-EQA-05"
+        ],
+        "questionIds": [
+          "Q-EQA-09",
+          "Q-EQA-10",
+          "Q-EQA-11",
+          "Q-EQA-12"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00071"
+        ],
+        "estimatedMinutes": 15,
+        "order": 2
+      },
+      {
+        "id": "REC-S005-TRANSFER-1",
+        "type": "transfer",
+        "title": "变式迁移：一元一次方程的应用",
+        "description": "换情境、换问法完成变式题，解释为什么仍使用同一等量关系或运算规则。",
+        "requirementId": "REQ-EQA-03",
+        "materialIds": [
+          "MAT-EQA-05"
+        ],
+        "questionIds": [
+          "Q-EQA-13",
+          "Q-EQA-14",
+          "Q-EQA-15"
+        ],
+        "reason": "基础检索通过后，需要验证能否迁移到新情境。",
+        "completionStandard": "能写出求解过程，并用一句话说明适用范围。",
+        "evidenceRefs": [
+          "R00071"
+        ],
+        "estimatedMinutes": 15,
+        "order": 3
+      },
+      {
+        "id": "REC-S005-PRE-2",
+        "type": "prerequisite",
+        "title": "先补前置：同类项与整式加减",
+        "description": "先恢复前置要求的判断依据，再学习「等式与方程」。",
+        "requirementId": "REQ-EXP-03",
+        "materialIds": [
+          "MAT-EXP-05",
+          "MAT-EXP-06"
+        ],
+        "questionIds": [
+          "Q-EXP-09",
+          "Q-EXP-10"
+        ],
+        "reason": "前置要求得分率 100%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [],
+        "estimatedMinutes": 10,
+        "order": 4
+      },
+      {
+        "id": "REC-S005-RELEARN-2",
+        "type": "relearn",
+        "title": "重讲：等式与方程",
+        "description": "重点澄清「等式性质」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EQA-01",
+        "materialIds": [
+          "MAT-EQA-02",
+          "MAT-EQA-02"
+        ],
+        "questionIds": [
+          "Q-EQA-01",
+          "Q-EQA-02"
+        ],
+        "reason": "该要求得分率 50%，出现 1 次错误和 1 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00063",
+          "R00066"
+        ],
+        "estimatedMinutes": 12,
+        "order": 5
+      },
+      {
+        "id": "REC-S005-RETRIEVE-2",
+        "type": "retrieval",
+        "title": "检索练习：EQA-01",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EQA-01",
+        "materialIds": [
+          "MAT-EQA-01"
+        ],
+        "questionIds": [
+          "Q-EQA-01",
+          "Q-EQA-02",
+          "Q-EQA-03",
+          "Q-EQA-04"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00063",
+          "R00066"
+        ],
+        "estimatedMinutes": 15,
+        "order": 6
+      },
+      {
+        "id": "REC-S005-PRE-3",
+        "type": "prerequisite",
+        "title": "先补前置：有理数的四则运算",
+        "description": "先恢复前置要求的判断依据，再学习「用字母表示数量关系」。",
+        "requirementId": "REQ-NUM-03",
+        "materialIds": [
+          "MAT-NUM-05",
+          "MAT-NUM-06"
+        ],
+        "questionIds": [
+          "Q-NUM-09",
+          "Q-NUM-10"
+        ],
+        "reason": "前置要求得分率 100%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [],
+        "estimatedMinutes": 10,
+        "order": 7
+      },
+      {
+        "id": "REC-S005-RELEARN-3",
+        "type": "relearn",
+        "title": "重讲：用字母表示数量关系",
+        "description": "重点澄清「列代数式」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EXP-01",
+        "materialIds": [
+          "MAT-EXP-01",
+          "MAT-EXP-02"
+        ],
+        "questionIds": [
+          "Q-EXP-01",
+          "Q-EXP-02"
+        ],
+        "reason": "该要求得分率 50%，出现 1 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00060"
+        ],
+        "estimatedMinutes": 12,
+        "order": 8
+      },
+      {
+        "id": "REC-S005-RETRIEVE-3",
+        "type": "retrieval",
+        "title": "检索练习：EXP-01",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EXP-01",
+        "materialIds": [
+          "MAT-EXP-01"
+        ],
+        "questionIds": [
+          "Q-EXP-01",
+          "Q-EXP-02",
+          "Q-EXP-03",
+          "Q-EXP-04"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00060"
+        ],
+        "estimatedMinutes": 15,
+        "order": 9
+      }
+    ],
+    "evidenceRefs": [
+      "R00059",
+      "R00060",
+      "R00061",
+      "R00062",
+      "R00063",
+      "R00064",
+      "R00065",
+      "R00066",
+      "R00067",
+      "R00068",
+      "R00069",
+      "R00070",
+      "R00071"
+    ],
+    "version": "math7-analysis-v1"
+  },
+  {
+    "id": "REC-S006-math7-analysis-v1",
+    "studentId": "S006",
+    "studentName": "沈嘉树",
+    "status": "ready",
+    "summary": "优先处理 3 个已确认薄弱要求，按前置、重讲、检索、迁移顺序推进。",
+    "scope": "本建议只适用于当前数据集、当前课程标准范围与当前记录时间窗口。",
+    "uncertainty": "有效观察 13 条，要求覆盖率 89%。",
+    "actions": [
+      {
+        "id": "REC-S006-PRE-1",
+        "type": "prerequisite",
+        "title": "先补前置：有理数的四则运算",
+        "description": "先恢复前置要求的判断依据，再学习「用字母表示数量关系」。",
+        "requirementId": "REQ-NUM-03",
+        "materialIds": [
+          "MAT-NUM-05",
+          "MAT-NUM-06"
+        ],
+        "questionIds": [
+          "Q-NUM-09",
+          "Q-NUM-10"
+        ],
+        "reason": "前置要求得分率 75%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [
+          "R00084"
+        ],
+        "estimatedMinutes": 10,
+        "order": 1
+      },
+      {
+        "id": "REC-S006-RELEARN-1",
+        "type": "relearn",
+        "title": "重讲：用字母表示数量关系",
+        "description": "重点澄清「字母表示数」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EXP-01",
+        "materialIds": [
+          "MAT-EXP-01",
+          "MAT-EXP-02"
+        ],
+        "questionIds": [
+          "Q-EXP-01",
+          "Q-EXP-02"
+        ],
+        "reason": "该要求得分率 50%，出现 0 次错误和 2 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00072",
+          "R00076"
+        ],
+        "estimatedMinutes": 12,
+        "order": 2
+      },
+      {
+        "id": "REC-S006-RETRIEVE-1",
+        "type": "retrieval",
+        "title": "检索练习：EXP-01",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EXP-01",
+        "materialIds": [
+          "MAT-EXP-01"
+        ],
+        "questionIds": [
+          "Q-EXP-01",
+          "Q-EXP-02",
+          "Q-EXP-03",
+          "Q-EXP-04"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00072",
+          "R00076"
+        ],
+        "estimatedMinutes": 15,
+        "order": 3
+      },
+      {
+        "id": "REC-S006-PRE-2",
+        "type": "prerequisite",
+        "title": "先补前置：同类项与整式加减",
+        "description": "先恢复前置要求的判断依据，再学习「等式与方程」。",
+        "requirementId": "REQ-EXP-03",
+        "materialIds": [
+          "MAT-EXP-05",
+          "MAT-EXP-06"
+        ],
+        "questionIds": [
+          "Q-EXP-09",
+          "Q-EXP-10"
+        ],
+        "reason": "前置要求得分率 100%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [],
+        "estimatedMinutes": 10,
+        "order": 4
+      },
+      {
+        "id": "REC-S006-RELEARN-2",
+        "type": "relearn",
+        "title": "重讲：等式与方程",
+        "description": "重点澄清「方程、等式」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EQA-01",
+        "materialIds": [
+          "MAT-EQA-02",
+          "MAT-EQA-02"
+        ],
+        "questionIds": [
+          "Q-EQA-01",
+          "Q-EQA-02"
+        ],
+        "reason": "该要求得分率 50%，出现 0 次错误和 1 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00078"
+        ],
+        "estimatedMinutes": 12,
+        "order": 5
+      },
+      {
+        "id": "REC-S006-RETRIEVE-2",
+        "type": "retrieval",
+        "title": "检索练习：EQA-01",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EQA-01",
+        "materialIds": [
+          "MAT-EQA-01"
+        ],
+        "questionIds": [
+          "Q-EQA-01",
+          "Q-EQA-02",
+          "Q-EQA-03",
+          "Q-EQA-04"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00078"
+        ],
+        "estimatedMinutes": 15,
+        "order": 6
+      },
+      {
+        "id": "REC-S006-RELEARN-3",
+        "type": "relearn",
+        "title": "重讲：一元一次方程的应用",
+        "description": "重点澄清「等量关系」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EQA-03",
+        "materialIds": [
+          "MAT-EQA-05",
+          "MAT-EQA-06"
+        ],
+        "questionIds": [
+          "Q-EQA-09",
+          "Q-EQA-10"
+        ],
+        "reason": "该要求得分率 50%，出现 0 次错误和 1 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00082"
+        ],
+        "estimatedMinutes": 12,
+        "order": 7
+      },
+      {
+        "id": "REC-S006-RETRIEVE-3",
+        "type": "retrieval",
+        "title": "检索练习：EQA-03",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EQA-03",
+        "materialIds": [
+          "MAT-EQA-05"
+        ],
+        "questionIds": [
+          "Q-EQA-09",
+          "Q-EQA-10",
+          "Q-EQA-11",
+          "Q-EQA-12"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00082"
+        ],
+        "estimatedMinutes": 15,
+        "order": 8
+      },
+      {
+        "id": "REC-S006-TRANSFER-3",
+        "type": "transfer",
+        "title": "变式迁移：一元一次方程的应用",
+        "description": "换情境、换问法完成变式题，解释为什么仍使用同一等量关系或运算规则。",
+        "requirementId": "REQ-EQA-03",
+        "materialIds": [
+          "MAT-EQA-05"
+        ],
+        "questionIds": [
+          "Q-EQA-13",
+          "Q-EQA-14",
+          "Q-EQA-15"
+        ],
+        "reason": "基础检索通过后，需要验证能否迁移到新情境。",
+        "completionStandard": "能写出求解过程，并用一句话说明适用范围。",
+        "evidenceRefs": [
+          "R00082"
+        ],
+        "estimatedMinutes": 15,
+        "order": 9
+      }
+    ],
+    "evidenceRefs": [
+      "R00072",
+      "R00073",
+      "R00074",
+      "R00075",
+      "R00076",
+      "R00077",
+      "R00078",
+      "R00079",
+      "R00080",
+      "R00081",
+      "R00082",
+      "R00083",
+      "R00084",
+      "R00085"
+    ],
+    "version": "math7-analysis-v1"
+  },
+  {
+    "id": "REC-S007-math7-analysis-v1",
+    "studentId": "S007",
+    "studentName": "顾明澈",
+    "status": "ready",
+    "summary": "优先处理 3 个已确认薄弱要求，按前置、重讲、检索、迁移顺序推进。",
+    "scope": "本建议只适用于当前数据集、当前课程标准范围与当前记录时间窗口。",
+    "uncertainty": "有效观察 15 条，要求覆盖率 100%。",
+    "actions": [
+      {
+        "id": "REC-S007-PRE-1",
+        "type": "prerequisite",
+        "title": "先补前置：有理数的四则运算",
+        "description": "先恢复前置要求的判断依据，再学习「用字母表示数量关系」。",
+        "requirementId": "REQ-NUM-03",
+        "materialIds": [
+          "MAT-NUM-05",
+          "MAT-NUM-06"
+        ],
+        "questionIds": [
+          "Q-NUM-09",
+          "Q-NUM-10"
+        ],
+        "reason": "前置要求得分率 75%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [
+          "R00087"
+        ],
+        "estimatedMinutes": 10,
+        "order": 1
+      },
+      {
+        "id": "REC-S007-RELEARN-1",
+        "type": "relearn",
+        "title": "重讲：用字母表示数量关系",
+        "description": "重点澄清「列代数式」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EXP-01",
+        "materialIds": [
+          "MAT-EXP-01",
+          "MAT-EXP-02"
+        ],
+        "questionIds": [
+          "Q-EXP-01",
+          "Q-EXP-02"
+        ],
+        "reason": "该要求得分率 50%，出现 1 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00086"
+        ],
+        "estimatedMinutes": 12,
+        "order": 2
+      },
+      {
+        "id": "REC-S007-RETRIEVE-1",
+        "type": "retrieval",
+        "title": "检索练习：EXP-01",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EXP-01",
+        "materialIds": [
+          "MAT-EXP-01"
+        ],
+        "questionIds": [
+          "Q-EXP-01",
+          "Q-EXP-02",
+          "Q-EXP-03",
+          "Q-EXP-04"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00086"
+        ],
+        "estimatedMinutes": 15,
+        "order": 3
+      },
+      {
+        "id": "REC-S007-PRE-2",
+        "type": "prerequisite",
+        "title": "先补前置：用字母表示数量关系",
+        "description": "先恢复前置要求的判断依据，再学习「整式、单项式与多项式」。",
+        "requirementId": "REQ-EXP-01",
+        "materialIds": [
+          "MAT-EXP-01",
+          "MAT-EXP-02"
+        ],
+        "questionIds": [
+          "Q-EXP-01",
+          "Q-EXP-02"
+        ],
+        "reason": "前置要求得分率 50%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [
+          "R00086"
+        ],
+        "estimatedMinutes": 10,
+        "order": 4
+      },
+      {
+        "id": "REC-S007-RELEARN-2",
+        "type": "relearn",
+        "title": "重讲：整式、单项式与多项式",
+        "description": "重点澄清「单项式、次数」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EXP-02",
+        "materialIds": [
+          "MAT-EXP-03",
+          "MAT-EXP-04"
+        ],
+        "questionIds": [
+          "Q-EXP-05",
+          "Q-EXP-06"
+        ],
+        "reason": "该要求得分率 50%，出现 0 次错误和 1 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00098"
+        ],
+        "estimatedMinutes": 12,
+        "order": 5
+      },
+      {
+        "id": "REC-S007-RETRIEVE-2",
+        "type": "retrieval",
+        "title": "检索练习：EXP-02",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EXP-02",
+        "materialIds": [
+          "MAT-EXP-04"
+        ],
+        "questionIds": [
+          "Q-EXP-05",
+          "Q-EXP-06",
+          "Q-EXP-07",
+          "Q-EXP-08"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00098"
+        ],
+        "estimatedMinutes": 15,
+        "order": 6
+      },
+      {
+        "id": "REC-S007-PRE-3",
+        "type": "prerequisite",
+        "title": "先补前置：等式与方程",
+        "description": "先恢复前置要求的判断依据，再学习「解一元一次方程」。",
+        "requirementId": "REQ-EQA-01",
+        "materialIds": [
+          "MAT-EQA-01",
+          "MAT-EQA-02"
+        ],
+        "questionIds": [
+          "Q-EQA-01",
+          "Q-EQA-02"
+        ],
+        "reason": "前置要求得分率 100%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [],
+        "estimatedMinutes": 10,
+        "order": 7
+      },
+      {
+        "id": "REC-S007-RELEARN-3",
+        "type": "relearn",
+        "title": "重讲：解一元一次方程",
+        "description": "重点澄清「去分母」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-03",
+          "MAT-EQA-03"
+        ],
+        "questionIds": [
+          "Q-EQA-05",
+          "Q-EQA-06"
+        ],
+        "reason": "该要求得分率 50%，出现 1 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00089"
+        ],
+        "estimatedMinutes": 12,
+        "order": 8
+      },
+      {
+        "id": "REC-S007-RETRIEVE-3",
+        "type": "retrieval",
+        "title": "检索练习：EQA-02",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-03"
+        ],
+        "questionIds": [
+          "Q-EQA-05",
+          "Q-EQA-06",
+          "Q-EQA-07"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00089"
+        ],
+        "estimatedMinutes": 15,
+        "order": 9
+      },
+      {
+        "id": "REC-S007-TRANSFER-3",
+        "type": "transfer",
+        "title": "变式迁移：解一元一次方程",
+        "description": "换情境、换问法完成变式题，解释为什么仍使用同一等量关系或运算规则。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-04"
+        ],
+        "questionIds": [
+          "Q-EQA-08"
+        ],
+        "reason": "基础检索通过后，需要验证能否迁移到新情境。",
+        "completionStandard": "能写出求解过程，并用一句话说明适用范围。",
+        "evidenceRefs": [
+          "R00089"
+        ],
+        "estimatedMinutes": 15,
+        "order": 10
+      }
+    ],
+    "evidenceRefs": [
+      "R00086",
+      "R00087",
+      "R00088",
+      "R00089",
+      "R00090",
+      "R00091",
+      "R00092",
+      "R00093",
+      "R00094",
+      "R00095",
+      "R00096",
+      "R00097",
+      "R00098",
+      "R00099",
+      "R00100"
+    ],
+    "version": "math7-analysis-v1"
+  },
+  {
+    "id": "REC-S008-math7-analysis-v1",
+    "studentId": "S008",
+    "studentName": "苏念一",
+    "status": "ready",
+    "summary": "优先处理 3 个已确认薄弱要求，按前置、重讲、检索、迁移顺序推进。",
+    "scope": "本建议只适用于当前数据集、当前课程标准范围与当前记录时间窗口。",
+    "uncertainty": "有效观察 14 条，要求覆盖率 89%。",
+    "actions": [
+      {
+        "id": "REC-S008-PRE-1",
+        "type": "prerequisite",
+        "title": "先补前置：有理数的四则运算",
+        "description": "先恢复前置要求的判断依据，再学习「用字母表示数量关系」。",
+        "requirementId": "REQ-NUM-03",
+        "materialIds": [
+          "MAT-NUM-05",
+          "MAT-NUM-06"
+        ],
+        "questionIds": [
+          "Q-NUM-09",
+          "Q-NUM-10"
+        ],
+        "reason": "前置要求得分率 25%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [
+          "R00101",
+          "R00107",
+          "R00109"
+        ],
+        "estimatedMinutes": 10,
+        "order": 1
+      },
+      {
+        "id": "REC-S008-RELEARN-1",
+        "type": "relearn",
+        "title": "重讲：用字母表示数量关系",
+        "description": "重点澄清「列代数式」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EXP-01",
+        "materialIds": [
+          "MAT-EXP-01",
+          "MAT-EXP-02"
+        ],
+        "questionIds": [
+          "Q-EXP-01",
+          "Q-EXP-02"
+        ],
+        "reason": "该要求得分率 0%，出现 2 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00112",
+          "R00114"
+        ],
+        "estimatedMinutes": 12,
+        "order": 2
+      },
+      {
+        "id": "REC-S008-RETRIEVE-1",
+        "type": "retrieval",
+        "title": "检索练习：EXP-01",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EXP-01",
+        "materialIds": [
+          "MAT-EXP-01"
+        ],
+        "questionIds": [
+          "Q-EXP-01",
+          "Q-EXP-02",
+          "Q-EXP-03",
+          "Q-EXP-04"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00112",
+          "R00114"
+        ],
+        "estimatedMinutes": 15,
+        "order": 3
+      },
+      {
+        "id": "REC-S008-PRE-2",
+        "type": "prerequisite",
+        "title": "先补前置：整式、单项式与多项式",
+        "description": "先恢复前置要求的判断依据，再学习「同类项与整式加减」。",
+        "requirementId": "REQ-EXP-02",
+        "materialIds": [
+          "MAT-EXP-03",
+          "MAT-EXP-04"
+        ],
+        "questionIds": [
+          "Q-EXP-05"
+        ],
+        "reason": "前置要求得分率 25%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [
+          "R00108",
+          "R00111"
+        ],
+        "estimatedMinutes": 10,
+        "order": 4
+      },
+      {
+        "id": "REC-S008-RELEARN-2",
+        "type": "relearn",
+        "title": "重讲：同类项与整式加减",
+        "description": "重点澄清「合并同类项」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EXP-03",
+        "materialIds": [
+          "MAT-EXP-05",
+          "MAT-EXP-06"
+        ],
+        "questionIds": [
+          "Q-EXP-09",
+          "Q-EXP-10"
+        ],
+        "reason": "该要求得分率 0%，出现 1 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00103",
+          "R00106"
+        ],
+        "estimatedMinutes": 12,
+        "order": 5
+      },
+      {
+        "id": "REC-S008-RETRIEVE-2",
+        "type": "retrieval",
+        "title": "检索练习：EXP-03",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EXP-03",
+        "materialIds": [
+          "MAT-EXP-05"
+        ],
+        "questionIds": [
+          "Q-EXP-09",
+          "Q-EXP-10",
+          "Q-EXP-11",
+          "Q-EXP-12"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00103",
+          "R00106"
+        ],
+        "estimatedMinutes": 15,
+        "order": 6
+      },
+      {
+        "id": "REC-S008-TRANSFER-2",
+        "type": "transfer",
+        "title": "变式迁移：同类项与整式加减",
+        "description": "换情境、换问法完成变式题，解释为什么仍使用同一等量关系或运算规则。",
+        "requirementId": "REQ-EXP-03",
+        "materialIds": [
+          "MAT-EXP-05"
+        ],
+        "questionIds": [
+          "Q-EXP-13",
+          "Q-EXP-14",
+          "Q-EXP-15"
+        ],
+        "reason": "基础检索通过后，需要验证能否迁移到新情境。",
+        "completionStandard": "能写出求解过程，并用一句话说明适用范围。",
+        "evidenceRefs": [
+          "R00103",
+          "R00106"
+        ],
+        "estimatedMinutes": 15,
+        "order": 7
+      },
+      {
+        "id": "REC-S008-RELEARN-3",
+        "type": "relearn",
+        "title": "重讲：解一元一次方程",
+        "description": "重点澄清「移项、系数化为1」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-03",
+          "MAT-EQA-03"
+        ],
+        "questionIds": [
+          "Q-EQA-05",
+          "Q-EQA-06"
+        ],
+        "reason": "该要求得分率 0%，出现 1 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00105"
+        ],
+        "estimatedMinutes": 12,
+        "order": 8
+      },
+      {
+        "id": "REC-S008-RETRIEVE-3",
+        "type": "retrieval",
+        "title": "检索练习：EQA-02",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-03"
+        ],
+        "questionIds": [
+          "Q-EQA-05",
+          "Q-EQA-06",
+          "Q-EQA-07"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00105"
+        ],
+        "estimatedMinutes": 15,
+        "order": 9
+      },
+      {
+        "id": "REC-S008-TRANSFER-3",
+        "type": "transfer",
+        "title": "变式迁移：解一元一次方程",
+        "description": "换情境、换问法完成变式题，解释为什么仍使用同一等量关系或运算规则。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-04"
+        ],
+        "questionIds": [
+          "Q-EQA-08"
+        ],
+        "reason": "基础检索通过后，需要验证能否迁移到新情境。",
+        "completionStandard": "能写出求解过程，并用一句话说明适用范围。",
+        "evidenceRefs": [
+          "R00105"
+        ],
+        "estimatedMinutes": 15,
+        "order": 10
+      }
+    ],
+    "evidenceRefs": [
+      "R00101",
+      "R00102",
+      "R00103",
+      "R00104",
+      "R00105",
+      "R00106",
+      "R00107",
+      "R00108",
+      "R00109",
+      "R00110",
+      "R00111",
+      "R00112",
+      "R00113",
+      "R00114",
+      "R00115",
+      "R00116"
+    ],
+    "version": "math7-analysis-v1"
+  },
+  {
+    "id": "REC-S009-math7-analysis-v1",
+    "studentId": "S009",
+    "studentName": "唐乐言",
+    "status": "ready",
+    "summary": "优先处理 3 个已确认薄弱要求，按前置、重讲、检索、迁移顺序推进。",
+    "scope": "本建议只适用于当前数据集、当前课程标准范围与当前记录时间窗口。",
+    "uncertainty": "有效观察 13 条，要求覆盖率 78%。",
+    "actions": [
+      {
+        "id": "REC-S009-PRE-1",
+        "type": "prerequisite",
+        "title": "先补前置：整式、单项式与多项式",
+        "description": "先恢复前置要求的判断依据，再学习「同类项与整式加减」。",
+        "requirementId": "REQ-EXP-02",
+        "materialIds": [
+          "MAT-EXP-03",
+          "MAT-EXP-04"
+        ],
+        "questionIds": [
+          "Q-EXP-05"
+        ],
+        "reason": "前置要求得分率 75%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [
+          "R00122"
+        ],
+        "estimatedMinutes": 10,
+        "order": 1
+      },
+      {
+        "id": "REC-S009-RELEARN-1",
+        "type": "relearn",
+        "title": "重讲：同类项与整式加减",
+        "description": "重点澄清「整式加减、去括号」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EXP-03",
+        "materialIds": [
+          "MAT-EXP-05",
+          "MAT-EXP-06"
+        ],
+        "questionIds": [
+          "Q-EXP-09",
+          "Q-EXP-10"
+        ],
+        "reason": "该要求得分率 50%，出现 1 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00123"
+        ],
+        "estimatedMinutes": 12,
+        "order": 2
+      },
+      {
+        "id": "REC-S009-RETRIEVE-1",
+        "type": "retrieval",
+        "title": "检索练习：EXP-03",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EXP-03",
+        "materialIds": [
+          "MAT-EXP-05"
+        ],
+        "questionIds": [
+          "Q-EXP-09",
+          "Q-EXP-10",
+          "Q-EXP-11",
+          "Q-EXP-12"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00123"
+        ],
+        "estimatedMinutes": 15,
+        "order": 3
+      },
+      {
+        "id": "REC-S009-TRANSFER-1",
+        "type": "transfer",
+        "title": "变式迁移：同类项与整式加减",
+        "description": "换情境、换问法完成变式题，解释为什么仍使用同一等量关系或运算规则。",
+        "requirementId": "REQ-EXP-03",
+        "materialIds": [
+          "MAT-EXP-05"
+        ],
+        "questionIds": [
+          "Q-EXP-13",
+          "Q-EXP-14",
+          "Q-EXP-15"
+        ],
+        "reason": "基础检索通过后，需要验证能否迁移到新情境。",
+        "completionStandard": "能写出求解过程，并用一句话说明适用范围。",
+        "evidenceRefs": [
+          "R00123"
+        ],
+        "estimatedMinutes": 15,
+        "order": 4
+      },
+      {
+        "id": "REC-S009-PRE-2",
+        "type": "prerequisite",
+        "title": "先补前置：同类项与整式加减",
+        "description": "先恢复前置要求的判断依据，再学习「等式与方程」。",
+        "requirementId": "REQ-EXP-03",
+        "materialIds": [
+          "MAT-EXP-05",
+          "MAT-EXP-06"
+        ],
+        "questionIds": [
+          "Q-EXP-09",
+          "Q-EXP-10"
+        ],
+        "reason": "前置要求得分率 50%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [
+          "R00123"
+        ],
+        "estimatedMinutes": 10,
+        "order": 5
+      },
+      {
+        "id": "REC-S009-RELEARN-2",
+        "type": "relearn",
+        "title": "重讲：等式与方程",
+        "description": "重点澄清「方程」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EQA-01",
+        "materialIds": [
+          "MAT-EQA-02",
+          "MAT-EQA-02"
+        ],
+        "questionIds": [
+          "Q-EQA-01",
+          "Q-EQA-02"
+        ],
+        "reason": "该要求得分率 50%，出现 1 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00119"
+        ],
+        "estimatedMinutes": 12,
+        "order": 6
+      },
+      {
+        "id": "REC-S009-RETRIEVE-2",
+        "type": "retrieval",
+        "title": "检索练习：EQA-01",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EQA-01",
+        "materialIds": [
+          "MAT-EQA-01"
+        ],
+        "questionIds": [
+          "Q-EQA-01",
+          "Q-EQA-02",
+          "Q-EQA-03",
+          "Q-EQA-04"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00119"
+        ],
+        "estimatedMinutes": 15,
+        "order": 7
+      },
+      {
+        "id": "REC-S009-PRE-3",
+        "type": "prerequisite",
+        "title": "先补前置：用字母表示数量关系",
+        "description": "先恢复前置要求的判断依据，再学习「整式、单项式与多项式」。",
+        "requirementId": "REQ-EXP-01",
+        "materialIds": [
+          "MAT-EXP-01",
+          "MAT-EXP-02"
+        ],
+        "questionIds": [
+          "Q-EXP-01",
+          "Q-EXP-02"
+        ],
+        "reason": "前置要求得分率 100%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [],
+        "estimatedMinutes": 10,
+        "order": 8
+      },
+      {
+        "id": "REC-S009-RELEARN-3",
+        "type": "relearn",
+        "title": "重讲：整式、单项式与多项式",
+        "description": "重点澄清「多项式、项」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EXP-02",
+        "materialIds": [
+          "MAT-EXP-03",
+          "MAT-EXP-04"
+        ],
+        "questionIds": [
+          "Q-EXP-05",
+          "Q-EXP-06"
+        ],
+        "reason": "该要求得分率 75%，出现 0 次错误和 1 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00122"
+        ],
+        "estimatedMinutes": 12,
+        "order": 9
+      },
+      {
+        "id": "REC-S009-RETRIEVE-3",
+        "type": "retrieval",
+        "title": "检索练习：EXP-02",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EXP-02",
+        "materialIds": [
+          "MAT-EXP-04"
+        ],
+        "questionIds": [
+          "Q-EXP-05",
+          "Q-EXP-06",
+          "Q-EXP-07",
+          "Q-EXP-08"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00122"
+        ],
+        "estimatedMinutes": 15,
+        "order": 10
+      }
+    ],
+    "evidenceRefs": [
+      "R00117",
+      "R00118",
+      "R00119",
+      "R00120",
+      "R00121",
+      "R00122",
+      "R00123",
+      "R00124",
+      "R00125",
+      "R00126",
+      "R00127",
+      "R00128",
+      "R00129"
+    ],
+    "version": "math7-analysis-v1"
+  },
+  {
+    "id": "REC-S010-math7-analysis-v1",
+    "studentId": "S010",
+    "studentName": "韩若宁",
+    "status": "ready",
+    "summary": "优先处理 3 个已确认薄弱要求，按前置、重讲、检索、迁移顺序推进。",
+    "scope": "本建议只适用于当前数据集、当前课程标准范围与当前记录时间窗口。",
+    "uncertainty": "有效观察 14 条，要求覆盖率 78%。",
+    "actions": [
+      {
+        "id": "REC-S010-RELEARN-1",
+        "type": "relearn",
+        "title": "重讲：解一元一次方程",
+        "description": "重点澄清「去分母」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-03",
+          "MAT-EQA-03"
+        ],
+        "questionIds": [
+          "Q-EQA-05",
+          "Q-EQA-06"
+        ],
+        "reason": "该要求得分率 50%，出现 1 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00140"
+        ],
+        "estimatedMinutes": 12,
+        "order": 1
+      },
+      {
+        "id": "REC-S010-RETRIEVE-1",
+        "type": "retrieval",
+        "title": "检索练习：EQA-02",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-03"
+        ],
+        "questionIds": [
+          "Q-EQA-05",
+          "Q-EQA-06",
+          "Q-EQA-07"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00140"
+        ],
+        "estimatedMinutes": 15,
+        "order": 2
+      },
+      {
+        "id": "REC-S010-TRANSFER-1",
+        "type": "transfer",
+        "title": "变式迁移：解一元一次方程",
+        "description": "换情境、换问法完成变式题，解释为什么仍使用同一等量关系或运算规则。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-04"
+        ],
+        "questionIds": [
+          "Q-EQA-08"
+        ],
+        "reason": "基础检索通过后，需要验证能否迁移到新情境。",
+        "completionStandard": "能写出求解过程，并用一句话说明适用范围。",
+        "evidenceRefs": [
+          "R00140"
+        ],
+        "estimatedMinutes": 15,
+        "order": 3
+      },
+      {
+        "id": "REC-S010-RELEARN-2",
+        "type": "relearn",
+        "title": "重讲：理解有理数的意义",
+        "description": "回到课程要求与示例，重建概念边界。",
+        "requirementId": "REQ-NUM-01",
+        "materialIds": [
+          "MAT-NUM-02",
+          "MAT-NUM-02"
+        ],
+        "questionIds": [
+          "Q-NUM-01",
+          "Q-NUM-02"
+        ],
+        "reason": "该要求得分率 100%，出现 0 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [],
+        "estimatedMinutes": 12,
+        "order": 4
+      },
+      {
+        "id": "REC-S010-RETRIEVE-2",
+        "type": "retrieval",
+        "title": "检索练习：NUM-01",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-NUM-01",
+        "materialIds": [
+          "MAT-NUM-01"
+        ],
+        "questionIds": [
+          "Q-NUM-01",
+          "Q-NUM-02",
+          "Q-NUM-03",
+          "Q-NUM-04"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [],
+        "estimatedMinutes": 15,
+        "order": 5
+      },
+      {
+        "id": "REC-S010-PRE-3",
+        "type": "prerequisite",
+        "title": "先补前置：理解有理数的意义",
+        "description": "先恢复前置要求的判断依据，再学习「数轴、相反数与绝对值」。",
+        "requirementId": "REQ-NUM-01",
+        "materialIds": [
+          "MAT-NUM-01",
+          "MAT-NUM-02"
+        ],
+        "questionIds": [
+          "Q-NUM-01",
+          "Q-NUM-02"
+        ],
+        "reason": "前置要求得分率 100%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [],
+        "estimatedMinutes": 10,
+        "order": 6
+      },
+      {
+        "id": "REC-S010-RELEARN-3",
+        "type": "relearn",
+        "title": "重讲：数轴、相反数与绝对值",
+        "description": "回到课程要求与示例，重建概念边界。",
+        "requirementId": "REQ-NUM-02",
+        "materialIds": [
+          "MAT-NUM-03",
+          "MAT-NUM-03"
+        ],
+        "questionIds": [
+          "Q-NUM-05",
+          "Q-NUM-06"
+        ],
+        "reason": "该要求得分率 100%，出现 0 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [],
+        "estimatedMinutes": 12,
+        "order": 7
+      },
+      {
+        "id": "REC-S010-RETRIEVE-3",
+        "type": "retrieval",
+        "title": "检索练习：NUM-02",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-NUM-02",
+        "materialIds": [
+          "MAT-NUM-04"
+        ],
+        "questionIds": [
+          "Q-NUM-05",
+          "Q-NUM-06",
+          "Q-NUM-07",
+          "Q-NUM-08"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [],
+        "estimatedMinutes": 15,
+        "order": 8
+      }
+    ],
+    "evidenceRefs": [
+      "R00130",
+      "R00131",
+      "R00132",
+      "R00133",
+      "R00134",
+      "R00135",
+      "R00136",
+      "R00137",
+      "R00138",
+      "R00139",
+      "R00140",
+      "R00141",
+      "R00142",
+      "R00143"
+    ],
+    "version": "math7-analysis-v1"
+  },
+  {
+    "id": "REC-S011-math7-analysis-v1",
+    "studentId": "S011",
+    "studentName": "叶书宁",
+    "status": "ready",
+    "summary": "优先处理 3 个已确认薄弱要求，按前置、重讲、检索、迁移顺序推进。",
+    "scope": "本建议只适用于当前数据集、当前课程标准范围与当前记录时间窗口。",
+    "uncertainty": "有效观察 15 条，要求覆盖率 78%。",
+    "actions": [
+      {
+        "id": "REC-S011-RELEARN-1",
+        "type": "relearn",
+        "title": "重讲：同类项与整式加减",
+        "description": "重点澄清「代数式求值、同类项」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EXP-03",
+        "materialIds": [
+          "MAT-EXP-05",
+          "MAT-EXP-06"
+        ],
+        "questionIds": [
+          "Q-EXP-09",
+          "Q-EXP-10"
+        ],
+        "reason": "该要求得分率 38%，出现 2 次错误和 1 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00146",
+          "R00149",
+          "R00152"
+        ],
+        "estimatedMinutes": 12,
+        "order": 1
+      },
+      {
+        "id": "REC-S011-RETRIEVE-1",
+        "type": "retrieval",
+        "title": "检索练习：EXP-03",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EXP-03",
+        "materialIds": [
+          "MAT-EXP-05"
+        ],
+        "questionIds": [
+          "Q-EXP-09",
+          "Q-EXP-10",
+          "Q-EXP-11",
+          "Q-EXP-12"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00146",
+          "R00149",
+          "R00152"
+        ],
+        "estimatedMinutes": 15,
+        "order": 2
+      },
+      {
+        "id": "REC-S011-TRANSFER-1",
+        "type": "transfer",
+        "title": "变式迁移：同类项与整式加减",
+        "description": "换情境、换问法完成变式题，解释为什么仍使用同一等量关系或运算规则。",
+        "requirementId": "REQ-EXP-03",
+        "materialIds": [
+          "MAT-EXP-05"
+        ],
+        "questionIds": [
+          "Q-EXP-13",
+          "Q-EXP-14",
+          "Q-EXP-15"
+        ],
+        "reason": "基础检索通过后，需要验证能否迁移到新情境。",
+        "completionStandard": "能写出求解过程，并用一句话说明适用范围。",
+        "evidenceRefs": [
+          "R00146",
+          "R00149",
+          "R00152"
+        ],
+        "estimatedMinutes": 15,
+        "order": 3
+      },
+      {
+        "id": "REC-S011-RELEARN-2",
+        "type": "relearn",
+        "title": "重讲：理解有理数的意义",
+        "description": "重点澄清「数轴、正数」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-NUM-01",
+        "materialIds": [
+          "MAT-NUM-02",
+          "MAT-NUM-02"
+        ],
+        "questionIds": [
+          "Q-NUM-01",
+          "Q-NUM-02"
+        ],
+        "reason": "该要求得分率 50%，出现 1 次错误和 1 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00148",
+          "R00157"
+        ],
+        "estimatedMinutes": 12,
+        "order": 4
+      },
+      {
+        "id": "REC-S011-RETRIEVE-2",
+        "type": "retrieval",
+        "title": "检索练习：NUM-01",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-NUM-01",
+        "materialIds": [
+          "MAT-NUM-01"
+        ],
+        "questionIds": [
+          "Q-NUM-01",
+          "Q-NUM-02",
+          "Q-NUM-03",
+          "Q-NUM-04"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00148",
+          "R00157"
+        ],
+        "estimatedMinutes": 15,
+        "order": 5
+      },
+      {
+        "id": "REC-S011-PRE-3",
+        "type": "prerequisite",
+        "title": "先补前置：等式与方程",
+        "description": "先恢复前置要求的判断依据，再学习「解一元一次方程」。",
+        "requirementId": "REQ-EQA-01",
+        "materialIds": [
+          "MAT-EQA-01",
+          "MAT-EQA-02"
+        ],
+        "questionIds": [
+          "Q-EQA-01",
+          "Q-EQA-02"
+        ],
+        "reason": "前置要求得分率 100%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [],
+        "estimatedMinutes": 10,
+        "order": 6
+      },
+      {
+        "id": "REC-S011-RELEARN-3",
+        "type": "relearn",
+        "title": "重讲：解一元一次方程",
+        "description": "重点澄清「去分母、去括号」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-03",
+          "MAT-EQA-03"
+        ],
+        "questionIds": [
+          "Q-EQA-05",
+          "Q-EQA-06"
+        ],
+        "reason": "该要求得分率 50%，出现 1 次错误和 1 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00147",
+          "R00156"
+        ],
+        "estimatedMinutes": 12,
+        "order": 7
+      },
+      {
+        "id": "REC-S011-RETRIEVE-3",
+        "type": "retrieval",
+        "title": "检索练习：EQA-02",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-03"
+        ],
+        "questionIds": [
+          "Q-EQA-05",
+          "Q-EQA-06",
+          "Q-EQA-07"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00147",
+          "R00156"
+        ],
+        "estimatedMinutes": 15,
+        "order": 8
+      },
+      {
+        "id": "REC-S011-TRANSFER-3",
+        "type": "transfer",
+        "title": "变式迁移：解一元一次方程",
+        "description": "换情境、换问法完成变式题，解释为什么仍使用同一等量关系或运算规则。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-04"
+        ],
+        "questionIds": [
+          "Q-EQA-08"
+        ],
+        "reason": "基础检索通过后，需要验证能否迁移到新情境。",
+        "completionStandard": "能写出求解过程，并用一句话说明适用范围。",
+        "evidenceRefs": [
+          "R00147",
+          "R00156"
+        ],
+        "estimatedMinutes": 15,
+        "order": 9
+      }
+    ],
+    "evidenceRefs": [
+      "R00144",
+      "R00145",
+      "R00146",
+      "R00147",
+      "R00148",
+      "R00149",
+      "R00150",
+      "R00151",
+      "R00152",
+      "R00153",
+      "R00154",
+      "R00155",
+      "R00156",
+      "R00157",
+      "R00158"
+    ],
+    "version": "math7-analysis-v1"
+  },
+  {
+    "id": "REC-S012-math7-analysis-v1",
+    "studentId": "S012",
+    "studentName": "程亦舟",
+    "status": "ready",
+    "summary": "优先处理 3 个已确认薄弱要求，按前置、重讲、检索、迁移顺序推进。",
+    "scope": "本建议只适用于当前数据集、当前课程标准范围与当前记录时间窗口。",
+    "uncertainty": "有效观察 15 条，要求覆盖率 67%。",
+    "actions": [
+      {
+        "id": "REC-S012-RELEARN-1",
+        "type": "relearn",
+        "title": "重讲：有理数的四则运算",
+        "description": "重点澄清「混合运算、加减混合」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-NUM-03",
+        "materialIds": [
+          "MAT-NUM-05",
+          "MAT-NUM-06"
+        ],
+        "questionIds": [
+          "Q-NUM-09",
+          "Q-NUM-10"
+        ],
+        "reason": "该要求得分率 0%，出现 2 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00168",
+          "R00170"
+        ],
+        "estimatedMinutes": 12,
+        "order": 1
+      },
+      {
+        "id": "REC-S012-RETRIEVE-1",
+        "type": "retrieval",
+        "title": "检索练习：NUM-03",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-NUM-03",
+        "materialIds": [
+          "MAT-NUM-05"
+        ],
+        "questionIds": [
+          "Q-NUM-09",
+          "Q-NUM-10",
+          "Q-NUM-11",
+          "Q-NUM-12"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00168",
+          "R00170"
+        ],
+        "estimatedMinutes": 15,
+        "order": 2
+      },
+      {
+        "id": "REC-S012-TRANSFER-1",
+        "type": "transfer",
+        "title": "变式迁移：有理数的四则运算",
+        "description": "换情境、换问法完成变式题，解释为什么仍使用同一等量关系或运算规则。",
+        "requirementId": "REQ-NUM-03",
+        "materialIds": [
+          "MAT-NUM-05"
+        ],
+        "questionIds": [
+          "Q-NUM-13",
+          "Q-NUM-14",
+          "Q-NUM-15"
+        ],
+        "reason": "基础检索通过后，需要验证能否迁移到新情境。",
+        "completionStandard": "能写出求解过程，并用一句话说明适用范围。",
+        "evidenceRefs": [
+          "R00168",
+          "R00170"
+        ],
+        "estimatedMinutes": 15,
+        "order": 3
+      },
+      {
+        "id": "REC-S012-RELEARN-2",
+        "type": "relearn",
+        "title": "重讲：同类项与整式加减",
+        "description": "重点澄清「合并同类项」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EXP-03",
+        "materialIds": [
+          "MAT-EXP-05",
+          "MAT-EXP-06"
+        ],
+        "questionIds": [
+          "Q-EXP-09",
+          "Q-EXP-10"
+        ],
+        "reason": "该要求得分率 33%，出现 2 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00171",
+          "R00174"
+        ],
+        "estimatedMinutes": 12,
+        "order": 4
+      },
+      {
+        "id": "REC-S012-RETRIEVE-2",
+        "type": "retrieval",
+        "title": "检索练习：EXP-03",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EXP-03",
+        "materialIds": [
+          "MAT-EXP-05"
+        ],
+        "questionIds": [
+          "Q-EXP-09",
+          "Q-EXP-10",
+          "Q-EXP-11",
+          "Q-EXP-12"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00171",
+          "R00174"
+        ],
+        "estimatedMinutes": 15,
+        "order": 5
+      },
+      {
+        "id": "REC-S012-TRANSFER-2",
+        "type": "transfer",
+        "title": "变式迁移：同类项与整式加减",
+        "description": "换情境、换问法完成变式题，解释为什么仍使用同一等量关系或运算规则。",
+        "requirementId": "REQ-EXP-03",
+        "materialIds": [
+          "MAT-EXP-05"
+        ],
+        "questionIds": [
+          "Q-EXP-13",
+          "Q-EXP-14",
+          "Q-EXP-15"
+        ],
+        "reason": "基础检索通过后，需要验证能否迁移到新情境。",
+        "completionStandard": "能写出求解过程，并用一句话说明适用范围。",
+        "evidenceRefs": [
+          "R00171",
+          "R00174"
+        ],
+        "estimatedMinutes": 15,
+        "order": 6
+      },
+      {
+        "id": "REC-S012-PRE-3",
+        "type": "prerequisite",
+        "title": "先补前置：同类项与整式加减",
+        "description": "先恢复前置要求的判断依据，再学习「等式与方程」。",
+        "requirementId": "REQ-EXP-03",
+        "materialIds": [
+          "MAT-EXP-05",
+          "MAT-EXP-06"
+        ],
+        "questionIds": [
+          "Q-EXP-09",
+          "Q-EXP-10"
+        ],
+        "reason": "前置要求得分率 33%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [
+          "R00171",
+          "R00174"
+        ],
+        "estimatedMinutes": 10,
+        "order": 7
+      },
+      {
+        "id": "REC-S012-RELEARN-3",
+        "type": "relearn",
+        "title": "重讲：等式与方程",
+        "description": "重点澄清「方程、等式」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EQA-01",
+        "materialIds": [
+          "MAT-EQA-02",
+          "MAT-EQA-02"
+        ],
+        "questionIds": [
+          "Q-EQA-01",
+          "Q-EQA-02"
+        ],
+        "reason": "该要求得分率 50%，出现 1 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00165"
+        ],
+        "estimatedMinutes": 12,
+        "order": 8
+      },
+      {
+        "id": "REC-S012-RETRIEVE-3",
+        "type": "retrieval",
+        "title": "检索练习：EQA-01",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EQA-01",
+        "materialIds": [
+          "MAT-EQA-01"
+        ],
+        "questionIds": [
+          "Q-EQA-01",
+          "Q-EQA-02",
+          "Q-EQA-03",
+          "Q-EQA-04"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00165"
+        ],
+        "estimatedMinutes": 15,
+        "order": 9
+      }
+    ],
+    "evidenceRefs": [
+      "R00159",
+      "R00160",
+      "R00161",
+      "R00162",
+      "R00163",
+      "R00164",
+      "R00165",
+      "R00166",
+      "R00167",
+      "R00168",
+      "R00169",
+      "R00170",
+      "R00171",
+      "R00172",
+      "R00173",
+      "R00174"
+    ],
+    "version": "math7-analysis-v1"
+  },
+  {
+    "id": "REC-S013-math7-analysis-v1",
+    "studentId": "S013",
+    "studentName": "陆知远",
+    "status": "ready",
+    "summary": "优先处理 3 个已确认薄弱要求，按前置、重讲、检索、迁移顺序推进。",
+    "scope": "本建议只适用于当前数据集、当前课程标准范围与当前记录时间窗口。",
+    "uncertainty": "有效观察 12 条，要求覆盖率 78%。",
+    "actions": [
+      {
+        "id": "REC-S013-PRE-1",
+        "type": "prerequisite",
+        "title": "先补前置：解一元一次方程",
+        "description": "先恢复前置要求的判断依据，再学习「一元一次方程的应用」。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-03",
+          "MAT-EQA-04"
+        ],
+        "questionIds": [
+          "Q-EQA-05"
+        ],
+        "reason": "前置要求得分率 0%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [
+          "R00178",
+          "R00182"
+        ],
+        "estimatedMinutes": 10,
+        "order": 1
+      },
+      {
+        "id": "REC-S013-RELEARN-1",
+        "type": "relearn",
+        "title": "重讲：一元一次方程的应用",
+        "description": "重点澄清「解方程」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EQA-03",
+        "materialIds": [
+          "MAT-EQA-05",
+          "MAT-EQA-06"
+        ],
+        "questionIds": [
+          "Q-EQA-09",
+          "Q-EQA-10"
+        ],
+        "reason": "该要求得分率 0%，出现 2 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00183",
+          "R00185"
+        ],
+        "estimatedMinutes": 12,
+        "order": 2
+      },
+      {
+        "id": "REC-S013-RETRIEVE-1",
+        "type": "retrieval",
+        "title": "检索练习：EQA-03",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EQA-03",
+        "materialIds": [
+          "MAT-EQA-05"
+        ],
+        "questionIds": [
+          "Q-EQA-09",
+          "Q-EQA-10",
+          "Q-EQA-11",
+          "Q-EQA-12"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00183",
+          "R00185"
+        ],
+        "estimatedMinutes": 15,
+        "order": 3
+      },
+      {
+        "id": "REC-S013-TRANSFER-1",
+        "type": "transfer",
+        "title": "变式迁移：一元一次方程的应用",
+        "description": "换情境、换问法完成变式题，解释为什么仍使用同一等量关系或运算规则。",
+        "requirementId": "REQ-EQA-03",
+        "materialIds": [
+          "MAT-EQA-05"
+        ],
+        "questionIds": [
+          "Q-EQA-13",
+          "Q-EQA-14",
+          "Q-EQA-15"
+        ],
+        "reason": "基础检索通过后，需要验证能否迁移到新情境。",
+        "completionStandard": "能写出求解过程，并用一句话说明适用范围。",
+        "evidenceRefs": [
+          "R00183",
+          "R00185"
+        ],
+        "estimatedMinutes": 15,
+        "order": 4
+      },
+      {
+        "id": "REC-S013-RELEARN-2",
+        "type": "relearn",
+        "title": "重讲：等式与方程",
+        "description": "重点澄清「等式性质」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EQA-01",
+        "materialIds": [
+          "MAT-EQA-02",
+          "MAT-EQA-02"
+        ],
+        "questionIds": [
+          "Q-EQA-01",
+          "Q-EQA-02"
+        ],
+        "reason": "该要求得分率 0%，出现 1 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00186"
+        ],
+        "estimatedMinutes": 12,
+        "order": 5
+      },
+      {
+        "id": "REC-S013-RETRIEVE-2",
+        "type": "retrieval",
+        "title": "检索练习：EQA-01",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EQA-01",
+        "materialIds": [
+          "MAT-EQA-01"
+        ],
+        "questionIds": [
+          "Q-EQA-01",
+          "Q-EQA-02",
+          "Q-EQA-03",
+          "Q-EQA-04"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00186"
+        ],
+        "estimatedMinutes": 15,
+        "order": 6
+      },
+      {
+        "id": "REC-S013-PRE-3",
+        "type": "prerequisite",
+        "title": "先补前置：等式与方程",
+        "description": "先恢复前置要求的判断依据，再学习「解一元一次方程」。",
+        "requirementId": "REQ-EQA-01",
+        "materialIds": [
+          "MAT-EQA-01",
+          "MAT-EQA-02"
+        ],
+        "questionIds": [
+          "Q-EQA-01",
+          "Q-EQA-02"
+        ],
+        "reason": "前置要求得分率 0%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [
+          "R00186"
+        ],
+        "estimatedMinutes": 10,
+        "order": 7
+      },
+      {
+        "id": "REC-S013-RELEARN-3",
+        "type": "relearn",
+        "title": "重讲：解一元一次方程",
+        "description": "重点澄清「移项、系数化为1」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-03",
+          "MAT-EQA-03"
+        ],
+        "questionIds": [
+          "Q-EQA-05",
+          "Q-EQA-06"
+        ],
+        "reason": "该要求得分率 0%，出现 1 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00178",
+          "R00182"
+        ],
+        "estimatedMinutes": 12,
+        "order": 8
+      },
+      {
+        "id": "REC-S013-RETRIEVE-3",
+        "type": "retrieval",
+        "title": "检索练习：EQA-02",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-03"
+        ],
+        "questionIds": [
+          "Q-EQA-05",
+          "Q-EQA-06",
+          "Q-EQA-07"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00178",
+          "R00182"
+        ],
+        "estimatedMinutes": 15,
+        "order": 9
+      },
+      {
+        "id": "REC-S013-TRANSFER-3",
+        "type": "transfer",
+        "title": "变式迁移：解一元一次方程",
+        "description": "换情境、换问法完成变式题，解释为什么仍使用同一等量关系或运算规则。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-04"
+        ],
+        "questionIds": [
+          "Q-EQA-08"
+        ],
+        "reason": "基础检索通过后，需要验证能否迁移到新情境。",
+        "completionStandard": "能写出求解过程，并用一句话说明适用范围。",
+        "evidenceRefs": [
+          "R00178",
+          "R00182"
+        ],
+        "estimatedMinutes": 15,
+        "order": 10
+      }
+    ],
+    "evidenceRefs": [
+      "R00175",
+      "R00176",
+      "R00177",
+      "R00178",
+      "R00179",
+      "R00180",
+      "R00181",
+      "R00182",
+      "R00183",
+      "R00184",
+      "R00185",
+      "R00186",
+      "R00187"
+    ],
+    "version": "math7-analysis-v1"
+  },
+  {
+    "id": "REC-S014-math7-analysis-v1",
+    "studentId": "S014",
+    "studentName": "江可欣",
+    "status": "ready",
+    "summary": "优先处理 3 个已确认薄弱要求，按前置、重讲、检索、迁移顺序推进。",
+    "scope": "本建议只适用于当前数据集、当前课程标准范围与当前记录时间窗口。",
+    "uncertainty": "有效观察 14 条，要求覆盖率 67%。",
+    "actions": [
+      {
+        "id": "REC-S014-RELEARN-1",
+        "type": "relearn",
+        "title": "重讲：等式与方程",
+        "description": "重点澄清「方程、等式性质」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EQA-01",
+        "materialIds": [
+          "MAT-EQA-02",
+          "MAT-EQA-02"
+        ],
+        "questionIds": [
+          "Q-EQA-01",
+          "Q-EQA-02"
+        ],
+        "reason": "该要求得分率 17%，出现 2 次错误和 1 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00190",
+          "R00194",
+          "R00195"
+        ],
+        "estimatedMinutes": 12,
+        "order": 1
+      },
+      {
+        "id": "REC-S014-RETRIEVE-1",
+        "type": "retrieval",
+        "title": "检索练习：EQA-01",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EQA-01",
+        "materialIds": [
+          "MAT-EQA-01"
+        ],
+        "questionIds": [
+          "Q-EQA-01",
+          "Q-EQA-02",
+          "Q-EQA-03",
+          "Q-EQA-04"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00190",
+          "R00194",
+          "R00195"
+        ],
+        "estimatedMinutes": 15,
+        "order": 2
+      },
+      {
+        "id": "REC-S014-RELEARN-2",
+        "type": "relearn",
+        "title": "重讲：整式、单项式与多项式",
+        "description": "重点澄清「单项式、次数」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EXP-02",
+        "materialIds": [
+          "MAT-EXP-03",
+          "MAT-EXP-04"
+        ],
+        "questionIds": [
+          "Q-EXP-05",
+          "Q-EXP-06"
+        ],
+        "reason": "该要求得分率 50%，出现 1 次错误和 1 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00193",
+          "R00198"
+        ],
+        "estimatedMinutes": 12,
+        "order": 3
+      },
+      {
+        "id": "REC-S014-RETRIEVE-2",
+        "type": "retrieval",
+        "title": "检索练习：EXP-02",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EXP-02",
+        "materialIds": [
+          "MAT-EXP-04"
+        ],
+        "questionIds": [
+          "Q-EXP-05",
+          "Q-EXP-06",
+          "Q-EXP-07",
+          "Q-EXP-08"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00193",
+          "R00198"
+        ],
+        "estimatedMinutes": 15,
+        "order": 4
+      },
+      {
+        "id": "REC-S014-PRE-3",
+        "type": "prerequisite",
+        "title": "先补前置：等式与方程",
+        "description": "先恢复前置要求的判断依据，再学习「解一元一次方程」。",
+        "requirementId": "REQ-EQA-01",
+        "materialIds": [
+          "MAT-EQA-01",
+          "MAT-EQA-02"
+        ],
+        "questionIds": [
+          "Q-EQA-01",
+          "Q-EQA-02"
+        ],
+        "reason": "前置要求得分率 17%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [
+          "R00190",
+          "R00194",
+          "R00195"
+        ],
+        "estimatedMinutes": 10,
+        "order": 5
+      },
+      {
+        "id": "REC-S014-RELEARN-3",
+        "type": "relearn",
+        "title": "重讲：解一元一次方程",
+        "description": "重点澄清「去分母、移项」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-03",
+          "MAT-EQA-03"
+        ],
+        "questionIds": [
+          "Q-EQA-05",
+          "Q-EQA-06"
+        ],
+        "reason": "该要求得分率 50%，出现 0 次错误和 2 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00189",
+          "R00196"
+        ],
+        "estimatedMinutes": 12,
+        "order": 6
+      },
+      {
+        "id": "REC-S014-RETRIEVE-3",
+        "type": "retrieval",
+        "title": "检索练习：EQA-02",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-03"
+        ],
+        "questionIds": [
+          "Q-EQA-05",
+          "Q-EQA-06",
+          "Q-EQA-07"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00189",
+          "R00196"
+        ],
+        "estimatedMinutes": 15,
+        "order": 7
+      },
+      {
+        "id": "REC-S014-TRANSFER-3",
+        "type": "transfer",
+        "title": "变式迁移：解一元一次方程",
+        "description": "换情境、换问法完成变式题，解释为什么仍使用同一等量关系或运算规则。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-04"
+        ],
+        "questionIds": [
+          "Q-EQA-08"
+        ],
+        "reason": "基础检索通过后，需要验证能否迁移到新情境。",
+        "completionStandard": "能写出求解过程，并用一句话说明适用范围。",
+        "evidenceRefs": [
+          "R00189",
+          "R00196"
+        ],
+        "estimatedMinutes": 15,
+        "order": 8
+      }
+    ],
+    "evidenceRefs": [
+      "R00188",
+      "R00189",
+      "R00190",
+      "R00191",
+      "R00192",
+      "R00193",
+      "R00194",
+      "R00195",
+      "R00196",
+      "R00197",
+      "R00198",
+      "R00199",
+      "R00200",
+      "R00201"
+    ],
+    "version": "math7-analysis-v1"
+  },
+  {
+    "id": "REC-S015-math7-analysis-v1",
+    "studentId": "S015",
+    "studentName": "何予辰",
+    "status": "ready",
+    "summary": "优先处理 3 个已确认薄弱要求，按前置、重讲、检索、迁移顺序推进。",
+    "scope": "本建议只适用于当前数据集、当前课程标准范围与当前记录时间窗口。",
+    "uncertainty": "有效观察 15 条，要求覆盖率 78%。",
+    "actions": [
+      {
+        "id": "REC-S015-PRE-1",
+        "type": "prerequisite",
+        "title": "先补前置：数轴、相反数与绝对值",
+        "description": "先恢复前置要求的判断依据，再学习「有理数的四则运算」。",
+        "requirementId": "REQ-NUM-02",
+        "materialIds": [
+          "MAT-NUM-03",
+          "MAT-NUM-04"
+        ],
+        "questionIds": [
+          "Q-NUM-05",
+          "Q-NUM-06"
+        ],
+        "reason": "前置要求得分率 100%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [],
+        "estimatedMinutes": 10,
+        "order": 1
+      },
+      {
+        "id": "REC-S015-RELEARN-1",
+        "type": "relearn",
+        "title": "重讲：有理数的四则运算",
+        "description": "重点澄清「乘除混合」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-NUM-03",
+        "materialIds": [
+          "MAT-NUM-05",
+          "MAT-NUM-06"
+        ],
+        "questionIds": [
+          "Q-NUM-09",
+          "Q-NUM-10"
+        ],
+        "reason": "该要求得分率 0%，出现 2 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00207",
+          "R00214"
+        ],
+        "estimatedMinutes": 12,
+        "order": 2
+      },
+      {
+        "id": "REC-S015-RETRIEVE-1",
+        "type": "retrieval",
+        "title": "检索练习：NUM-03",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-NUM-03",
+        "materialIds": [
+          "MAT-NUM-05"
+        ],
+        "questionIds": [
+          "Q-NUM-09",
+          "Q-NUM-10",
+          "Q-NUM-11",
+          "Q-NUM-12"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00207",
+          "R00214"
+        ],
+        "estimatedMinutes": 15,
+        "order": 3
+      },
+      {
+        "id": "REC-S015-TRANSFER-1",
+        "type": "transfer",
+        "title": "变式迁移：有理数的四则运算",
+        "description": "换情境、换问法完成变式题，解释为什么仍使用同一等量关系或运算规则。",
+        "requirementId": "REQ-NUM-03",
+        "materialIds": [
+          "MAT-NUM-05"
+        ],
+        "questionIds": [
+          "Q-NUM-13",
+          "Q-NUM-14",
+          "Q-NUM-15"
+        ],
+        "reason": "基础检索通过后，需要验证能否迁移到新情境。",
+        "completionStandard": "能写出求解过程，并用一句话说明适用范围。",
+        "evidenceRefs": [
+          "R00207",
+          "R00214"
+        ],
+        "estimatedMinutes": 15,
+        "order": 4
+      },
+      {
+        "id": "REC-S015-PRE-2",
+        "type": "prerequisite",
+        "title": "先补前置：有理数的四则运算",
+        "description": "先恢复前置要求的判断依据，再学习「用字母表示数量关系」。",
+        "requirementId": "REQ-NUM-03",
+        "materialIds": [
+          "MAT-NUM-05",
+          "MAT-NUM-06"
+        ],
+        "questionIds": [
+          "Q-NUM-09",
+          "Q-NUM-10"
+        ],
+        "reason": "前置要求得分率 0%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [
+          "R00207",
+          "R00214"
+        ],
+        "estimatedMinutes": 10,
+        "order": 5
+      },
+      {
+        "id": "REC-S015-RELEARN-2",
+        "type": "relearn",
+        "title": "重讲：用字母表示数量关系",
+        "description": "重点澄清「列代数式」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EXP-01",
+        "materialIds": [
+          "MAT-EXP-01",
+          "MAT-EXP-02"
+        ],
+        "questionIds": [
+          "Q-EXP-01",
+          "Q-EXP-02"
+        ],
+        "reason": "该要求得分率 0%，出现 1 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00202"
+        ],
+        "estimatedMinutes": 12,
+        "order": 6
+      },
+      {
+        "id": "REC-S015-RETRIEVE-2",
+        "type": "retrieval",
+        "title": "检索练习：EXP-01",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EXP-01",
+        "materialIds": [
+          "MAT-EXP-01"
+        ],
+        "questionIds": [
+          "Q-EXP-01",
+          "Q-EXP-02",
+          "Q-EXP-03",
+          "Q-EXP-04"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00202"
+        ],
+        "estimatedMinutes": 15,
+        "order": 7
+      },
+      {
+        "id": "REC-S015-PRE-3",
+        "type": "prerequisite",
+        "title": "先补前置：解一元一次方程",
+        "description": "先恢复前置要求的判断依据，再学习「一元一次方程的应用」。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-03",
+          "MAT-EQA-04"
+        ],
+        "questionIds": [
+          "Q-EQA-05"
+        ],
+        "reason": "前置要求得分率 75%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [
+          "R00204"
+        ],
+        "estimatedMinutes": 10,
+        "order": 8
+      },
+      {
+        "id": "REC-S015-RELEARN-3",
+        "type": "relearn",
+        "title": "重讲：一元一次方程的应用",
+        "description": "重点澄清「列方程」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EQA-03",
+        "materialIds": [
+          "MAT-EQA-05",
+          "MAT-EQA-06"
+        ],
+        "questionIds": [
+          "Q-EQA-09",
+          "Q-EQA-10"
+        ],
+        "reason": "该要求得分率 0%，出现 1 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00203"
+        ],
+        "estimatedMinutes": 12,
+        "order": 9
+      },
+      {
+        "id": "REC-S015-RETRIEVE-3",
+        "type": "retrieval",
+        "title": "检索练习：EQA-03",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EQA-03",
+        "materialIds": [
+          "MAT-EQA-05"
+        ],
+        "questionIds": [
+          "Q-EQA-09",
+          "Q-EQA-10",
+          "Q-EQA-11",
+          "Q-EQA-12"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00203"
+        ],
+        "estimatedMinutes": 15,
+        "order": 10
+      },
+      {
+        "id": "REC-S015-TRANSFER-3",
+        "type": "transfer",
+        "title": "变式迁移：一元一次方程的应用",
+        "description": "换情境、换问法完成变式题，解释为什么仍使用同一等量关系或运算规则。",
+        "requirementId": "REQ-EQA-03",
+        "materialIds": [
+          "MAT-EQA-05"
+        ],
+        "questionIds": [
+          "Q-EQA-13",
+          "Q-EQA-14",
+          "Q-EQA-15"
+        ],
+        "reason": "基础检索通过后，需要验证能否迁移到新情境。",
+        "completionStandard": "能写出求解过程，并用一句话说明适用范围。",
+        "evidenceRefs": [
+          "R00203"
+        ],
+        "estimatedMinutes": 15,
+        "order": 11
+      }
+    ],
+    "evidenceRefs": [
+      "R00202",
+      "R00203",
+      "R00204",
+      "R00205",
+      "R00206",
+      "R00207",
+      "R00208",
+      "R00209",
+      "R00210",
+      "R00211",
+      "R00212",
+      "R00213",
+      "R00214",
+      "R00215",
+      "R00216"
+    ],
+    "version": "math7-analysis-v1"
+  },
+  {
+    "id": "REC-S016-math7-analysis-v1",
+    "studentId": "S016",
+    "studentName": "方雨桐",
+    "status": "ready",
+    "summary": "优先处理 3 个已确认薄弱要求，按前置、重讲、检索、迁移顺序推进。",
+    "scope": "本建议只适用于当前数据集、当前课程标准范围与当前记录时间窗口。",
+    "uncertainty": "有效观察 16 条，要求覆盖率 78%。",
+    "actions": [
+      {
+        "id": "REC-S016-RELEARN-1",
+        "type": "relearn",
+        "title": "重讲：整式、单项式与多项式",
+        "description": "重点澄清「单项式、次数」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EXP-02",
+        "materialIds": [
+          "MAT-EXP-03",
+          "MAT-EXP-04"
+        ],
+        "questionIds": [
+          "Q-EXP-05",
+          "Q-EXP-06"
+        ],
+        "reason": "该要求得分率 0%，出现 1 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00217"
+        ],
+        "estimatedMinutes": 12,
+        "order": 1
+      },
+      {
+        "id": "REC-S016-RETRIEVE-1",
+        "type": "retrieval",
+        "title": "检索练习：EXP-02",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EXP-02",
+        "materialIds": [
+          "MAT-EXP-04"
+        ],
+        "questionIds": [
+          "Q-EXP-05",
+          "Q-EXP-06",
+          "Q-EXP-07",
+          "Q-EXP-08"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00217"
+        ],
+        "estimatedMinutes": 15,
+        "order": 2
+      },
+      {
+        "id": "REC-S016-PRE-2",
+        "type": "prerequisite",
+        "title": "先补前置：等式与方程",
+        "description": "先恢复前置要求的判断依据，再学习「解一元一次方程」。",
+        "requirementId": "REQ-EQA-01",
+        "materialIds": [
+          "MAT-EQA-01",
+          "MAT-EQA-02"
+        ],
+        "questionIds": [
+          "Q-EQA-01",
+          "Q-EQA-02"
+        ],
+        "reason": "前置要求得分率 100%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [],
+        "estimatedMinutes": 10,
+        "order": 3
+      },
+      {
+        "id": "REC-S016-RELEARN-2",
+        "type": "relearn",
+        "title": "重讲：解一元一次方程",
+        "description": "重点澄清「去分母」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-03",
+          "MAT-EQA-03"
+        ],
+        "questionIds": [
+          "Q-EQA-05",
+          "Q-EQA-06"
+        ],
+        "reason": "该要求得分率 75%，出现 0 次错误和 1 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00227"
+        ],
+        "estimatedMinutes": 12,
+        "order": 4
+      },
+      {
+        "id": "REC-S016-RETRIEVE-2",
+        "type": "retrieval",
+        "title": "检索练习：EQA-02",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-03"
+        ],
+        "questionIds": [
+          "Q-EQA-05",
+          "Q-EQA-06",
+          "Q-EQA-07"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00227"
+        ],
+        "estimatedMinutes": 15,
+        "order": 5
+      },
+      {
+        "id": "REC-S016-TRANSFER-2",
+        "type": "transfer",
+        "title": "变式迁移：解一元一次方程",
+        "description": "换情境、换问法完成变式题，解释为什么仍使用同一等量关系或运算规则。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-04"
+        ],
+        "questionIds": [
+          "Q-EQA-08"
+        ],
+        "reason": "基础检索通过后，需要验证能否迁移到新情境。",
+        "completionStandard": "能写出求解过程，并用一句话说明适用范围。",
+        "evidenceRefs": [
+          "R00227"
+        ],
+        "estimatedMinutes": 15,
+        "order": 6
+      },
+      {
+        "id": "REC-S016-RELEARN-3",
+        "type": "relearn",
+        "title": "重讲：数轴、相反数与绝对值",
+        "description": "回到课程要求与示例，重建概念边界。",
+        "requirementId": "REQ-NUM-02",
+        "materialIds": [
+          "MAT-NUM-03",
+          "MAT-NUM-03"
+        ],
+        "questionIds": [
+          "Q-NUM-05",
+          "Q-NUM-06"
+        ],
+        "reason": "该要求得分率 100%，出现 0 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [],
+        "estimatedMinutes": 12,
+        "order": 7
+      },
+      {
+        "id": "REC-S016-RETRIEVE-3",
+        "type": "retrieval",
+        "title": "检索练习：NUM-02",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-NUM-02",
+        "materialIds": [
+          "MAT-NUM-04"
+        ],
+        "questionIds": [
+          "Q-NUM-05",
+          "Q-NUM-06",
+          "Q-NUM-07",
+          "Q-NUM-08"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [],
+        "estimatedMinutes": 15,
+        "order": 8
+      }
+    ],
+    "evidenceRefs": [
+      "R00217",
+      "R00218",
+      "R00219",
+      "R00220",
+      "R00221",
+      "R00222",
+      "R00223",
+      "R00224",
+      "R00225",
+      "R00226",
+      "R00227",
+      "R00228",
+      "R00229",
+      "R00230",
+      "R00231",
+      "R00232"
+    ],
+    "version": "math7-analysis-v1"
+  },
+  {
+    "id": "REC-S017-math7-analysis-v1",
+    "studentId": "S017",
+    "studentName": "高云舒",
+    "status": "ready",
+    "summary": "优先处理 3 个已确认薄弱要求，按前置、重讲、检索、迁移顺序推进。",
+    "scope": "本建议只适用于当前数据集、当前课程标准范围与当前记录时间窗口。",
+    "uncertainty": "有效观察 12 条，要求覆盖率 56%。",
+    "actions": [
+      {
+        "id": "REC-S017-RELEARN-1",
+        "type": "relearn",
+        "title": "重讲：用字母表示数量关系",
+        "description": "重点澄清「列代数式」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EXP-01",
+        "materialIds": [
+          "MAT-EXP-01",
+          "MAT-EXP-02"
+        ],
+        "questionIds": [
+          "Q-EXP-01",
+          "Q-EXP-02"
+        ],
+        "reason": "该要求得分率 25%，出现 1 次错误和 1 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00239",
+          "R00244"
+        ],
+        "estimatedMinutes": 12,
+        "order": 1
+      },
+      {
+        "id": "REC-S017-RETRIEVE-1",
+        "type": "retrieval",
+        "title": "检索练习：EXP-01",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EXP-01",
+        "materialIds": [
+          "MAT-EXP-01"
+        ],
+        "questionIds": [
+          "Q-EXP-01",
+          "Q-EXP-02",
+          "Q-EXP-03",
+          "Q-EXP-04"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00239",
+          "R00244"
+        ],
+        "estimatedMinutes": 15,
+        "order": 2
+      },
+      {
+        "id": "REC-S017-PRE-2",
+        "type": "prerequisite",
+        "title": "先补前置：整式、单项式与多项式",
+        "description": "先恢复前置要求的判断依据，再学习「同类项与整式加减」。",
+        "requirementId": "REQ-EXP-02",
+        "materialIds": [
+          "MAT-EXP-03",
+          "MAT-EXP-04"
+        ],
+        "questionIds": [
+          "Q-EXP-05"
+        ],
+        "reason": "前置要求得分率 100%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [],
+        "estimatedMinutes": 10,
+        "order": 3
+      },
+      {
+        "id": "REC-S017-RELEARN-2",
+        "type": "relearn",
+        "title": "重讲：同类项与整式加减",
+        "description": "重点澄清「整式加减」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EXP-03",
+        "materialIds": [
+          "MAT-EXP-05",
+          "MAT-EXP-06"
+        ],
+        "questionIds": [
+          "Q-EXP-09",
+          "Q-EXP-10"
+        ],
+        "reason": "该要求得分率 50%，出现 1 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00240"
+        ],
+        "estimatedMinutes": 12,
+        "order": 4
+      },
+      {
+        "id": "REC-S017-RETRIEVE-2",
+        "type": "retrieval",
+        "title": "检索练习：EXP-03",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EXP-03",
+        "materialIds": [
+          "MAT-EXP-05"
+        ],
+        "questionIds": [
+          "Q-EXP-09",
+          "Q-EXP-10",
+          "Q-EXP-11",
+          "Q-EXP-12"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00240"
+        ],
+        "estimatedMinutes": 15,
+        "order": 5
+      },
+      {
+        "id": "REC-S017-TRANSFER-2",
+        "type": "transfer",
+        "title": "变式迁移：同类项与整式加减",
+        "description": "换情境、换问法完成变式题，解释为什么仍使用同一等量关系或运算规则。",
+        "requirementId": "REQ-EXP-03",
+        "materialIds": [
+          "MAT-EXP-05"
+        ],
+        "questionIds": [
+          "Q-EXP-13",
+          "Q-EXP-14",
+          "Q-EXP-15"
+        ],
+        "reason": "基础检索通过后，需要验证能否迁移到新情境。",
+        "completionStandard": "能写出求解过程，并用一句话说明适用范围。",
+        "evidenceRefs": [
+          "R00240"
+        ],
+        "estimatedMinutes": 15,
+        "order": 6
+      },
+      {
+        "id": "REC-S017-PRE-3",
+        "type": "prerequisite",
+        "title": "先补前置：用字母表示数量关系",
+        "description": "先恢复前置要求的判断依据，再学习「整式、单项式与多项式」。",
+        "requirementId": "REQ-EXP-01",
+        "materialIds": [
+          "MAT-EXP-01",
+          "MAT-EXP-02"
+        ],
+        "questionIds": [
+          "Q-EXP-01",
+          "Q-EXP-02"
+        ],
+        "reason": "前置要求得分率 25%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [
+          "R00239",
+          "R00244"
+        ],
+        "estimatedMinutes": 10,
+        "order": 7
+      },
+      {
+        "id": "REC-S017-RELEARN-3",
+        "type": "relearn",
+        "title": "重讲：整式、单项式与多项式",
+        "description": "回到课程要求与示例，重建概念边界。",
+        "requirementId": "REQ-EXP-02",
+        "materialIds": [
+          "MAT-EXP-03",
+          "MAT-EXP-04"
+        ],
+        "questionIds": [
+          "Q-EXP-05",
+          "Q-EXP-06"
+        ],
+        "reason": "该要求得分率 100%，出现 0 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [],
+        "estimatedMinutes": 12,
+        "order": 8
+      },
+      {
+        "id": "REC-S017-RETRIEVE-3",
+        "type": "retrieval",
+        "title": "检索练习：EXP-02",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EXP-02",
+        "materialIds": [
+          "MAT-EXP-04"
+        ],
+        "questionIds": [
+          "Q-EXP-05",
+          "Q-EXP-06",
+          "Q-EXP-07",
+          "Q-EXP-08"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [],
+        "estimatedMinutes": 15,
+        "order": 9
+      }
+    ],
+    "evidenceRefs": [
+      "R00233",
+      "R00234",
+      "R00235",
+      "R00236",
+      "R00237",
+      "R00238",
+      "R00239",
+      "R00240",
+      "R00241",
+      "R00242",
+      "R00243",
+      "R00244",
+      "R00245"
+    ],
+    "version": "math7-analysis-v1"
+  },
+  {
+    "id": "REC-S018-math7-analysis-v1",
+    "studentId": "S018",
+    "studentName": "罗一诺",
+    "status": "ready",
+    "summary": "优先处理 3 个已确认薄弱要求，按前置、重讲、检索、迁移顺序推进。",
+    "scope": "本建议只适用于当前数据集、当前课程标准范围与当前记录时间窗口。",
+    "uncertainty": "有效观察 14 条，要求覆盖率 89%。",
+    "actions": [
+      {
+        "id": "REC-S018-RELEARN-1",
+        "type": "relearn",
+        "title": "重讲：整式、单项式与多项式",
+        "description": "重点澄清「多项式、项」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EXP-02",
+        "materialIds": [
+          "MAT-EXP-03",
+          "MAT-EXP-04"
+        ],
+        "questionIds": [
+          "Q-EXP-05",
+          "Q-EXP-06"
+        ],
+        "reason": "该要求得分率 0%，出现 1 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00254"
+        ],
+        "estimatedMinutes": 12,
+        "order": 1
+      },
+      {
+        "id": "REC-S018-RETRIEVE-1",
+        "type": "retrieval",
+        "title": "检索练习：EXP-02",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EXP-02",
+        "materialIds": [
+          "MAT-EXP-04"
+        ],
+        "questionIds": [
+          "Q-EXP-05",
+          "Q-EXP-06",
+          "Q-EXP-07",
+          "Q-EXP-08"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00254"
+        ],
+        "estimatedMinutes": 15,
+        "order": 2
+      },
+      {
+        "id": "REC-S018-RELEARN-2",
+        "type": "relearn",
+        "title": "重讲：理解有理数的意义",
+        "description": "重点澄清「数轴、正数」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-NUM-01",
+        "materialIds": [
+          "MAT-NUM-02",
+          "MAT-NUM-02"
+        ],
+        "questionIds": [
+          "Q-NUM-01",
+          "Q-NUM-02"
+        ],
+        "reason": "该要求得分率 50%，出现 1 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00251"
+        ],
+        "estimatedMinutes": 12,
+        "order": 3
+      },
+      {
+        "id": "REC-S018-RETRIEVE-2",
+        "type": "retrieval",
+        "title": "检索练习：NUM-01",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-NUM-01",
+        "materialIds": [
+          "MAT-NUM-01"
+        ],
+        "questionIds": [
+          "Q-NUM-01",
+          "Q-NUM-02",
+          "Q-NUM-03",
+          "Q-NUM-04"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00251"
+        ],
+        "estimatedMinutes": 15,
+        "order": 4
+      },
+      {
+        "id": "REC-S018-PRE-3",
+        "type": "prerequisite",
+        "title": "先补前置：等式与方程",
+        "description": "先恢复前置要求的判断依据，再学习「解一元一次方程」。",
+        "requirementId": "REQ-EQA-01",
+        "materialIds": [
+          "MAT-EQA-01",
+          "MAT-EQA-02"
+        ],
+        "questionIds": [
+          "Q-EQA-01",
+          "Q-EQA-02"
+        ],
+        "reason": "前置要求得分率 100%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [],
+        "estimatedMinutes": 10,
+        "order": 5
+      },
+      {
+        "id": "REC-S018-RELEARN-3",
+        "type": "relearn",
+        "title": "重讲：解一元一次方程",
+        "description": "重点澄清「去括号」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-03",
+          "MAT-EQA-03"
+        ],
+        "questionIds": [
+          "Q-EQA-05",
+          "Q-EQA-06"
+        ],
+        "reason": "该要求得分率 50%，出现 0 次错误和 1 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00247"
+        ],
+        "estimatedMinutes": 12,
+        "order": 6
+      },
+      {
+        "id": "REC-S018-RETRIEVE-3",
+        "type": "retrieval",
+        "title": "检索练习：EQA-02",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-03"
+        ],
+        "questionIds": [
+          "Q-EQA-05",
+          "Q-EQA-06",
+          "Q-EQA-07"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00247"
+        ],
+        "estimatedMinutes": 15,
+        "order": 7
+      },
+      {
+        "id": "REC-S018-TRANSFER-3",
+        "type": "transfer",
+        "title": "变式迁移：解一元一次方程",
+        "description": "换情境、换问法完成变式题，解释为什么仍使用同一等量关系或运算规则。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-04"
+        ],
+        "questionIds": [
+          "Q-EQA-08"
+        ],
+        "reason": "基础检索通过后，需要验证能否迁移到新情境。",
+        "completionStandard": "能写出求解过程，并用一句话说明适用范围。",
+        "evidenceRefs": [
+          "R00247"
+        ],
+        "estimatedMinutes": 15,
+        "order": 8
+      }
+    ],
+    "evidenceRefs": [
+      "R00246",
+      "R00247",
+      "R00248",
+      "R00249",
+      "R00250",
+      "R00251",
+      "R00252",
+      "R00253",
+      "R00254",
+      "R00255",
+      "R00256",
+      "R00257",
+      "R00258",
+      "R00259"
+    ],
+    "version": "math7-analysis-v1"
+  },
+  {
+    "id": "REC-S019-math7-analysis-v1",
+    "studentId": "S019",
+    "studentName": "魏思齐",
+    "status": "ready",
+    "summary": "优先处理 3 个已确认薄弱要求，按前置、重讲、检索、迁移顺序推进。",
+    "scope": "本建议只适用于当前数据集、当前课程标准范围与当前记录时间窗口。",
+    "uncertainty": "有效观察 14 条，要求覆盖率 78%。",
+    "actions": [
+      {
+        "id": "REC-S019-PRE-1",
+        "type": "prerequisite",
+        "title": "先补前置：理解有理数的意义",
+        "description": "先恢复前置要求的判断依据，再学习「数轴、相反数与绝对值」。",
+        "requirementId": "REQ-NUM-01",
+        "materialIds": [
+          "MAT-NUM-01",
+          "MAT-NUM-02"
+        ],
+        "questionIds": [
+          "Q-NUM-01",
+          "Q-NUM-02"
+        ],
+        "reason": "前置要求得分率 75%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [
+          "R00269"
+        ],
+        "estimatedMinutes": 10,
+        "order": 1
+      },
+      {
+        "id": "REC-S019-RELEARN-1",
+        "type": "relearn",
+        "title": "重讲：数轴、相反数与绝对值",
+        "description": "重点澄清「绝对值」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-NUM-02",
+        "materialIds": [
+          "MAT-NUM-03",
+          "MAT-NUM-03"
+        ],
+        "questionIds": [
+          "Q-NUM-05",
+          "Q-NUM-06"
+        ],
+        "reason": "该要求得分率 0%，出现 1 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00263"
+        ],
+        "estimatedMinutes": 12,
+        "order": 2
+      },
+      {
+        "id": "REC-S019-RETRIEVE-1",
+        "type": "retrieval",
+        "title": "检索练习：NUM-02",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-NUM-02",
+        "materialIds": [
+          "MAT-NUM-04"
+        ],
+        "questionIds": [
+          "Q-NUM-05",
+          "Q-NUM-06",
+          "Q-NUM-07",
+          "Q-NUM-08"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00263"
+        ],
+        "estimatedMinutes": 15,
+        "order": 3
+      },
+      {
+        "id": "REC-S019-RELEARN-2",
+        "type": "relearn",
+        "title": "重讲：等式与方程",
+        "description": "重点澄清「等式性质」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EQA-01",
+        "materialIds": [
+          "MAT-EQA-02",
+          "MAT-EQA-02"
+        ],
+        "questionIds": [
+          "Q-EQA-01",
+          "Q-EQA-02"
+        ],
+        "reason": "该要求得分率 0%，出现 1 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00266",
+          "R00270"
+        ],
+        "estimatedMinutes": 12,
+        "order": 4
+      },
+      {
+        "id": "REC-S019-RETRIEVE-2",
+        "type": "retrieval",
+        "title": "检索练习：EQA-01",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EQA-01",
+        "materialIds": [
+          "MAT-EQA-01"
+        ],
+        "questionIds": [
+          "Q-EQA-01",
+          "Q-EQA-02",
+          "Q-EQA-03",
+          "Q-EQA-04"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00266",
+          "R00270"
+        ],
+        "estimatedMinutes": 15,
+        "order": 5
+      },
+      {
+        "id": "REC-S019-PRE-3",
+        "type": "prerequisite",
+        "title": "先补前置：解一元一次方程",
+        "description": "先恢复前置要求的判断依据，再学习「一元一次方程的应用」。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-03",
+          "MAT-EQA-04"
+        ],
+        "questionIds": [
+          "Q-EQA-05"
+        ],
+        "reason": "前置要求得分率 100%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [],
+        "estimatedMinutes": 10,
+        "order": 6
+      },
+      {
+        "id": "REC-S019-RELEARN-3",
+        "type": "relearn",
+        "title": "重讲：一元一次方程的应用",
+        "description": "重点澄清「解方程、等量关系」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EQA-03",
+        "materialIds": [
+          "MAT-EQA-05",
+          "MAT-EQA-06"
+        ],
+        "questionIds": [
+          "Q-EQA-09",
+          "Q-EQA-10"
+        ],
+        "reason": "该要求得分率 33%，出现 1 次错误和 2 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00260",
+          "R00262",
+          "R00264"
+        ],
+        "estimatedMinutes": 12,
+        "order": 7
+      },
+      {
+        "id": "REC-S019-RETRIEVE-3",
+        "type": "retrieval",
+        "title": "检索练习：EQA-03",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EQA-03",
+        "materialIds": [
+          "MAT-EQA-05"
+        ],
+        "questionIds": [
+          "Q-EQA-09",
+          "Q-EQA-10",
+          "Q-EQA-11",
+          "Q-EQA-12"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00260",
+          "R00262",
+          "R00264"
+        ],
+        "estimatedMinutes": 15,
+        "order": 8
+      },
+      {
+        "id": "REC-S019-TRANSFER-3",
+        "type": "transfer",
+        "title": "变式迁移：一元一次方程的应用",
+        "description": "换情境、换问法完成变式题，解释为什么仍使用同一等量关系或运算规则。",
+        "requirementId": "REQ-EQA-03",
+        "materialIds": [
+          "MAT-EQA-05"
+        ],
+        "questionIds": [
+          "Q-EQA-13",
+          "Q-EQA-14",
+          "Q-EQA-15"
+        ],
+        "reason": "基础检索通过后，需要验证能否迁移到新情境。",
+        "completionStandard": "能写出求解过程，并用一句话说明适用范围。",
+        "evidenceRefs": [
+          "R00260",
+          "R00262",
+          "R00264"
+        ],
+        "estimatedMinutes": 15,
+        "order": 9
+      }
+    ],
+    "evidenceRefs": [
+      "R00260",
+      "R00261",
+      "R00262",
+      "R00263",
+      "R00264",
+      "R00265",
+      "R00266",
+      "R00267",
+      "R00268",
+      "R00269",
+      "R00270",
+      "R00271",
+      "R00272",
+      "R00273",
+      "R00274"
+    ],
+    "version": "math7-analysis-v1"
+  },
+  {
+    "id": "REC-S020-math7-analysis-v1",
+    "studentId": "S020",
+    "studentName": "谢知微",
+    "status": "ready",
+    "summary": "优先处理 3 个已确认薄弱要求，按前置、重讲、检索、迁移顺序推进。",
+    "scope": "本建议只适用于当前数据集、当前课程标准范围与当前记录时间窗口。",
+    "uncertainty": "有效观察 14 条，要求覆盖率 78%。",
+    "actions": [
+      {
+        "id": "REC-S020-PRE-1",
+        "type": "prerequisite",
+        "title": "先补前置：等式与方程",
+        "description": "先恢复前置要求的判断依据，再学习「解一元一次方程」。",
+        "requirementId": "REQ-EQA-01",
+        "materialIds": [
+          "MAT-EQA-01",
+          "MAT-EQA-02"
+        ],
+        "questionIds": [
+          "Q-EQA-01",
+          "Q-EQA-02"
+        ],
+        "reason": "前置要求得分率 100%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [],
+        "estimatedMinutes": 10,
+        "order": 1
+      },
+      {
+        "id": "REC-S020-RELEARN-1",
+        "type": "relearn",
+        "title": "重讲：解一元一次方程",
+        "description": "重点澄清「移项、系数化为1」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-03",
+          "MAT-EQA-03"
+        ],
+        "questionIds": [
+          "Q-EQA-05",
+          "Q-EQA-06"
+        ],
+        "reason": "该要求得分率 50%，出现 1 次错误和 1 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00277",
+          "R00289"
+        ],
+        "estimatedMinutes": 12,
+        "order": 2
+      },
+      {
+        "id": "REC-S020-RETRIEVE-1",
+        "type": "retrieval",
+        "title": "检索练习：EQA-02",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-03"
+        ],
+        "questionIds": [
+          "Q-EQA-05",
+          "Q-EQA-06",
+          "Q-EQA-07"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00277",
+          "R00289"
+        ],
+        "estimatedMinutes": 15,
+        "order": 3
+      },
+      {
+        "id": "REC-S020-TRANSFER-1",
+        "type": "transfer",
+        "title": "变式迁移：解一元一次方程",
+        "description": "换情境、换问法完成变式题，解释为什么仍使用同一等量关系或运算规则。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-04"
+        ],
+        "questionIds": [
+          "Q-EQA-08"
+        ],
+        "reason": "基础检索通过后，需要验证能否迁移到新情境。",
+        "completionStandard": "能写出求解过程，并用一句话说明适用范围。",
+        "evidenceRefs": [
+          "R00277",
+          "R00289"
+        ],
+        "estimatedMinutes": 15,
+        "order": 4
+      },
+      {
+        "id": "REC-S020-PRE-2",
+        "type": "prerequisite",
+        "title": "先补前置：整式、单项式与多项式",
+        "description": "先恢复前置要求的判断依据，再学习「同类项与整式加减」。",
+        "requirementId": "REQ-EXP-02",
+        "materialIds": [
+          "MAT-EXP-03",
+          "MAT-EXP-04"
+        ],
+        "questionIds": [
+          "Q-EXP-05"
+        ],
+        "reason": "前置要求得分率 100%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [],
+        "estimatedMinutes": 10,
+        "order": 5
+      },
+      {
+        "id": "REC-S020-RELEARN-2",
+        "type": "relearn",
+        "title": "重讲：同类项与整式加减",
+        "description": "重点澄清「合并同类项」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EXP-03",
+        "materialIds": [
+          "MAT-EXP-05",
+          "MAT-EXP-06"
+        ],
+        "questionIds": [
+          "Q-EXP-09",
+          "Q-EXP-10"
+        ],
+        "reason": "该要求得分率 50%，出现 1 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00283"
+        ],
+        "estimatedMinutes": 12,
+        "order": 6
+      },
+      {
+        "id": "REC-S020-RETRIEVE-2",
+        "type": "retrieval",
+        "title": "检索练习：EXP-03",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EXP-03",
+        "materialIds": [
+          "MAT-EXP-05"
+        ],
+        "questionIds": [
+          "Q-EXP-09",
+          "Q-EXP-10",
+          "Q-EXP-11",
+          "Q-EXP-12"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00283"
+        ],
+        "estimatedMinutes": 15,
+        "order": 7
+      },
+      {
+        "id": "REC-S020-TRANSFER-2",
+        "type": "transfer",
+        "title": "变式迁移：同类项与整式加减",
+        "description": "换情境、换问法完成变式题，解释为什么仍使用同一等量关系或运算规则。",
+        "requirementId": "REQ-EXP-03",
+        "materialIds": [
+          "MAT-EXP-05"
+        ],
+        "questionIds": [
+          "Q-EXP-13",
+          "Q-EXP-14",
+          "Q-EXP-15"
+        ],
+        "reason": "基础检索通过后，需要验证能否迁移到新情境。",
+        "completionStandard": "能写出求解过程，并用一句话说明适用范围。",
+        "evidenceRefs": [
+          "R00283"
+        ],
+        "estimatedMinutes": 15,
+        "order": 8
+      },
+      {
+        "id": "REC-S020-RELEARN-3",
+        "type": "relearn",
+        "title": "重讲：用字母表示数量关系",
+        "description": "回到课程要求与示例，重建概念边界。",
+        "requirementId": "REQ-EXP-01",
+        "materialIds": [
+          "MAT-EXP-01",
+          "MAT-EXP-02"
+        ],
+        "questionIds": [
+          "Q-EXP-01",
+          "Q-EXP-02"
+        ],
+        "reason": "该要求得分率 100%，出现 0 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00284"
+        ],
+        "estimatedMinutes": 12,
+        "order": 9
+      },
+      {
+        "id": "REC-S020-RETRIEVE-3",
+        "type": "retrieval",
+        "title": "检索练习：EXP-01",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EXP-01",
+        "materialIds": [
+          "MAT-EXP-01"
+        ],
+        "questionIds": [
+          "Q-EXP-01",
+          "Q-EXP-02",
+          "Q-EXP-03",
+          "Q-EXP-04"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00284"
+        ],
+        "estimatedMinutes": 15,
+        "order": 10
+      }
+    ],
+    "evidenceRefs": [
+      "R00275",
+      "R00276",
+      "R00277",
+      "R00278",
+      "R00279",
+      "R00280",
+      "R00281",
+      "R00282",
+      "R00283",
+      "R00284",
+      "R00285",
+      "R00286",
+      "R00287",
+      "R00288",
+      "R00289",
+      "R00290"
+    ],
+    "version": "math7-analysis-v1"
+  },
+  {
+    "id": "REC-S021-math7-analysis-v1",
+    "studentId": "S021",
+    "studentName": "梁景行",
+    "status": "ready",
+    "summary": "优先处理 3 个已确认薄弱要求，按前置、重讲、检索、迁移顺序推进。",
+    "scope": "本建议只适用于当前数据集、当前课程标准范围与当前记录时间窗口。",
+    "uncertainty": "有效观察 13 条，要求覆盖率 78%。",
+    "actions": [
+      {
+        "id": "REC-S021-RELEARN-1",
+        "type": "relearn",
+        "title": "重讲：同类项与整式加减",
+        "description": "重点澄清「整式加减、代数式求值」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EXP-03",
+        "materialIds": [
+          "MAT-EXP-05",
+          "MAT-EXP-06"
+        ],
+        "questionIds": [
+          "Q-EXP-09",
+          "Q-EXP-10"
+        ],
+        "reason": "该要求得分率 50%，出现 1 次错误和 1 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00292",
+          "R00300"
+        ],
+        "estimatedMinutes": 12,
+        "order": 1
+      },
+      {
+        "id": "REC-S021-RETRIEVE-1",
+        "type": "retrieval",
+        "title": "检索练习：EXP-03",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EXP-03",
+        "materialIds": [
+          "MAT-EXP-05"
+        ],
+        "questionIds": [
+          "Q-EXP-09",
+          "Q-EXP-10",
+          "Q-EXP-11",
+          "Q-EXP-12"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00292",
+          "R00300"
+        ],
+        "estimatedMinutes": 15,
+        "order": 2
+      },
+      {
+        "id": "REC-S021-TRANSFER-1",
+        "type": "transfer",
+        "title": "变式迁移：同类项与整式加减",
+        "description": "换情境、换问法完成变式题，解释为什么仍使用同一等量关系或运算规则。",
+        "requirementId": "REQ-EXP-03",
+        "materialIds": [
+          "MAT-EXP-05"
+        ],
+        "questionIds": [
+          "Q-EXP-13",
+          "Q-EXP-14",
+          "Q-EXP-15"
+        ],
+        "reason": "基础检索通过后，需要验证能否迁移到新情境。",
+        "completionStandard": "能写出求解过程，并用一句话说明适用范围。",
+        "evidenceRefs": [
+          "R00292",
+          "R00300"
+        ],
+        "estimatedMinutes": 15,
+        "order": 3
+      },
+      {
+        "id": "REC-S021-RELEARN-2",
+        "type": "relearn",
+        "title": "重讲：理解有理数的意义",
+        "description": "回到课程要求与示例，重建概念边界。",
+        "requirementId": "REQ-NUM-01",
+        "materialIds": [
+          "MAT-NUM-02",
+          "MAT-NUM-02"
+        ],
+        "questionIds": [
+          "Q-NUM-01",
+          "Q-NUM-02"
+        ],
+        "reason": "该要求得分率 100%，出现 0 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [],
+        "estimatedMinutes": 12,
+        "order": 4
+      },
+      {
+        "id": "REC-S021-RETRIEVE-2",
+        "type": "retrieval",
+        "title": "检索练习：NUM-01",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-NUM-01",
+        "materialIds": [
+          "MAT-NUM-01"
+        ],
+        "questionIds": [
+          "Q-NUM-01",
+          "Q-NUM-02",
+          "Q-NUM-03",
+          "Q-NUM-04"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [],
+        "estimatedMinutes": 15,
+        "order": 5
+      },
+      {
+        "id": "REC-S021-PRE-3",
+        "type": "prerequisite",
+        "title": "先补前置：理解有理数的意义",
+        "description": "先恢复前置要求的判断依据，再学习「数轴、相反数与绝对值」。",
+        "requirementId": "REQ-NUM-01",
+        "materialIds": [
+          "MAT-NUM-01",
+          "MAT-NUM-02"
+        ],
+        "questionIds": [
+          "Q-NUM-01",
+          "Q-NUM-02"
+        ],
+        "reason": "前置要求得分率 100%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [],
+        "estimatedMinutes": 10,
+        "order": 6
+      },
+      {
+        "id": "REC-S021-RELEARN-3",
+        "type": "relearn",
+        "title": "重讲：数轴、相反数与绝对值",
+        "description": "回到课程要求与示例，重建概念边界。",
+        "requirementId": "REQ-NUM-02",
+        "materialIds": [
+          "MAT-NUM-03",
+          "MAT-NUM-03"
+        ],
+        "questionIds": [
+          "Q-NUM-05",
+          "Q-NUM-06"
+        ],
+        "reason": "该要求得分率 100%，出现 0 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [],
+        "estimatedMinutes": 12,
+        "order": 7
+      },
+      {
+        "id": "REC-S021-RETRIEVE-3",
+        "type": "retrieval",
+        "title": "检索练习：NUM-02",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-NUM-02",
+        "materialIds": [
+          "MAT-NUM-04"
+        ],
+        "questionIds": [
+          "Q-NUM-05",
+          "Q-NUM-06",
+          "Q-NUM-07",
+          "Q-NUM-08"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [],
+        "estimatedMinutes": 15,
+        "order": 8
+      }
+    ],
+    "evidenceRefs": [
+      "R00291",
+      "R00292",
+      "R00293",
+      "R00294",
+      "R00295",
+      "R00296",
+      "R00297",
+      "R00298",
+      "R00299",
+      "R00300",
+      "R00301",
+      "R00302",
+      "R00303"
+    ],
+    "version": "math7-analysis-v1"
+  },
+  {
+    "id": "REC-S022-math7-analysis-v1",
+    "studentId": "S022",
+    "studentName": "蒋言溪",
+    "status": "ready",
+    "summary": "优先处理 3 个已确认薄弱要求，按前置、重讲、检索、迁移顺序推进。",
+    "scope": "本建议只适用于当前数据集、当前课程标准范围与当前记录时间窗口。",
+    "uncertainty": "有效观察 14 条，要求覆盖率 78%。",
+    "actions": [
+      {
+        "id": "REC-S022-PRE-1",
+        "type": "prerequisite",
+        "title": "先补前置：解一元一次方程",
+        "description": "先恢复前置要求的判断依据，再学习「一元一次方程的应用」。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-03",
+          "MAT-EQA-04"
+        ],
+        "questionIds": [
+          "Q-EQA-05"
+        ],
+        "reason": "前置要求得分率 50%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [
+          "R00317"
+        ],
+        "estimatedMinutes": 10,
+        "order": 1
+      },
+      {
+        "id": "REC-S022-RELEARN-1",
+        "type": "relearn",
+        "title": "重讲：一元一次方程的应用",
+        "description": "重点澄清「等量关系、方程应用」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EQA-03",
+        "materialIds": [
+          "MAT-EQA-05",
+          "MAT-EQA-06"
+        ],
+        "questionIds": [
+          "Q-EQA-09",
+          "Q-EQA-10"
+        ],
+        "reason": "该要求得分率 0%，出现 2 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00312",
+          "R00314"
+        ],
+        "estimatedMinutes": 12,
+        "order": 2
+      },
+      {
+        "id": "REC-S022-RETRIEVE-1",
+        "type": "retrieval",
+        "title": "检索练习：EQA-03",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EQA-03",
+        "materialIds": [
+          "MAT-EQA-05"
+        ],
+        "questionIds": [
+          "Q-EQA-09",
+          "Q-EQA-10",
+          "Q-EQA-11",
+          "Q-EQA-12"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00312",
+          "R00314"
+        ],
+        "estimatedMinutes": 15,
+        "order": 3
+      },
+      {
+        "id": "REC-S022-TRANSFER-1",
+        "type": "transfer",
+        "title": "变式迁移：一元一次方程的应用",
+        "description": "换情境、换问法完成变式题，解释为什么仍使用同一等量关系或运算规则。",
+        "requirementId": "REQ-EQA-03",
+        "materialIds": [
+          "MAT-EQA-05"
+        ],
+        "questionIds": [
+          "Q-EQA-13",
+          "Q-EQA-14",
+          "Q-EQA-15"
+        ],
+        "reason": "基础检索通过后，需要验证能否迁移到新情境。",
+        "completionStandard": "能写出求解过程，并用一句话说明适用范围。",
+        "evidenceRefs": [
+          "R00312",
+          "R00314"
+        ],
+        "estimatedMinutes": 15,
+        "order": 4
+      },
+      {
+        "id": "REC-S022-PRE-2",
+        "type": "prerequisite",
+        "title": "先补前置：同类项与整式加减",
+        "description": "先恢复前置要求的判断依据，再学习「等式与方程」。",
+        "requirementId": "REQ-EXP-03",
+        "materialIds": [
+          "MAT-EXP-05",
+          "MAT-EXP-06"
+        ],
+        "questionIds": [
+          "Q-EXP-09",
+          "Q-EXP-10"
+        ],
+        "reason": "前置要求得分率 33%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [
+          "R00304",
+          "R00311",
+          "R00315"
+        ],
+        "estimatedMinutes": 10,
+        "order": 5
+      },
+      {
+        "id": "REC-S022-RELEARN-2",
+        "type": "relearn",
+        "title": "重讲：等式与方程",
+        "description": "重点澄清「方程、等式」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EQA-01",
+        "materialIds": [
+          "MAT-EQA-02",
+          "MAT-EQA-02"
+        ],
+        "questionIds": [
+          "Q-EQA-01",
+          "Q-EQA-02"
+        ],
+        "reason": "该要求得分率 17%，出现 2 次错误和 1 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00307",
+          "R00308",
+          "R00309"
+        ],
+        "estimatedMinutes": 12,
+        "order": 6
+      },
+      {
+        "id": "REC-S022-RETRIEVE-2",
+        "type": "retrieval",
+        "title": "检索练习：EQA-01",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EQA-01",
+        "materialIds": [
+          "MAT-EQA-01"
+        ],
+        "questionIds": [
+          "Q-EQA-01",
+          "Q-EQA-02",
+          "Q-EQA-03",
+          "Q-EQA-04"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00307",
+          "R00308",
+          "R00309"
+        ],
+        "estimatedMinutes": 15,
+        "order": 7
+      },
+      {
+        "id": "REC-S022-RELEARN-3",
+        "type": "relearn",
+        "title": "重讲：整式、单项式与多项式",
+        "description": "重点澄清「多项式、项」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EXP-02",
+        "materialIds": [
+          "MAT-EXP-03",
+          "MAT-EXP-04"
+        ],
+        "questionIds": [
+          "Q-EXP-05",
+          "Q-EXP-06"
+        ],
+        "reason": "该要求得分率 25%，出现 1 次错误和 1 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00306",
+          "R00316"
+        ],
+        "estimatedMinutes": 12,
+        "order": 8
+      },
+      {
+        "id": "REC-S022-RETRIEVE-3",
+        "type": "retrieval",
+        "title": "检索练习：EXP-02",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EXP-02",
+        "materialIds": [
+          "MAT-EXP-04"
+        ],
+        "questionIds": [
+          "Q-EXP-05",
+          "Q-EXP-06",
+          "Q-EXP-07",
+          "Q-EXP-08"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00306",
+          "R00316"
+        ],
+        "estimatedMinutes": 15,
+        "order": 9
+      }
+    ],
+    "evidenceRefs": [
+      "R00304",
+      "R00305",
+      "R00306",
+      "R00307",
+      "R00308",
+      "R00309",
+      "R00310",
+      "R00311",
+      "R00312",
+      "R00313",
+      "R00314",
+      "R00315",
+      "R00316",
+      "R00317"
+    ],
+    "version": "math7-analysis-v1"
+  },
+  {
+    "id": "REC-S023-math7-analysis-v1",
+    "studentId": "S023",
+    "studentName": "宋南乔",
+    "status": "ready",
+    "summary": "优先处理 3 个已确认薄弱要求，按前置、重讲、检索、迁移顺序推进。",
+    "scope": "本建议只适用于当前数据集、当前课程标准范围与当前记录时间窗口。",
+    "uncertainty": "有效观察 14 条，要求覆盖率 67%。",
+    "actions": [
+      {
+        "id": "REC-S023-RELEARN-1",
+        "type": "relearn",
+        "title": "重讲：等式与方程",
+        "description": "重点澄清「等式性质、方程」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EQA-01",
+        "materialIds": [
+          "MAT-EQA-02",
+          "MAT-EQA-02"
+        ],
+        "questionIds": [
+          "Q-EQA-01",
+          "Q-EQA-02"
+        ],
+        "reason": "该要求得分率 17%，出现 2 次错误和 1 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00323",
+          "R00326",
+          "R00328"
+        ],
+        "estimatedMinutes": 12,
+        "order": 1
+      },
+      {
+        "id": "REC-S023-RETRIEVE-1",
+        "type": "retrieval",
+        "title": "检索练习：EQA-01",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EQA-01",
+        "materialIds": [
+          "MAT-EQA-01"
+        ],
+        "questionIds": [
+          "Q-EQA-01",
+          "Q-EQA-02",
+          "Q-EQA-03",
+          "Q-EQA-04"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00323",
+          "R00326",
+          "R00328"
+        ],
+        "estimatedMinutes": 15,
+        "order": 2
+      },
+      {
+        "id": "REC-S023-PRE-2",
+        "type": "prerequisite",
+        "title": "先补前置：解一元一次方程",
+        "description": "先恢复前置要求的判断依据，再学习「一元一次方程的应用」。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-03",
+          "MAT-EQA-04"
+        ],
+        "questionIds": [
+          "Q-EQA-05"
+        ],
+        "reason": "前置要求得分率 33%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [
+          "R00325",
+          "R00331"
+        ],
+        "estimatedMinutes": 10,
+        "order": 3
+      },
+      {
+        "id": "REC-S023-RELEARN-2",
+        "type": "relearn",
+        "title": "重讲：一元一次方程的应用",
+        "description": "重点澄清「方程应用、等量关系」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EQA-03",
+        "materialIds": [
+          "MAT-EQA-05",
+          "MAT-EQA-06"
+        ],
+        "questionIds": [
+          "Q-EQA-09",
+          "Q-EQA-10"
+        ],
+        "reason": "该要求得分率 17%，出现 2 次错误和 1 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00322",
+          "R00329",
+          "R00332"
+        ],
+        "estimatedMinutes": 12,
+        "order": 4
+      },
+      {
+        "id": "REC-S023-RETRIEVE-2",
+        "type": "retrieval",
+        "title": "检索练习：EQA-03",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EQA-03",
+        "materialIds": [
+          "MAT-EQA-05"
+        ],
+        "questionIds": [
+          "Q-EQA-09",
+          "Q-EQA-10",
+          "Q-EQA-11",
+          "Q-EQA-12"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00322",
+          "R00329",
+          "R00332"
+        ],
+        "estimatedMinutes": 15,
+        "order": 5
+      },
+      {
+        "id": "REC-S023-TRANSFER-2",
+        "type": "transfer",
+        "title": "变式迁移：一元一次方程的应用",
+        "description": "换情境、换问法完成变式题，解释为什么仍使用同一等量关系或运算规则。",
+        "requirementId": "REQ-EQA-03",
+        "materialIds": [
+          "MAT-EQA-05"
+        ],
+        "questionIds": [
+          "Q-EQA-13",
+          "Q-EQA-14",
+          "Q-EQA-15"
+        ],
+        "reason": "基础检索通过后，需要验证能否迁移到新情境。",
+        "completionStandard": "能写出求解过程，并用一句话说明适用范围。",
+        "evidenceRefs": [
+          "R00322",
+          "R00329",
+          "R00332"
+        ],
+        "estimatedMinutes": 15,
+        "order": 6
+      },
+      {
+        "id": "REC-S023-RELEARN-3",
+        "type": "relearn",
+        "title": "重讲：用字母表示数量关系",
+        "description": "重点澄清「列代数式、字母表示数」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EXP-01",
+        "materialIds": [
+          "MAT-EXP-01",
+          "MAT-EXP-02"
+        ],
+        "questionIds": [
+          "Q-EXP-01",
+          "Q-EXP-02"
+        ],
+        "reason": "该要求得分率 25%，出现 1 次错误和 1 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00327",
+          "R00330"
+        ],
+        "estimatedMinutes": 12,
+        "order": 7
+      },
+      {
+        "id": "REC-S023-RETRIEVE-3",
+        "type": "retrieval",
+        "title": "检索练习：EXP-01",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EXP-01",
+        "materialIds": [
+          "MAT-EXP-01"
+        ],
+        "questionIds": [
+          "Q-EXP-01",
+          "Q-EXP-02",
+          "Q-EXP-03",
+          "Q-EXP-04"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00327",
+          "R00330"
+        ],
+        "estimatedMinutes": 15,
+        "order": 8
+      }
+    ],
+    "evidenceRefs": [
+      "R00318",
+      "R00319",
+      "R00320",
+      "R00321",
+      "R00322",
+      "R00323",
+      "R00324",
+      "R00325",
+      "R00326",
+      "R00327",
+      "R00328",
+      "R00329",
+      "R00330",
+      "R00331",
+      "R00332"
+    ],
+    "version": "math7-analysis-v1"
+  },
+  {
+    "id": "REC-S024-math7-analysis-v1",
+    "studentId": "S024",
+    "studentName": "杜清和",
+    "status": "ready",
+    "summary": "优先处理 3 个已确认薄弱要求，按前置、重讲、检索、迁移顺序推进。",
+    "scope": "本建议只适用于当前数据集、当前课程标准范围与当前记录时间窗口。",
+    "uncertainty": "有效观察 16 条，要求覆盖率 89%。",
+    "actions": [
+      {
+        "id": "REC-S024-RELEARN-1",
+        "type": "relearn",
+        "title": "重讲：同类项与整式加减",
+        "description": "重点澄清「同类项、去括号」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EXP-03",
+        "materialIds": [
+          "MAT-EXP-05",
+          "MAT-EXP-06"
+        ],
+        "questionIds": [
+          "Q-EXP-09",
+          "Q-EXP-10"
+        ],
+        "reason": "该要求得分率 33%，出现 1 次错误和 2 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00342",
+          "R00343",
+          "R00348"
+        ],
+        "estimatedMinutes": 12,
+        "order": 1
+      },
+      {
+        "id": "REC-S024-RETRIEVE-1",
+        "type": "retrieval",
+        "title": "检索练习：EXP-03",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EXP-03",
+        "materialIds": [
+          "MAT-EXP-05"
+        ],
+        "questionIds": [
+          "Q-EXP-09",
+          "Q-EXP-10",
+          "Q-EXP-11",
+          "Q-EXP-12"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00342",
+          "R00343",
+          "R00348"
+        ],
+        "estimatedMinutes": 15,
+        "order": 2
+      },
+      {
+        "id": "REC-S024-TRANSFER-1",
+        "type": "transfer",
+        "title": "变式迁移：同类项与整式加减",
+        "description": "换情境、换问法完成变式题，解释为什么仍使用同一等量关系或运算规则。",
+        "requirementId": "REQ-EXP-03",
+        "materialIds": [
+          "MAT-EXP-05"
+        ],
+        "questionIds": [
+          "Q-EXP-13",
+          "Q-EXP-14",
+          "Q-EXP-15"
+        ],
+        "reason": "基础检索通过后，需要验证能否迁移到新情境。",
+        "completionStandard": "能写出求解过程，并用一句话说明适用范围。",
+        "evidenceRefs": [
+          "R00342",
+          "R00343",
+          "R00348"
+        ],
+        "estimatedMinutes": 15,
+        "order": 3
+      },
+      {
+        "id": "REC-S024-PRE-2",
+        "type": "prerequisite",
+        "title": "先补前置：理解有理数的意义",
+        "description": "先恢复前置要求的判断依据，再学习「数轴、相反数与绝对值」。",
+        "requirementId": "REQ-NUM-01",
+        "materialIds": [
+          "MAT-NUM-01",
+          "MAT-NUM-02"
+        ],
+        "questionIds": [
+          "Q-NUM-01",
+          "Q-NUM-02"
+        ],
+        "reason": "前置要求得分率 100%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [],
+        "estimatedMinutes": 10,
+        "order": 4
+      },
+      {
+        "id": "REC-S024-RELEARN-2",
+        "type": "relearn",
+        "title": "重讲：数轴、相反数与绝对值",
+        "description": "重点澄清「有理数比较、绝对值」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-NUM-02",
+        "materialIds": [
+          "MAT-NUM-03",
+          "MAT-NUM-03"
+        ],
+        "questionIds": [
+          "Q-NUM-05",
+          "Q-NUM-06"
+        ],
+        "reason": "该要求得分率 50%，出现 1 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00347"
+        ],
+        "estimatedMinutes": 12,
+        "order": 5
+      },
+      {
+        "id": "REC-S024-RETRIEVE-2",
+        "type": "retrieval",
+        "title": "检索练习：NUM-02",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-NUM-02",
+        "materialIds": [
+          "MAT-NUM-04"
+        ],
+        "questionIds": [
+          "Q-NUM-05",
+          "Q-NUM-06",
+          "Q-NUM-07",
+          "Q-NUM-08"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00347"
+        ],
+        "estimatedMinutes": 15,
+        "order": 6
+      },
+      {
+        "id": "REC-S024-PRE-3",
+        "type": "prerequisite",
+        "title": "先补前置：数轴、相反数与绝对值",
+        "description": "先恢复前置要求的判断依据，再学习「有理数的四则运算」。",
+        "requirementId": "REQ-NUM-02",
+        "materialIds": [
+          "MAT-NUM-03",
+          "MAT-NUM-04"
+        ],
+        "questionIds": [
+          "Q-NUM-05",
+          "Q-NUM-06"
+        ],
+        "reason": "前置要求得分率 50%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [
+          "R00347"
+        ],
+        "estimatedMinutes": 10,
+        "order": 7
+      },
+      {
+        "id": "REC-S024-RELEARN-3",
+        "type": "relearn",
+        "title": "重讲：有理数的四则运算",
+        "description": "重点澄清「乘除混合」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-NUM-03",
+        "materialIds": [
+          "MAT-NUM-05",
+          "MAT-NUM-06"
+        ],
+        "questionIds": [
+          "Q-NUM-09",
+          "Q-NUM-10"
+        ],
+        "reason": "该要求得分率 50%，出现 1 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00336"
+        ],
+        "estimatedMinutes": 12,
+        "order": 8
+      },
+      {
+        "id": "REC-S024-RETRIEVE-3",
+        "type": "retrieval",
+        "title": "检索练习：NUM-03",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-NUM-03",
+        "materialIds": [
+          "MAT-NUM-05"
+        ],
+        "questionIds": [
+          "Q-NUM-09",
+          "Q-NUM-10",
+          "Q-NUM-11",
+          "Q-NUM-12"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00336"
+        ],
+        "estimatedMinutes": 15,
+        "order": 9
+      },
+      {
+        "id": "REC-S024-TRANSFER-3",
+        "type": "transfer",
+        "title": "变式迁移：有理数的四则运算",
+        "description": "换情境、换问法完成变式题，解释为什么仍使用同一等量关系或运算规则。",
+        "requirementId": "REQ-NUM-03",
+        "materialIds": [
+          "MAT-NUM-05"
+        ],
+        "questionIds": [
+          "Q-NUM-13",
+          "Q-NUM-14",
+          "Q-NUM-15"
+        ],
+        "reason": "基础检索通过后，需要验证能否迁移到新情境。",
+        "completionStandard": "能写出求解过程，并用一句话说明适用范围。",
+        "evidenceRefs": [
+          "R00336"
+        ],
+        "estimatedMinutes": 15,
+        "order": 10
+      }
+    ],
+    "evidenceRefs": [
+      "R00333",
+      "R00334",
+      "R00335",
+      "R00336",
+      "R00337",
+      "R00338",
+      "R00339",
+      "R00340",
+      "R00341",
+      "R00342",
+      "R00343",
+      "R00344",
+      "R00345",
+      "R00346",
+      "R00347",
+      "R00348"
+    ],
+    "version": "math7-analysis-v1"
+  },
+  {
+    "id": "REC-S025-math7-analysis-v1",
+    "studentId": "S025",
+    "studentName": "夏予宁",
+    "status": "ready",
+    "summary": "优先处理 3 个已确认薄弱要求，按前置、重讲、检索、迁移顺序推进。",
+    "scope": "本建议只适用于当前数据集、当前课程标准范围与当前记录时间窗口。",
+    "uncertainty": "有效观察 12 条，要求覆盖率 89%。",
+    "actions": [
+      {
+        "id": "REC-S025-PRE-1",
+        "type": "prerequisite",
+        "title": "先补前置：数轴、相反数与绝对值",
+        "description": "先恢复前置要求的判断依据，再学习「有理数的四则运算」。",
+        "requirementId": "REQ-NUM-02",
+        "materialIds": [
+          "MAT-NUM-03",
+          "MAT-NUM-04"
+        ],
+        "questionIds": [
+          "Q-NUM-05",
+          "Q-NUM-06"
+        ],
+        "reason": "前置要求得分率 100%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [],
+        "estimatedMinutes": 10,
+        "order": 1
+      },
+      {
+        "id": "REC-S025-RELEARN-1",
+        "type": "relearn",
+        "title": "重讲：有理数的四则运算",
+        "description": "重点澄清「加减混合、有理数减法」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-NUM-03",
+        "materialIds": [
+          "MAT-NUM-05",
+          "MAT-NUM-06"
+        ],
+        "questionIds": [
+          "Q-NUM-09",
+          "Q-NUM-10"
+        ],
+        "reason": "该要求得分率 25%，出现 1 次错误和 1 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00355",
+          "R00356"
+        ],
+        "estimatedMinutes": 12,
+        "order": 2
+      },
+      {
+        "id": "REC-S025-RETRIEVE-1",
+        "type": "retrieval",
+        "title": "检索练习：NUM-03",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-NUM-03",
+        "materialIds": [
+          "MAT-NUM-05"
+        ],
+        "questionIds": [
+          "Q-NUM-09",
+          "Q-NUM-10",
+          "Q-NUM-11",
+          "Q-NUM-12"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00355",
+          "R00356"
+        ],
+        "estimatedMinutes": 15,
+        "order": 3
+      },
+      {
+        "id": "REC-S025-TRANSFER-1",
+        "type": "transfer",
+        "title": "变式迁移：有理数的四则运算",
+        "description": "换情境、换问法完成变式题，解释为什么仍使用同一等量关系或运算规则。",
+        "requirementId": "REQ-NUM-03",
+        "materialIds": [
+          "MAT-NUM-05"
+        ],
+        "questionIds": [
+          "Q-NUM-13",
+          "Q-NUM-14",
+          "Q-NUM-15"
+        ],
+        "reason": "基础检索通过后，需要验证能否迁移到新情境。",
+        "completionStandard": "能写出求解过程，并用一句话说明适用范围。",
+        "evidenceRefs": [
+          "R00355",
+          "R00356"
+        ],
+        "estimatedMinutes": 15,
+        "order": 4
+      },
+      {
+        "id": "REC-S025-PRE-2",
+        "type": "prerequisite",
+        "title": "先补前置：有理数的四则运算",
+        "description": "先恢复前置要求的判断依据，再学习「用字母表示数量关系」。",
+        "requirementId": "REQ-NUM-03",
+        "materialIds": [
+          "MAT-NUM-05",
+          "MAT-NUM-06"
+        ],
+        "questionIds": [
+          "Q-NUM-09",
+          "Q-NUM-10"
+        ],
+        "reason": "前置要求得分率 25%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [
+          "R00355",
+          "R00356"
+        ],
+        "estimatedMinutes": 10,
+        "order": 5
+      },
+      {
+        "id": "REC-S025-RELEARN-2",
+        "type": "relearn",
+        "title": "重讲：用字母表示数量关系",
+        "description": "重点澄清「字母表示数」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EXP-01",
+        "materialIds": [
+          "MAT-EXP-01",
+          "MAT-EXP-02"
+        ],
+        "questionIds": [
+          "Q-EXP-01",
+          "Q-EXP-02"
+        ],
+        "reason": "该要求得分率 50%，出现 1 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00352"
+        ],
+        "estimatedMinutes": 12,
+        "order": 6
+      },
+      {
+        "id": "REC-S025-RETRIEVE-2",
+        "type": "retrieval",
+        "title": "检索练习：EXP-01",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EXP-01",
+        "materialIds": [
+          "MAT-EXP-01"
+        ],
+        "questionIds": [
+          "Q-EXP-01",
+          "Q-EXP-02",
+          "Q-EXP-03",
+          "Q-EXP-04"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00352"
+        ],
+        "estimatedMinutes": 15,
+        "order": 7
+      },
+      {
+        "id": "REC-S025-PRE-3",
+        "type": "prerequisite",
+        "title": "先补前置：用字母表示数量关系",
+        "description": "先恢复前置要求的判断依据，再学习「整式、单项式与多项式」。",
+        "requirementId": "REQ-EXP-01",
+        "materialIds": [
+          "MAT-EXP-01",
+          "MAT-EXP-02"
+        ],
+        "questionIds": [
+          "Q-EXP-01",
+          "Q-EXP-02"
+        ],
+        "reason": "前置要求得分率 50%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [
+          "R00352"
+        ],
+        "estimatedMinutes": 10,
+        "order": 8
+      },
+      {
+        "id": "REC-S025-RELEARN-3",
+        "type": "relearn",
+        "title": "重讲：整式、单项式与多项式",
+        "description": "重点澄清「多项式、项」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EXP-02",
+        "materialIds": [
+          "MAT-EXP-03",
+          "MAT-EXP-04"
+        ],
+        "questionIds": [
+          "Q-EXP-05",
+          "Q-EXP-06"
+        ],
+        "reason": "该要求得分率 50%，出现 1 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00353",
+          "R00354"
+        ],
+        "estimatedMinutes": 12,
+        "order": 9
+      },
+      {
+        "id": "REC-S025-RETRIEVE-3",
+        "type": "retrieval",
+        "title": "检索练习：EXP-02",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EXP-02",
+        "materialIds": [
+          "MAT-EXP-04"
+        ],
+        "questionIds": [
+          "Q-EXP-05",
+          "Q-EXP-06",
+          "Q-EXP-07",
+          "Q-EXP-08"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00353",
+          "R00354"
+        ],
+        "estimatedMinutes": 15,
+        "order": 10
+      }
+    ],
+    "evidenceRefs": [
+      "R00349",
+      "R00350",
+      "R00351",
+      "R00352",
+      "R00353",
+      "R00354",
+      "R00355",
+      "R00356",
+      "R00357",
+      "R00358",
+      "R00359",
+      "R00360",
+      "R00361"
+    ],
+    "version": "math7-analysis-v1"
+  },
+  {
+    "id": "REC-S026-math7-analysis-v1",
+    "studentId": "S026",
+    "studentName": "钟书言",
+    "status": "ready",
+    "summary": "优先处理 3 个已确认薄弱要求，按前置、重讲、检索、迁移顺序推进。",
+    "scope": "本建议只适用于当前数据集、当前课程标准范围与当前记录时间窗口。",
+    "uncertainty": "有效观察 14 条，要求覆盖率 67%。",
+    "actions": [
+      {
+        "id": "REC-S026-PRE-1",
+        "type": "prerequisite",
+        "title": "先补前置：有理数的四则运算",
+        "description": "先恢复前置要求的判断依据，再学习「用字母表示数量关系」。",
+        "requirementId": "REQ-NUM-03",
+        "materialIds": [
+          "MAT-NUM-05",
+          "MAT-NUM-06"
+        ],
+        "questionIds": [
+          "Q-NUM-09",
+          "Q-NUM-10"
+        ],
+        "reason": "前置要求得分率 100%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [],
+        "estimatedMinutes": 10,
+        "order": 1
+      },
+      {
+        "id": "REC-S026-RELEARN-1",
+        "type": "relearn",
+        "title": "重讲：用字母表示数量关系",
+        "description": "重点澄清「列代数式」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EXP-01",
+        "materialIds": [
+          "MAT-EXP-01",
+          "MAT-EXP-02"
+        ],
+        "questionIds": [
+          "Q-EXP-01",
+          "Q-EXP-02"
+        ],
+        "reason": "该要求得分率 0%，出现 1 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00368"
+        ],
+        "estimatedMinutes": 12,
+        "order": 2
+      },
+      {
+        "id": "REC-S026-RETRIEVE-1",
+        "type": "retrieval",
+        "title": "检索练习：EXP-01",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EXP-01",
+        "materialIds": [
+          "MAT-EXP-01"
+        ],
+        "questionIds": [
+          "Q-EXP-01",
+          "Q-EXP-02",
+          "Q-EXP-03",
+          "Q-EXP-04"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00368"
+        ],
+        "estimatedMinutes": 15,
+        "order": 3
+      },
+      {
+        "id": "REC-S026-RELEARN-2",
+        "type": "relearn",
+        "title": "重讲：同类项与整式加减",
+        "description": "重点澄清「代数式求值」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EXP-03",
+        "materialIds": [
+          "MAT-EXP-05",
+          "MAT-EXP-06"
+        ],
+        "questionIds": [
+          "Q-EXP-09",
+          "Q-EXP-10"
+        ],
+        "reason": "该要求得分率 25%，出现 1 次错误和 1 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00364",
+          "R00367"
+        ],
+        "estimatedMinutes": 12,
+        "order": 4
+      },
+      {
+        "id": "REC-S026-RETRIEVE-2",
+        "type": "retrieval",
+        "title": "检索练习：EXP-03",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EXP-03",
+        "materialIds": [
+          "MAT-EXP-05"
+        ],
+        "questionIds": [
+          "Q-EXP-09",
+          "Q-EXP-10",
+          "Q-EXP-11",
+          "Q-EXP-12"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00364",
+          "R00367"
+        ],
+        "estimatedMinutes": 15,
+        "order": 5
+      },
+      {
+        "id": "REC-S026-TRANSFER-2",
+        "type": "transfer",
+        "title": "变式迁移：同类项与整式加减",
+        "description": "换情境、换问法完成变式题，解释为什么仍使用同一等量关系或运算规则。",
+        "requirementId": "REQ-EXP-03",
+        "materialIds": [
+          "MAT-EXP-05"
+        ],
+        "questionIds": [
+          "Q-EXP-13",
+          "Q-EXP-14",
+          "Q-EXP-15"
+        ],
+        "reason": "基础检索通过后，需要验证能否迁移到新情境。",
+        "completionStandard": "能写出求解过程，并用一句话说明适用范围。",
+        "evidenceRefs": [
+          "R00364",
+          "R00367"
+        ],
+        "estimatedMinutes": 15,
+        "order": 6
+      },
+      {
+        "id": "REC-S026-RELEARN-3",
+        "type": "relearn",
+        "title": "重讲：有理数的四则运算",
+        "description": "回到课程要求与示例，重建概念边界。",
+        "requirementId": "REQ-NUM-03",
+        "materialIds": [
+          "MAT-NUM-05",
+          "MAT-NUM-06"
+        ],
+        "questionIds": [
+          "Q-NUM-09",
+          "Q-NUM-10"
+        ],
+        "reason": "该要求得分率 100%，出现 0 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [],
+        "estimatedMinutes": 12,
+        "order": 7
+      },
+      {
+        "id": "REC-S026-RETRIEVE-3",
+        "type": "retrieval",
+        "title": "检索练习：NUM-03",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-NUM-03",
+        "materialIds": [
+          "MAT-NUM-05"
+        ],
+        "questionIds": [
+          "Q-NUM-09",
+          "Q-NUM-10",
+          "Q-NUM-11",
+          "Q-NUM-12"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [],
+        "estimatedMinutes": 15,
+        "order": 8
+      },
+      {
+        "id": "REC-S026-TRANSFER-3",
+        "type": "transfer",
+        "title": "变式迁移：有理数的四则运算",
+        "description": "换情境、换问法完成变式题，解释为什么仍使用同一等量关系或运算规则。",
+        "requirementId": "REQ-NUM-03",
+        "materialIds": [
+          "MAT-NUM-05"
+        ],
+        "questionIds": [
+          "Q-NUM-13",
+          "Q-NUM-14",
+          "Q-NUM-15"
+        ],
+        "reason": "基础检索通过后，需要验证能否迁移到新情境。",
+        "completionStandard": "能写出求解过程，并用一句话说明适用范围。",
+        "evidenceRefs": [],
+        "estimatedMinutes": 15,
+        "order": 9
+      }
+    ],
+    "evidenceRefs": [
+      "R00362",
+      "R00363",
+      "R00364",
+      "R00365",
+      "R00366",
+      "R00367",
+      "R00368",
+      "R00369",
+      "R00370",
+      "R00371",
+      "R00372",
+      "R00373",
+      "R00374",
+      "R00375"
+    ],
+    "version": "math7-analysis-v1"
+  },
+  {
+    "id": "REC-S027-math7-analysis-v1",
+    "studentId": "S027",
+    "studentName": "白知遥",
+    "status": "ready",
+    "summary": "优先处理 3 个已确认薄弱要求，按前置、重讲、检索、迁移顺序推进。",
+    "scope": "本建议只适用于当前数据集、当前课程标准范围与当前记录时间窗口。",
+    "uncertainty": "有效观察 15 条，要求覆盖率 78%。",
+    "actions": [
+      {
+        "id": "REC-S027-PRE-1",
+        "type": "prerequisite",
+        "title": "先补前置：解一元一次方程",
+        "description": "先恢复前置要求的判断依据，再学习「一元一次方程的应用」。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-03",
+          "MAT-EQA-04"
+        ],
+        "questionIds": [
+          "Q-EQA-05"
+        ],
+        "reason": "前置要求得分率 50%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [
+          "R00380",
+          "R00385",
+          "R00387"
+        ],
+        "estimatedMinutes": 10,
+        "order": 1
+      },
+      {
+        "id": "REC-S027-RELEARN-1",
+        "type": "relearn",
+        "title": "重讲：一元一次方程的应用",
+        "description": "重点澄清「等量关系」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EQA-03",
+        "materialIds": [
+          "MAT-EQA-05",
+          "MAT-EQA-06"
+        ],
+        "questionIds": [
+          "Q-EQA-09",
+          "Q-EQA-10"
+        ],
+        "reason": "该要求得分率 0%，出现 1 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00377"
+        ],
+        "estimatedMinutes": 12,
+        "order": 2
+      },
+      {
+        "id": "REC-S027-RETRIEVE-1",
+        "type": "retrieval",
+        "title": "检索练习：EQA-03",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EQA-03",
+        "materialIds": [
+          "MAT-EQA-05"
+        ],
+        "questionIds": [
+          "Q-EQA-09",
+          "Q-EQA-10",
+          "Q-EQA-11",
+          "Q-EQA-12"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00377"
+        ],
+        "estimatedMinutes": 15,
+        "order": 3
+      },
+      {
+        "id": "REC-S027-TRANSFER-1",
+        "type": "transfer",
+        "title": "变式迁移：一元一次方程的应用",
+        "description": "换情境、换问法完成变式题，解释为什么仍使用同一等量关系或运算规则。",
+        "requirementId": "REQ-EQA-03",
+        "materialIds": [
+          "MAT-EQA-05"
+        ],
+        "questionIds": [
+          "Q-EQA-13",
+          "Q-EQA-14",
+          "Q-EQA-15"
+        ],
+        "reason": "基础检索通过后，需要验证能否迁移到新情境。",
+        "completionStandard": "能写出求解过程，并用一句话说明适用范围。",
+        "evidenceRefs": [
+          "R00377"
+        ],
+        "estimatedMinutes": 15,
+        "order": 4
+      },
+      {
+        "id": "REC-S027-RELEARN-2",
+        "type": "relearn",
+        "title": "重讲：解一元一次方程",
+        "description": "重点澄清「去分母、去括号」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-03",
+          "MAT-EQA-03"
+        ],
+        "questionIds": [
+          "Q-EQA-05",
+          "Q-EQA-06"
+        ],
+        "reason": "该要求得分率 50%，出现 1 次错误和 2 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00380",
+          "R00385",
+          "R00387"
+        ],
+        "estimatedMinutes": 12,
+        "order": 5
+      },
+      {
+        "id": "REC-S027-RETRIEVE-2",
+        "type": "retrieval",
+        "title": "检索练习：EQA-02",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-03"
+        ],
+        "questionIds": [
+          "Q-EQA-05",
+          "Q-EQA-06",
+          "Q-EQA-07"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00380",
+          "R00385",
+          "R00387"
+        ],
+        "estimatedMinutes": 15,
+        "order": 6
+      },
+      {
+        "id": "REC-S027-TRANSFER-2",
+        "type": "transfer",
+        "title": "变式迁移：解一元一次方程",
+        "description": "换情境、换问法完成变式题，解释为什么仍使用同一等量关系或运算规则。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-04"
+        ],
+        "questionIds": [
+          "Q-EQA-08"
+        ],
+        "reason": "基础检索通过后，需要验证能否迁移到新情境。",
+        "completionStandard": "能写出求解过程，并用一句话说明适用范围。",
+        "evidenceRefs": [
+          "R00380",
+          "R00385",
+          "R00387"
+        ],
+        "estimatedMinutes": 15,
+        "order": 7
+      },
+      {
+        "id": "REC-S027-RELEARN-3",
+        "type": "relearn",
+        "title": "重讲：理解有理数的意义",
+        "description": "重点澄清「数轴、正数」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-NUM-01",
+        "materialIds": [
+          "MAT-NUM-02",
+          "MAT-NUM-02"
+        ],
+        "questionIds": [
+          "Q-NUM-01",
+          "Q-NUM-02"
+        ],
+        "reason": "该要求得分率 75%，出现 0 次错误和 1 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00376"
+        ],
+        "estimatedMinutes": 12,
+        "order": 8
+      },
+      {
+        "id": "REC-S027-RETRIEVE-3",
+        "type": "retrieval",
+        "title": "检索练习：NUM-01",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-NUM-01",
+        "materialIds": [
+          "MAT-NUM-01"
+        ],
+        "questionIds": [
+          "Q-NUM-01",
+          "Q-NUM-02",
+          "Q-NUM-03",
+          "Q-NUM-04"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00376"
+        ],
+        "estimatedMinutes": 15,
+        "order": 9
+      }
+    ],
+    "evidenceRefs": [
+      "R00376",
+      "R00377",
+      "R00378",
+      "R00379",
+      "R00380",
+      "R00381",
+      "R00382",
+      "R00383",
+      "R00384",
+      "R00385",
+      "R00386",
+      "R00387",
+      "R00388",
+      "R00389",
+      "R00390"
+    ],
+    "version": "math7-analysis-v1"
+  },
+  {
+    "id": "REC-S028-math7-analysis-v1",
+    "studentId": "S028",
+    "studentName": "邵安澜",
+    "status": "ready",
+    "summary": "优先处理 3 个已确认薄弱要求，按前置、重讲、检索、迁移顺序推进。",
+    "scope": "本建议只适用于当前数据集、当前课程标准范围与当前记录时间窗口。",
+    "uncertainty": "有效观察 15 条，要求覆盖率 78%。",
+    "actions": [
+      {
+        "id": "REC-S028-RELEARN-1",
+        "type": "relearn",
+        "title": "重讲：整式、单项式与多项式",
+        "description": "重点澄清「多项式、项」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EXP-02",
+        "materialIds": [
+          "MAT-EXP-03",
+          "MAT-EXP-04"
+        ],
+        "questionIds": [
+          "Q-EXP-05",
+          "Q-EXP-06"
+        ],
+        "reason": "该要求得分率 0%，出现 1 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00397"
+        ],
+        "estimatedMinutes": 12,
+        "order": 1
+      },
+      {
+        "id": "REC-S028-RETRIEVE-1",
+        "type": "retrieval",
+        "title": "检索练习：EXP-02",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EXP-02",
+        "materialIds": [
+          "MAT-EXP-04"
+        ],
+        "questionIds": [
+          "Q-EXP-05",
+          "Q-EXP-06",
+          "Q-EXP-07",
+          "Q-EXP-08"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00397"
+        ],
+        "estimatedMinutes": 15,
+        "order": 2
+      },
+      {
+        "id": "REC-S028-PRE-2",
+        "type": "prerequisite",
+        "title": "先补前置：等式与方程",
+        "description": "先恢复前置要求的判断依据，再学习「解一元一次方程」。",
+        "requirementId": "REQ-EQA-01",
+        "materialIds": [
+          "MAT-EQA-01",
+          "MAT-EQA-02"
+        ],
+        "questionIds": [
+          "Q-EQA-01",
+          "Q-EQA-02"
+        ],
+        "reason": "前置要求得分率 50%，会直接影响当前要求的理解。",
+        "completionStandard": "前置练习至少达到 2/3 正确，并能说明关键规则。",
+        "evidenceRefs": [
+          "R00393"
+        ],
+        "estimatedMinutes": 10,
+        "order": 3
+      },
+      {
+        "id": "REC-S028-RELEARN-2",
+        "type": "relearn",
+        "title": "重讲：解一元一次方程",
+        "description": "重点澄清「移项」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-03",
+          "MAT-EQA-03"
+        ],
+        "questionIds": [
+          "Q-EQA-05",
+          "Q-EQA-06"
+        ],
+        "reason": "该要求得分率 0%，出现 1 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00402"
+        ],
+        "estimatedMinutes": 12,
+        "order": 4
+      },
+      {
+        "id": "REC-S028-RETRIEVE-2",
+        "type": "retrieval",
+        "title": "检索练习：EQA-02",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-03"
+        ],
+        "questionIds": [
+          "Q-EQA-05",
+          "Q-EQA-06",
+          "Q-EQA-07"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00402"
+        ],
+        "estimatedMinutes": 15,
+        "order": 5
+      },
+      {
+        "id": "REC-S028-TRANSFER-2",
+        "type": "transfer",
+        "title": "变式迁移：解一元一次方程",
+        "description": "换情境、换问法完成变式题，解释为什么仍使用同一等量关系或运算规则。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-04"
+        ],
+        "questionIds": [
+          "Q-EQA-08"
+        ],
+        "reason": "基础检索通过后，需要验证能否迁移到新情境。",
+        "completionStandard": "能写出求解过程，并用一句话说明适用范围。",
+        "evidenceRefs": [
+          "R00402"
+        ],
+        "estimatedMinutes": 15,
+        "order": 6
+      },
+      {
+        "id": "REC-S028-RELEARN-3",
+        "type": "relearn",
+        "title": "重讲：等式与方程",
+        "description": "重点澄清「等式性质」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EQA-01",
+        "materialIds": [
+          "MAT-EQA-02",
+          "MAT-EQA-02"
+        ],
+        "questionIds": [
+          "Q-EQA-01",
+          "Q-EQA-02"
+        ],
+        "reason": "该要求得分率 50%，出现 0 次错误和 1 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00393"
+        ],
+        "estimatedMinutes": 12,
+        "order": 7
+      },
+      {
+        "id": "REC-S028-RETRIEVE-3",
+        "type": "retrieval",
+        "title": "检索练习：EQA-01",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EQA-01",
+        "materialIds": [
+          "MAT-EQA-01"
+        ],
+        "questionIds": [
+          "Q-EQA-01",
+          "Q-EQA-02",
+          "Q-EQA-03",
+          "Q-EQA-04"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00393"
+        ],
+        "estimatedMinutes": 15,
+        "order": 8
+      }
+    ],
+    "evidenceRefs": [
+      "R00391",
+      "R00392",
+      "R00393",
+      "R00394",
+      "R00395",
+      "R00396",
+      "R00397",
+      "R00398",
+      "R00399",
+      "R00400",
+      "R00401",
+      "R00402",
+      "R00403",
+      "R00404",
+      "R00405",
+      "R00406"
+    ],
+    "version": "math7-analysis-v1"
+  },
+  {
+    "id": "REC-S029-math7-analysis-v1",
+    "studentId": "S029",
+    "studentName": "秦乐知",
+    "status": "insufficient",
+    "summary": "有效观察不足，先补充数据；已有记录只用于描述表现，不判定未掌握。",
+    "scope": "本建议只适用于当前数据集、当前课程标准范围与当前记录时间窗口。",
+    "uncertainty": "有效观察不足，缺失记录不进入正确率分母。",
+    "actions": [
+      {
+        "id": "REC-S029-OBSERVE",
+        "type": "observation",
+        "title": "先补齐观察，不急着下结论",
+        "description": "完成一组覆盖不同主题的基础题，再重新生成学情结论。",
+        "requirementId": "REQ-NUM-01",
+        "materialIds": [
+          "MAT-NUM-01",
+          "MAT-NUM-02",
+          "MAT-NUM-03",
+          "MAT-NUM-04",
+          "MAT-NUM-05",
+          "MAT-NUM-06"
+        ],
+        "questionIds": [
+          "Q-NUM-01",
+          "Q-NUM-02",
+          "Q-NUM-05",
+          "Q-NUM-06",
+          "Q-NUM-09",
+          "Q-NUM-10"
+        ],
+        "reason": "当前有效观察 1 条，仅覆盖 11% 的课程要求。",
+        "completionStandard": "至少新增 6 条有效作答，且覆盖 3 个学习主题。",
+        "evidenceRefs": [
+          "R00407",
+          "R00408"
+        ],
+        "estimatedMinutes": 20,
+        "order": 1
+      },
+      {
+        "id": "REC-S029-RELEARN-1",
+        "type": "relearn",
+        "title": "重讲：理解有理数的意义",
+        "description": "重点澄清「数轴」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-NUM-01",
+        "materialIds": [
+          "MAT-NUM-02",
+          "MAT-NUM-02"
+        ],
+        "questionIds": [
+          "Q-NUM-01",
+          "Q-NUM-02"
+        ],
+        "reason": "该要求得分率 50%，出现 0 次错误和 1 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00407"
+        ],
+        "estimatedMinutes": 12,
+        "order": 2
+      },
+      {
+        "id": "REC-S029-RETRIEVE-1",
+        "type": "retrieval",
+        "title": "检索练习：NUM-01",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-NUM-01",
+        "materialIds": [
+          "MAT-NUM-01"
+        ],
+        "questionIds": [
+          "Q-NUM-01",
+          "Q-NUM-02",
+          "Q-NUM-03",
+          "Q-NUM-04"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00407"
+        ],
+        "estimatedMinutes": 15,
+        "order": 3
+      }
+    ],
+    "evidenceRefs": [
+      "R00407",
+      "R00408"
+    ],
+    "version": "math7-analysis-v1"
+  },
+  {
+    "id": "REC-S030-math7-analysis-v1",
+    "studentId": "S030",
+    "studentName": "孟星河",
+    "status": "insufficient",
+    "summary": "有效观察不足，先补充数据；已有记录只用于描述表现，不判定未掌握。",
+    "scope": "本建议只适用于当前数据集、当前课程标准范围与当前记录时间窗口。",
+    "uncertainty": "有效观察不足，缺失记录不进入正确率分母。",
+    "actions": [
+      {
+        "id": "REC-S030-OBSERVE",
+        "type": "observation",
+        "title": "先补齐观察，不急着下结论",
+        "description": "完成一组覆盖不同主题的基础题，再重新生成学情结论。",
+        "requirementId": "REQ-NUM-01",
+        "materialIds": [
+          "MAT-NUM-01",
+          "MAT-NUM-02",
+          "MAT-NUM-03",
+          "MAT-NUM-04",
+          "MAT-NUM-05",
+          "MAT-NUM-06"
+        ],
+        "questionIds": [
+          "Q-NUM-01",
+          "Q-NUM-02",
+          "Q-NUM-05",
+          "Q-NUM-06",
+          "Q-NUM-09",
+          "Q-NUM-10"
+        ],
+        "reason": "当前有效观察 2 条，仅覆盖 22% 的课程要求。",
+        "completionStandard": "至少新增 6 条有效作答，且覆盖 3 个学习主题。",
+        "evidenceRefs": [
+          "R00409",
+          "R00410",
+          "R00411"
+        ],
+        "estimatedMinutes": 20,
+        "order": 1
+      },
+      {
+        "id": "REC-S030-RELEARN-1",
+        "type": "relearn",
+        "title": "重讲：解一元一次方程",
+        "description": "重点澄清「去分母」，用材料中的例题走一遍判断步骤。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-03",
+          "MAT-EQA-03"
+        ],
+        "questionIds": [
+          "Q-EQA-05",
+          "Q-EQA-06"
+        ],
+        "reason": "该要求得分率 50%，出现 0 次错误和 1 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [
+          "R00409",
+          "R00410"
+        ],
+        "estimatedMinutes": 12,
+        "order": 2
+      },
+      {
+        "id": "REC-S030-RETRIEVE-1",
+        "type": "retrieval",
+        "title": "检索练习：EQA-02",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-03"
+        ],
+        "questionIds": [
+          "Q-EQA-05",
+          "Q-EQA-06",
+          "Q-EQA-07"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [
+          "R00409",
+          "R00410"
+        ],
+        "estimatedMinutes": 15,
+        "order": 3
+      },
+      {
+        "id": "REC-S030-TRANSFER-1",
+        "type": "transfer",
+        "title": "变式迁移：解一元一次方程",
+        "description": "换情境、换问法完成变式题，解释为什么仍使用同一等量关系或运算规则。",
+        "requirementId": "REQ-EQA-02",
+        "materialIds": [
+          "MAT-EQA-04"
+        ],
+        "questionIds": [
+          "Q-EQA-08"
+        ],
+        "reason": "基础检索通过后，需要验证能否迁移到新情境。",
+        "completionStandard": "能写出求解过程，并用一句话说明适用范围。",
+        "evidenceRefs": [
+          "R00409",
+          "R00410"
+        ],
+        "estimatedMinutes": 15,
+        "order": 4
+      },
+      {
+        "id": "REC-S030-RELEARN-2",
+        "type": "relearn",
+        "title": "重讲：用字母表示数量关系",
+        "description": "回到课程要求与示例，重建概念边界。",
+        "requirementId": "REQ-EXP-01",
+        "materialIds": [
+          "MAT-EXP-01",
+          "MAT-EXP-02"
+        ],
+        "questionIds": [
+          "Q-EXP-01",
+          "Q-EXP-02"
+        ],
+        "reason": "该要求得分率 100%，出现 0 次错误和 0 次部分正确。",
+        "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+        "evidenceRefs": [],
+        "estimatedMinutes": 12,
+        "order": 5
+      },
+      {
+        "id": "REC-S030-RETRIEVE-2",
+        "type": "retrieval",
+        "title": "检索练习：EXP-01",
+        "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+        "requirementId": "REQ-EXP-01",
+        "materialIds": [
+          "MAT-EXP-01"
+        ],
+        "questionIds": [
+          "Q-EXP-01",
+          "Q-EXP-02",
+          "Q-EXP-03",
+          "Q-EXP-04"
+        ],
+        "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+        "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+        "evidenceRefs": [],
+        "estimatedMinutes": 15,
+        "order": 6
+      }
+    ],
+    "evidenceRefs": [
+      "R00409",
+      "R00410",
+      "R00411"
+    ],
+    "version": "math7-analysis-v1"
+  }
+]

@@ -10,12 +10,34 @@
  * 监听 0.0.0.0:$PORT，仅使用 Node 内置模块。
  */
 import { createServer } from 'node:http'
-import { createReadStream } from 'node:fs'
+import { createReadStream, readFileSync } from 'node:fs'
 import { stat } from 'node:fs/promises'
 import { join, normalize, extname } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { handleAiProxy, isAiProxyPath } from './aiProxy.mjs'
 
-const distDir = join(fileURLToPath(new URL('.', import.meta.url)), 'public')
+const serverDir = fileURLToPath(new URL('.', import.meta.url))
+
+function loadLocalEnv() {
+  try {
+    const raw = readFileSync(join(serverDir, '.env'), 'utf8')
+    raw.split(/\r?\n/).forEach((line) => {
+      const trimmed = line.trim()
+      if (!trimmed || trimmed.startsWith('#')) return
+      const index = trimmed.indexOf('=')
+      if (index < 1) return
+      const key = trimmed.slice(0, index).trim()
+      const value = trimmed.slice(index + 1).trim().replace(/^(['"])(.*)\1$/, '$2')
+      if (key && process.env[key] === undefined) process.env[key] = value
+    })
+  } catch {
+    // .env 可选；生产环境直接注入系统环境变量
+  }
+}
+
+loadLocalEnv()
+
+const distDir = join(serverDir, 'public')
 const port = Number(process.env.PORT) || 4173
 
 const MIME = {
@@ -49,6 +71,11 @@ async function isFile(p) {
 const server = createServer(async (req, res) => {
   try {
     const urlPath = decodeURIComponent(new URL(req.url, 'http://localhost').pathname)
+
+    if (isAiProxyPath(urlPath)) {
+      await handleAiProxy(req, res, urlPath)
+      return
+    }
 
     // 相对 base 深链接修正：/<任意一段或两段>/assets/... → /assets/...，
     // 对应 /m/course 与 /app/course 两級深链接；favicon.svg 同理
@@ -116,4 +143,7 @@ const server = createServer(async (req, res) => {
 
 server.listen(port, '0.0.0.0', () => {
   console.log(`[zhuxue-agent] serving ${distDir} on http://0.0.0.0:${port}`)
+  console.log(
+    `[zhuxue-agent] AI proxy: text=${process.env.DEEPSEEK_API_KEY ? 'configured' : 'offline-fallback'}, tts=${process.env.STEPFUN_API_KEY ? 'configured' : 'off'}`,
+  )
 })

@@ -1,0 +1,49 @@
+{
+  "generatedAt": "2026-11-04T14:00:04.533Z",
+  "datasetVersion": "math7-competition-v1",
+  "analysisVersion": "math7-analysis-v1",
+  "developmentSample": true,
+  "checks": [
+    {
+      "id": "topics",
+      "passed": true,
+      "value": 3,
+      "expectation": "2-3 个学习主题"
+    },
+    {
+      "id": "students",
+      "passed": true,
+      "value": 30,
+      "expectation": "公开样例参考规模 20-50 名学生"
+    },
+    {
+      "id": "records",
+      "passed": true,
+      "value": 417,
+      "expectation": "公开样例参考规模 300-1000 条记录"
+    },
+    {
+      "id": "quality_issues",
+      "passed": true,
+      "value": {
+        "duplicate": 1,
+        "anomaly": 4,
+        "missingObservation": 14
+      },
+      "expectation": "样例覆盖重复、异常和缺失观察"
+    },
+    {
+      "id": "individual_cases",
+      "passed": true,
+      "value": 30,
+      "expectation": "每名模拟学生均有个体摘要"
+    },
+    {
+      "id": "recommendation_traceability",
+      "passed": true,
+      "value": 30,
+      "expectation": "每条建议包含理由、完成标准和证据"
+    }
+  ],
+  "passed": true
+}

@@ -1,0 +1,81 @@
+{
+  "dictionary": [
+    {
+      "field": "recordId",
+      "aliases": [
+        "id",
+        "record_id"
+      ],
+      "type": "string",
+      "required": true
+    },
+    {
+      "field": "studentId",
+      "aliases": [
+        "student_id",
+        "学生编号"
+      ],
+      "type": "string",
+      "required": true
+    },
+    {
+      "field": "questionId",
+      "aliases": [
+        "question_id",
+        "题目编号"
+      ],
+      "type": "string",
+      "required": true
+    },
+    {
+      "field": "materialId",
+      "aliases": [
+        "material_id",
+        "材料编号"
+      ],
+      "type": "string",
+      "required": false
+    },
+    {
+      "field": "status",
+      "aliases": [
+        "result",
+        "作答结果"
+      ],
+      "type": "enum",
+      "required": true
+    },
+    {
+      "field": "score",
+      "aliases": [
+        "得分"
+      ],
+      "type": "number",
+      "required": false
+    },
+    {
+      "field": "maxScore",
+      "aliases": [
+        "满分",
+        "max_score"
+      ],
+      "type": "number",
+      "required": false
+    },
+    {
+      "field": "attemptedAt",
+      "aliases": [
+        "timestamp",
+        "作答时间"
+      ],
+      "type": "datetime",
+      "required": false
+    }
+  ],
+  "statuses": [
+    "correct",
+    "partial",
+    "incorrect",
+    "missing"
+  ]
+}

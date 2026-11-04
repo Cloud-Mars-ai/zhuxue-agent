@@ -29,6 +29,7 @@ const knowledgeStore = useKnowledgeStore()
 const courseStudioStore = useCourseStudioStore()
 
 const MOBILE_ROUTE = {
+  '/app/competition': '/m/competition',
   '/app/practice': '/m/practice',
   '/app/selftest': '/m/selftest',
   '/app/cheatsheet': '/m/cheatsheet',
@@ -116,6 +117,7 @@ const todoRows = computed(() => {
 const quickEntries = computed(() =>
   isStudent.value
     ? [
+        { ic: '伴', color: '#3D5BD9', name: '智慧学伴', sub: '学情 · 建议 · 核验', to: '/m/competition' },
         { ic: '板', color: '#3D5BD9', name: '板书讲解', sub: '边讲解 · 边追问', to: '/m/board' },
         { ic: '题', color: '#E8590C', name: '一人一题', sub: 'AI 出题练习', to: '/m/practice' },
         { ic: '测', color: '#3B5BDB', name: '章节自测', sub: '先测后学', to: '/m/selftest' },
@@ -127,6 +129,7 @@ const quickEntries = computed(() =>
         { ic: '我', color: '#495057', name: '我的', sub: '背景与设置', to: '/m/mine' },
       ]
     : [
+        { ic: '伴', color: '#3D5BD9', name: '智慧学伴', sub: '内容 · 学情 · 建议', to: '/m/competition' },
         { ic: '板', color: '#3D5BD9', name: '板书讲解', sub: '课程内容对照', to: '/m/board' },
         { ic: '稿', color: '#3B5BDB', name: '案例选稿台', sub: '筛选 / 选用 / 驳回', to: '/m/case' },
         { ic: '卷', color: '#E8590C', name: '出题阅卷台', sub: '圈人出题 · 评分', to: '/m/assessment' },
@@ -147,7 +150,7 @@ const mHeroMaterials = computed(() =>
     ? [
         { no: '1', title: '教学大纲', desc: '章节进度', to: '/m/course' },
         { no: '2', title: '课程案例', desc: '预习与研讨', to: '/m/case' },
-        { no: '3', title: '学习记录', desc: '练习与盲区', to: '/m/checkup' },
+        { no: '3', title: '智慧学伴', desc: '学情与建议', to: '/m/competition' },
       ]
     : [
         { no: '1', title: '课程资料', desc: '课件与教材', to: '/m/course' },
@@ -159,11 +162,13 @@ const mHeroMaterials = computed(() =>
 const mHeroActions = computed(() =>
   isStudent.value
     ? [
+        { label: '智慧学伴', to: '/m/competition' },
         { label: '章节自测', to: '/m/selftest' },
         { label: '备考速查', to: '/m/cheatsheet' },
         { label: '学习体检', to: '/m/checkup' },
       ]
     : [
+        { label: '智慧学伴', to: '/m/competition' },
         { label: '教学主控台', to: '/m/course' },
         { label: '课程资料', to: '/m/course' },
         { label: '学情统计', to: '/m/course' },

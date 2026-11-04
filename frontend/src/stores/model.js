@@ -5,18 +5,18 @@ const STORAGE_KEY = 'ai-tutor-model-config'
 
 /**
  * 默认模型配置：DeepSeek 通用对话 + 阶跃星辰语音合成
- * 当前为比赛演示阶段，默认密钥由项目负责人要求临时内置。
- * 迁移到后端代理后必须删除明文密钥并轮换。
+ * 生产构建优先使用同源 /api/ai/* 代理，密钥只存在于 Node 服务端环境变量。
+ * 开发模式可在模型设置页临时填写本机密钥；不要把密钥写回源码。
  */
 export const DEFAULT_MODEL_CONFIG = {
-  configVersion: '2026-11-04-deepseek',
+  configVersion: '2026-11-04-server-proxy-v1',
   provider: 'deepseek',
   baseUrl: 'https://api.deepseek.com/v1',
-  apiKey: 'sk-ebd19ebbc3474bd2a46d107f431a165a',
+  apiKey: '',
   model: 'deepseek-chat',
   temperature: 0.3,
   ttsBaseUrl: 'https://api.stepfun.com/v1',
-  ttsApiKey: '1MR8bDu79ioMcWmuyI8RA7qGvk3MDr4uDpn5NmLFe6Y3tWpt2MCTHlZB8QYL62fB6',
+  ttsApiKey: '',
   ttsModel: 'stepaudio-3-tts',
   ttsVoice: 'qinhenvsheng',
   ttsSpeed: 0.98,
@@ -76,7 +76,7 @@ function loadFromStorage() {
       merged.apiKey = DEFAULT_MODEL_CONFIG.apiKey
       merged.model = DEFAULT_MODEL_CONFIG.model
       merged.temperature = DEFAULT_MODEL_CONFIG.temperature
-      if (!stored.ttsApiKey) merged.ttsApiKey = DEFAULT_MODEL_CONFIG.ttsApiKey
+      merged.ttsApiKey = DEFAULT_MODEL_CONFIG.ttsApiKey
       if (!stored.ttsBaseUrl) merged.ttsBaseUrl = DEFAULT_MODEL_CONFIG.ttsBaseUrl
       if (!stored.ttsModel) merged.ttsModel = DEFAULT_MODEL_CONFIG.ttsModel
       if (!stored.ttsVoice) merged.ttsVoice = DEFAULT_MODEL_CONFIG.ttsVoice
@@ -97,11 +97,23 @@ function loadFromStorage() {
 export const useModelStore = defineStore('model', () => {
   const config = ref(loadFromStorage())
 
+  const serverProxyActive = computed(
+    () =>
+      import.meta.env.PROD &&
+      typeof window !== 'undefined' &&
+      window.location.protocol.startsWith('http') &&
+      (import.meta.env.BASE_URL === './' || import.meta.env.BASE_URL === '/'),
+  )
+
   const isConfigured = computed(
-    () => !!(config.value.apiKey && config.value.baseUrl && config.value.model),
+    () =>
+      !!(config.value.baseUrl && config.value.model) &&
+      (!!config.value.apiKey || serverProxyActive.value),
   )
   const isTtsConfigured = computed(
-    () => !!(config.value.ttsApiKey && config.value.ttsBaseUrl && config.value.ttsModel),
+    () =>
+      !!(config.value.ttsBaseUrl && config.value.ttsModel) &&
+      (!!config.value.ttsApiKey || serverProxyActive.value),
   )
 
   /** 保存（合并式更新，立即持久化） */
@@ -118,6 +130,7 @@ export const useModelStore = defineStore('model', () => {
 
   return {
     config,
+    serverProxyActive,
     isConfigured,
     isTtsConfigured,
     updateConfig,

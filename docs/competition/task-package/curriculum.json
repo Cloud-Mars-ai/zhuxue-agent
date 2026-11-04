@@ -1,0 +1,2348 @@
+{
+  "meta": {
+    "id": "math7-development-sample",
+    "version": "math7-competition-v1",
+    "seed": 20261104,
+    "title": "七年级数学 · 智慧学伴开发样例",
+    "grade": "七年级",
+    "subject": "数学",
+    "sourceType": "development-sample",
+    "official": false,
+    "disclaimer": "当前数据由固定种子生成，仅用于开发和演示。正式评测须以赛方发布的数据包及字段说明为准。",
+    "generatedAt": "2026-11-04T12:00:00.000Z"
+  },
+  "topics": [
+    {
+      "id": "NUM",
+      "title": "有理数",
+      "summary": "建立数轴、相反数、绝对值和有理数四则运算之间的联系。",
+      "requirementIds": [
+        "REQ-NUM-01",
+        "REQ-NUM-02",
+        "REQ-NUM-03"
+      ]
+    },
+    {
+      "id": "EXP",
+      "title": "整式",
+      "summary": "用字母表示数量关系，理解整式、同类项与整式加减。",
+      "requirementIds": [
+        "REQ-EXP-01",
+        "REQ-EXP-02",
+        "REQ-EXP-03"
+      ]
+    },
+    {
+      "id": "EQA",
+      "title": "一元一次方程",
+      "summary": "从等式性质到方程求解，再到用方程解决实际问题。",
+      "requirementIds": [
+        "REQ-EQA-01",
+        "REQ-EQA-02",
+        "REQ-EQA-03"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "REQ-NUM-01",
+      "topicId": "NUM",
+      "code": "NUM-01",
+      "title": "理解有理数的意义",
+      "content": "认识正数、负数和零，理解有理数在数轴上的表示。",
+      "expectation": "能根据数轴比较有理数大小，并解释相反数、绝对值的意义。",
+      "sourceRef": "开发样例·课程标准模块：数与代数",
+      "prerequisiteIds": [],
+      "nextRequirementIds": [
+        "REQ-NUM-02",
+        "REQ-NUM-03"
+      ],
+      "materialIds": [
+        "MAT-NUM-01",
+        "MAT-NUM-02"
+      ],
+      "questionIds": [
+        "Q-NUM-01",
+        "Q-NUM-02",
+        "Q-NUM-03",
+        "Q-NUM-04"
+      ],
+      "materials": [
+        {
+          "id": "MAT-NUM-01",
+          "topicId": "NUM",
+          "requirementIds": [
+            "REQ-NUM-01"
+          ],
+          "type": "course_requirement",
+          "title": "有理数与数轴：课程要求",
+          "sourceRef": "开发样例·课程标准模块",
+          "locator": "数与代数·有理数·要求 1",
+          "content": "能在具体情境中认识负数，理解有理数及其大小关系；会用数轴表示有理数。"
+        },
+        {
+          "id": "MAT-NUM-02",
+          "topicId": "NUM",
+          "requirementIds": [
+            "REQ-NUM-01"
+          ],
+          "type": "explainer",
+          "title": "为什么要从数轴理解有理数",
+          "sourceRef": "开发样例·配套学习材料",
+          "locator": "第 1 章 1.1 节，P2-4",
+          "content": "数轴把数的大小、方向和距离放在同一幅图中。原点、正方向和单位长度是数轴的三要素。"
+        }
+      ],
+      "questions": [
+        {
+          "id": "Q-NUM-01",
+          "topicId": "NUM",
+          "requirementId": "REQ-NUM-01",
+          "materialId": "MAT-NUM-01",
+          "type": "choice",
+          "difficulty": 1,
+          "stem": "下列各数中，属于负数的是（ ）",
+          "answer": "-3",
+          "concepts": [
+            "负数"
+          ]
+        },
+        {
+          "id": "Q-NUM-02",
+          "topicId": "NUM",
+          "requirementId": "REQ-NUM-01",
+          "materialId": "MAT-NUM-02",
+          "type": "choice",
+          "difficulty": 1,
+          "stem": "数轴上原点表示的数是（ ）",
+          "answer": "0",
+          "concepts": [
+            "数轴"
+          ]
+        },
+        {
+          "id": "Q-NUM-03",
+          "topicId": "NUM",
+          "requirementId": "REQ-NUM-01",
+          "materialId": "MAT-NUM-02",
+          "type": "choice",
+          "difficulty": 2,
+          "stem": "在数轴上，位于原点右侧且距离原点 4 个单位的数是（ ）",
+          "answer": "4",
+          "concepts": [
+            "数轴",
+            "正数"
+          ]
+        },
+        {
+          "id": "Q-NUM-04",
+          "topicId": "NUM",
+          "requirementId": "REQ-NUM-01",
+          "materialId": "MAT-NUM-01",
+          "type": "judgment",
+          "difficulty": 2,
+          "stem": "“所有整数都是有理数”是否正确？",
+          "answer": "正确",
+          "concepts": [
+            "有理数"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REQ-NUM-02",
+      "topicId": "NUM",
+      "code": "NUM-02",
+      "title": "数轴、相反数与绝对值",
+      "content": "用数轴、相反数和绝对值描述有理数的位置与距离。",
+      "expectation": "能在数轴上表示有理数，正确求相反数与绝对值，并进行大小比较。",
+      "sourceRef": "开发样例·课程标准模块：数与代数",
+      "prerequisiteIds": [
+        "REQ-NUM-01"
+      ],
+      "nextRequirementIds": [
+        "REQ-NUM-03"
+      ],
+      "materialIds": [
+        "MAT-NUM-03",
+        "MAT-NUM-04"
+      ],
+      "questionIds": [
+        "Q-NUM-05",
+        "Q-NUM-06",
+        "Q-NUM-07",
+        "Q-NUM-08"
+      ],
+      "materials": [
+        {
+          "id": "MAT-NUM-03",
+          "topicId": "NUM",
+          "requirementIds": [
+            "REQ-NUM-02"
+          ],
+          "type": "worked_example",
+          "title": "相反数与绝对值例析",
+          "sourceRef": "开发样例·例题材料",
+          "locator": "第 1 章 1.2 节，例 3-例 5",
+          "content": "相反数关注符号相反、距离相同；绝对值只关注到原点的距离。比较负数时，绝对值大的反而小。"
+        },
+        {
+          "id": "MAT-NUM-04",
+          "topicId": "NUM",
+          "requirementIds": [
+            "REQ-NUM-02"
+          ],
+          "type": "exercise_set",
+          "title": "数轴与绝对值基础练习",
+          "sourceRef": "开发样例·配套练习",
+          "locator": "练习 1.2，题 1-8",
+          "content": "覆盖数轴读数、相反数、绝对值和有理数大小比较。"
+        }
+      ],
+      "questions": [
+        {
+          "id": "Q-NUM-05",
+          "topicId": "NUM",
+          "requirementId": "REQ-NUM-02",
+          "materialId": "MAT-NUM-04",
+          "type": "calculation",
+          "difficulty": 1,
+          "stem": "-7 的相反数是____。",
+          "answer": "7",
+          "concepts": [
+            "相反数"
+          ]
+        },
+        {
+          "id": "Q-NUM-06",
+          "topicId": "NUM",
+          "requirementId": "REQ-NUM-02",
+          "materialId": "MAT-NUM-03",
+          "type": "calculation",
+          "difficulty": 1,
+          "stem": "|-12|=____。",
+          "answer": "12",
+          "concepts": [
+            "绝对值"
+          ]
+        },
+        {
+          "id": "Q-NUM-07",
+          "topicId": "NUM",
+          "requirementId": "REQ-NUM-02",
+          "materialId": "MAT-NUM-03",
+          "type": "choice",
+          "difficulty": 2,
+          "stem": "比较 -5 与 -2 的大小，正确的是（ ）",
+          "answer": "-5 < -2",
+          "concepts": [
+            "有理数比较",
+            "绝对值"
+          ]
+        },
+        {
+          "id": "Q-NUM-08",
+          "topicId": "NUM",
+          "requirementId": "REQ-NUM-02",
+          "materialId": "MAT-NUM-04",
+          "type": "calculation",
+          "difficulty": 2,
+          "stem": "若 |x|=6，则 x=____。",
+          "answer": "6 或 -6",
+          "concepts": [
+            "绝对值"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REQ-NUM-03",
+      "topicId": "NUM",
+      "code": "NUM-03",
+      "title": "有理数的四则运算",
+      "content": "掌握有理数加减乘除与混合运算的法则和运算顺序。",
+      "expectation": "能说明符号如何确定，按顺序完成混合运算，并检查结果的合理性。",
+      "sourceRef": "开发样例·课程标准模块：数与代数",
+      "prerequisiteIds": [
+        "REQ-NUM-02"
+      ],
+      "nextRequirementIds": [],
+      "materialIds": [
+        "MAT-NUM-05",
+        "MAT-NUM-06"
+      ],
+      "questionIds": [
+        "Q-NUM-09",
+        "Q-NUM-10",
+        "Q-NUM-11",
+        "Q-NUM-12",
+        "Q-NUM-13",
+        "Q-NUM-14",
+        "Q-NUM-15",
+        "Q-NUM-16",
+        "Q-NUM-17",
+        "Q-NUM-18",
+        "Q-NUM-19",
+        "Q-NUM-20"
+      ],
+      "materials": [
+        {
+          "id": "MAT-NUM-05",
+          "topicId": "NUM",
+          "requirementIds": [
+            "REQ-NUM-03"
+          ],
+          "type": "explainer",
+          "title": "有理数四则运算的符号规则",
+          "sourceRef": "开发样例·配套学习材料",
+          "locator": "第 1 章 1.3-1.4 节",
+          "content": "先确定符号，再处理绝对值。混合运算遵循先乘除后加减，有括号先算括号。"
+        },
+        {
+          "id": "MAT-NUM-06",
+          "topicId": "NUM",
+          "requirementIds": [
+            "REQ-NUM-03"
+          ],
+          "type": "worked_example",
+          "title": "有理数混合运算错例",
+          "sourceRef": "开发样例·错例材料",
+          "locator": "第 1 章复习，P24",
+          "content": "常见错误包括漏看负号、把减负数当作减法、先加减后乘除以及括号前负号处理错误。"
+        }
+      ],
+      "questions": [
+        {
+          "id": "Q-NUM-09",
+          "topicId": "NUM",
+          "requirementId": "REQ-NUM-03",
+          "materialId": "MAT-NUM-05",
+          "type": "calculation",
+          "difficulty": 1,
+          "stem": "(-7)+(6)=____。",
+          "answer": "-1",
+          "concepts": [
+            "有理数加法"
+          ]
+        },
+        {
+          "id": "Q-NUM-10",
+          "topicId": "NUM",
+          "requirementId": "REQ-NUM-03",
+          "materialId": "MAT-NUM-05",
+          "type": "calculation",
+          "difficulty": 1,
+          "stem": "(-3)-(3)=____。",
+          "answer": "-6",
+          "concepts": [
+            "有理数减法"
+          ]
+        },
+        {
+          "id": "Q-NUM-11",
+          "topicId": "NUM",
+          "requirementId": "REQ-NUM-03",
+          "materialId": "MAT-NUM-05",
+          "type": "calculation",
+          "difficulty": 1,
+          "stem": "(7)×(4)=____。",
+          "answer": "28",
+          "concepts": [
+            "有理数乘法"
+          ]
+        },
+        {
+          "id": "Q-NUM-12",
+          "topicId": "NUM",
+          "requirementId": "REQ-NUM-03",
+          "materialId": "MAT-NUM-05",
+          "type": "calculation",
+          "difficulty": 1,
+          "stem": "(-7)÷-1=____。",
+          "answer": "7",
+          "concepts": [
+            "有理数除法"
+          ]
+        },
+        {
+          "id": "Q-NUM-13",
+          "topicId": "NUM",
+          "requirementId": "REQ-NUM-03",
+          "materialId": "MAT-NUM-05",
+          "type": "calculation",
+          "difficulty": 2,
+          "stem": "3+(5)×2=____。",
+          "answer": "13",
+          "concepts": [
+            "混合运算",
+            "运算顺序"
+          ]
+        },
+        {
+          "id": "Q-NUM-14",
+          "topicId": "NUM",
+          "requirementId": "REQ-NUM-03",
+          "materialId": "MAT-NUM-05",
+          "type": "calculation",
+          "difficulty": 2,
+          "stem": "(-8+-7)×(5)=____。",
+          "answer": "-75",
+          "concepts": [
+            "混合运算",
+            "括号"
+          ]
+        },
+        {
+          "id": "Q-NUM-15",
+          "topicId": "NUM",
+          "requirementId": "REQ-NUM-03",
+          "materialId": "MAT-NUM-05",
+          "type": "calculation",
+          "difficulty": 2,
+          "stem": "-8+|5|=____。",
+          "answer": "-3",
+          "concepts": [
+            "绝对值",
+            "加法"
+          ]
+        },
+        {
+          "id": "Q-NUM-16",
+          "topicId": "NUM",
+          "requirementId": "REQ-NUM-03",
+          "materialId": "MAT-NUM-05",
+          "type": "calculation",
+          "difficulty": 2,
+          "stem": "(7)×(-3)+2=____。",
+          "answer": "-19",
+          "concepts": [
+            "混合运算"
+          ]
+        },
+        {
+          "id": "Q-NUM-17",
+          "topicId": "NUM",
+          "requirementId": "REQ-NUM-03",
+          "materialId": "MAT-NUM-05",
+          "type": "calculation",
+          "difficulty": 3,
+          "stem": "2-5=____。",
+          "answer": "-3",
+          "concepts": [
+            "减法"
+          ]
+        },
+        {
+          "id": "Q-NUM-18",
+          "topicId": "NUM",
+          "requirementId": "REQ-NUM-03",
+          "materialId": "MAT-NUM-05",
+          "type": "calculation",
+          "difficulty": 3,
+          "stem": "(2)÷6=____（结果用分数表示）。",
+          "answer": "2/6",
+          "concepts": [
+            "除法",
+            "分数"
+          ]
+        },
+        {
+          "id": "Q-NUM-19",
+          "topicId": "NUM",
+          "requirementId": "REQ-NUM-03",
+          "materialId": "MAT-NUM-05",
+          "type": "calculation",
+          "difficulty": 3,
+          "stem": "-(8)+(-9)-(-3)=____。",
+          "answer": "-14",
+          "concepts": [
+            "加减混合"
+          ]
+        },
+        {
+          "id": "Q-NUM-20",
+          "topicId": "NUM",
+          "requirementId": "REQ-NUM-03",
+          "materialId": "MAT-NUM-05",
+          "type": "calculation",
+          "difficulty": 3,
+          "stem": "(8)×(-5)÷(4)=____（结果用分数表示）。",
+          "answer": "-40/4",
+          "concepts": [
+            "乘除混合"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REQ-EXP-01",
+      "topicId": "EXP",
+      "code": "EXP-01",
+      "title": "用字母表示数量关系",
+      "content": "理解字母表示数，能根据文字关系列出代数式。",
+      "expectation": "能把实际情境中的数量关系准确转化为代数式，并说明每个字母的含义。",
+      "sourceRef": "开发样例·课程标准模块：代数式",
+      "prerequisiteIds": [
+        "REQ-NUM-03"
+      ],
+      "nextRequirementIds": [
+        "REQ-EXP-02",
+        "REQ-EXP-03"
+      ],
+      "materialIds": [
+        "MAT-EXP-01",
+        "MAT-EXP-02"
+      ],
+      "questionIds": [
+        "Q-EXP-01",
+        "Q-EXP-02",
+        "Q-EXP-03",
+        "Q-EXP-04"
+      ],
+      "materials": [
+        {
+          "id": "MAT-EXP-01",
+          "topicId": "EXP",
+          "requirementIds": [
+            "REQ-EXP-01"
+          ],
+          "type": "course_requirement",
+          "title": "用字母表示数：课程要求",
+          "sourceRef": "开发样例·课程标准模块",
+          "locator": "代数式·要求 1",
+          "content": "理解用字母表示数的意义，能根据数量关系列出代数式并解释字母的实际含义。"
+        },
+        {
+          "id": "MAT-EXP-02",
+          "topicId": "EXP",
+          "requirementIds": [
+            "REQ-EXP-01"
+          ],
+          "type": "worked_example",
+          "title": "从文字关系到代数式",
+          "sourceRef": "开发样例·例题材料",
+          "locator": "第 2 章 2.1 节，例 1-例 4",
+          "content": "先找数量、再找关系、最后检查单位和运算顺序。例如“比 x 的 2 倍少 3”写作 2x-3。"
+        }
+      ],
+      "questions": [
+        {
+          "id": "Q-EXP-01",
+          "topicId": "EXP",
+          "requirementId": "REQ-EXP-01",
+          "materialId": "MAT-EXP-01",
+          "type": "choice",
+          "difficulty": 1,
+          "stem": "“a 的 3 倍与 2 的差”可表示为（ ）",
+          "answer": "3a-2",
+          "concepts": [
+            "列代数式"
+          ]
+        },
+        {
+          "id": "Q-EXP-02",
+          "topicId": "EXP",
+          "requirementId": "REQ-EXP-01",
+          "materialId": "MAT-EXP-02",
+          "type": "calculation",
+          "difficulty": 1,
+          "stem": "苹果每千克 p 元，买 4 千克需要____元。",
+          "answer": "4p",
+          "concepts": [
+            "字母表示数"
+          ]
+        },
+        {
+          "id": "Q-EXP-03",
+          "topicId": "EXP",
+          "requirementId": "REQ-EXP-01",
+          "materialId": "MAT-EXP-02",
+          "type": "choice",
+          "difficulty": 2,
+          "stem": "若每支笔 x 元，买 3 支后付 20 元，应找回（ ）元。",
+          "answer": "20-3x",
+          "concepts": [
+            "列代数式"
+          ]
+        },
+        {
+          "id": "Q-EXP-04",
+          "topicId": "EXP",
+          "requirementId": "REQ-EXP-01",
+          "materialId": "MAT-EXP-01",
+          "type": "judgment",
+          "difficulty": 2,
+          "stem": "在代数式中，同一字母表示同一个数。",
+          "answer": "正确",
+          "concepts": [
+            "字母表示数"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REQ-EXP-02",
+      "topicId": "EXP",
+      "code": "EXP-02",
+      "title": "整式、单项式与多项式",
+      "content": "辨析单项式、多项式和整式，理解系数、次数与项。",
+      "expectation": "能指出单项式的系数和次数，识别多项式的项与次数。",
+      "sourceRef": "开发样例·课程标准模块：整式",
+      "prerequisiteIds": [
+        "REQ-EXP-01"
+      ],
+      "nextRequirementIds": [
+        "REQ-EXP-03"
+      ],
+      "materialIds": [
+        "MAT-EXP-03",
+        "MAT-EXP-04"
+      ],
+      "questionIds": [
+        "Q-EXP-05",
+        "Q-EXP-06",
+        "Q-EXP-07",
+        "Q-EXP-08"
+      ],
+      "materials": [
+        {
+          "id": "MAT-EXP-03",
+          "topicId": "EXP",
+          "requirementIds": [
+            "REQ-EXP-02"
+          ],
+          "type": "explainer",
+          "title": "单项式、多项式与整式",
+          "sourceRef": "开发样例·配套学习材料",
+          "locator": "第 2 章 2.2 节",
+          "content": "单项式的数字因数是系数，所有字母指数之和是次数；几个单项式的和是多项式；两者统称整式。"
+        },
+        {
+          "id": "MAT-EXP-04",
+          "topicId": "EXP",
+          "requirementIds": [
+            "REQ-EXP-02"
+          ],
+          "type": "exercise_set",
+          "title": "整式概念辨析练习",
+          "sourceRef": "开发样例·配套练习",
+          "locator": "练习 2.2，题 1-10",
+          "content": "区分整式与非整式，识别系数、次数、项和常数项。"
+        }
+      ],
+      "questions": [
+        {
+          "id": "Q-EXP-05",
+          "topicId": "EXP",
+          "requirementId": "REQ-EXP-02",
+          "materialId": "MAT-EXP-04",
+          "type": "choice",
+          "difficulty": 1,
+          "stem": "单项式 -5x²y 的系数是（ ）",
+          "answer": "-5",
+          "concepts": [
+            "单项式",
+            "系数"
+          ]
+        },
+        {
+          "id": "Q-EXP-06",
+          "topicId": "EXP",
+          "requirementId": "REQ-EXP-02",
+          "materialId": "MAT-EXP-03",
+          "type": "calculation",
+          "difficulty": 2,
+          "stem": "单项式 -5x²y 的次数是____。",
+          "answer": "3",
+          "concepts": [
+            "单项式",
+            "次数"
+          ]
+        },
+        {
+          "id": "Q-EXP-07",
+          "topicId": "EXP",
+          "requirementId": "REQ-EXP-02",
+          "materialId": "MAT-EXP-04",
+          "type": "choice",
+          "difficulty": 2,
+          "stem": "下列式子中，是多项式的是（ ）",
+          "answer": "x²-2x+1",
+          "concepts": [
+            "多项式"
+          ]
+        },
+        {
+          "id": "Q-EXP-08",
+          "topicId": "EXP",
+          "requirementId": "REQ-EXP-02",
+          "materialId": "MAT-EXP-03",
+          "type": "judgment",
+          "difficulty": 2,
+          "stem": "2x+1 的常数项是 1。",
+          "answer": "正确",
+          "concepts": [
+            "多项式",
+            "项"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REQ-EXP-03",
+      "topicId": "EXP",
+      "code": "EXP-03",
+      "title": "同类项与整式加减",
+      "content": "识别同类项，掌握合并同类项和去括号后的整式加减。",
+      "expectation": "能依据同类项定义正确合并，处理括号符号，并完成整式加减。",
+      "sourceRef": "开发样例·课程标准模块：整式",
+      "prerequisiteIds": [
+        "REQ-EXP-02"
+      ],
+      "nextRequirementIds": [],
+      "materialIds": [
+        "MAT-EXP-05",
+        "MAT-EXP-06"
+      ],
+      "questionIds": [
+        "Q-EXP-09",
+        "Q-EXP-10",
+        "Q-EXP-11",
+        "Q-EXP-12",
+        "Q-EXP-13",
+        "Q-EXP-14",
+        "Q-EXP-15",
+        "Q-EXP-16",
+        "Q-EXP-17",
+        "Q-EXP-18",
+        "Q-EXP-19",
+        "Q-EXP-20"
+      ],
+      "materials": [
+        {
+          "id": "MAT-EXP-05",
+          "topicId": "EXP",
+          "requirementIds": [
+            "REQ-EXP-03"
+          ],
+          "type": "explainer",
+          "title": "同类项与去括号",
+          "sourceRef": "开发样例·配套学习材料",
+          "locator": "第 2 章 2.3 节",
+          "content": "所含字母相同且相同字母指数也相同的是同类项。括号前是负号时，括号内各项都要变号。"
+        },
+        {
+          "id": "MAT-EXP-06",
+          "topicId": "EXP",
+          "requirementIds": [
+            "REQ-EXP-03"
+          ],
+          "type": "worked_example",
+          "title": "整式加减的分步示范",
+          "sourceRef": "开发样例·例题材料",
+          "locator": "第 2 章 2.4 节，例 6-例 9",
+          "content": "先标出同类项，再决定是否去括号，最后合并系数。每一步都保留原式，便于检查符号。"
+        }
+      ],
+      "questions": [
+        {
+          "id": "Q-EXP-09",
+          "topicId": "EXP",
+          "requirementId": "REQ-EXP-03",
+          "materialId": "MAT-EXP-05",
+          "type": "calculation",
+          "difficulty": 1,
+          "stem": "5x 与 7x 合并同类项得____。",
+          "answer": "12x",
+          "concepts": [
+            "同类项"
+          ]
+        },
+        {
+          "id": "Q-EXP-10",
+          "topicId": "EXP",
+          "requirementId": "REQ-EXP-03",
+          "materialId": "MAT-EXP-05",
+          "type": "calculation",
+          "difficulty": 1,
+          "stem": "2x² 与 2x 是同类项吗？",
+          "answer": "不是",
+          "concepts": [
+            "同类项"
+          ]
+        },
+        {
+          "id": "Q-EXP-11",
+          "topicId": "EXP",
+          "requirementId": "REQ-EXP-03",
+          "materialId": "MAT-EXP-05",
+          "type": "calculation",
+          "difficulty": 1,
+          "stem": "8a+5a=____。",
+          "answer": "13a",
+          "concepts": [
+            "合并同类项"
+          ]
+        },
+        {
+          "id": "Q-EXP-12",
+          "topicId": "EXP",
+          "requirementId": "REQ-EXP-03",
+          "materialId": "MAT-EXP-05",
+          "type": "calculation",
+          "difficulty": 1,
+          "stem": "-(2x-1)=____。",
+          "answer": "-2x+1",
+          "concepts": [
+            "去括号"
+          ]
+        },
+        {
+          "id": "Q-EXP-13",
+          "topicId": "EXP",
+          "requirementId": "REQ-EXP-03",
+          "materialId": "MAT-EXP-05",
+          "type": "calculation",
+          "difficulty": 2,
+          "stem": "5x+(2x-2)=____。",
+          "answer": "7x-2",
+          "concepts": [
+            "整式加减"
+          ]
+        },
+        {
+          "id": "Q-EXP-14",
+          "topicId": "EXP",
+          "requirementId": "REQ-EXP-03",
+          "materialId": "MAT-EXP-05",
+          "type": "calculation",
+          "difficulty": 2,
+          "stem": "8x-(5x-3)=____。",
+          "answer": "3x+3",
+          "concepts": [
+            "整式加减",
+            "去括号"
+          ]
+        },
+        {
+          "id": "Q-EXP-15",
+          "topicId": "EXP",
+          "requirementId": "REQ-EXP-03",
+          "materialId": "MAT-EXP-05",
+          "type": "calculation",
+          "difficulty": 2,
+          "stem": "2(2x+1)-3x=____。",
+          "answer": "1x+2",
+          "concepts": [
+            "整式加减"
+          ]
+        },
+        {
+          "id": "Q-EXP-16",
+          "topicId": "EXP",
+          "requirementId": "REQ-EXP-03",
+          "materialId": "MAT-EXP-05",
+          "type": "calculation",
+          "difficulty": 2,
+          "stem": "若 8x+6x=(14)x，依据是____。",
+          "answer": "合并同类项",
+          "concepts": [
+            "合并同类项"
+          ]
+        },
+        {
+          "id": "Q-EXP-17",
+          "topicId": "EXP",
+          "requirementId": "REQ-EXP-03",
+          "materialId": "MAT-EXP-05",
+          "type": "calculation",
+          "difficulty": 3,
+          "stem": "3a² 与 4a² 的和是____。",
+          "answer": "7a²",
+          "concepts": [
+            "同类项"
+          ]
+        },
+        {
+          "id": "Q-EXP-18",
+          "topicId": "EXP",
+          "requirementId": "REQ-EXP-03",
+          "materialId": "MAT-EXP-05",
+          "type": "calculation",
+          "difficulty": 3,
+          "stem": "(x+4)-(x-7)=____。",
+          "answer": "11",
+          "concepts": [
+            "整式减法"
+          ]
+        },
+        {
+          "id": "Q-EXP-19",
+          "topicId": "EXP",
+          "requirementId": "REQ-EXP-03",
+          "materialId": "MAT-EXP-05",
+          "type": "calculation",
+          "difficulty": 3,
+          "stem": "2a-3a+7a=____。",
+          "answer": "6a",
+          "concepts": [
+            "合并同类项"
+          ]
+        },
+        {
+          "id": "Q-EXP-20",
+          "topicId": "EXP",
+          "requirementId": "REQ-EXP-03",
+          "materialId": "MAT-EXP-05",
+          "type": "calculation",
+          "difficulty": 3,
+          "stem": "当 x=4 时，2x-5=____。",
+          "answer": "2*4-5",
+          "concepts": [
+            "代数式求值"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REQ-EQA-01",
+      "topicId": "EQA",
+      "code": "EQA-01",
+      "title": "等式与方程",
+      "content": "理解等式性质，区分代数式、等式和方程。",
+      "expectation": "能判断一个式子是否为方程，并依据等式性质进行等价变形。",
+      "sourceRef": "开发样例·课程标准模块：方程与不等式",
+      "prerequisiteIds": [
+        "REQ-EXP-03"
+      ],
+      "nextRequirementIds": [
+        "REQ-EQA-02",
+        "REQ-EQA-03"
+      ],
+      "materialIds": [
+        "MAT-EQA-01",
+        "MAT-EQA-02"
+      ],
+      "questionIds": [
+        "Q-EQA-01",
+        "Q-EQA-02",
+        "Q-EQA-03",
+        "Q-EQA-04"
+      ],
+      "materials": [
+        {
+          "id": "MAT-EQA-01",
+          "topicId": "EQA",
+          "requirementIds": [
+            "REQ-EQA-01"
+          ],
+          "type": "course_requirement",
+          "title": "等式与方程：课程要求",
+          "sourceRef": "开发样例·课程标准模块",
+          "locator": "方程与不等式·要求 1",
+          "content": "理解等式的基本性质，能判断方程，体会方程是刻画数量关系的模型。"
+        },
+        {
+          "id": "MAT-EQA-02",
+          "topicId": "EQA",
+          "requirementIds": [
+            "REQ-EQA-01"
+          ],
+          "type": "explainer",
+          "title": "等式性质与等价变形",
+          "sourceRef": "开发样例·配套学习材料",
+          "locator": "第 3 章 3.1 节",
+          "content": "等式两边同时加、减、乘同一个数，或除以同一个非零数，等式仍成立。"
+        }
+      ],
+      "questions": [
+        {
+          "id": "Q-EQA-01",
+          "topicId": "EQA",
+          "requirementId": "REQ-EQA-01",
+          "materialId": "MAT-EQA-01",
+          "type": "choice",
+          "difficulty": 1,
+          "stem": "下列式子中是方程的是（ ）",
+          "answer": "x+3=8",
+          "concepts": [
+            "方程"
+          ]
+        },
+        {
+          "id": "Q-EQA-02",
+          "topicId": "EQA",
+          "requirementId": "REQ-EQA-01",
+          "materialId": "MAT-EQA-02",
+          "type": "judgment",
+          "difficulty": 1,
+          "stem": "等式两边同时加同一个数，等式仍成立。",
+          "answer": "正确",
+          "concepts": [
+            "等式性质"
+          ]
+        },
+        {
+          "id": "Q-EQA-03",
+          "topicId": "EQA",
+          "requirementId": "REQ-EQA-01",
+          "materialId": "MAT-EQA-02",
+          "type": "calculation",
+          "difficulty": 2,
+          "stem": "若 x-4=3，则 x=____。",
+          "answer": "7",
+          "concepts": [
+            "等式性质"
+          ]
+        },
+        {
+          "id": "Q-EQA-04",
+          "topicId": "EQA",
+          "requirementId": "REQ-EQA-01",
+          "materialId": "MAT-EQA-01",
+          "type": "choice",
+          "difficulty": 2,
+          "stem": "方程与等式的区别是（ ）",
+          "answer": "方程必须含未知数",
+          "concepts": [
+            "方程",
+            "等式"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REQ-EQA-02",
+      "topicId": "EQA",
+      "code": "EQA-02",
+      "title": "解一元一次方程",
+      "content": "掌握移项、合并同类项、去括号和系数化为 1。",
+      "expectation": "能按等价变形步骤求解一元一次方程，并代回检验。",
+      "sourceRef": "开发样例·课程标准模块：方程与不等式",
+      "prerequisiteIds": [
+        "REQ-EQA-01"
+      ],
+      "nextRequirementIds": [
+        "REQ-EQA-03"
+      ],
+      "materialIds": [
+        "MAT-EQA-03",
+        "MAT-EQA-04"
+      ],
+      "questionIds": [
+        "Q-EQA-05",
+        "Q-EQA-06",
+        "Q-EQA-07",
+        "Q-EQA-08"
+      ],
+      "materials": [
+        {
+          "id": "MAT-EQA-03",
+          "topicId": "EQA",
+          "requirementIds": [
+            "REQ-EQA-02"
+          ],
+          "type": "worked_example",
+          "title": "解一元一次方程的标准步骤",
+          "sourceRef": "开发样例·例题材料",
+          "locator": "第 3 章 3.2 节，例 1-例 7",
+          "content": "去分母、去括号、移项、合并同类项、系数化为 1；最后把解代回原方程检验。"
+        },
+        {
+          "id": "MAT-EQA-04",
+          "topicId": "EQA",
+          "requirementIds": [
+            "REQ-EQA-02"
+          ],
+          "type": "exercise_set",
+          "title": "一元一次方程阶梯练习",
+          "sourceRef": "开发样例·配套练习",
+          "locator": "练习 3.2，题 1-15",
+          "content": "从移项到去括号，再到含分母方程，按难度递进。"
+        }
+      ],
+      "questions": [
+        {
+          "id": "Q-EQA-05",
+          "topicId": "EQA",
+          "requirementId": "REQ-EQA-02",
+          "materialId": "MAT-EQA-03",
+          "type": "calculation",
+          "difficulty": 1,
+          "stem": "解方程：x+5=12，x=____。",
+          "answer": "7",
+          "concepts": [
+            "移项"
+          ]
+        },
+        {
+          "id": "Q-EQA-06",
+          "topicId": "EQA",
+          "requirementId": "REQ-EQA-02",
+          "materialId": "MAT-EQA-04",
+          "type": "calculation",
+          "difficulty": 2,
+          "stem": "解方程：2x-3=9，x=____。",
+          "answer": "6",
+          "concepts": [
+            "移项",
+            "系数化为1"
+          ]
+        },
+        {
+          "id": "Q-EQA-07",
+          "topicId": "EQA",
+          "requirementId": "REQ-EQA-02",
+          "materialId": "MAT-EQA-03",
+          "type": "calculation",
+          "difficulty": 2,
+          "stem": "解方程：3(x-1)=12，x=____。",
+          "answer": "5",
+          "concepts": [
+            "去括号"
+          ]
+        },
+        {
+          "id": "Q-EQA-08",
+          "topicId": "EQA",
+          "requirementId": "REQ-EQA-02",
+          "materialId": "MAT-EQA-04",
+          "type": "calculation",
+          "difficulty": 3,
+          "stem": "解方程：x/2+1=4，x=____。",
+          "answer": "6",
+          "concepts": [
+            "去分母"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REQ-EQA-03",
+      "topicId": "EQA",
+      "code": "EQA-03",
+      "title": "一元一次方程的应用",
+      "content": "从实际问题中提炼未知量和等量关系，建立并解释方程。",
+      "expectation": "能说明未知量、等量关系和求解结果的实际意义。",
+      "sourceRef": "开发样例·课程标准模块：方程与不等式",
+      "prerequisiteIds": [
+        "REQ-EQA-02"
+      ],
+      "nextRequirementIds": [],
+      "materialIds": [
+        "MAT-EQA-05",
+        "MAT-EQA-06"
+      ],
+      "questionIds": [
+        "Q-EQA-09",
+        "Q-EQA-10",
+        "Q-EQA-11",
+        "Q-EQA-12",
+        "Q-EQA-13",
+        "Q-EQA-14",
+        "Q-EQA-15",
+        "Q-EQA-16",
+        "Q-EQA-17",
+        "Q-EQA-18",
+        "Q-EQA-19",
+        "Q-EQA-20"
+      ],
+      "materials": [
+        {
+          "id": "MAT-EQA-05",
+          "topicId": "EQA",
+          "requirementIds": [
+            "REQ-EQA-03"
+          ],
+          "type": "explainer",
+          "title": "列方程找等量关系",
+          "sourceRef": "开发样例·配套学习材料",
+          "locator": "第 3 章 3.3 节",
+          "content": "先设未知数，再用同一件事的两种表达建立等式。关键是让等号两边单位一致、含义相同。"
+        },
+        {
+          "id": "MAT-EQA-06",
+          "topicId": "EQA",
+          "requirementIds": [
+            "REQ-EQA-03"
+          ],
+          "type": "worked_example",
+          "title": "行程与分配问题建模",
+          "sourceRef": "开发样例·例题材料",
+          "locator": "第 3 章 3.4 节，例 8-例 12",
+          "content": "行程问题围绕路程、速度和时间建立关系；分配问题围绕总量守恒建立关系。"
+        }
+      ],
+      "questions": [
+        {
+          "id": "Q-EQA-09",
+          "topicId": "EQA",
+          "requirementId": "REQ-EQA-03",
+          "materialId": "MAT-EQA-05",
+          "type": "application",
+          "difficulty": 1,
+          "stem": "某数的 4 倍加 3 等于 39，这个数是____。",
+          "answer": "9",
+          "concepts": [
+            "列方程"
+          ]
+        },
+        {
+          "id": "Q-EQA-10",
+          "topicId": "EQA",
+          "requirementId": "REQ-EQA-03",
+          "materialId": "MAT-EQA-05",
+          "type": "application",
+          "difficulty": 1,
+          "stem": "小明有 x 元，买书花去 12 元后还剩 5 元，列方程为____。",
+          "answer": "x-12=5",
+          "concepts": [
+            "等量关系"
+          ]
+        },
+        {
+          "id": "Q-EQA-11",
+          "topicId": "EQA",
+          "requirementId": "REQ-EQA-03",
+          "materialId": "MAT-EQA-05",
+          "type": "application",
+          "difficulty": 1,
+          "stem": "一根绳子剪去 10 米后还剩 8 米，原长 x=____。",
+          "answer": "18",
+          "concepts": [
+            "方程应用"
+          ]
+        },
+        {
+          "id": "Q-EQA-12",
+          "topicId": "EQA",
+          "requirementId": "REQ-EQA-03",
+          "materialId": "MAT-EQA-05",
+          "type": "application",
+          "difficulty": 1,
+          "stem": "甲速 6 千米/时，2 小时行____千米。",
+          "answer": "12",
+          "concepts": [
+            "行程问题"
+          ]
+        },
+        {
+          "id": "Q-EQA-13",
+          "topicId": "EQA",
+          "requirementId": "REQ-EQA-03",
+          "materialId": "MAT-EQA-05",
+          "type": "application",
+          "difficulty": 2,
+          "stem": "路程 30 千米，速度 x 千米/时，3 小时到达，列方程为____。",
+          "answer": "3x=30",
+          "concepts": [
+            "行程问题"
+          ]
+        },
+        {
+          "id": "Q-EQA-14",
+          "topicId": "EQA",
+          "requirementId": "REQ-EQA-03",
+          "materialId": "MAT-EQA-05",
+          "type": "application",
+          "difficulty": 2,
+          "stem": "某数的 2 倍少 7 等于 8，这个数是____。",
+          "answer": "7.5",
+          "concepts": [
+            "方程应用"
+          ]
+        },
+        {
+          "id": "Q-EQA-15",
+          "topicId": "EQA",
+          "requirementId": "REQ-EQA-03",
+          "materialId": "MAT-EQA-05",
+          "type": "application",
+          "difficulty": 2,
+          "stem": "x 的 5 倍与 4 的差为 0，则 x=____。",
+          "answer": "0.8",
+          "concepts": [
+            "方程应用"
+          ]
+        },
+        {
+          "id": "Q-EQA-16",
+          "topicId": "EQA",
+          "requirementId": "REQ-EQA-03",
+          "materialId": "MAT-EQA-05",
+          "type": "application",
+          "difficulty": 2,
+          "stem": "3 件同样商品共 40 元，每件 x 元，列方程为____。",
+          "answer": "3x=40",
+          "concepts": [
+            "等量关系"
+          ]
+        },
+        {
+          "id": "Q-EQA-17",
+          "topicId": "EQA",
+          "requirementId": "REQ-EQA-03",
+          "materialId": "MAT-EQA-05",
+          "type": "application",
+          "difficulty": 3,
+          "stem": "一个长方形长 4，宽 x，周长 20，列方程为____。",
+          "answer": "2(4+x)=20",
+          "concepts": [
+            "几何建模"
+          ]
+        },
+        {
+          "id": "Q-EQA-18",
+          "topicId": "EQA",
+          "requirementId": "REQ-EQA-03",
+          "materialId": "MAT-EQA-05",
+          "type": "application",
+          "difficulty": 3,
+          "stem": "某数加上 4 再乘 2 得 16，这个数是____。",
+          "answer": "4",
+          "concepts": [
+            "列方程"
+          ]
+        },
+        {
+          "id": "Q-EQA-19",
+          "topicId": "EQA",
+          "requirementId": "REQ-EQA-03",
+          "materialId": "MAT-EQA-05",
+          "type": "application",
+          "difficulty": 3,
+          "stem": "x 的 3 倍等于 24，x=____。",
+          "answer": "8",
+          "concepts": [
+            "解方程"
+          ]
+        },
+        {
+          "id": "Q-EQA-20",
+          "topicId": "EQA",
+          "requirementId": "REQ-EQA-03",
+          "materialId": "MAT-EQA-05",
+          "type": "application",
+          "difficulty": 3,
+          "stem": "若 5x+3=18，则 x=____。",
+          "answer": "3",
+          "concepts": [
+            "解方程"
+          ]
+        }
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "id": "MAT-NUM-01",
+      "topicId": "NUM",
+      "requirementIds": [
+        "REQ-NUM-01"
+      ],
+      "type": "course_requirement",
+      "title": "有理数与数轴：课程要求",
+      "sourceRef": "开发样例·课程标准模块",
+      "locator": "数与代数·有理数·要求 1",
+      "content": "能在具体情境中认识负数，理解有理数及其大小关系；会用数轴表示有理数。"
+    },
+    {
+      "id": "MAT-NUM-02",
+      "topicId": "NUM",
+      "requirementIds": [
+        "REQ-NUM-01"
+      ],
+      "type": "explainer",
+      "title": "为什么要从数轴理解有理数",
+      "sourceRef": "开发样例·配套学习材料",
+      "locator": "第 1 章 1.1 节，P2-4",
+      "content": "数轴把数的大小、方向和距离放在同一幅图中。原点、正方向和单位长度是数轴的三要素。"
+    },
+    {
+      "id": "MAT-NUM-03",
+      "topicId": "NUM",
+      "requirementIds": [
+        "REQ-NUM-02"
+      ],
+      "type": "worked_example",
+      "title": "相反数与绝对值例析",
+      "sourceRef": "开发样例·例题材料",
+      "locator": "第 1 章 1.2 节，例 3-例 5",
+      "content": "相反数关注符号相反、距离相同；绝对值只关注到原点的距离。比较负数时，绝对值大的反而小。"
+    },
+    {
+      "id": "MAT-NUM-04",
+      "topicId": "NUM",
+      "requirementIds": [
+        "REQ-NUM-02"
+      ],
+      "type": "exercise_set",
+      "title": "数轴与绝对值基础练习",
+      "sourceRef": "开发样例·配套练习",
+      "locator": "练习 1.2，题 1-8",
+      "content": "覆盖数轴读数、相反数、绝对值和有理数大小比较。"
+    },
+    {
+      "id": "MAT-NUM-05",
+      "topicId": "NUM",
+      "requirementIds": [
+        "REQ-NUM-03"
+      ],
+      "type": "explainer",
+      "title": "有理数四则运算的符号规则",
+      "sourceRef": "开发样例·配套学习材料",
+      "locator": "第 1 章 1.3-1.4 节",
+      "content": "先确定符号，再处理绝对值。混合运算遵循先乘除后加减，有括号先算括号。"
+    },
+    {
+      "id": "MAT-NUM-06",
+      "topicId": "NUM",
+      "requirementIds": [
+        "REQ-NUM-03"
+      ],
+      "type": "worked_example",
+      "title": "有理数混合运算错例",
+      "sourceRef": "开发样例·错例材料",
+      "locator": "第 1 章复习，P24",
+      "content": "常见错误包括漏看负号、把减负数当作减法、先加减后乘除以及括号前负号处理错误。"
+    },
+    {
+      "id": "MAT-EXP-01",
+      "topicId": "EXP",
+      "requirementIds": [
+        "REQ-EXP-01"
+      ],
+      "type": "course_requirement",
+      "title": "用字母表示数：课程要求",
+      "sourceRef": "开发样例·课程标准模块",
+      "locator": "代数式·要求 1",
+      "content": "理解用字母表示数的意义，能根据数量关系列出代数式并解释字母的实际含义。"
+    },
+    {
+      "id": "MAT-EXP-02",
+      "topicId": "EXP",
+      "requirementIds": [
+        "REQ-EXP-01"
+      ],
+      "type": "worked_example",
+      "title": "从文字关系到代数式",
+      "sourceRef": "开发样例·例题材料",
+      "locator": "第 2 章 2.1 节，例 1-例 4",
+      "content": "先找数量、再找关系、最后检查单位和运算顺序。例如“比 x 的 2 倍少 3”写作 2x-3。"
+    },
+    {
+      "id": "MAT-EXP-03",
+      "topicId": "EXP",
+      "requirementIds": [
+        "REQ-EXP-02"
+      ],
+      "type": "explainer",
+      "title": "单项式、多项式与整式",
+      "sourceRef": "开发样例·配套学习材料",
+      "locator": "第 2 章 2.2 节",
+      "content": "单项式的数字因数是系数，所有字母指数之和是次数；几个单项式的和是多项式；两者统称整式。"
+    },
+    {
+      "id": "MAT-EXP-04",
+      "topicId": "EXP",
+      "requirementIds": [
+        "REQ-EXP-02"
+      ],
+      "type": "exercise_set",
+      "title": "整式概念辨析练习",
+      "sourceRef": "开发样例·配套练习",
+      "locator": "练习 2.2，题 1-10",
+      "content": "区分整式与非整式，识别系数、次数、项和常数项。"
+    },
+    {
+      "id": "MAT-EXP-05",
+      "topicId": "EXP",
+      "requirementIds": [
+        "REQ-EXP-03"
+      ],
+      "type": "explainer",
+      "title": "同类项与去括号",
+      "sourceRef": "开发样例·配套学习材料",
+      "locator": "第 2 章 2.3 节",
+      "content": "所含字母相同且相同字母指数也相同的是同类项。括号前是负号时，括号内各项都要变号。"
+    },
+    {
+      "id": "MAT-EXP-06",
+      "topicId": "EXP",
+      "requirementIds": [
+        "REQ-EXP-03"
+      ],
+      "type": "worked_example",
+      "title": "整式加减的分步示范",
+      "sourceRef": "开发样例·例题材料",
+      "locator": "第 2 章 2.4 节，例 6-例 9",
+      "content": "先标出同类项，再决定是否去括号，最后合并系数。每一步都保留原式，便于检查符号。"
+    },
+    {
+      "id": "MAT-EQA-01",
+      "topicId": "EQA",
+      "requirementIds": [
+        "REQ-EQA-01"
+      ],
+      "type": "course_requirement",
+      "title": "等式与方程：课程要求",
+      "sourceRef": "开发样例·课程标准模块",
+      "locator": "方程与不等式·要求 1",
+      "content": "理解等式的基本性质，能判断方程，体会方程是刻画数量关系的模型。"
+    },
+    {
+      "id": "MAT-EQA-02",
+      "topicId": "EQA",
+      "requirementIds": [
+        "REQ-EQA-01"
+      ],
+      "type": "explainer",
+      "title": "等式性质与等价变形",
+      "sourceRef": "开发样例·配套学习材料",
+      "locator": "第 3 章 3.1 节",
+      "content": "等式两边同时加、减、乘同一个数，或除以同一个非零数，等式仍成立。"
+    },
+    {
+      "id": "MAT-EQA-03",
+      "topicId": "EQA",
+      "requirementIds": [
+        "REQ-EQA-02"
+      ],
+      "type": "worked_example",
+      "title": "解一元一次方程的标准步骤",
+      "sourceRef": "开发样例·例题材料",
+      "locator": "第 3 章 3.2 节，例 1-例 7",
+      "content": "去分母、去括号、移项、合并同类项、系数化为 1；最后把解代回原方程检验。"
+    },
+    {
+      "id": "MAT-EQA-04",
+      "topicId": "EQA",
+      "requirementIds": [
+        "REQ-EQA-02"
+      ],
+      "type": "exercise_set",
+      "title": "一元一次方程阶梯练习",
+      "sourceRef": "开发样例·配套练习",
+      "locator": "练习 3.2，题 1-15",
+      "content": "从移项到去括号，再到含分母方程，按难度递进。"
+    },
+    {
+      "id": "MAT-EQA-05",
+      "topicId": "EQA",
+      "requirementIds": [
+        "REQ-EQA-03"
+      ],
+      "type": "explainer",
+      "title": "列方程找等量关系",
+      "sourceRef": "开发样例·配套学习材料",
+      "locator": "第 3 章 3.3 节",
+      "content": "先设未知数，再用同一件事的两种表达建立等式。关键是让等号两边单位一致、含义相同。"
+    },
+    {
+      "id": "MAT-EQA-06",
+      "topicId": "EQA",
+      "requirementIds": [
+        "REQ-EQA-03"
+      ],
+      "type": "worked_example",
+      "title": "行程与分配问题建模",
+      "sourceRef": "开发样例·例题材料",
+      "locator": "第 3 章 3.4 节，例 8-例 12",
+      "content": "行程问题围绕路程、速度和时间建立关系；分配问题围绕总量守恒建立关系。"
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q-NUM-01",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-01",
+      "materialId": "MAT-NUM-01",
+      "type": "choice",
+      "difficulty": 1,
+      "stem": "下列各数中，属于负数的是（ ）",
+      "answer": "-3",
+      "concepts": [
+        "负数"
+      ]
+    },
+    {
+      "id": "Q-NUM-02",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-01",
+      "materialId": "MAT-NUM-02",
+      "type": "choice",
+      "difficulty": 1,
+      "stem": "数轴上原点表示的数是（ ）",
+      "answer": "0",
+      "concepts": [
+        "数轴"
+      ]
+    },
+    {
+      "id": "Q-NUM-03",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-01",
+      "materialId": "MAT-NUM-02",
+      "type": "choice",
+      "difficulty": 2,
+      "stem": "在数轴上，位于原点右侧且距离原点 4 个单位的数是（ ）",
+      "answer": "4",
+      "concepts": [
+        "数轴",
+        "正数"
+      ]
+    },
+    {
+      "id": "Q-NUM-04",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-01",
+      "materialId": "MAT-NUM-01",
+      "type": "judgment",
+      "difficulty": 2,
+      "stem": "“所有整数都是有理数”是否正确？",
+      "answer": "正确",
+      "concepts": [
+        "有理数"
+      ]
+    },
+    {
+      "id": "Q-NUM-05",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-02",
+      "materialId": "MAT-NUM-04",
+      "type": "calculation",
+      "difficulty": 1,
+      "stem": "-7 的相反数是____。",
+      "answer": "7",
+      "concepts": [
+        "相反数"
+      ]
+    },
+    {
+      "id": "Q-NUM-06",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-02",
+      "materialId": "MAT-NUM-03",
+      "type": "calculation",
+      "difficulty": 1,
+      "stem": "|-12|=____。",
+      "answer": "12",
+      "concepts": [
+        "绝对值"
+      ]
+    },
+    {
+      "id": "Q-NUM-07",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-02",
+      "materialId": "MAT-NUM-03",
+      "type": "choice",
+      "difficulty": 2,
+      "stem": "比较 -5 与 -2 的大小，正确的是（ ）",
+      "answer": "-5 < -2",
+      "concepts": [
+        "有理数比较",
+        "绝对值"
+      ]
+    },
+    {
+      "id": "Q-NUM-08",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-02",
+      "materialId": "MAT-NUM-04",
+      "type": "calculation",
+      "difficulty": 2,
+      "stem": "若 |x|=6，则 x=____。",
+      "answer": "6 或 -6",
+      "concepts": [
+        "绝对值"
+      ]
+    },
+    {
+      "id": "Q-NUM-09",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-03",
+      "materialId": "MAT-NUM-05",
+      "type": "calculation",
+      "difficulty": 1,
+      "stem": "(-7)+(6)=____。",
+      "answer": "-1",
+      "concepts": [
+        "有理数加法"
+      ]
+    },
+    {
+      "id": "Q-NUM-10",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-03",
+      "materialId": "MAT-NUM-05",
+      "type": "calculation",
+      "difficulty": 1,
+      "stem": "(-3)-(3)=____。",
+      "answer": "-6",
+      "concepts": [
+        "有理数减法"
+      ]
+    },
+    {
+      "id": "Q-NUM-11",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-03",
+      "materialId": "MAT-NUM-05",
+      "type": "calculation",
+      "difficulty": 1,
+      "stem": "(7)×(4)=____。",
+      "answer": "28",
+      "concepts": [
+        "有理数乘法"
+      ]
+    },
+    {
+      "id": "Q-NUM-12",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-03",
+      "materialId": "MAT-NUM-05",
+      "type": "calculation",
+      "difficulty": 1,
+      "stem": "(-7)÷-1=____。",
+      "answer": "7",
+      "concepts": [
+        "有理数除法"
+      ]
+    },
+    {
+      "id": "Q-NUM-13",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-03",
+      "materialId": "MAT-NUM-05",
+      "type": "calculation",
+      "difficulty": 2,
+      "stem": "3+(5)×2=____。",
+      "answer": "13",
+      "concepts": [
+        "混合运算",
+        "运算顺序"
+      ]
+    },
+    {
+      "id": "Q-NUM-14",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-03",
+      "materialId": "MAT-NUM-05",
+      "type": "calculation",
+      "difficulty": 2,
+      "stem": "(-8+-7)×(5)=____。",
+      "answer": "-75",
+      "concepts": [
+        "混合运算",
+        "括号"
+      ]
+    },
+    {
+      "id": "Q-NUM-15",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-03",
+      "materialId": "MAT-NUM-05",
+      "type": "calculation",
+      "difficulty": 2,
+      "stem": "-8+|5|=____。",
+      "answer": "-3",
+      "concepts": [
+        "绝对值",
+        "加法"
+      ]
+    },
+    {
+      "id": "Q-NUM-16",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-03",
+      "materialId": "MAT-NUM-05",
+      "type": "calculation",
+      "difficulty": 2,
+      "stem": "(7)×(-3)+2=____。",
+      "answer": "-19",
+      "concepts": [
+        "混合运算"
+      ]
+    },
+    {
+      "id": "Q-NUM-17",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-03",
+      "materialId": "MAT-NUM-05",
+      "type": "calculation",
+      "difficulty": 3,
+      "stem": "2-5=____。",
+      "answer": "-3",
+      "concepts": [
+        "减法"
+      ]
+    },
+    {
+      "id": "Q-NUM-18",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-03",
+      "materialId": "MAT-NUM-05",
+      "type": "calculation",
+      "difficulty": 3,
+      "stem": "(2)÷6=____（结果用分数表示）。",
+      "answer": "2/6",
+      "concepts": [
+        "除法",
+        "分数"
+      ]
+    },
+    {
+      "id": "Q-NUM-19",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-03",
+      "materialId": "MAT-NUM-05",
+      "type": "calculation",
+      "difficulty": 3,
+      "stem": "-(8)+(-9)-(-3)=____。",
+      "answer": "-14",
+      "concepts": [
+        "加减混合"
+      ]
+    },
+    {
+      "id": "Q-NUM-20",
+      "topicId": "NUM",
+      "requirementId": "REQ-NUM-03",
+      "materialId": "MAT-NUM-05",
+      "type": "calculation",
+      "difficulty": 3,
+      "stem": "(8)×(-5)÷(4)=____（结果用分数表示）。",
+      "answer": "-40/4",
+      "concepts": [
+        "乘除混合"
+      ]
+    },
+    {
+      "id": "Q-EXP-01",
+      "topicId": "EXP",
+      "requirementId": "REQ-EXP-01",
+      "materialId": "MAT-EXP-01",
+      "type": "choice",
+      "difficulty": 1,
+      "stem": "“a 的 3 倍与 2 的差”可表示为（ ）",
+      "answer": "3a-2",
+      "concepts": [
+        "列代数式"
+      ]
+    },
+    {
+      "id": "Q-EXP-02",
+      "topicId": "EXP",
+      "requirementId": "REQ-EXP-01",
+      "materialId": "MAT-EXP-02",
+      "type": "calculation",
+      "difficulty": 1,
+      "stem": "苹果每千克 p 元，买 4 千克需要____元。",
+      "answer": "4p",
+      "concepts": [
+        "字母表示数"
+      ]
+    },
+    {
+      "id": "Q-EXP-03",
+      "topicId": "EXP",
+      "requirementId": "REQ-EXP-01",
+      "materialId": "MAT-EXP-02",
+      "type": "choice",
+      "difficulty": 2,
+      "stem": "若每支笔 x 元，买 3 支后付 20 元，应找回（ ）元。",
+      "answer": "20-3x",
+      "concepts": [
+        "列代数式"
+      ]
+    },
+    {
+      "id": "Q-EXP-04",
+      "topicId": "EXP",
+      "requirementId": "REQ-EXP-01",
+      "materialId": "MAT-EXP-01",
+      "type": "judgment",
+      "difficulty": 2,
+      "stem": "在代数式中，同一字母表示同一个数。",
+      "answer": "正确",
+      "concepts": [
+        "字母表示数"
+      ]
+    },
+    {
+      "id": "Q-EXP-05",
+      "topicId": "EXP",
+      "requirementId": "REQ-EXP-02",
+      "materialId": "MAT-EXP-04",
+      "type": "choice",
+      "difficulty": 1,
+      "stem": "单项式 -5x²y 的系数是（ ）",
+      "answer": "-5",
+      "concepts": [
+        "单项式",
+        "系数"
+      ]
+    },
+    {
+      "id": "Q-EXP-06",
+      "topicId": "EXP",
+      "requirementId": "REQ-EXP-02",
+      "materialId": "MAT-EXP-03",
+      "type": "calculation",
+      "difficulty": 2,
+      "stem": "单项式 -5x²y 的次数是____。",
+      "answer": "3",
+      "concepts": [
+        "单项式",
+        "次数"
+      ]
+    },
+    {
+      "id": "Q-EXP-07",
+      "topicId": "EXP",
+      "requirementId": "REQ-EXP-02",
+      "materialId": "MAT-EXP-04",
+      "type": "choice",
+      "difficulty": 2,
+      "stem": "下列式子中，是多项式的是（ ）",
+      "answer": "x²-2x+1",
+      "concepts": [
+        "多项式"
+      ]
+    },
+    {
+      "id": "Q-EXP-08",
+      "topicId": "EXP",
+      "requirementId": "REQ-EXP-02",
+      "materialId": "MAT-EXP-03",
+      "type": "judgment",
+      "difficulty": 2,
+      "stem": "2x+1 的常数项是 1。",
+      "answer": "正确",
+      "concepts": [
+        "多项式",
+        "项"
+      ]
+    },
+    {
+      "id": "Q-EXP-09",
+      "topicId": "EXP",
+      "requirementId": "REQ-EXP-03",
+      "materialId": "MAT-EXP-05",
+      "type": "calculation",
+      "difficulty": 1,
+      "stem": "5x 与 7x 合并同类项得____。",
+      "answer": "12x",
+      "concepts": [
+        "同类项"
+      ]
+    },
+    {
+      "id": "Q-EXP-10",
+      "topicId": "EXP",
+      "requirementId": "REQ-EXP-03",
+      "materialId": "MAT-EXP-05",
+      "type": "calculation",
+      "difficulty": 1,
+      "stem": "2x² 与 2x 是同类项吗？",
+      "answer": "不是",
+      "concepts": [
+        "同类项"
+      ]
+    },
+    {
+      "id": "Q-EXP-11",
+      "topicId": "EXP",
+      "requirementId": "REQ-EXP-03",
+      "materialId": "MAT-EXP-05",
+      "type": "calculation",
+      "difficulty": 1,
+      "stem": "8a+5a=____。",
+      "answer": "13a",
+      "concepts": [
+        "合并同类项"
+      ]
+    },
+    {
+      "id": "Q-EXP-12",
+      "topicId": "EXP",
+      "requirementId": "REQ-EXP-03",
+      "materialId": "MAT-EXP-05",
+      "type": "calculation",
+      "difficulty": 1,
+      "stem": "-(2x-1)=____。",
+      "answer": "-2x+1",
+      "concepts": [
+        "去括号"
+      ]
+    },
+    {
+      "id": "Q-EXP-13",
+      "topicId": "EXP",
+      "requirementId": "REQ-EXP-03",
+      "materialId": "MAT-EXP-05",
+      "type": "calculation",
+      "difficulty": 2,
+      "stem": "5x+(2x-2)=____。",
+      "answer": "7x-2",
+      "concepts": [
+        "整式加减"
+      ]
+    },
+    {
+      "id": "Q-EXP-14",
+      "topicId": "EXP",
+      "requirementId": "REQ-EXP-03",
+      "materialId": "MAT-EXP-05",
+      "type": "calculation",
+      "difficulty": 2,
+      "stem": "8x-(5x-3)=____。",
+      "answer": "3x+3",
+      "concepts": [
+        "整式加减",
+        "去括号"
+      ]
+    },
+    {
+      "id": "Q-EXP-15",
+      "topicId": "EXP",
+      "requirementId": "REQ-EXP-03",
+      "materialId": "MAT-EXP-05",
+      "type": "calculation",
+      "difficulty": 2,
+      "stem": "2(2x+1)-3x=____。",
+      "answer": "1x+2",
+      "concepts": [
+        "整式加减"
+      ]
+    },
+    {
+      "id": "Q-EXP-16",
+      "topicId": "EXP",
+      "requirementId": "REQ-EXP-03",
+      "materialId": "MAT-EXP-05",
+      "type": "calculation",
+      "difficulty": 2,
+      "stem": "若 8x+6x=(14)x，依据是____。",
+      "answer": "合并同类项",
+      "concepts": [
+        "合并同类项"
+      ]
+    },
+    {
+      "id": "Q-EXP-17",
+      "topicId": "EXP",
+      "requirementId": "REQ-EXP-03",
+      "materialId": "MAT-EXP-05",
+      "type": "calculation",
+      "difficulty": 3,
+      "stem": "3a² 与 4a² 的和是____。",
+      "answer": "7a²",
+      "concepts": [
+        "同类项"
+      ]
+    },
+    {
+      "id": "Q-EXP-18",
+      "topicId": "EXP",
+      "requirementId": "REQ-EXP-03",
+      "materialId": "MAT-EXP-05",
+      "type": "calculation",
+      "difficulty": 3,
+      "stem": "(x+4)-(x-7)=____。",
+      "answer": "11",
+      "concepts": [
+        "整式减法"
+      ]
+    },
+    {
+      "id": "Q-EXP-19",
+      "topicId": "EXP",
+      "requirementId": "REQ-EXP-03",
+      "materialId": "MAT-EXP-05",
+      "type": "calculation",
+      "difficulty": 3,
+      "stem": "2a-3a+7a=____。",
+      "answer": "6a",
+      "concepts": [
+        "合并同类项"
+      ]
+    },
+    {
+      "id": "Q-EXP-20",
+      "topicId": "EXP",
+      "requirementId": "REQ-EXP-03",
+      "materialId": "MAT-EXP-05",
+      "type": "calculation",
+      "difficulty": 3,
+      "stem": "当 x=4 时，2x-5=____。",
+      "answer": "2*4-5",
+      "concepts": [
+        "代数式求值"
+      ]
+    },
+    {
+      "id": "Q-EQA-01",
+      "topicId": "EQA",
+      "requirementId": "REQ-EQA-01",
+      "materialId": "MAT-EQA-01",
+      "type": "choice",
+      "difficulty": 1,
+      "stem": "下列式子中是方程的是（ ）",
+      "answer": "x+3=8",
+      "concepts": [
+        "方程"
+      ]
+    },
+    {
+      "id": "Q-EQA-02",
+      "topicId": "EQA",
+      "requirementId": "REQ-EQA-01",
+      "materialId": "MAT-EQA-02",
+      "type": "judgment",
+      "difficulty": 1,
+      "stem": "等式两边同时加同一个数，等式仍成立。",
+      "answer": "正确",
+      "concepts": [
+        "等式性质"
+      ]
+    },
+    {
+      "id": "Q-EQA-03",
+      "topicId": "EQA",
+      "requirementId": "REQ-EQA-01",
+      "materialId": "MAT-EQA-02",
+      "type": "calculation",
+      "difficulty": 2,
+      "stem": "若 x-4=3，则 x=____。",
+      "answer": "7",
+      "concepts": [
+        "等式性质"
+      ]
+    },
+    {
+      "id": "Q-EQA-04",
+      "topicId": "EQA",
+      "requirementId": "REQ-EQA-01",
+      "materialId": "MAT-EQA-01",
+      "type": "choice",
+      "difficulty": 2,
+      "stem": "方程与等式的区别是（ ）",
+      "answer": "方程必须含未知数",
+      "concepts": [
+        "方程",
+        "等式"
+      ]
+    },
+    {
+      "id": "Q-EQA-05",
+      "topicId": "EQA",
+      "requirementId": "REQ-EQA-02",
+      "materialId": "MAT-EQA-03",
+      "type": "calculation",
+      "difficulty": 1,
+      "stem": "解方程：x+5=12，x=____。",
+      "answer": "7",
+      "concepts": [
+        "移项"
+      ]
+    },
+    {
+      "id": "Q-EQA-06",
+      "topicId": "EQA",
+      "requirementId": "REQ-EQA-02",
+      "materialId": "MAT-EQA-04",
+      "type": "calculation",
+      "difficulty": 2,
+      "stem": "解方程：2x-3=9，x=____。",
+      "answer": "6",
+      "concepts": [
+        "移项",
+        "系数化为1"
+      ]
+    },
+    {
+      "id": "Q-EQA-07",
+      "topicId": "EQA",
+      "requirementId": "REQ-EQA-02",
+      "materialId": "MAT-EQA-03",
+      "type": "calculation",
+      "difficulty": 2,
+      "stem": "解方程：3(x-1)=12，x=____。",
+      "answer": "5",
+      "concepts": [
+        "去括号"
+      ]
+    },
+    {
+      "id": "Q-EQA-08",
+      "topicId": "EQA",
+      "requirementId": "REQ-EQA-02",
+      "materialId": "MAT-EQA-04",
+      "type": "calculation",
+      "difficulty": 3,
+      "stem": "解方程：x/2+1=4，x=____。",
+      "answer": "6",
+      "concepts": [
+        "去分母"
+      ]
+    },
+    {
+      "id": "Q-EQA-09",
+      "topicId": "EQA",
+      "requirementId": "REQ-EQA-03",
+      "materialId": "MAT-EQA-05",
+      "type": "application",
+      "difficulty": 1,
+      "stem": "某数的 4 倍加 3 等于 39，这个数是____。",
+      "answer": "9",
+      "concepts": [
+        "列方程"
+      ]
+    },
+    {
+      "id": "Q-EQA-10",
+      "topicId": "EQA",
+      "requirementId": "REQ-EQA-03",
+      "materialId": "MAT-EQA-05",
+      "type": "application",
+      "difficulty": 1,
+      "stem": "小明有 x 元，买书花去 12 元后还剩 5 元，列方程为____。",
+      "answer": "x-12=5",
+      "concepts": [
+        "等量关系"
+      ]
+    },
+    {
+      "id": "Q-EQA-11",
+      "topicId": "EQA",
+      "requirementId": "REQ-EQA-03",
+      "materialId": "MAT-EQA-05",
+      "type": "application",
+      "difficulty": 1,
+      "stem": "一根绳子剪去 10 米后还剩 8 米，原长 x=____。",
+      "answer": "18",
+      "concepts": [
+        "方程应用"
+      ]
+    },
+    {
+      "id": "Q-EQA-12",
+      "topicId": "EQA",
+      "requirementId": "REQ-EQA-03",
+      "materialId": "MAT-EQA-05",
+      "type": "application",
+      "difficulty": 1,
+      "stem": "甲速 6 千米/时，2 小时行____千米。",
+      "answer": "12",
+      "concepts": [
+        "行程问题"
+      ]
+    },
+    {
+      "id": "Q-EQA-13",
+      "topicId": "EQA",
+      "requirementId": "REQ-EQA-03",
+      "materialId": "MAT-EQA-05",
+      "type": "application",
+      "difficulty": 2,
+      "stem": "路程 30 千米，速度 x 千米/时，3 小时到达，列方程为____。",
+      "answer": "3x=30",
+      "concepts": [
+        "行程问题"
+      ]
+    },
+    {
+      "id": "Q-EQA-14",
+      "topicId": "EQA",
+      "requirementId": "REQ-EQA-03",
+      "materialId": "MAT-EQA-05",
+      "type": "application",
+      "difficulty": 2,
+      "stem": "某数的 2 倍少 7 等于 8，这个数是____。",
+      "answer": "7.5",
+      "concepts": [
+        "方程应用"
+      ]
+    },
+    {
+      "id": "Q-EQA-15",
+      "topicId": "EQA",
+      "requirementId": "REQ-EQA-03",
+      "materialId": "MAT-EQA-05",
+      "type": "application",
+      "difficulty": 2,
+      "stem": "x 的 5 倍与 4 的差为 0，则 x=____。",
+      "answer": "0.8",
+      "concepts": [
+        "方程应用"
+      ]
+    },
+    {
+      "id": "Q-EQA-16",
+      "topicId": "EQA",
+      "requirementId": "REQ-EQA-03",
+      "materialId": "MAT-EQA-05",
+      "type": "application",
+      "difficulty": 2,
+      "stem": "3 件同样商品共 40 元，每件 x 元，列方程为____。",
+      "answer": "3x=40",
+      "concepts": [
+        "等量关系"
+      ]
+    },
+    {
+      "id": "Q-EQA-17",
+      "topicId": "EQA",
+      "requirementId": "REQ-EQA-03",
+      "materialId": "MAT-EQA-05",
+      "type": "application",
+      "difficulty": 3,
+      "stem": "一个长方形长 4，宽 x，周长 20，列方程为____。",
+      "answer": "2(4+x)=20",
+      "concepts": [
+        "几何建模"
+      ]
+    },
+    {
+      "id": "Q-EQA-18",
+      "topicId": "EQA",
+      "requirementId": "REQ-EQA-03",
+      "materialId": "MAT-EQA-05",
+      "type": "application",
+      "difficulty": 3,
+      "stem": "某数加上 4 再乘 2 得 16，这个数是____。",
+      "answer": "4",
+      "concepts": [
+        "列方程"
+      ]
+    },
+    {
+      "id": "Q-EQA-19",
+      "topicId": "EQA",
+      "requirementId": "REQ-EQA-03",
+      "materialId": "MAT-EQA-05",
+      "type": "application",
+      "difficulty": 3,
+      "stem": "x 的 3 倍等于 24，x=____。",
+      "answer": "8",
+      "concepts": [
+        "解方程"
+      ]
+    },
+    {
+      "id": "Q-EQA-20",
+      "topicId": "EQA",
+      "requirementId": "REQ-EQA-03",
+      "materialId": "MAT-EQA-05",
+      "type": "application",
+      "difficulty": 3,
+      "stem": "若 5x+3=18，则 x=____。",
+      "answer": "3",
+      "concepts": [
+        "解方程"
+      ]
+    }
+  ]
+}

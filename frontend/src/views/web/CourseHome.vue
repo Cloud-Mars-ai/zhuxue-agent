@@ -127,6 +127,7 @@ const todoRows = computed(() => {
 const allEntries = computed(() =>
   isStudent.value
     ? [
+        { ic: '伴', color: '#3D5BD9', name: '智慧学伴', sub: '学情 · 建议 · 核验', to: '/app/competition' },
         { ic: '板', color: '#3D5BD9', name: '板书讲解', sub: '边讲解 · 边追问', to: '/app/board' },
         { ic: '题', color: '#E8590C', name: '一人一题', sub: 'AI 出题练习', to: '/app/practice' },
         { ic: '测', color: '#3D5BD9', name: '章节自测', sub: '先测后学', to: '/app/selftest' },
@@ -137,6 +138,7 @@ const allEntries = computed(() =>
         { ic: '坛', color: '#6B6558', name: '研讨论坛', sub: '同学讨论', to: '/app/forum' },
       ]
     : [
+        { ic: '伴', color: '#3D5BD9', name: '智慧学伴', sub: '内容 · 学情 · 建议', to: '/app/competition' },
         { ic: '稿', color: '#3D5BD9', name: '案例选稿台', sub: '筛选 / 选用 / 驳回', to: '/app/cases' },
         { ic: '卷', color: '#E8590C', name: '出题阅卷台', sub: '圈人出题 · 评分', to: '/app/assessment' },
         { ic: '析', color: '#2F8F5B', name: '学情统计', sub: '参与度 · 掌握度', to: '/app/statistics' },
@@ -194,12 +196,14 @@ const heroHint = computed(() =>
 const heroActions = computed(() =>
   isStudent.value
     ? [
+        { label: '智慧学伴', to: '/app/competition' },
         { label: '板书讲解', to: '/app/board' },
         { label: '章节自测', to: '/app/selftest' },
         { label: '备考速查', to: '/app/cheatsheet' },
         { label: '学习体检', to: '/app/checkup' },
       ]
     : [
+        { label: '智慧学伴', to: '/app/competition' },
         { label: '教学主控台', to: '/app/console' },
         { label: '课程资料', to: '/app/materials' },
         { label: '学情统计', to: '/app/statistics' },
@@ -207,6 +211,12 @@ const heroActions = computed(() =>
 )
 
 const assistantTools = computed(() => [
+  {
+    label: '智慧学伴',
+    desc: '看依据、调建议、生成课程',
+    icon: '伴',
+    action: () => router.push('/app/competition'),
+  },
   {
     label: '生成课程',
     desc: '从已上传材料编排课程',

@@ -23,17 +23,22 @@ function stopActive() {
 export async function synthesizeSpeech(text, options = {}) {
   const store = useModelStore()
   const cfg = { ...store.config, ...(options.config || {}) }
+  const useProxy = !!store.serverProxyActive && !options.forceDirect
   const input = String(text || '').replace(/\s+/g, ' ').trim().slice(0, 1000)
   if (!input) throw new Error('没有可朗读的内容')
-  if (!cfg.ttsApiKey) throw new Error('尚未配置语音合成密钥')
+  if (!cfg.ttsApiKey && !useProxy) throw new Error('尚未配置语音合成密钥')
 
-  const endpoint = `${(cfg.ttsBaseUrl || cfg.baseUrl).replace(/\/+$/, '')}/audio/speech`
+  const endpoint = useProxy
+    ? '/api/ai/tts'
+    : `${(cfg.ttsBaseUrl || cfg.baseUrl).replace(/\/+$/, '')}/audio/speech`
   const resp = await fetch(endpoint, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${cfg.ttsApiKey}`,
-    },
+    headers: useProxy
+      ? { 'Content-Type': 'application/json' }
+      : {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${cfg.ttsApiKey}`,
+        },
     body: JSON.stringify({
       model: cfg.ttsModel || 'stepaudio-3-tts',
       input,

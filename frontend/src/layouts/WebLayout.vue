@@ -36,6 +36,7 @@ const GROUP_OF = {
   selftest: '学习',
   cheatsheet: '学习',
   checkup: '学习',
+  competition: '学习',
   cases: '学习',
   assessment: '考核',
   console: '教学',
@@ -74,10 +75,20 @@ const menus = computed(() => {
 
 const activeMenu = computed(() => route.path)
 
-const currentChapter = computed(
-  () => COURSE.chapters.find((c) => c.status === '进行中') || COURSE.chapters[0],
+const isCompetitionRoute = computed(() => route.path === '/app/competition')
+const currentChapter = computed(() =>
+  isCompetitionRoute.value
+    ? {
+        title: '七年级数学 · 赛事样例',
+        status: '可分析',
+        progress: 64,
+      }
+    : COURSE.chapters.find((c) => c.status === '进行中') || COURSE.chapters[0],
 )
 const sideProgress = computed(() => currentChapter.value?.progress || 0)
+const continueTarget = computed(() =>
+  isCompetitionRoute.value ? '/app/competition' : '/app/selftest',
+)
 
 const KIND_LABEL = {
   practice: '完成一人一题',
@@ -110,6 +121,9 @@ const recentActivities = computed(() =>
  * ============================================================ */
 const isTablet = computed(() => deviceStore.isTablet)
 const isNarrow = computed(() => deviceStore.isPhone)
+const immersive = computed(
+  () => !!route.meta.immersive || route.path === '/app/board',
+)
 const drawerOpen = ref(false)
 
 // 手动切换到 H5 移动端：写入手动选择并跳转（之后该设备固定走 /m，直至清除）
@@ -136,7 +150,7 @@ async function handleLogout() {
 <template>
   <el-container class="web-layout" :class="{ 'is-tablet': isTablet, 'is-narrow': isNarrow }">
     <!-- 桌面/平板：侧栏（平板自动收起为 64px 图标栏） -->
-    <el-aside v-if="!isNarrow" :width="isTablet ? '64px' : '220px'" class="aside">
+    <el-aside v-if="!isNarrow && !immersive" :width="isTablet ? '64px' : '220px'" class="aside">
       <div class="logo">
         <span class="logo-mark">智</span>
         <span v-show="!isTablet" class="logo-text">人机协同助学</span>
@@ -169,7 +183,7 @@ async function handleLogout() {
 
       <div v-if="!isTablet" class="side-extra">
         <div class="side-label">继续学习</div>
-        <div class="side-course" @click="router.push('/app/selftest')">
+        <div class="side-course" @click="router.push(continueTarget)">
           <span class="side-course-tag">{{ currentChapter.status }}</span>
           <div class="side-course-title">{{ currentChapter.title }}</div>
           <div class="side-course-meta">{{ sideProgress }}% · 第 8 周</div>
@@ -189,7 +203,7 @@ async function handleLogout() {
     </el-aside>
 
     <el-container>
-      <el-header class="header">
+      <el-header v-if="!immersive" class="header">
         <div class="header-left">
           <el-icon v-if="isNarrow" class="hamburger" @click="drawerOpen = true"><Fold /></el-icon>
           <div class="header-title">{{ route.meta.title }}</div>
@@ -227,7 +241,7 @@ async function handleLogout() {
         </div>
       </el-header>
 
-      <el-main class="main">
+      <el-main class="main" :class="{ 'main-immersive': immersive }">
         <router-view />
       </el-main>
     </el-container>
@@ -521,6 +535,11 @@ async function handleLogout() {
   padding: 24px 28px 32px;
   /* 双轴滚动：窄屏 / 平板下宽表格可横向滚动，不被裁切 */
   overflow: auto;
+}
+
+.main.main-immersive {
+  padding: 12px;
+  overflow: hidden;
 }
 
 /* 平板：收紧留白与头部元素 */

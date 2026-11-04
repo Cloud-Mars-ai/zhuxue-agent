@@ -363,6 +363,56 @@ test('学生可下载生成板书', async ({ page }) => {
   expect(download.suggestedFilename()).toMatch(/\.html$/)
 })
 
+test('赛事工作台合并展示数据质量、个体分析与可审计建议', async ({ page }) => {
+  await seedUser(page, 'teacher')
+  await page.goto('/app/competition')
+
+  await expect(page.getByTestId('competition-workbench')).toBeVisible()
+  await expect(page.getByRole('heading', { name: '智慧学伴工作台' })).toBeVisible()
+  await expect(page.getByText('当前为固定种子开发样例')).toBeVisible()
+  await expect(page.getByText('数据质量', { exact: true })).toBeVisible()
+  await expect(page.getByText('重复记录', { exact: true })).toBeVisible()
+
+  await page.getByRole('button', { name: /学情分析/ }).click()
+  await expect(page.getByText('群体与小组', { exact: true })).toBeVisible()
+  await expect(page.getByText('确认的共同薄弱点')).toBeVisible()
+  await expect(page.getByText('个体分析', { exact: true })).toBeVisible()
+
+  await page.getByRole('button', { name: /建议与核验/ }).click()
+  await expect(page.getByText('学习路径', { exact: false }).first()).toBeVisible()
+  await expect(page.getByText('为什么是它').first()).toBeVisible()
+
+  await page.getByRole('button', { name: '调整', exact: true }).first().click()
+  await page
+    .getByPlaceholder('例如：该生本周尚未学习前置内容，需延后变式题。')
+    .fill('该生本周尚未完成前置观察，先保留重讲任务。')
+  await page.getByRole('button', { name: '保存并纳入审计' }).click()
+  await expect(page.getByText('已调整').first()).toBeVisible()
+
+  await expect(page.getByRole('button', { name: '导出任务成果包' })).toBeVisible()
+})
+
+test('学生从赛事建议生成个性化课程并使用数学内容', async ({ page }) => {
+  await seedUser(page)
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/m/competition')
+
+  await expect(page.getByTestId('competition-workbench')).toBeVisible()
+  await expect(page.getByText('先看已有表现，再看信息不足', { exact: false })).toBeVisible()
+  await page.getByRole('button', { name: /学习路径/ }).click()
+  await expect(page.getByRole('button', { name: '生成个性化课程' })).toBeVisible()
+
+  await page.getByRole('button', { name: '生成个性化课程' }).click()
+  await expect(page).toHaveURL(/\/m\/studio\?project=/)
+  await expect(page.locator('.outline-row').first()).toBeVisible()
+  await page.getByTestId('studio-generate-course').click()
+
+  await expect(page).toHaveURL(/\/learn\/course-/)
+  await expect(page.getByTestId('board-canvas')).toBeVisible()
+  await expect(page.locator('.scene-rail button')).toHaveCount(6)
+  await expect(page.locator('body')).toContainText(/有理数|整式|一元一次方程/)
+})
+
 test('板书语音教学支持开关和音色切换', async ({ page }) => {
   await seedUser(page)
   await page.goto('/app/board?chapter=' + encodeURIComponent('第3章 决策与计划'))

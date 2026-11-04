@@ -7,10 +7,13 @@
     "dev": "vite",
     "build": "vite build",
     "build:offline": "vite build --mode offline",
+    "build:pages": "node scripts/build-pages.mjs",
     "preview": "vite preview",
     "start": "vite build && node server.mjs",
     "test:e2e": "playwright test",
-    "test:e2e:live": "playwright test --config=playwright.live.config.js"
+    "test:e2e:live": "playwright test --config=playwright.live.config.js",
+    "test:competition": "node scripts/verify-competition.mjs",
+    "export:competition": "node scripts/export-competition-package.mjs"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.2",

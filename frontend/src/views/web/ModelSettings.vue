@@ -69,6 +69,9 @@ const modelOptions = computed(() =>
 )
 
 const maskedKey = computed(() => {
+  if (modelStore.serverProxyActive && !modelStore.config.apiKey) {
+    return '服务端环境变量托管'
+  }
   const key = modelStore.config.apiKey || ''
   if (!key) return '未配置'
   if (key.length <= 8) return '****'
@@ -76,6 +79,9 @@ const maskedKey = computed(() => {
 })
 
 const maskedTtsKey = computed(() => {
+  if (modelStore.serverProxyActive && !modelStore.config.ttsApiKey) {
+    return '服务端环境变量托管'
+  }
   const key = modelStore.config.ttsApiKey || ''
   if (!key) return '未配置'
   if (key.length <= 8) return '****'
@@ -106,7 +112,7 @@ function handleVoiceChange(value) {
 }
 
 async function handleTest() {
-  if (!form.apiKey?.trim()) {
+  if (!form.apiKey?.trim() && !modelStore.serverProxyActive) {
     ElMessage.warning('请先填写 API 密钥')
     return
   }
@@ -134,7 +140,11 @@ async function handleTest() {
 }
 
 async function handleTestTts() {
-  if (!form.ttsApiKey?.trim() || !form.ttsBaseUrl?.trim() || !form.ttsModel?.trim()) {
+  if (
+    (!form.ttsApiKey?.trim() && !modelStore.serverProxyActive) ||
+    !form.ttsBaseUrl?.trim() ||
+    !form.ttsModel?.trim()
+  ) {
     ElMessage.warning('请先填写语音接口地址、模型和密钥')
     return
   }
@@ -159,7 +169,7 @@ function handleSave() {
     ElMessage.warning('请填写接口地址')
     return
   }
-  if (!form.apiKey?.trim()) {
+  if (!form.apiKey?.trim() && !modelStore.serverProxyActive) {
     ElMessage.warning('请填写 API 密钥')
     return
   }
@@ -167,7 +177,11 @@ function handleSave() {
     ElMessage.warning('请填写模型名称')
     return
   }
-  if (!form.ttsBaseUrl?.trim() || !form.ttsApiKey?.trim() || !form.ttsModel?.trim()) {
+  if (
+    !form.ttsBaseUrl?.trim() ||
+    (!form.ttsApiKey?.trim() && !modelStore.serverProxyActive) ||
+    !form.ttsModel?.trim()
+  ) {
     ElMessage.warning('请补全语音合成配置')
     return
   }
@@ -190,7 +204,8 @@ function handleReset() {
     <el-alert type="info" :closable="false" show-icon class="tip">
       <template #title>
         配置大模型后，「AI协助 / AI 助教」等智能体功能将调用该模型生成回答。
-        默认使用 DeepSeek 的 OpenAI 兼容接口，语音合成继续使用 StepAudio；密钥仅保存在当前浏览器本地。
+        默认使用 DeepSeek 的 OpenAI 兼容接口，语音合成继续使用 StepAudio。
+        生产环境由同源 Node 代理读取服务端环境变量，密钥不会进入前端构建；开发环境可临时使用本机配置。
       </template>
     </el-alert>
 

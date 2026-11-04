@@ -1,5 +1,30 @@
 # Third-Party Notices
 
+## Runtime Dependencies
+
+| Component | Version / range | License / usage |
+| --- | --- | --- |
+| Vue | 3.5.x | MIT |
+| Vue Router | 5.4.x | MIT |
+| Pinia | 4.1.x | MIT |
+| Element Plus | 2.14.x | MIT |
+| Vant | 4.10.x | MIT |
+| ECharts | 6.1.x | Apache-2.0 |
+| pdfjs-dist | 6.5.x | Apache-2.0 |
+| JSZip | 3.10.x | MIT / GPL-3.0 dual license; this project uses it under MIT |
+| Mammoth | 1.13.x | BSD-2-Clause |
+| Playwright | 1.57.x | Apache-2.0 |
+| ReportLab | 4.4.x | BSD-style |
+
+The software is provided without warranty. Package-lock and source repositories remain the authoritative version record.
+
+## Model and Voice Services
+
+- Text generation is accessed through the DeepSeek OpenAI-compatible API.
+- Speech synthesis is accessed through StepFun StepAudio.
+- Credentials are supplied through server-side environment variables and are not part of the open-source repository.
+- Generated demo narration is used only inside the competition demonstration video.
+
 ## OpenMAIC
 
 This project contains implementation ideas and adapted code derived from:

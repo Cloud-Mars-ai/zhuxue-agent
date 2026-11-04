@@ -27,13 +27,18 @@ export function courseBlueprintPrompt({
   durationMinutes,
   materialText,
   sourceChunkIds = [],
+  domain = 'management',
 }) {
+  const identity =
+    domain === 'math7'
+      ? '你是七年级数学课程设计助手，熟悉有理数、整式和一元一次方程的规则、常见错误与例题组织。'
+      : TUTOR_IDENTITY
   const modeText =
     mode === 'sprint'
       ? '考前冲刺：先测后讲，压缩背景，突出高频考点、概念辨析和可考表达。'
       : '正常上课：跟随课程进度，先建立框架，再讲概念、案例与练习。'
 
-  const system = `${TUTOR_IDENTITY}
+  const system = `${identity}
 
 你现在承担教师端的「课程编排师」角色。你的任务不是直接写一篇长讲义，而是先做一份可由教师修改的课程大纲。
 
@@ -98,8 +103,12 @@ function previousSceneLine(previousScene) {
 }
 
 export function courseScenePrompt({ project, outline, materialText, sourceChunkIds = [], previousScene }) {
+  const identity =
+    project.domain === 'math7'
+      ? '你是七年级数学课程助手，必须把符号规则、步骤和等量关系讲清楚，并用材料中的题目证据检查理解。'
+      : TUTOR_IDENTITY
   const common = {
-    systemIdentity: TUTOR_IDENTITY,
+    systemIdentity: identity,
     projectTitle: project.title,
     chapter: project.chapter,
     objective: project.objective,
@@ -165,10 +174,14 @@ ${common.materialText}
   if (outline.type === 'practice') {
     const system = `${common.systemIdentity}
 
-你是经管课程案例题设计者。为场景「${common.sceneTitle}」设计一道可口头或书面作答的应用题。
+你是课程应用题设计者。为场景「${common.sceneTitle}」设计一道可口头或书面作答的应用题。
 
 硬约束：
-- 情境来自课程材料允许的管理场景或通用课堂案例，不得声称是材料中的真实企业事件。
+- ${
+      project.domain === 'math7'
+        ? '情境来自数学教材或材料允许的数量关系，不得引入材料外事实。'
+        : '情境来自课程材料允许的管理场景或通用课堂案例，不得声称是材料中的真实企业事件。'
+    }
 - 题目不能暗示答案；必须要求学生先判断、再用概念解释、最后给行动。
 - 参考答案只列判断要点，不给一篇标准答案。
 - ${common.previous}

@@ -83,6 +83,12 @@ const routes = [
         meta: { title: '学习体检', icon: 'FirstAidKit' },
       },
       {
+        path: 'competition',
+        name: 'CompetitionWorkbench',
+        component: () => import('@/views/CompetitionWorkbench.vue'),
+        meta: { title: '智慧学伴', icon: 'MagicStick' },
+      },
+      {
         path: 'materials',
         name: 'Materials',
         component: () => import('@/views/web/Materials.vue'),
@@ -135,9 +141,12 @@ const routes = [
       },
       {
         path: 'statistics',
-        name: 'Statistics',
-        component: () => import('@/views/web/Statistics.vue'),
-        meta: { title: '学情统计', icon: 'TrendCharts', roles: ['admin', 'teacher', 'ta'] },
+        redirect: (to) => ({
+          path: '/app/competition',
+          query: to.query,
+          hash: to.hash,
+        }),
+        meta: { title: '学情统计', nav: false },
       },
       {
         path: 'model',
@@ -158,6 +167,7 @@ const routes = [
     'selftest',
     'cheatsheet',
     'checkup',
+    'competition',
     'materials',
     'studio',
     'experience',
@@ -220,6 +230,12 @@ const routes = [
         name: 'MCheckup',
         component: () => import('@/views/mobile/MCheckup.vue'),
         meta: { title: '学习体检', mobile: true },
+      },
+      {
+        path: 'competition',
+        name: 'MCompetitionWorkbench',
+        component: () => import('@/views/CompetitionWorkbench.vue'),
+        meta: { title: '智慧学伴', mobile: true },
       },
       {
         path: 'case',
@@ -286,6 +302,7 @@ const WEB_TO_MOBILE = {
   '/app/selftest': '/m/selftest',
   '/app/cheatsheet': '/m/cheatsheet',
   '/app/checkup': '/m/checkup',
+  '/app/competition': '/m/competition',
   '/app/cases': '/m/case',
   '/app/assessment': '/m/assessment',
   '/app/studio': '/m/studio',
@@ -306,8 +323,13 @@ function homeOf(tree) {
   return tree === 'mobile' ? '/m/course' : '/app/course'
 }
 
+const historyBase =
+  import.meta.env.BASE_URL === './' || import.meta.env.BASE_URL === '/'
+    ? '/'
+    : import.meta.env.BASE_URL
+
 const router = createRouter({
-  history: isFileProtocol ? createWebHashHistory() : createWebHistory(),
+  history: isFileProtocol ? createWebHashHistory() : createWebHistory(historyBase),
   routes,
 })
 

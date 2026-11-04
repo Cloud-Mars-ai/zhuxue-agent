@@ -18,8 +18,9 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [vue(), ...(isOffline ? [viteSingleFile()] : [])],
-    // 相对路径：产物既能由 Nginx 部署，也能直接双击打开
-    base: './',
+    // 默认相对路径：产物既能由 Nginx 部署，也能直接双击打开。
+    // GitHub Pages 等子路径部署可通过 VITE_BASE_PATH 覆盖。
+    base: process.env.VITE_BASE_PATH || './',
     resolve: {
       alias: {
         '@': fileURLToPath(new URL('./src', import.meta.url)),

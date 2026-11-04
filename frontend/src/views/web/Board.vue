@@ -1,5 +1,5 @@
 <script setup>
-import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { COURSE } from '@/mock/data'
 import BoardCanvas from '@/components/BoardCanvas.vue'
@@ -46,9 +46,11 @@ const showGrid = ref(true)
 const showSettings = ref(false)
 const settingsRef = ref()
 const boardShellRef = ref()
+const boardStageRef = ref()
 const conversationRef = ref()
 const input = ref('')
 const asking = ref(false)
+const followReveal = ref(true)
 const {
   visibleCount,
   paused,
@@ -136,6 +138,26 @@ function scrollConversation() {
     if (element) element.scrollTop = element.scrollHeight
   })
 }
+
+function followCurrentBlock() {
+  if (!followReveal.value || !lesson.value?.blocks?.length || visibleCount.value < 1) return
+  nextTick(() => {
+    const currentIndex = Math.min(
+      visibleCount.value - 1,
+      lesson.value.blocks.length - 1,
+    )
+    boardStageRef.value
+      ?.querySelector(`[data-block-index="${currentIndex}"]`)
+      ?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  })
+}
+
+function toggleFollow() {
+  followReveal.value = !followReveal.value
+  if (followReveal.value) followCurrentBlock()
+}
+
+watch(visibleCount, followCurrentBlock)
 
 async function ask(text) {
   const question = String(text ?? input.value).trim()
@@ -272,7 +294,7 @@ onBeforeUnmount(() => {
       </header>
 
       <main class="board-main">
-        <section class="board-stage">
+        <section ref="boardStageRef" class="board-stage" data-testid="board-stage">
           <div v-if="fallback" class="fallback-banner">
             演示缓存：当前板书由教师确认稿确定性生成
           </div>
@@ -310,6 +332,17 @@ onBeforeUnmount(() => {
           <div class="playback-bar">
             <button type="button" @click="togglePause">
               {{ paused ? '继续讲解' : revealFinished ? '重新播放' : narrating ? '暂停语音' : '暂停讲解' }}
+            </button>
+            <span class="playback-divider" />
+            <button
+              type="button"
+              class="follow-toggle"
+              :class="{ on: followReveal }"
+              data-testid="follow-toggle"
+              :aria-pressed="followReveal"
+              @click="toggleFollow"
+            >
+              {{ followReveal ? '跟随中' : '跟随已关' }}
             </button>
             <span v-if="lesson">
               {{ Math.min(visibleCount, lesson.blocks.length) }} / {{ lesson.blocks.length }} 个板块
@@ -377,7 +410,7 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .board-page {
-  height: calc(100vh - 84px);
+  height: calc(100vh - 24px);
   min-height: 620px;
 }
 
@@ -703,6 +736,20 @@ onBeforeUnmount(() => {
   border: 0;
   font: inherit;
   cursor: pointer;
+}
+
+.playback-bar .follow-toggle {
+  color: var(--text-faint);
+}
+
+.playback-bar .follow-toggle.on {
+  color: var(--accent);
+}
+
+.playback-divider {
+  width: 1px;
+  height: 12px;
+  background: var(--divider);
 }
 
 .conversation {

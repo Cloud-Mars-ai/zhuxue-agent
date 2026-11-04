@@ -54,6 +54,7 @@ watch(
         :key="`${block.type}-${index}`"
         class="board-block"
         :class="`is-${block.type}`"
+        :data-block-index="index"
       >
         <template v-if="block.type === 'outline'">
           <h2>{{ block.title }}</h2>

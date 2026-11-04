@@ -4,6 +4,7 @@ import { useTraceStore, hashText } from '@/stores/trace'
 import { useKnowledgeStore } from '@/stores/knowledge'
 import { isEnabled } from '@/config/flags'
 import { parseJsonLoose } from '@/utils/json'
+import { assertContentSafe } from '@/utils/contentSafety'
 
 const TIMEOUT_MS = 60000
 // 模型无记忆，每次请求携带最近若干条历史作为上下文
@@ -117,8 +118,16 @@ function recordTrace(record) {
 export async function sendChatDetailed(messages, options = {}) {
   const store = useModelStore()
   const cfg = { ...store.config, ...(options.config || {}) }
+  const useProxy = !!store.serverProxyActive && !options.forceDirect
 
-  if (!cfg.apiKey) {
+  assertContentSafe(
+    (Array.isArray(messages) ? messages : [])
+      .map((message) => `${message.role || ''}:${message.content || ''}`)
+      .join('\n'),
+    '模型请求',
+  )
+
+  if (!cfg.apiKey && !useProxy) {
     throw new Error('尚未配置模型密钥，请先到「模型接入」页面完成配置')
   }
   if (!cfg.baseUrl) {
@@ -128,7 +137,9 @@ export async function sendChatDetailed(messages, options = {}) {
     throw new Error('尚未配置模型名称，请先到「模型接入」页面完成配置')
   }
 
-  const url = `${cfg.baseUrl.replace(/\/+$/, '')}/chat/completions`
+  const url = useProxy
+    ? '/api/ai/chat'
+    : `${cfg.baseUrl.replace(/\/+$/, '')}/chat/completions`
   const temperature = Number.isFinite(Number(options.temperature))
     ? Number(options.temperature)
     : Number.isFinite(Number(cfg.temperature))
@@ -177,10 +188,12 @@ export async function sendChatDetailed(messages, options = {}) {
     try {
       const resp = await fetch(url, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${cfg.apiKey}`,
-        },
+        headers: useProxy
+          ? { 'Content-Type': 'application/json' }
+          : {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${cfg.apiKey}`,
+            },
         body: JSON.stringify({
           model: cfg.model,
           messages: buildMessages(messages, finalSystemPrompt),
@@ -217,6 +230,7 @@ export async function sendChatDetailed(messages, options = {}) {
       }
 
       const text = content.trim()
+      assertContentSafe(text, '模型返回内容')
       const latencyMs = Math.round(
         (typeof performance !== 'undefined' ? performance.now() : Date.now()) - startedAt,
       )
