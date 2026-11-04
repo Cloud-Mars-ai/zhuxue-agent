@@ -19,6 +19,10 @@
 - 学生 H5：`https://cloud-mars-ai.github.io/zhuxue-agent/#/m/competition`
 - GitHub Release：`https://github.com/Cloud-Mars-ai/zhuxue-agent/releases/tag/v0.7-competition`
 - GitHub Pages 构建状态：`built`，深链接在真实浏览器中渲染成功，页面无 JavaScript 错误。
+- 源码提交：`9610523`；GitHub Pages 发布提交：`2cc7a41`。
+- 真实浏览器验收：教师端默认澄蓝、学生 Web/H5 默认纸感；界面不再出现夜读选项，Web/H5 均无横向溢出。
+- 教师首页标题与课程输入框在内容区同一轴线居中，垂直间距 26px。
+- 教师主控台线上渲染 7 个知识点，CSV 导出与全员明细入口可用。
 
 ### 数据与分析
 
@@ -61,6 +65,7 @@
 - 演示视频：3 分 23 秒，1280×720，H.264 + AAC，旁白已响度标准化；
 - 答辩 PPT：10 页，原生表格可编辑，文件结构和首次导入校验通过；
 - 任务成果包：14 个文件，ZIP 打包完成。
+- Release 中的设计方案与答辩 PPT 已更新为本轮最终版本。
 
 ## 待负责人处理
 
