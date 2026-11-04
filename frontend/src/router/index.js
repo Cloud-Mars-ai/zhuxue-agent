@@ -56,7 +56,7 @@ const routes = [
         path: 'ask',
         name: 'Ask',
         component: () => import('@/views/web/Ask.vue'),
-        meta: { title: 'AI 答疑', icon: 'ChatLineRound' },
+        meta: { title: 'AI协助', icon: 'ChatLineRound', nav: false },
       },
       {
         path: 'practice',
@@ -178,7 +178,7 @@ const routes = [
         path: 'ask',
         name: 'MAsk',
         component: () => import('@/views/mobile/MAsk.vue'),
-        meta: { title: '答疑', mobile: true },
+        meta: { title: 'AI协助', mobile: true },
       },
       {
         path: 'practice',

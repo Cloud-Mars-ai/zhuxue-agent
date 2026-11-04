@@ -3,6 +3,7 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { COURSE } from '@/mock/data'
 import BoardCanvas from '@/components/BoardCanvas.vue'
+import SpeakButton from '@/components/SpeakButton.vue'
 import { answerBoardQuestion, generateBoardLesson } from '@/api/board'
 
 const route = useRoute()
@@ -10,6 +11,10 @@ const currentChapter = computed(
   () => COURSE.chapters.find((chapter) => chapter.status === '进行中') || COURSE.chapters[0],
 )
 const chapter = computed(() => String(route.query.chapter || currentChapter.value?.title || ''))
+const studyMode = computed(() => {
+  const mode = Array.isArray(route.query.mode) ? route.query.mode[0] : route.query.mode
+  return mode === 'sprint' ? 'sprint' : 'course'
+})
 
 const lesson = ref(null)
 const loading = ref(true)
@@ -38,7 +43,10 @@ async function loadLesson() {
   loading.value = true
   stopReveal()
   try {
-    const result = await generateBoardLesson({ chapter: chapter.value })
+    const result = await generateBoardLesson({
+      chapter: chapter.value,
+      studyMode: studyMode.value,
+    })
     lesson.value = result.lesson
     fallback.value = result.fallback
     visibleCount.value = 1
@@ -108,7 +116,7 @@ onBeforeUnmount(stopReveal)
 <template>
   <div class="m-board-page">
     <div class="m-board-meta">
-      <span>板书讲解</span>
+      <span>板书讲解 · {{ studyMode === 'sprint' ? '考前冲刺' : '正常上课' }}</span>
       <strong>{{ lesson?.chapter || chapter }}</strong>
     </div>
     <div v-if="fallback" class="m-fallback">演示缓存 · 教师确认稿生成</div>
@@ -155,6 +163,7 @@ onBeforeUnmount(stopReveal)
             <span>{{ message.role === 'user' ? '你' : '助教' }}</span>
             <p>{{ message.content }}</p>
             <small v-if="message.fallback">演示缓存</small>
+            <SpeakButton v-if="message.role === 'assistant'" :text="message.content" />
           </div>
           <p v-if="asking" class="chat-typing">助教正在结合当前板书回答…</p>
         </div>

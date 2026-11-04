@@ -28,7 +28,7 @@ function disciplineOf() {
  * 生成结构化板书。模型只返回 block JSON，任何坐标、HTML 或自由画布指令
  * 都会被 normalizeBoardLesson 丢弃；失败时使用教师确认稿生成确定性板书。
  */
-export async function generateBoardLesson({ chapter, focus = '' }) {
+export async function generateBoardLesson({ chapter, focus = '', studyMode = 'course' }) {
   const outline = chapterOf(chapter)
   const normalizedChapter = outline?.title || chapter
   const materialText = outline
@@ -39,6 +39,7 @@ export async function generateBoardLesson({ chapter, focus = '' }) {
     materialText,
     discipline: disciplineOf(),
     focus,
+    studyMode,
   })
 
   try {
@@ -46,10 +47,11 @@ export async function generateBoardLesson({ chapter, focus = '' }) {
       systemPrompt: prompt.system,
       temperature: prompt.temperature,
       maxTokens: prompt.maxTokens,
+      reasoningEffort: prompt.reasoningEffort,
       kind: 'board',
       task: 'board.generate',
       promptVersion: PROMPT_VERSION,
-      traceRefs: { chapter: normalizedChapter, focus },
+      traceRefs: { chapter: normalizedChapter, focus, studyMode },
     })
     const lesson = normalizeBoardLesson(data, normalizedChapter)
     if (!lesson) throw new Error('板书结构解析失败')
@@ -104,6 +106,7 @@ export async function answerBoardQuestion({ chapter, lesson, question }) {
       systemPrompt: prompt.system,
       temperature: prompt.temperature,
       maxTokens: prompt.maxTokens,
+      reasoningEffort: prompt.reasoningEffort,
       kind: 'board',
       task: 'board.question',
       promptVersion: PROMPT_VERSION,

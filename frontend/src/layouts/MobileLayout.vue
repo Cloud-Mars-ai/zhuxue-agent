@@ -12,7 +12,7 @@ const deviceStore = useDeviceStore()
 // 底部标签栏，与 /m 下的子路由一一对应
 const tabs = [
   { path: '/m/course', name: '课程', icon: 'notes-o' },
-  { path: '/m/ask', name: '答疑', icon: 'chat-o' },
+  { path: '/m/ask', name: 'AI协助', icon: 'chat-o' },
   { path: '/m/mine', name: '我的', icon: 'user-o' },
 ]
 

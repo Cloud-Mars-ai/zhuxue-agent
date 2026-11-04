@@ -3,6 +3,7 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { COURSE } from '@/mock/data'
 import BoardCanvas from '@/components/BoardCanvas.vue'
+import SpeakButton from '@/components/SpeakButton.vue'
 import { answerBoardQuestion, generateBoardLesson } from '@/api/board'
 
 const route = useRoute()
@@ -17,6 +18,10 @@ const requestedChapter = computed(() => {
     ? route.query.chapter[0]
     : route.query.chapter
   return String(queryChapter || currentChapter.value?.title || '')
+})
+const studyMode = computed(() => {
+  const mode = Array.isArray(route.query.mode) ? route.query.mode[0] : route.query.mode
+  return mode === 'sprint' ? 'sprint' : 'course'
 })
 
 const lesson = ref(null)
@@ -86,6 +91,7 @@ async function loadLesson() {
     const result = await generateBoardLesson({
       chapter: requestedChapter.value,
       focus: String(route.query.focus || ''),
+      studyMode: studyMode.value,
     })
     lesson.value = result.lesson
     fallback.value = result.fallback
@@ -208,7 +214,7 @@ onBeforeUnmount(() => {
         </button>
         <div class="course-title">
           <span>{{ lesson?.chapter || requestedChapter }}</span>
-          <small>板书讲解</small>
+          <small>{{ studyMode === 'sprint' ? '考前冲刺' : '正常上课' }}</small>
         </div>
 
         <div class="board-tools">
@@ -295,6 +301,10 @@ onBeforeUnmount(() => {
               <span class="message-role">{{ message.role === 'user' ? '你' : '助教' }}</span>
               <p>{{ message.content }}</p>
               <span v-if="message.fallback" class="message-source">演示缓存</span>
+              <SpeakButton
+                v-if="message.role === 'assistant'"
+                :text="message.content"
+              />
             </div>
             <div v-if="asking" class="message assistant typing">
               <span class="typing-dots"><i /><i /><i /></span>

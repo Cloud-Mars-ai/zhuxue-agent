@@ -5,15 +5,21 @@ const STORAGE_KEY = 'ai-tutor-model-config'
 
 /**
  * 默认模型配置：阶跃星辰（StepFun）OpenAI 兼容接口
- * 密钥只在当前浏览器的「模型接入」页填写并通过 localStorage 保存。
- * 仓库内禁止提供默认密钥，避免公开构建产物把凭据下发给访问者。
+ * 当前为比赛演示阶段，默认密钥由项目负责人要求临时内置。
+ * 迁移到后端代理后必须删除以下两把默认密钥并轮换。
  */
 export const DEFAULT_MODEL_CONFIG = {
+  configVersion: '2026-11-04-step5',
   provider: 'stepfun',
   baseUrl: 'https://api.stepfun.com/v1',
-  apiKey: '',
-  model: 'step-3.5-flash',
+  apiKey: '3E1uzgEugYnhZ6ptBQpNX73kNjYSh9eCa2ykFYbqXqrpswBbefVAX9AXVaAp0BlK7',
+  model: 'step-5-preview',
   temperature: 0.3,
+  ttsBaseUrl: 'https://api.stepfun.com/v1',
+  ttsApiKey: '1MR8bDu79ioMcWmuyI8RA7qGvk3MDr4uDpn5NmLFe6Y3tWpt2MCTHlZB8QYL62fB6',
+  ttsModel: 'stepaudio-3-tts',
+  ttsVoice: 'qinhenvsheng',
+  ttsInstruction: '用清晰、温和、有节奏的课堂讲解语气朗读，专业但自然。',
   systemPrompt:
     '你是《管理学》课程的 AI 助教，服务对象是经管专业学生与授课教师。\n' +
     '回答要求：\n' +
@@ -26,11 +32,18 @@ export const DEFAULT_MODEL_CONFIG = {
 
 /** 阶跃星辰常用对话模型，供配置页下拉选择 */
 export const STEPFUN_MODELS = [
+  'step-5-preview',
   'step-3.5-flash',
   'step-3.7-flash',
   'step-3.5-flash-2603',
   'step-router-v1',
-  'step-5-preview',
+]
+
+export const STEPFUN_TTS_MODELS = [
+  'stepaudio-3-tts',
+  'stepaudio-2.5-tts',
+  'step-tts-mini',
+  'step-tts-2',
 ]
 
 // file:// 协议下部分浏览器会禁用 localStorage，包一层静默降级
@@ -56,7 +69,22 @@ function loadFromStorage() {
   if (!raw) return { ...DEFAULT_MODEL_CONFIG }
   try {
     // 与默认配置合并，旧版本缺少的字段自动补齐
-    return { ...DEFAULT_MODEL_CONFIG, ...JSON.parse(raw) }
+    const stored = JSON.parse(raw)
+    const merged = { ...DEFAULT_MODEL_CONFIG, ...stored }
+    if (stored.configVersion !== DEFAULT_MODEL_CONFIG.configVersion) {
+      merged.configVersion = DEFAULT_MODEL_CONFIG.configVersion
+      if (!stored.apiKey) merged.apiKey = DEFAULT_MODEL_CONFIG.apiKey
+      if (!stored.model || stored.model === 'step-3.5-flash') {
+        merged.model = DEFAULT_MODEL_CONFIG.model
+      }
+      if (!stored.ttsApiKey) merged.ttsApiKey = DEFAULT_MODEL_CONFIG.ttsApiKey
+      if (!stored.ttsBaseUrl) merged.ttsBaseUrl = DEFAULT_MODEL_CONFIG.ttsBaseUrl
+      if (!stored.ttsModel) merged.ttsModel = DEFAULT_MODEL_CONFIG.ttsModel
+      if (!stored.ttsVoice) merged.ttsVoice = DEFAULT_MODEL_CONFIG.ttsVoice
+      if (!stored.ttsInstruction) merged.ttsInstruction = DEFAULT_MODEL_CONFIG.ttsInstruction
+      safeSetItem(STORAGE_KEY, JSON.stringify(merged))
+    }
+    return merged
   } catch {
     return { ...DEFAULT_MODEL_CONFIG }
   }
@@ -71,6 +99,9 @@ export const useModelStore = defineStore('model', () => {
 
   const isConfigured = computed(
     () => !!(config.value.apiKey && config.value.baseUrl && config.value.model),
+  )
+  const isTtsConfigured = computed(
+    () => !!(config.value.ttsApiKey && config.value.ttsBaseUrl && config.value.ttsModel),
   )
 
   /** 保存（合并式更新，立即持久化） */
@@ -88,6 +119,7 @@ export const useModelStore = defineStore('model', () => {
   return {
     config,
     isConfigured,
+    isTtsConfigured,
     updateConfig,
     resetConfig,
   }

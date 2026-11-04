@@ -1,6 +1,7 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { ElMessage } from 'element-plus'
 import { COURSE, FORUM_POSTS, HOMEWORKS } from '@/mock/data'
 import { useUserStore } from '@/stores/user'
 import { useModelStore } from '@/stores/model'
@@ -9,8 +10,10 @@ import { useAssessmentStore } from '@/stores/assessment'
 import { usePracticeStore } from '@/stores/practice'
 import { usePersonaStore } from '@/stores/persona'
 import { useThemeStore } from '@/stores/theme'
+import { useKnowledgeStore } from '@/stores/knowledge'
 import { diagnoseGaps } from '@/utils/diagnose'
 import { buildFeed } from '@/utils/feed'
+import { importMaterialFile } from '@/utils/materialImport'
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -20,6 +23,7 @@ const assessmentStore = useAssessmentStore()
 const practiceStore = usePracticeStore()
 const personaStore = usePersonaStore()
 const themeStore = useThemeStore()
+const knowledgeStore = useKnowledgeStore()
 
 const overallProgress = computed(() => {
   const list = COURSE.chapters
@@ -126,7 +130,6 @@ const allEntries = computed(() =>
         { ic: '检', color: '#2F8F5B', name: '学习体检', sub: '盲区与建议', to: '/app/checkup' },
         { ic: '例', color: '#0C8599', name: '课前案例', sub: '提交兴趣案例', to: '/app/cases' },
         { ic: '考', color: '#2F8F5B', name: '课程考核', sub: '模拟面试', to: '/app/assessment' },
-        { ic: '问', color: '#B7791F', name: 'AI 答疑', sub: '小管同学', to: '/app/ask' },
         { ic: '坛', color: '#6B6558', name: '研讨论坛', sub: '同学讨论', to: '/app/forum' },
       ]
     : [
@@ -141,6 +144,28 @@ const primaryEntries = computed(() => allEntries.value.slice(0, 4))
 const secondaryEntries = computed(() => allEntries.value.slice(4))
 
 const heroInput = ref('')
+const studyMode = ref('course')
+const uploadInput = ref()
+const activeUploadKind = ref('')
+const uploadingKind = ref('')
+const UPLOAD_STORAGE_KEY = 'ai-tutor-home-uploads'
+const uploadHistory = ref(loadUploadHistory())
+
+const MATERIAL_LABELS = {
+  syllabus: '教学大纲',
+  courseware: '课程课件',
+  more: '更多材料',
+}
+
+function loadUploadHistory() {
+  try {
+    const raw = window.localStorage.getItem(UPLOAD_STORAGE_KEY)
+    const parsed = raw ? JSON.parse(raw) : null
+    return parsed && typeof parsed === 'object' ? parsed : {}
+  } catch {
+    return {}
+  }
+}
 const showToolMenu = ref(false)
 
 const heroTitle = computed(() =>
@@ -161,7 +186,9 @@ const heroPlaceholder = computed(() =>
 
 const heroHint = computed(() =>
   isStudent.value
-    ? '不确定问什么？点上面的「章节自测」，我会先看看你卡在哪。'
+    ? studyMode.value === 'sprint'
+      ? '考前冲刺只聚焦重点、易错点和可考表达，不会铺开整章。'
+      : '正常上课跟随学校进度，覆盖每一讲、练习与考核。'
     : '提示：课程资料库里的材料会作为 AI 回答的依据，未经确认的材料不会进入上下文。',
 )
 
@@ -186,13 +213,19 @@ const assistantTools = computed(() => [
     desc: '从路线图讲到追问',
     icon: '板',
     action: () =>
-      router.push({ path: '/app/board', query: { chapter: currentChapter.value?.title || '' } }),
+      router.push({
+        path: '/app/board',
+        query: {
+          chapter: currentChapter.value?.title || '',
+          mode: studyMode.value,
+        },
+      }),
   },
   {
-    label: '直接提问',
+    label: 'AI协助',
     desc: '围绕当前章节答疑',
     icon: '问',
-    action: () => router.push('/app/ask'),
+    action: () => router.push({ path: '/app/ask', query: { mode: studyMode.value } }),
   },
   {
     label: '章节自测',
@@ -209,47 +242,15 @@ const assistantTools = computed(() => [
 ])
 
 const heroMaterials = computed(() =>
-  isStudent.value
-    ? [
-        {
-          no: '1',
-          title: '教学大纲',
-          desc: '章节进度与本周安排',
-          action: scrollToChapters,
-        },
-        {
-          no: '2',
-          title: '课程案例',
-          desc: '预习案例与课堂研讨',
-          action: () => router.push('/app/cases'),
-        },
-        {
-          no: '3',
-          title: '学习记录',
-          desc: '练习、自测与盲区',
-          action: () => router.push('/app/checkup'),
-        },
-      ]
-    : [
-        {
-          no: '1',
-          title: '课程资料',
-          desc: '上传课件与教材正文',
-          action: () => router.push('/app/materials'),
-        },
-        {
-          no: '2',
-          title: '待选案例',
-          desc: '学生提交的预习案例',
-          action: () => router.push('/app/cases'),
-        },
-        {
-          no: '3',
-          title: '待复核题',
-          desc: 'AI 已生成，待确认',
-          action: () => router.push('/app/assessment'),
-        },
-      ],
+  [
+    { kind: 'syllabus', no: '1', title: '教学大纲', desc: '课程大纲与安排' },
+    { kind: 'courseware', no: '2', title: '课程课件', desc: '讲义与笔记' },
+    { kind: 'more', no: '3', title: '更多材料', desc: '作业、模拟考试等' },
+  ].map((item) => ({
+    ...item,
+    files: uploadHistory.value[item.kind] || [],
+    action: () => openFilePicker(item.kind),
+  })),
 )
 
 const chapterDesc = computed(
@@ -259,11 +260,7 @@ const chapterDesc = computed(
 function askHero() {
   const q = heroInput.value.trim()
   if (!q) return
-  router.push({ path: '/app/ask', query: { q } })
-}
-
-function openMaterials() {
-  router.push(isStudent.value ? '/app/cases' : '/app/materials')
+  router.push({ path: '/app/ask', query: { q, mode: studyMode.value } })
 }
 
 function openAssistantTool(tool) {
@@ -271,8 +268,74 @@ function openAssistantTool(tool) {
   tool.action()
 }
 
-function scrollToChapters() {
-  document.getElementById('chapters')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+function openHeroAction(action) {
+  if (action.to === '/app/board') {
+    router.push({
+      path: action.to,
+      query: {
+        chapter: currentChapter.value?.title || '',
+        mode: studyMode.value,
+      },
+    })
+    return
+  }
+  router.push(action.to)
+}
+
+function openFilePicker(kind) {
+  activeUploadKind.value = kind
+  if (uploadInput.value) {
+    uploadInput.value.value = ''
+    uploadInput.value.click()
+  }
+}
+
+function saveUploadHistory() {
+  try {
+    window.localStorage.setItem(UPLOAD_STORAGE_KEY, JSON.stringify(uploadHistory.value))
+  } catch {
+    // 本地存储不可用时只保留当前会话
+  }
+}
+
+async function handleFilesSelected(event) {
+  const files = [...(event.target.files || [])]
+  const kind = activeUploadKind.value
+  if (!files.length || !MATERIAL_LABELS[kind]) return
+
+  uploadingKind.value = kind
+  await knowledgeStore.ensureLoaded()
+  let imported = 0
+  const failures = []
+
+  for (const file of files) {
+    try {
+      const text = await importMaterialFile(file)
+      await knowledgeStore.addMaterial({
+        title: `${MATERIAL_LABELS[kind]} · ${file.name}`,
+        chapter: currentChapter.value?.title || '未分章材料',
+        text,
+      })
+      const history = uploadHistory.value[kind] || []
+      uploadHistory.value[kind] = [
+        {
+          name: file.name,
+          size: file.size,
+          chars: text.length,
+          at: new Date().toISOString(),
+        },
+        ...history,
+      ].slice(0, 6)
+      imported += 1
+    } catch (err) {
+      failures.push(`${file.name}：${err.message || '解析失败'}`)
+    }
+  }
+
+  saveUploadHistory()
+  if (imported) ElMessage.success(`已导入 ${imported} 份材料，AI 将优先依据这些内容`)
+  if (failures.length) ElMessage.warning(failures.join('；'))
+  uploadingKind.value = ''
 }
 
 // 夜读三栏目录：TODO / CASE / PROGRESS
@@ -301,6 +364,10 @@ function masteryTagType(chapter) {
 function startSelfTest(chapter) {
   router.push({ path: '/app/selftest', query: { chapters: chapter, count: 5 } })
 }
+
+onMounted(() => {
+  knowledgeStore.load()
+})
 </script>
 
 <template>
@@ -422,7 +489,7 @@ function startSelfTest(chapter) {
       <section class="home-hero" data-testid="yun-greeting">
         <div class="hero-tabs">
           <button class="hero-tab on" type="button">开始学习</button>
-          <button class="hero-tab" type="button" @click="router.push('/app/ask')">直接提问</button>
+          <button class="hero-tab" type="button" @click="router.push('/app/ask')">AI协助</button>
         </div>
 
         <div class="hero-kicker">
@@ -431,83 +498,115 @@ function startSelfTest(chapter) {
         <h1 class="hero-title">{{ heroTitle }}</h1>
         <p class="hero-sub">{{ heroSubtitle }}</p>
 
-        <div class="material-row">
-          <button
-            v-for="m in heroMaterials"
-            :key="m.title"
-            class="material-card"
-            type="button"
-            @click="m.action()"
-          >
-            <span class="material-no">{{ m.no }}</span>
-            <span class="material-main">
-              <span class="material-title">{{ m.title }}</span>
-              <span class="material-desc">{{ m.desc }}</span>
-            </span>
-            <span class="material-plus">+</span>
-          </button>
-        </div>
+        <div class="learning-composer">
+          <div class="material-row">
+            <button
+              v-for="m in heroMaterials"
+              :key="m.title"
+              class="material-card"
+              type="button"
+              :disabled="uploadingKind === m.kind"
+              @click="m.action()"
+            >
+              <span class="material-no">{{ m.no }}</span>
+              <span class="material-main">
+                <span class="material-title">{{ m.title }}</span>
+                <span class="material-desc">
+                  {{ m.files[0]?.name || m.desc }}
+                </span>
+              </span>
+              <span class="material-plus">
+                {{ uploadingKind === m.kind ? '…' : m.files.length ? '✓' : '+' }}
+              </span>
+            </button>
+          </div>
 
-        <div class="ask-box">
-          <textarea
-            v-model="heroInput"
-            rows="2"
-            :placeholder="heroPlaceholder"
-            @keydown.enter.exact.prevent="askHero"
-          />
-          <div class="ask-tools">
-            <div class="ask-left">
-              <div class="ask-plus-wrap">
-                <button
-                  class="ask-plus"
-                  type="button"
-                  :aria-expanded="showToolMenu"
-                  aria-label="打开学习工具"
-                  @click="showToolMenu = !showToolMenu"
-                >
-                  +
-                </button>
-                <div v-if="showToolMenu" class="assistant-tool-menu">
+          <div class="ask-box">
+            <textarea
+              v-model="heroInput"
+              rows="2"
+              :placeholder="heroPlaceholder"
+              @keydown.enter.exact.prevent="askHero"
+            />
+            <div class="ask-tools">
+              <div class="ask-left">
+                <div class="ask-plus-wrap">
                   <button
-                    v-for="tool in assistantTools"
-                    :key="tool.label"
+                    class="ask-plus"
                     type="button"
-                    @click="openAssistantTool(tool)"
+                    :aria-expanded="showToolMenu"
+                    aria-label="打开学习工具"
+                    @click="showToolMenu = !showToolMenu"
                   >
-                    <span class="assistant-tool-icon">{{ tool.icon }}</span>
-                    <span>
-                      <strong>{{ tool.label }}</strong>
-                      <small>{{ tool.desc }}</small>
-                    </span>
+                    +
+                  </button>
+                  <div v-if="showToolMenu" class="assistant-tool-menu">
+                    <button
+                      v-for="tool in assistantTools"
+                      :key="tool.label"
+                      type="button"
+                      @click="openAssistantTool(tool)"
+                    >
+                      <span class="assistant-tool-icon">{{ tool.icon }}</span>
+                      <span>
+                        <strong>{{ tool.label }}</strong>
+                        <small>{{ tool.desc }}</small>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+                <div class="ask-chips">
+                  <button
+                    v-for="a in heroActions"
+                    :key="a.label"
+                    class="ask-chip"
+                    type="button"
+                  @click="openHeroAction(a)"
+                  >
+                    {{ a.label }}
                   </button>
                 </div>
+                <span class="ask-sync">学校同步</span>
               </div>
-              <div class="ask-chips">
+              <div class="ask-right">
+                <span class="model-badge">{{ modelStore.config.model }}</span>
                 <button
-                  v-for="a in heroActions"
-                  :key="a.label"
-                  class="ask-chip"
+                  class="ask-send"
                   type="button"
-                  @click="router.push(a.to)"
+                  :disabled="!heroInput.trim()"
+                  @click="askHero"
                 >
-                  {{ a.label }}
+                  ↑
                 </button>
               </div>
-              <span class="ask-sync">课程同步</span>
             </div>
-            <div class="ask-right">
-              <span class="model-badge">{{ modelStore.config.model }}</span>
+
+            <div class="study-mode-row" aria-label="学习模式">
               <button
-                class="ask-send"
                 type="button"
-                :disabled="!heroInput.trim()"
-                @click="askHero"
+                :class="{ active: studyMode === 'course' }"
+                @click="studyMode = 'course'"
               >
-                ↑
+                <span>▤</span> 正常上课
+              </button>
+              <button
+                type="button"
+                :class="{ active: studyMode === 'sprint' }"
+                @click="studyMode = 'sprint'"
+              >
+                <span>ϟ</span> 考前冲刺
               </button>
             </div>
           </div>
         </div>
+        <input
+          ref="uploadInput"
+          class="hidden-upload"
+          type="file"
+          multiple
+          accept=".pdf,.docx,.pptx,.txt,.md,.markdown,.csv,.json,application/pdf"
+          @change="handleFilesSelected"
+        />
         <p class="hero-hint">{{ heroHint }}</p>
       </section>
 
@@ -657,7 +756,7 @@ function startSelfTest(chapter) {
         </div>
 
         <div class="card">
-          <h3 class="card-title">AI 助教</h3>
+          <h3 class="card-title">AI协助</h3>
           <p class="text-sub">
             基于《管理学》教材与课件构建的知识库，支持课后答疑与苏格拉底式引导提问。
           </p>
@@ -684,7 +783,7 @@ function startSelfTest(chapter) {
 /* —— 运行台顶部（示意 B-1）—— */
 .home-hero {
   max-width: 800px;
-  margin: 6px auto 24px;
+  margin: 6px auto 12px;
   text-align: center;
   padding: 4px 8px 0;
 }
@@ -731,36 +830,59 @@ function startSelfTest(chapter) {
 }
 
 .hero-sub {
-  margin: 8px 0 24px;
+  margin: 8px 0 14px;
   font-size: 14px;
   line-height: 1.7;
   color: var(--text-sub);
 }
 
+.learning-composer {
+  position: relative;
+  max-width: 720px;
+  margin: 0 auto;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  box-shadow: var(--card-shadow);
+}
+
 .material-row {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-  margin-bottom: 12px;
+  gap: 0;
+  padding: 6px 8px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--divider);
+  border-radius: 16px 16px 0 0;
 }
 
 .material-card {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 12px 14px;
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 12px;
+  min-width: 0;
+  padding: 10px 11px;
+  background: transparent;
+  border: 0;
+  border-left: 1px solid var(--divider);
+  border-radius: 8px;
   cursor: pointer;
   text-align: left;
   font-family: inherit;
   transition: border-color 0.15s, transform 0.15s;
 }
 
+.material-card:first-child {
+  border-left: 0;
+}
+
 .material-card:hover {
-  border-color: var(--accent);
-  transform: translateY(-1px);
+  background: var(--card-bg);
+}
+
+.material-card:disabled {
+  cursor: wait;
+  opacity: 0.65;
 }
 
 .material-no {
@@ -806,12 +928,12 @@ function startSelfTest(chapter) {
 }
 
 .ask-box {
-  padding: 14px 16px 10px;
+  padding: 14px 16px 8px;
   text-align: left;
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 16px;
-  box-shadow: var(--card-shadow);
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .ask-box textarea {
@@ -836,7 +958,7 @@ function startSelfTest(chapter) {
   justify-content: space-between;
   gap: 8px;
   flex-wrap: wrap;
-  margin-top: 8px;
+  margin-top: 6px;
 }
 
 .ask-left {
@@ -991,9 +1113,40 @@ function startSelfTest(chapter) {
 }
 
 .hero-hint {
-  margin: 10px 0 0;
+  margin: 7px 0 0;
   font-size: 11.5px;
   color: var(--text-faint);
+}
+
+.study-mode-row {
+  display: flex;
+  gap: 6px;
+  padding: 7px 16px 10px;
+}
+
+.study-mode-row button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 9px;
+  color: var(--text-sub);
+  background: var(--surface-2);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-pill);
+  font-family: inherit;
+  font-size: 10.5px;
+  cursor: pointer;
+}
+
+.study-mode-row button.active {
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-color: color-mix(in srgb, var(--accent) 35%, var(--card-border));
+  font-weight: 600;
+}
+
+.hidden-upload {
+  display: none;
 }
 
 .home-columns {

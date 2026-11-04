@@ -51,7 +51,7 @@ const BOARD_SCHEMA = `{
   ]
 }`
 
-export function boardLessonPrompt({ chapter, materialText, discipline, focus }) {
+export function boardLessonPrompt({ chapter, materialText, discipline, focus, studyMode }) {
   return {
     system:
       `${TUTOR_IDENTITY}\n` +
@@ -60,14 +60,16 @@ export function boardLessonPrompt({ chapter, materialText, discipline, focus }) 
       `${LEARNING_ETHICS}\n` +
       `${disciplineHint(discipline)}\n` +
       '硬约束：只使用给定课程材料；模型只写内容与 chunk 之外的章级来源，绝对不要编造页码；' +
-      '不输出 HTML、Markdown、坐标、绘图指令或品牌文案；最多 8 个 block，至少包含 outline、definition 和一个 question。\n' +
+      '不输出 HTML、Markdown、坐标、绘图指令或品牌文案；最多 6 个 block，至少包含 outline、definition 和一个 question。\n' +
       jsonOnly(BOARD_SCHEMA),
     user:
       `章节：${chapter}\n` +
+      `学习模式：${studyMode === 'sprint' ? '考前冲刺，只讲高频考点与易错辨析' : '正常上课，跟随课程进度完整理解'}\n` +
       (focus ? `学生关注点：${focus}\n` : '') +
       `教师确认材料：\n${materialText}`,
     temperature: 0.35,
-    maxTokens: 2400,
+    maxTokens: 6000,
+    reasoningEffort: 'low',
   }
 }
 
@@ -85,6 +87,7 @@ export function boardQuestionPrompt({ chapter, lessonText, question, discipline 
       `当前板书：\n${lessonText}\n\n` +
       `学生插问：${question}`,
     temperature: 0.45,
-    maxTokens: 600,
+    maxTokens: 1600,
+    reasoningEffort: 'low',
   }
 }

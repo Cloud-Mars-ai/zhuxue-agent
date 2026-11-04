@@ -9,6 +9,7 @@ import { isEnabled } from '@/config/flags'
 import { sendChat } from '@/api/chat'
 import { matchIntent, buildTodoActions } from '@/utils/intent'
 import { getDailyRecommendations } from '@/utils/recommend'
+import SpeakButton from '@/components/SpeakButton.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -31,6 +32,10 @@ const listRef = ref()
 const currentChapter = computed(
   () => COURSE.chapters.find((c) => c.status === '进行中')?.title || COURSE.chapters[0]?.title || '',
 )
+const studyMode = computed(() => {
+  const value = Array.isArray(route.query.mode) ? route.query.mode[0] : route.query.mode
+  return value === 'sprint' ? 'sprint' : 'course'
+})
 
 const recommendations = computed(() =>
   getDailyRecommendations(personaStore.data, currentChapter.value),
@@ -84,6 +89,7 @@ async function ask(text) {
     const reply = await sendChat(messages.value, {
       useKnowledge: true,
       chapter: currentChapter.value,
+      studyMode: studyMode.value,
       traceRefs: { chapter: currentChapter.value },
     })
     messages.value.push({ role: 'assistant', content: reply })
@@ -136,6 +142,7 @@ onMounted(() => {
               {{ t.label }}｜{{ t.desc }}
             </van-button>
           </div>
+          <SpeakButton v-if="m.role === 'assistant'" :text="m.content" />
         </div>
       </div>
       <div v-if="sending" class="msg assistant">

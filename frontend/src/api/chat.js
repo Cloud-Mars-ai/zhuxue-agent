@@ -39,6 +39,22 @@ export function buildDisciplineSuffix() {
   return '\n\n【学生背景】当前学生学科背景为"其他"：请使用通用、跨领域的例子解释概念。'
 }
 
+export function buildStudyModeSuffix(mode) {
+  if (mode === 'sprint') {
+    return (
+      '\n\n【学习模式：考前冲刺】只围绕当前章节的高频考点、易错辨析和可考表达组织答案；' +
+      '压缩背景铺陈，明确“先记什么、怎么答”，不要主动扩展整门课。'
+    )
+  }
+  if (mode === 'course') {
+    return (
+      '\n\n【学习模式：正常上课】跟随学校课程进度，讲清概念、例子、练习与后续衔接；' +
+      '不要为了应试而跳过理解过程。'
+    )
+  }
+  return ''
+}
+
 function friendlyError(status, detail, model) {
   const suffix = detail ? `：${String(detail).slice(0, 150)}` : ''
   switch (status) {
@@ -128,7 +144,7 @@ export async function sendChatDetailed(messages, options = {}) {
       : `${cfg.systemPrompt || ''}${buildDisciplineSuffix()}`
 
   // 资料第一：命中知识库时把材料片段注入系统提示词（带来源标签）
-  let finalSystemPrompt = systemPrompt
+  let finalSystemPrompt = `${systemPrompt}${buildStudyModeSuffix(options.studyMode)}`
   let knowledgeChunks = []
   if (options.useKnowledge && isEnabled('knowledgeBase')) {
     try {
@@ -169,6 +185,9 @@ export async function sendChatDetailed(messages, options = {}) {
           messages: buildMessages(messages, finalSystemPrompt),
           temperature,
           max_tokens: maxTokens,
+          ...(options.reasoningEffort
+            ? { reasoning_effort: options.reasoningEffort }
+            : {}),
         }),
         signal: options.signal ?? controller.signal,
       })

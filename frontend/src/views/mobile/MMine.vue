@@ -47,7 +47,7 @@ const tools = [
   { title: '学习体检', desc: '盲区诊断 · 下一步建议', path: '/m/checkup', icon: 'chart-trending-o' },
   { title: '课前案例', desc: '提交兴趣案例 · 老师选用', path: '/m/case', icon: 'description' },
   { title: '课程考核', desc: 'AI 模拟面试题', path: '/m/assessment', icon: 'aim' },
-  { title: 'AI 答疑', desc: '小管同学在线解答', path: '/m/ask', icon: 'chat' },
+  { title: 'AI协助', desc: '小管同学在线解答', path: '/m/ask', icon: 'chat' },
 ]
 
 async function handleLogout() {

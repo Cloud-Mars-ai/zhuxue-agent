@@ -8,6 +8,7 @@ export default defineConfig({
   testDir: './tests/e2e',
   fullyParallel: false,
   workers: 1,
+  grepInvert: /@live/,
   timeout: 45_000,
   expect: { timeout: 12_000 },
   reporter: [['line']],

@@ -401,6 +401,8 @@ Codex 从帧重建形态基线（§6）→ 补板书/规划/单入口
 | 学生姓名/成绩 | 全为仿真数据，无真实个人信息 | 接后端时按 R-11：本地优先、脱敏、权限、边界声明 |
 | 无鉴权 | 演示账号明文 `123456`，纯前端角色判断 | 仅适合演示；上线必须后端签发 token |
 
+> 2026-11-04 后续：项目负责人明确要求先把 Step 5 Preview 与 StepAudio 3 TTS 的两把密钥临时内置到前端，后续再迁移到后端代理。当前构建产物会包含这两把密钥，交付或公开部署前必须先轮换并移除。
+
 ### 8.2 缺陷与技术债（按影响排序）
 
 | # | 问题 | 位置 | 影响 |
@@ -577,18 +579,20 @@ npm run dev      # http://localhost:5173
 已完成：
 
 1. 从 `frames/` 与 `frames1/` 自行重建 HyperKnow 参照，产出 `docs/research/hyperknow-frame-review.md`：51 条带帧号观察、16 条交互状态、8 组与现有页面的并排对比。
-2. 移除 `stores/model.js` 中的默认明文 API Key；源码扫描已确认不存在其他非空硬编码 `apiKey`。服务商后台轮换与 Git 历史清理仍须项目负责人执行。
+2. 按项目负责人要求，在 `stores/model.js` 中临时内置 Step 5 Preview 与 StepAudio 3 TTS 两套配置和密钥；真实文本、语音接口均已从页面调用验证。公开部署前必须轮换密钥并迁移到后端代理。
 3. 新增 Web/H5 结构化板书：`views/web/Board.vue`、`views/mobile/MBoard.vue`、`components/BoardCanvas.vue`；支持逐块出现、暂停/重播、缩放、全屏、右栏插问与 A/B 追问。
 4. 新增板书模型任务与确定性兜底：`api/board.js`、`api/prompts/board.js`、`utils/board.js`。模型只输出受控 block JSON，失败时使用教师确认稿并标“演示缓存”。
 5. 首页 `+` 已改为统一学习工具菜单；同步 `/app/board`、`/m/board`、`WEB_TO_MOBILE`、`GROUP_OF` 与 H5 入口。
 6. 修正一人一题、自测、速查表、考核的“无模型”入口：打开 `offlineFallback` 时仍可进入确定性演示，不再被配置检查挡在按钮外。
-7. 重建 Playwright 回归：`frontend/tests/e2e/critical-flows.spec.js` 共 10 条，覆盖登录首页、意图跳转、工具菜单、一人一题、自测、速查表、考核生成复核发布、皮肤持久化、生产深链接与 H5 板书。最新结果：`10 passed`。
+7. 重建 Playwright 回归：`frontend/tests/e2e/critical-flows.spec.js` 共 13 条确定性用例，另有 3 条 `@live` 真实 StepFun 用例；覆盖登录首页、意图跳转、工具菜单、一体化材料区/双模式、TXT/PDF 文件上传、一人一题、自测、速查表、考核生成复核发布、皮肤持久化、生产深链接、H5 板书、Step 5、结构化板书与 TTS。最新结果：`13 passed`、`3 passed`。
 8. 在 `8552214` 建立 `v0.5-baseline`，移除无写权限的 `origin`；仓库只保留 `mygithub` 推送远端。
+9. 首页材料区与输入区合并为一体化学习编排器，交互宽度收窄；新增“正常上课 / 考前冲刺”模式。三个材料卡现在直接打开文件选择器，支持 TXT/Markdown/PDF/DOCX/PPTX 浏览器内正文提取并写入知识库。
+10. 左侧栏移除 AI 答疑入口，顶部改为“AI协助”；AI 回答与板书回复均增加 StepAudio 3 TTS 朗读按钮。模型接入页可查看、编辑和测试文本/语音两套配置。
 
 当前阻塞：
 
-- 真实模型链路仍未验收：需要负责人在服务商后台轮换旧 Key，并通过本机“模型接入”页配置新 Key；不得把 Key 提交到仓库或在聊天中传递。
-- 泄漏 Key 虽已从当前源码移除，但仍存在于旧提交历史；是否改写公开仓库历史需仓库负责人决定。
+- 真实模型链路已验收：Step 5 Preview 对话、结构化板书、StepAudio 3 TTS 均通过页面级 `@live` 测试。正式交付前仍需要轮换当前明文 Key 并迁移到后端代理。
+- 当前按要求内置的两把新 Key 会出现在公开构建与后续提交中；迁移到后端代理时应同时轮换并清理历史。
 - 本轮未更新 WorkBuddy 公网链接；线上发布权仍在原平台。
 
 常用验证：

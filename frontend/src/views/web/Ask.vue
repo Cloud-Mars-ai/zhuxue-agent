@@ -6,6 +6,7 @@ import { COURSE } from '@/mock/data'
 import { useModelStore } from '@/stores/model'
 import { useUserStore } from '@/stores/user'
 import { usePersonaStore } from '@/stores/persona'
+import SpeakButton from '@/components/SpeakButton.vue'
 import { isEnabled } from '@/config/flags'
 import { sendChat } from '@/api/chat'
 import { matchIntent, buildTodoActions } from '@/utils/intent'
@@ -33,6 +34,10 @@ const listRef = ref()
 const currentChapter = computed(
   () => COURSE.chapters.find((c) => c.status === '进行中')?.title || COURSE.chapters[0]?.title || '',
 )
+const studyMode = computed(() => {
+  const value = Array.isArray(route.query.mode) ? route.query.mode[0] : route.query.mode
+  return value === 'sprint' ? 'sprint' : 'course'
+})
 
 // 主动式提问：基于练习记录与画像，每天刷新；规则优先，不依赖模型
 const recommendations = computed(() =>
@@ -88,6 +93,7 @@ async function ask(text) {
     const reply = await sendChat(messages.value, {
       useKnowledge: true,
       chapter: currentChapter.value,
+      studyMode: studyMode.value,
       traceRefs: { chapter: currentChapter.value },
     })
     messages.value.push({ role: 'assistant', content: reply })
@@ -172,6 +178,7 @@ onMounted(() => {
               {{ t.label }}｜{{ t.desc }}
             </el-button>
           </div>
+          <SpeakButton v-if="m.role === 'assistant'" :text="m.content" />
         </div>
       </div>
       <div v-if="sending" class="msg assistant">

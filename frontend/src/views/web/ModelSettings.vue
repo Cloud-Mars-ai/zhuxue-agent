@@ -5,8 +5,10 @@ import {
   useModelStore,
   DEFAULT_MODEL_CONFIG,
   STEPFUN_MODELS,
+  STEPFUN_TTS_MODELS,
 } from '@/stores/model'
 import { sendChat } from '@/api/chat'
+import { playSpeech } from '@/api/tts'
 
 const modelStore = useModelStore()
 
@@ -17,6 +19,11 @@ const form = reactive({
   model: '',
   temperature: 0.3,
   systemPrompt: '',
+  ttsBaseUrl: '',
+  ttsApiKey: '',
+  ttsModel: '',
+  ttsVoice: '',
+  ttsInstruction: '',
 })
 
 function loadForm() {
@@ -27,6 +34,11 @@ function loadForm() {
   form.model = c.model
   form.temperature = Number(c.temperature)
   form.systemPrompt = c.systemPrompt
+  form.ttsBaseUrl = c.ttsBaseUrl || DEFAULT_MODEL_CONFIG.ttsBaseUrl
+  form.ttsApiKey = c.ttsApiKey || ''
+  form.ttsModel = c.ttsModel || DEFAULT_MODEL_CONFIG.ttsModel
+  form.ttsVoice = c.ttsVoice || DEFAULT_MODEL_CONFIG.ttsVoice
+  form.ttsInstruction = c.ttsInstruction || DEFAULT_MODEL_CONFIG.ttsInstruction
 }
 loadForm()
 
@@ -52,9 +64,17 @@ const maskedKey = computed(() => {
   return `${key.slice(0, 3)}****${key.slice(-4)}`
 })
 
+const maskedTtsKey = computed(() => {
+  const key = modelStore.config.ttsApiKey || ''
+  if (!key) return '未配置'
+  if (key.length <= 8) return '****'
+  return `${key.slice(0, 3)}****${key.slice(-4)}`
+})
+
 const showKey = ref(false)
 const testing = ref(false)
 const testResult = ref('')
+const testingTts = ref(false)
 
 function handleProviderChange(val) {
   if (val === 'stepfun') {
@@ -93,6 +113,27 @@ async function handleTest() {
   }
 }
 
+async function handleTestTts() {
+  if (!form.ttsApiKey?.trim() || !form.ttsBaseUrl?.trim() || !form.ttsModel?.trim()) {
+    ElMessage.warning('请先填写语音接口地址、模型和密钥')
+    return
+  }
+  testingTts.value = true
+  try {
+    await playSpeech('你好，我是课程助学助手，语音连接正常。', {
+      config: {
+        ...form,
+        apiKey: form.apiKey,
+      },
+    })
+    ElMessage.success('语音连接成功，正在播放测试音频')
+  } catch (err) {
+    ElMessage.error(err.message || '语音连接失败')
+  } finally {
+    testingTts.value = false
+  }
+}
+
 function handleSave() {
   if (!form.baseUrl?.trim()) {
     ElMessage.warning('请填写接口地址')
@@ -104,6 +145,10 @@ function handleSave() {
   }
   if (!form.model?.trim()) {
     ElMessage.warning('请填写模型名称')
+    return
+  }
+  if (!form.ttsBaseUrl?.trim() || !form.ttsApiKey?.trim() || !form.ttsModel?.trim()) {
+    ElMessage.warning('请补全语音合成配置')
     return
   }
   modelStore.updateConfig({ ...form })
@@ -122,7 +167,7 @@ function handleReset() {
   <div class="model-settings">
     <el-alert type="info" :closable="false" show-icon class="tip">
       <template #title>
-        配置大模型后，「AI 答疑 / AI 助教」等智能体功能将调用该模型生成回答。
+        配置大模型后，「AI协助 / AI 助教」等智能体功能将调用该模型生成回答。
         默认使用阶跃星辰（StepFun）的 OpenAI 兼容接口；密钥仅保存在当前浏览器本地，不会上传到任何服务器。
       </template>
     </el-alert>
@@ -140,6 +185,10 @@ function handleReset() {
           {{ modelStore.config.baseUrl || '未配置' }}
         </el-descriptions-item>
         <el-descriptions-item label="密钥">{{ maskedKey }}</el-descriptions-item>
+        <el-descriptions-item label="语音模型">
+          {{ modelStore.config.ttsModel || '未配置' }}
+        </el-descriptions-item>
+        <el-descriptions-item label="语音密钥">{{ maskedTtsKey }}</el-descriptions-item>
       </el-descriptions>
     </el-card>
 
@@ -212,10 +261,56 @@ function handleReset() {
           />
         </el-form-item>
 
+        <el-divider content-position="left">语音合成 · StepAudio</el-divider>
+
+        <el-form-item label="接口地址">
+          <el-input v-model="form.ttsBaseUrl" placeholder="https://api.stepfun.com/v1" />
+        </el-form-item>
+
+        <el-form-item label="语音模型">
+          <el-select
+            v-model="form.ttsModel"
+            filterable
+            allow-create
+            default-first-option
+            style="width: 100%"
+          >
+            <el-option
+              v-for="m in STEPFUN_TTS_MODELS"
+              :key="m"
+              :label="m"
+              :value="m"
+            />
+          </el-select>
+          <div class="form-help">StepAudio 3 TTS 模型 ID：stepaudio-3-tts</div>
+        </el-form-item>
+
+        <el-form-item label="音色">
+          <el-input v-model="form.ttsVoice" placeholder="例如：qinhenvsheng" />
+        </el-form-item>
+
+        <el-form-item label="语音密钥">
+          <el-input v-model="form.ttsApiKey" :type="showKey ? 'text' : 'password'" placeholder="语音模型 API Key">
+            <template #append>
+              <el-button @click="showKey = !showKey">{{ showKey ? '隐藏' : '显示' }}</el-button>
+            </template>
+          </el-input>
+        </el-form-item>
+
+        <el-form-item label="朗读指导">
+          <el-input
+            v-model="form.ttsInstruction"
+            type="textarea"
+            :rows="3"
+            placeholder="例如：清晰、温和、有节奏的课堂讲解语气"
+          />
+        </el-form-item>
+
         <el-form-item>
           <el-button type="primary" @click="handleSave">保存配置</el-button>
           <el-button @click="handleReset">恢复默认</el-button>
           <el-button :loading="testing" @click="handleTest">测试连接</el-button>
+          <el-button :loading="testingTts" @click="handleTestTts">测试语音</el-button>
         </el-form-item>
       </el-form>
     </el-card>

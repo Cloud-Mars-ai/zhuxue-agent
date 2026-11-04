@@ -116,14 +116,14 @@ const quickEntries = computed(() =>
         { ic: '检', color: '#2B8A3E', name: '学习体检', sub: '盲区与建议', to: '/m/checkup' },
         { ic: '例', color: '#0C8599', name: '课前案例', sub: '提交兴趣案例', to: '/m/case' },
         { ic: '考', color: '#2B8A3E', name: '课程考核', sub: '模拟面试', to: '/m/assessment' },
-        { ic: '问', color: '#F59F00', name: 'AI 答疑', sub: '小管同学', to: '/m/ask' },
+        { ic: '问', color: '#F59F00', name: 'AI协助', sub: '小管同学', to: '/m/ask' },
         { ic: '我', color: '#495057', name: '我的', sub: '背景与设置', to: '/m/mine' },
       ]
     : [
         { ic: '板', color: '#3D5BD9', name: '板书讲解', sub: '课程内容对照', to: '/m/board' },
         { ic: '稿', color: '#3B5BDB', name: '案例选稿台', sub: '筛选 / 选用 / 驳回', to: '/m/case' },
         { ic: '卷', color: '#E8590C', name: '出题阅卷台', sub: '圈人出题 · 评分', to: '/m/assessment' },
-        { ic: '问', color: '#F59F00', name: 'AI 答疑', sub: '小管同学', to: '/m/ask' },
+        { ic: '问', color: '#F59F00', name: 'AI协助', sub: '小管同学', to: '/m/ask' },
       ],
 )
 
@@ -285,7 +285,7 @@ function askHero() {
       <section class="m-home-hero" data-testid="yun-greeting">
         <div class="m-hero-tabs">
           <span class="on">开始学习</span>
-          <span @click="router.push('/m/ask')">直接提问</span>
+          <span @click="router.push('/m/ask')">AI协助</span>
         </div>
         <h1 class="m-hero-title">{{ heroLine1 }}<br />{{ heroLine2 }}</h1>
         <p class="m-hero-sub">{{ mHeroSub }}</p>

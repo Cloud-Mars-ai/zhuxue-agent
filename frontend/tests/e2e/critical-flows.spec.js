@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test'
+import { fileURLToPath } from 'node:url'
 
 const USERS = {
   student: {
@@ -21,6 +22,17 @@ async function seedUser(page, role = 'student') {
     }
     if (!localStorage.getItem('ai-tutor-theme')) {
       localStorage.setItem('ai-tutor-theme', 'yun')
+    }
+    if (!localStorage.getItem('ai-tutor-model-config')) {
+      localStorage.setItem(
+        'ai-tutor-model-config',
+        JSON.stringify({
+          configVersion: '2026-11-04-step5',
+          apiKey: '',
+          ttsApiKey: '',
+          model: 'step-5-preview',
+        }),
+      )
     }
     localStorage.setItem('ai-tutor-flags', JSON.stringify({ offlineFallback: true }))
   }, USERS[role])
@@ -60,6 +72,55 @@ test('首页工具菜单一步进入板书讲解', async ({ page }) => {
 
   await expect(page).toHaveURL(/\/app\/board/)
   await expect(page.getByTestId('board-canvas')).toBeVisible()
+})
+
+test('首页采用一体化材料区与双学习模式', async ({ page }) => {
+  await seedUser(page)
+  await page.goto('/app/course')
+
+  await expect(page.locator('.learning-composer')).toBeVisible()
+  await expect(page.locator('.aside')).not.toContainText('AI答疑')
+  await expect(page.getByRole('button', { name: 'AI协助', exact: true })).toBeVisible()
+
+  await page.getByRole('button', { name: /考前冲刺/ }).click()
+  await expect(page.getByRole('button', { name: /考前冲刺/ })).toHaveClass(/active/)
+  await page.getByRole('button', { name: '板书讲解', exact: true }).click()
+  await expect(page).toHaveURL(/\/app\/board\?chapter=.*mode=sprint/)
+})
+
+test('教学大纲卡可选择文件并导入知识库', async ({ page }) => {
+  await seedUser(page)
+  await page.goto('/app/course')
+
+  const chooserPromise = page.waitForEvent('filechooser')
+  await page.locator('.material-card').first().click()
+  const chooser = await chooserPromise
+  await chooser.setFiles({
+    name: '管理学教学大纲.txt',
+    mimeType: 'text/plain',
+    buffer: Buffer.from(
+      '第一章 管理与管理者\n管理是在特定环境中对组织资源进行计划、组织、领导和控制的过程。',
+    ),
+  })
+
+  await expect(page.locator('.material-card').first()).toContainText('管理学教学大纲.txt')
+  await expect(page.locator('.material-card').first()).toContainText('✓')
+})
+
+test('PDF 课程课件可在浏览器内提取并导入', async ({ page }) => {
+  await seedUser(page)
+  await page.goto('/app/course')
+
+  const pdfPath = fileURLToPath(new URL('../fixtures/syllabus.pdf', import.meta.url))
+  const chooserPromise = page.waitForEvent('filechooser')
+  await page.locator('.material-card').nth(1).click()
+  const chooser = await chooserPromise
+  await chooser.setFiles(pdfPath)
+
+  await expect(page.locator('.material-card').nth(1)).toContainText('syllabus.pdf', {
+    timeout: 20_000,
+  })
+  await expect(page.locator('.material-card').nth(1)).toContainText('✓')
 })
 
 test('无模型时一人一题仍可生成并获取确定性反馈', async ({ page }) => {

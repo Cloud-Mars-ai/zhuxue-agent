@@ -50,7 +50,7 @@ const menus = computed(() => {
   const items = (webRoot?.children || [])
     .filter((child) => {
       const allowed = child.meta?.roles
-      return !allowed || allowed.includes(userStore.role)
+      return child.meta?.nav !== false && (!allowed || allowed.includes(userStore.role))
     })
     .map((child) => ({
       index: `/app/${child.path}`,
@@ -79,7 +79,7 @@ const KIND_LABEL = {
   selftest: '完成章节自测',
   cheatsheet: '生成备考速查表',
   diagnosis: '查看学习体检',
-  chat: 'AI 答疑',
+  chat: 'AI协助',
   assessment: '课程考核',
   case: '课前案例',
 }
