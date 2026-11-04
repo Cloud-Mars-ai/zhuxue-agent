@@ -173,38 +173,24 @@ function loadUploadHistory() {
   }
 }
 const showToolMenu = ref(false)
-const canGenerateCourse = computed(() =>
-  ['admin', 'teacher', 'ta'].includes(userStore.role),
-)
+const canGenerateCourse = computed(() => !!userStore.user)
 
 const heroTitle = computed(() =>
   isStudent.value ? '把这一章，学成你自己的' : '把这一周的教学，安排明白',
 )
 
-const heroSubtitle = computed(() =>
-  isStudent.value
-    ? '从课前案例到考前速查，我会按你的进度与盲区，安排下一步。'
-    : '从已上传材料到个性化课程，我会先编排大纲，再逐场景生成。',
-)
+const heroSubtitle = computed(() => '从已接入材料到个性化课程，我会先编排大纲，再逐场景生成。')
 
 const heroPlaceholder = computed(() =>
   modeChosen.value
-    ? isStudent.value
-      ? '问一个问题，或说说你今天想学什么…'
-      : '描述课程目标，例如：用本周课件生成一节案例应用课…'
+    ? '描述想学的课程目标，例如：帮我生成一节案例判断课…'
     : '',
 )
 
 const heroHint = computed(() =>
   generatingCourse.value
     ? '正在检索已上传材料并生成可编辑大纲，通常需要数秒…'
-    : canGenerateCourse.value
-    ? `将依据已接入的 ${knowledgeStore.materials.length} 份教师材料生成大纲；未上传补充材料时使用课程纲要。`
-    : isStudent.value
-    ? studyMode.value === 'sprint'
-      ? '考前冲刺只聚焦重点、易错点和可考表达，不会铺开整章。'
-      : '正常上课跟随学校进度，覆盖每一讲、练习与考核。'
-    : '课程资料库里的材料会作为 AI 回答的依据，未经确认的材料不会进入上下文。',
+    : `将依据已接入的 ${knowledgeStore.materials.length} 份教师确认材料生成大纲；补充材料会优先参与编排。`,
 )
 
 const heroActions = computed(() =>
@@ -223,21 +209,17 @@ const heroActions = computed(() =>
 )
 
 const assistantTools = computed(() => [
-  ...(canGenerateCourse.value
-    ? [
-        {
-          label: '生成课程',
-          desc: '从已上传材料编排课程',
-          icon: '课',
-          action: () => {
-            heroInput.value =
-              heroInput.value ||
-              `围绕${currentChapter.value?.title || '当前章节'}生成一节能用于案例判断的课程`
-            askHero()
-          },
-        },
-      ]
-    : []),
+  {
+    label: '生成课程',
+    desc: '从已上传材料编排课程',
+    icon: '课',
+    action: () => {
+      heroInput.value =
+        heroInput.value ||
+        `围绕${currentChapter.value?.title || '当前章节'}生成一节能用于案例判断的课程`
+      askHero()
+    },
+  },
   {
     label: '板书讲解',
     desc: '从路线图讲到追问',
@@ -301,39 +283,39 @@ async function askHero() {
     ElMessage.info('请先选择正常上课或考前冲刺模式')
     return
   }
-  if (canGenerateCourse.value) {
-    generatingCourse.value = true
-    try {
-      const result = await generateCourseBlueprint({
+  generatingCourse.value = true
+  try {
+    const result = await generateCourseBlueprint({
+      chapter: currentChapter.value?.title || '未分章材料',
+      objective: q,
+      audience: userStore.discipline
+        ? `管理学学生（${userStore.discipline}背景）`
+        : '管理学本科生',
+      mode: studyMode.value,
+      durationMinutes: 30,
+    })
+    const saved = await courseStudioStore.createDraft({
+      ownerId: userStore.user?.id || '',
+      input: {
         chapter: currentChapter.value?.title || '未分章材料',
         objective: q,
-        audience: '管理学本科生',
+        audience: userStore.discipline
+          ? `管理学学生（${userStore.discipline}背景）`
+          : '管理学本科生',
         mode: studyMode.value,
         durationMinutes: 30,
-      })
-      const saved = await courseStudioStore.createDraft({
-        ownerId: userStore.user?.id || '',
-        input: {
-          chapter: currentChapter.value?.title || '未分章材料',
-          objective: q,
-          audience: '管理学本科生',
-          mode: studyMode.value,
-          durationMinutes: 30,
-        },
-        result,
-      })
-      ElMessage.success(
-        result.fallback ? '已基于教师材料生成可编辑大纲（演示缓存）' : '课程大纲已生成',
-      )
-      await router.push({ path: '/app/studio', query: { project: saved.id } })
-    } catch (error) {
-      ElMessage.error(error.message || '课程大纲生成失败')
-    } finally {
-      generatingCourse.value = false
-    }
-    return
+      },
+      result,
+    })
+    ElMessage.success(
+      result.fallback ? '已基于教师材料生成可编辑大纲（演示缓存）' : '课程大纲已生成',
+    )
+    await router.push({ path: '/app/studio', query: { project: saved.id } })
+  } catch (error) {
+    ElMessage.error(error.message || '课程大纲生成失败')
+  } finally {
+    generatingCourse.value = false
   }
-  router.push({ path: '/app/ask', query: { q, mode: studyMode.value } })
 }
 
 function openAssistantTool(tool) {
@@ -689,7 +671,7 @@ onMounted(() => {
                   </button>
                 </div>
                 <span class="ask-sync">
-                  {{ canGenerateCourse ? '本校课程材料' : '学校同步' }}
+                  本校课程材料
                 </span>
               </div>
               <div class="ask-right">

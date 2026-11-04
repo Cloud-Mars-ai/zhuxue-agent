@@ -92,7 +92,7 @@ const routes = [
         path: 'studio',
         name: 'CourseStudio',
         component: () => import('@/views/web/CourseStudio.vue'),
-        meta: { title: '智能课程编排', icon: 'MagicStick', roles: ['admin', 'teacher', 'ta'] },
+        meta: { title: '智能课程编排', icon: 'MagicStick' },
       },
       {
         path: 'experience',
@@ -237,7 +237,7 @@ const routes = [
         path: 'studio',
         name: 'MCourseStudio',
         component: () => import('@/views/web/CourseStudio.vue'),
-        meta: { title: '智能课程编排', mobile: true, roles: ['admin', 'teacher', 'ta'] },
+        meta: { title: '智能课程编排', mobile: true },
       },
       {
         path: 'experience',

@@ -70,7 +70,10 @@ test('首页工具菜单一步进入板书讲解', async ({ page }) => {
 
   await page.getByRole('button', { name: '打开学习工具' }).click()
   await expect(page.getByText('从路线图讲到追问')).toBeVisible()
-  await page.locator('.assistant-tool-menu button').first().click()
+  await page
+    .locator('.assistant-tool-menu button')
+    .filter({ hasText: '板书讲解' })
+    .click()
 
   await expect(page).toHaveURL(/\/app\/board/)
   await expect(page.getByTestId('board-canvas')).toBeVisible()
@@ -272,6 +275,20 @@ test('教师可从首页材料输入直接生成课程大纲', async ({ page }) 
   await page.getByRole('button', { name: '从材料生成课程大纲' }).click()
 
   await expect(page).toHaveURL(/\/app\/studio\?project=/)
+  await expect(page.locator('.outline-row').first()).toBeVisible()
+  await expect(page.getByText('演示缓存大纲')).toBeVisible()
+})
+
+test('学生可从 H5 首页直接生成课程大纲', async ({ page }) => {
+  await seedUser(page)
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/m/course')
+
+  await page.getByRole('button', { name: /考前冲刺/ }).click()
+  await page.locator('.m-ask-box textarea').fill('帮我生成一节决策与计划冲刺课')
+  await page.locator('.m-send').click()
+
+  await expect(page).toHaveURL(/\/m\/studio\?project=/)
   await expect(page.locator('.outline-row').first()).toBeVisible()
   await expect(page.getByText('演示缓存大纲')).toBeVisible()
 })

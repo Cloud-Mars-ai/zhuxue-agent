@@ -58,7 +58,10 @@ const menus = computed(() => {
       index: `/app/${child.path}`,
       title: child.meta.title,
       icon: child.meta.icon,
-      group: GROUP_OF[child.path] || '更多',
+      group:
+        child.path === 'studio' && userStore.role === 'student'
+          ? '学习'
+          : GROUP_OF[child.path] || '更多',
     }))
 
   return GROUP_ORDER.map((title) => ({

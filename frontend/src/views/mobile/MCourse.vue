@@ -1,6 +1,7 @@
 <script setup>
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { showToast } from 'vant'
 import { COURSE, HOMEWORKS } from '@/mock/data'
 import { useUserStore } from '@/stores/user'
 import { useModelStore } from '@/stores/model'
@@ -9,8 +10,11 @@ import { useAssessmentStore } from '@/stores/assessment'
 import { usePracticeStore } from '@/stores/practice'
 import { usePersonaStore } from '@/stores/persona'
 import { useThemeStore } from '@/stores/theme'
+import { useKnowledgeStore } from '@/stores/knowledge'
+import { useCourseStudioStore } from '@/stores/courseStudio'
 import { diagnoseGaps } from '@/utils/diagnose'
 import { buildFeed } from '@/utils/feed'
+import { generateCourseBlueprint } from '@/api/courseStudio'
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -20,6 +24,8 @@ const assessmentStore = useAssessmentStore()
 const practiceStore = usePracticeStore()
 const personaStore = usePersonaStore()
 const themeStore = useThemeStore()
+const knowledgeStore = useKnowledgeStore()
+const courseStudioStore = useCourseStudioStore()
 
 const MOBILE_ROUTE = {
   '/app/practice': '/m/practice',
@@ -128,12 +134,14 @@ const quickEntries = computed(() =>
 )
 
 const heroInput = ref('')
+const studyMode = ref('course')
+const modeChosen = ref(false)
+const showModeMenu = ref(false)
+const generatingCourse = ref(false)
 const heroLine1 = computed(() => (isStudent.value ? '把这一章，' : '把这一周的教学，'))
 const heroLine2 = computed(() => (isStudent.value ? '学成你自己的' : '安排明白'))
 const mHeroSub = computed(() =>
-  isStudent.value
-    ? '从课前案例到考前速查，按你的进度与盲区安排下一步。'
-    : '从课程材料到班级盲区，把该处理的事排好序。',
+  '从已接入材料到个性化课程，先生成大纲，再逐场景展开。',
 )
 
 const mHeroMaterials = computed(() =>
@@ -167,11 +175,54 @@ const mHeroActions = computed(() =>
 const mPrimary = computed(() => quickEntries.value.slice(0, 4))
 const mSecondary = computed(() => quickEntries.value.slice(4))
 
-function askHero() {
-  const q = heroInput.value.trim()
-  if (!q) return
-  router.push({ path: '/m/ask', query: { q } })
+function chooseStudyMode(mode) {
+  studyMode.value = mode
+  modeChosen.value = true
+  showModeMenu.value = false
 }
+
+async function askHero() {
+  const q = heroInput.value.trim()
+  if (!q || generatingCourse.value) return
+  if (!modeChosen.value) {
+    showModeMenu.value = true
+    showToast('请先选择正常上课或考前冲刺')
+    return
+  }
+  generatingCourse.value = true
+  try {
+    const result = await generateCourseBlueprint({
+      chapter: currentChapter.value?.title || '未分章材料',
+      objective: q,
+      audience: userStore.discipline
+        ? `管理学学生（${userStore.discipline}背景）`
+        : '管理学本科生',
+      mode: studyMode.value,
+      durationMinutes: 30,
+    })
+    const saved = await courseStudioStore.createDraft({
+      ownerId: userStore.user?.id || '',
+      input: {
+        chapter: currentChapter.value?.title || '未分章材料',
+        objective: q,
+        audience: userStore.discipline
+          ? `管理学学生（${userStore.discipline}背景）`
+          : '管理学本科生',
+        mode: studyMode.value,
+        durationMinutes: 30,
+      },
+      result,
+    })
+    showToast(result.fallback ? '已生成可编辑大纲（演示缓存）' : '课程大纲已生成')
+    await router.push({ path: '/m/studio', query: { project: saved.id } })
+  } catch (error) {
+    showToast(error.message || '课程大纲生成失败')
+  } finally {
+    generatingCourse.value = false
+  }
+}
+
+knowledgeStore.load()
 </script>
 
 <template>
@@ -307,17 +358,55 @@ function askHero() {
         </div>
 
         <div class="m-ask-box">
+          <div v-if="!modeChosen && !heroInput" class="m-mode-prompt">
+            <span>请选择</span>
+            <button type="button" @click="chooseStudyMode('course')">
+              <span>▤</span> 正常上课
+            </button>
+            <span>或</span>
+            <button type="button" @click="chooseStudyMode('sprint')">
+              <span>ϟ</span> 考前冲刺
+            </button>
+            <span>再输入要求</span>
+          </div>
           <van-field
             v-model="heroInput"
             type="textarea"
             rows="2"
             autosize
-            placeholder="问一个问题，或说说你今天想学什么…"
+            :placeholder="modeChosen ? '描述想学的课程目标…' : ''"
             class="m-ask-field"
+            :class="{ 'with-mode-prompt': !modeChosen }"
             @keyup.enter="askHero"
           />
           <div class="m-ask-tools">
-            <div class="m-ask-chips">
+            <div class="m-ask-left-group">
+              <div v-if="modeChosen" class="m-mode-dock-wrap">
+                <button type="button" class="m-mode-dock" @click="showModeMenu = !showModeMenu">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M3 10.2 12 5l9 5.2-9 5.2-9-5.2Z" />
+                    <path d="M6.5 12.3v4.2c2.8 2 8.2 2 11 0v-4.2" />
+                    <path d="M21 10.5v5" />
+                  </svg>
+                </button>
+                <div v-if="showModeMenu" class="m-mode-menu">
+                  <button
+                    type="button"
+                    :class="{ active: studyMode === 'course' }"
+                    @click="chooseStudyMode('course')"
+                  >
+                    <span>▤</span> 正常上课
+                  </button>
+                  <button
+                    type="button"
+                    :class="{ active: studyMode === 'sprint' }"
+                    @click="chooseStudyMode('sprint')"
+                  >
+                    <span>ϟ</span> 考前冲刺
+                  </button>
+                </div>
+              </div>
+              <div class="m-ask-chips">
               <span
                 v-for="a in mHeroActions"
                 :key="a.label"
@@ -326,14 +415,19 @@ function askHero() {
               >
                 {{ a.label }}
               </span>
+              </div>
             </div>
             <div class="m-ask-right">
               <span class="m-model">{{ modelStore.config.model }}</span>
-              <button class="m-send" :disabled="!heroInput.trim()" @click="askHero">↑</button>
+              <button class="m-send" :disabled="!heroInput.trim() || generatingCourse" @click="askHero">
+                {{ generatingCourse ? '…' : '↑' }}
+              </button>
             </div>
           </div>
         </div>
-        <p class="m-hero-hint">不确定问什么？点「章节自测」，我先看看你卡在哪。</p>
+        <p class="m-hero-hint">
+          将依据已接入的 {{ knowledgeStore.materials.length }} 份教师确认材料生成课程。
+        </p>
       </section>
 
       <section class="m-card m-continue">
@@ -545,6 +639,7 @@ function askHero() {
 }
 
 .m-ask-box {
+  position: relative;
   padding: 10px 12px 8px;
   text-align: left;
   background: var(--card-bg);
@@ -553,9 +648,110 @@ function askHero() {
   box-shadow: var(--card-shadow);
 }
 
+.m-mode-prompt {
+  position: absolute;
+  z-index: 2;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  color: color-mix(in srgb, var(--text-faint) 78%, transparent);
+  font-size: 12px;
+  pointer-events: none;
+}
+
+.m-mode-prompt button {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 7px;
+  color: color-mix(in srgb, var(--text-faint) 85%, transparent);
+  background: color-mix(in srgb, var(--surface-2) 72%, transparent);
+  border: 1px solid color-mix(in srgb, var(--card-border) 75%, transparent);
+  border-radius: var(--radius-pill);
+  font: inherit;
+  font-size: 11.5px;
+  pointer-events: auto;
+}
+
+.m-ask-field.with-mode-prompt :deep(.van-field__control) {
+  min-height: 42px;
+}
+
 .m-ask-field {
   padding: 0;
   background: transparent;
+}
+
+.m-ask-left-group {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+}
+
+.m-mode-dock-wrap {
+  position: relative;
+  flex: none;
+}
+
+.m-mode-dock {
+  width: 27px;
+  height: 27px;
+  display: grid;
+  place-items: center;
+  padding: 6px;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border: 1px solid color-mix(in srgb, var(--accent) 28%, var(--card-border));
+  border-radius: 50%;
+}
+
+.m-mode-dock svg {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.m-mode-menu {
+  position: absolute;
+  z-index: 15;
+  left: 0;
+  bottom: 34px;
+  width: 145px;
+  display: grid;
+  gap: 3px;
+  padding: 5px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--card-shadow);
+}
+
+.m-mode-menu button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 8px;
+  color: var(--text-sub);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-sm);
+  font: inherit;
+  font-size: 10.5px;
+  text-align: left;
+}
+
+.m-mode-menu button.active {
+  color: var(--accent);
+  background: var(--accent-soft);
 }
 
 .m-ask-field :deep(.van-field__control) {
