@@ -3,7 +3,7 @@ import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { COURSE } from '@/mock/data'
-import { generateCourseBlueprint, generateCourseScene } from '@/api/courseStudio'
+import { generateCourseBlueprint } from '@/api/courseStudio'
 import BoardCanvas from '@/components/BoardCanvas.vue'
 import { isEnabled } from '@/config/flags'
 import { useCourseStudioStore } from '@/stores/courseStudio'
@@ -12,10 +12,10 @@ import { useUserStore } from '@/stores/user'
 import {
   COURSE_SCENE_LABELS,
   COURSE_SCENE_TYPES,
-  courseSceneFingerprint,
   reorderCourseOutline,
   summarizeCourseProject,
 } from '@/utils/courseStudio'
+import { downloadBoardLesson } from '@/utils/boardDownload'
 
 const route = useRoute()
 const router = useRouter()
@@ -37,14 +37,17 @@ const draft = reactive({
 const projectId = ref('')
 const generatingOutline = ref(false)
 const generating = ref(false)
-const stopRequested = ref(false)
 const selectedSceneId = ref('')
+const showSetup = ref(true)
 
 const project = computed(() =>
   projectId.value ? studio.find(projectId.value) : null,
 )
 const projectStats = computed(() =>
   project.value ? summarizeCourseProject(project.value) : { sceneCount: 0, totalMinutes: 0 },
+)
+const pipelineRunning = computed(
+  () => generating.value || (projectId.value ? studio.isGenerating(projectId.value) : false),
 )
 const readyScenes = computed(
   () =>
@@ -83,9 +86,10 @@ const canGenerate = computed(
     project.value.outlines.length >= 3 &&
     outlineErrors.value.length === 0 &&
     !generatingOutline.value &&
-    !generating.value,
+    !pipelineRunning.value,
 )
 const fallbackReady = computed(() => isEnabled('offlineFallback'))
+const GENERATION_CONCURRENCY = 3
 
 function queryValue(value) {
   return Array.isArray(value) ? value[0] : value
@@ -111,6 +115,7 @@ onMounted(async () => {
     projectId.value = target.id
     syncDraftFromProject(target)
     selectedSceneId.value = target.outlines[0]?.id || ''
+    showSetup.value = false
   }
 })
 
@@ -140,6 +145,7 @@ async function createOutline() {
     })
     projectId.value = saved.id
     selectedSceneId.value = saved.outlines[0]?.id || ''
+    showSetup.value = false
     await router.replace({ query: { ...route.query, project: saved.id } })
     ElMessage.success(
       result.fallback
@@ -156,9 +162,10 @@ async function createOutline() {
 }
 
 async function startNewProject() {
-  if (generating.value) return
+  if (pipelineRunning.value) return
   projectId.value = ''
   selectedSceneId.value = ''
+  showSetup.value = true
   draft.chapter = activeChapter?.title || chapterOptions[0]
   draft.objective = '能用自己的话解释核心概念，并把它用于一个管理案例判断。'
   draft.audience = '管理学本科生'
@@ -168,15 +175,16 @@ async function startNewProject() {
 }
 
 async function selectProject(value) {
-  if (!value || generating.value) return
+  if (!value || pipelineRunning.value) return
   projectId.value = value.id
   selectedSceneId.value = value.outlines[0]?.id || ''
+  showSetup.value = false
   syncDraftFromProject(value)
   await router.replace({ query: { ...route.query, project: value.id } })
 }
 
 async function persistOutline() {
-  if (!project.value || generating.value) return
+  if (!project.value || pipelineRunning.value) return
   await studio.replaceOutline(project.value.id, project.value.outlines)
 }
 
@@ -242,69 +250,23 @@ async function startGeneration() {
     return
   }
   await persistOutline()
-  const resume = project.value.scenes.some((scene) =>
-    ['ready', 'fallback'].includes(scene.status),
-  )
-  await studio.beginGeneration(project.value.id, { reset: !resume })
+  const id = project.value.id
   generating.value = true
-  stopRequested.value = false
-  let failed = false
-
+  const runPromise = studio.runGeneration(id, { concurrency: GENERATION_CONCURRENCY })
   try {
-    const currentProject = studio.find(project.value.id)
-    const outlines = [...currentProject.outlines].sort((a, b) => a.order - b.order)
-    for (let index = 0; index < outlines.length; index += 1) {
-      if (stopRequested.value) break
-      const outline = outlines[index]
-      const existing = currentProject.scenes.find((scene) => scene.outlineId === outline.id)
-      if (
-        ['ready', 'fallback'].includes(existing?.status) &&
-        existing.fingerprint === courseSceneFingerprint(outline)
-      ) {
-        continue
-      }
-      selectedSceneId.value = outline.id
-      await studio.updateScene(currentProject.id, outline.id, { status: 'generating' })
-      try {
-        const result = await generateCourseScene({
-          project: currentProject,
-          outline,
-          previousScene: outlines[index - 1] || null,
-        })
-        await studio.updateScene(currentProject.id, outline.id, {
-          status: result.fallback ? 'fallback' : 'ready',
-          content: result.content,
-          sources: result.sources,
-          repaired: !!result.repaired,
-          fingerprint: courseSceneFingerprint(outline),
-          error: '',
-        })
-      } catch (error) {
-        failed = true
-        await studio.updateScene(currentProject.id, outline.id, {
-          status: 'error',
-          error: error.message || '场景生成失败',
-        })
-        break
-      }
-    }
-    if (stopRequested.value) {
-      await studio.finishGeneration(currentProject.id, 'outline')
-      ElMessage.info('已在当前场景后停止，可保留进度继续审阅')
-    } else if (failed) {
-      await studio.finishGeneration(currentProject.id, 'failed')
-      ElMessage.warning('生成在某个场景中断，已完成的内容会保留')
-    } else {
-      await studio.finishGeneration(currentProject.id, 'ready')
-      ElMessage.success('课程资源包已生成')
-    }
+    await router.push(`/learn/${id}`)
+    void runPromise.catch(() => {
+      studio.finishGeneration(id, 'failed')
+      ElMessage.error('课程在后台生成时中断，可在体验页继续生成')
+    })
   } finally {
     generating.value = false
   }
 }
 
 function stopGeneration() {
-  stopRequested.value = true
+  if (!project.value) return
+  studio.cancelGeneration(project.value.id)
   ElMessage.info('将在当前场景返回后停止')
 }
 
@@ -367,6 +329,7 @@ async function removeProject() {
   await studio.remove(id)
   projectId.value = ''
   selectedSceneId.value = ''
+  showSetup.value = true
   await router.replace({ query: {} })
   ElMessage.success('课程已删除')
 }
@@ -419,11 +382,14 @@ function formatTime(value) {
           {{ modelStore.isConfigured ? '真实模型已接入' : '确定性演示模式' }}
         </el-tag>
         <el-button plain @click="startNewProject">新建课程</el-button>
+        <el-button v-if="project && !showSetup" plain @click="showSetup = true">
+          调整生成条件
+        </el-button>
         <el-button
           v-if="project"
           type="danger"
           plain
-          :disabled="generating"
+          :disabled="pipelineRunning"
           @click="removeProject"
         >
           删除
@@ -433,7 +399,7 @@ function formatTime(value) {
 
     <div class="studio-layout">
       <main class="studio-main">
-        <section class="studio-card setup-card">
+        <section v-if="!project || showSetup" class="studio-card setup-card">
           <header class="card-head">
             <div>
               <span class="step-no">01</span>
@@ -448,7 +414,7 @@ function formatTime(value) {
           <div class="form-grid">
             <label class="field">
               <span>课程章节</span>
-              <el-select v-model="draft.chapter" :disabled="generating">
+              <el-select v-model="draft.chapter" :disabled="pipelineRunning">
                 <el-option
                   v-for="chapter in chapterOptions"
                   :key="chapter"
@@ -459,7 +425,7 @@ function formatTime(value) {
             </label>
             <label class="field">
               <span>目标时长</span>
-              <el-select v-model="draft.durationMinutes" :disabled="generating">
+              <el-select v-model="draft.durationMinutes" :disabled="pipelineRunning">
                 <el-option :value="20" label="20 分钟 · 微课" />
                 <el-option :value="30" label="30 分钟 · 短课" />
                 <el-option :value="45" label="45 分钟 · 完整课时" />
@@ -519,7 +485,7 @@ function formatTime(value) {
               type="primary"
               size="large"
               :loading="generatingOutline"
-              :disabled="generating"
+              :disabled="pipelineRunning"
               data-testid="studio-generate-outline"
               @click="createOutline"
             >
@@ -582,7 +548,7 @@ function formatTime(value) {
                   <el-select
                     v-model="outline.type"
                     class="scene-type"
-                    :disabled="generating"
+                    :disabled="pipelineRunning"
                     @change="persistOutline"
                   >
                     <el-option
@@ -624,17 +590,17 @@ function formatTime(value) {
                 </div>
               </div>
               <div class="scene-tools" @click.stop>
-                <el-button text :disabled="index === 0 || generating" @click="moveScene(index, -1)">
+                <el-button text :disabled="index === 0 || pipelineRunning" @click="moveScene(index, -1)">
                   ↑
                 </el-button>
                 <el-button
                   text
-                  :disabled="index === project.outlines.length - 1 || generating"
+                  :disabled="index === project.outlines.length - 1 || pipelineRunning"
                   @click="moveScene(index, 1)"
                 >
                   ↓
                 </el-button>
-                <el-button text type="danger" :disabled="generating" @click="removeScene(index)">
+                <el-button text type="danger" :disabled="pipelineRunning" @click="removeScene(index)">
                   ×
                 </el-button>
               </div>
@@ -643,18 +609,20 @@ function formatTime(value) {
 
           <div class="outline-footer">
             <div>
-              <el-button plain :disabled="generating" @click="addScene">+ 添加场景</el-button>
+              <el-button plain :disabled="pipelineRunning" @click="addScene">+ 添加场景</el-button>
               <p v-if="outlineErrors.length" class="error-line">{{ outlineErrors[0] }}</p>
-              <p v-else class="hint">场景通过校验，可以进入逐场景生成。</p>
+              <p v-else class="hint">
+                场景通过校验，将使用最多 3 路并发逐场景生成；每完成一幕立即保存。
+              </p>
             </div>
             <div class="generate-actions">
-              <el-button v-if="generating" type="warning" plain @click="stopGeneration">
+              <el-button v-if="pipelineRunning" type="warning" plain @click="stopGeneration">
                 当前场景后停止
               </el-button>
               <el-button
                 type="primary"
                 size="large"
-                :loading="generating"
+                :loading="pipelineRunning"
                 :disabled="!canGenerate"
                 data-testid="studio-generate-course"
                 @click="startGeneration"
@@ -717,12 +685,12 @@ function formatTime(value) {
             v-if="project.status === 'failed' || project.status === 'outline'"
             type="primary"
             plain
-            :disabled="generating"
+            :disabled="pipelineRunning"
             @click="startGeneration"
           >
             继续生成
           </el-button>
-          <el-button plain :disabled="generating" @click="exportProject">导出课程包</el-button>
+          <el-button plain :disabled="pipelineRunning" @click="exportProject">导出课程包</el-button>
         </div>
       </header>
 
@@ -799,6 +767,14 @@ function formatTime(value) {
                   @click="openInBoard(selectedOutline)"
                 >
                   进入板书学习
+                </el-button>
+                <el-button
+                  v-if="selectedScene.content.kind === 'board'"
+                  plain
+                  size="small"
+                  @click="downloadBoardLesson(selectedScene.content.lesson)"
+                >
+                  下载板书
                 </el-button>
               </div>
             </div>

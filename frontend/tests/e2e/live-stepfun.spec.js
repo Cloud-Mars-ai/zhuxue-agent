@@ -15,7 +15,7 @@ async function seedUser(page) {
   })
 }
 
-test('@live Step 5 Preview 可在页面内完成真实回答', async ({ page }) => {
+test('@live DeepSeek 可在页面内完成真实回答', async ({ page }) => {
   await seedUser(page)
   await page.goto('/app/ask')
 
@@ -46,7 +46,31 @@ test('@live StepAudio 3 TTS 可在页面内合成朗读', async ({ page }) => {
   await expect(initialSpeak).toContainText('停止朗读', { timeout: 60_000 })
 })
 
-test('@live Step 5 Preview 可生成结构化板书', async ({ page }) => {
+test('@live 板书语音会跟随字幕自动播报', async ({ page }) => {
+  await seedUser(page)
+  await page.goto(
+    '/app/board?chapter=' +
+      encodeURIComponent('第3章 决策与计划') +
+      '&mode=course',
+  )
+  await expect(page.getByTestId('board-canvas')).toBeVisible({ timeout: 90_000 })
+
+  await page.getByRole('button', { name: '语音关', exact: true }).click()
+  await expect(page.getByRole('button', { name: /讲解中|语音开/ })).toBeVisible({
+    timeout: 60_000,
+  })
+  await page.waitForFunction(
+    () => {
+      const match =
+        document.querySelector('.playback-bar')?.textContent?.match(/(\d+)\s*\/\s*(\d+)/)
+      return match && Number(match[1]) >= 2
+    },
+    null,
+    { timeout: 90_000 },
+  )
+})
+
+test('@live DeepSeek 可生成结构化板书', async ({ page }) => {
   await seedUser(page)
   const path =
     '/app/board?chapter=' +
@@ -59,7 +83,7 @@ test('@live Step 5 Preview 可生成结构化板书', async ({ page }) => {
   await expect(page.locator('.board-block')).not.toHaveCount(0)
 })
 
-test('@live Step 5 Preview 可完成课程大纲与首个场景生成', async ({ page }) => {
+test('@live DeepSeek 可从首页生成课程并进入首个板书场景', async ({ page }) => {
   page.on('console', (message) => {
     if (message.type() === 'warning' || message.type() === 'error') {
       console.log(`[browser:${message.type()}] ${message.text()}`)
@@ -76,14 +100,19 @@ test('@live Step 5 Preview 可完成课程大纲与首个场景生成', async ({
     )
     localStorage.setItem('ai-tutor-theme', 'yun')
   })
-  await page.goto('/app/studio')
+  await page.goto('/app/course')
 
-  await page.getByTestId('studio-generate-outline').click()
+  await page.getByRole('button', { name: /正常上课/ }).click()
+  await page
+    .locator('.ask-box textarea')
+    .fill('围绕第3章决策与计划设计一节案例应用课')
+  await page.getByRole('button', { name: '从材料生成课程大纲' }).click()
   await expect(page.locator('.outline-row').first()).toBeVisible({ timeout: 90_000 })
   await expect(page.getByText('演示缓存大纲')).toHaveCount(0)
 
   await page.getByTestId('studio-generate-course').click()
   await page.getByRole('button', { name: '当前场景后停止' }).click()
   await expect(page.locator('.board-canvas')).toBeVisible({ timeout: 90_000 })
-  await expect(page.getByText('课程资源包')).toBeVisible()
+  await expect(page.locator('.experience-page')).toBeVisible()
+  await expect(page.locator('.scene-rail button')).toHaveCount(6)
 })

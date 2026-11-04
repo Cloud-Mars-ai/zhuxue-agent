@@ -11,9 +11,11 @@ import { usePracticeStore } from '@/stores/practice'
 import { usePersonaStore } from '@/stores/persona'
 import { useThemeStore } from '@/stores/theme'
 import { useKnowledgeStore } from '@/stores/knowledge'
+import { useCourseStudioStore } from '@/stores/courseStudio'
 import { diagnoseGaps } from '@/utils/diagnose'
 import { buildFeed } from '@/utils/feed'
 import { importMaterialFile } from '@/utils/materialImport'
+import { generateCourseBlueprint } from '@/api/courseStudio'
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -24,6 +26,7 @@ const practiceStore = usePracticeStore()
 const personaStore = usePersonaStore()
 const themeStore = useThemeStore()
 const knowledgeStore = useKnowledgeStore()
+const courseStudioStore = useCourseStudioStore()
 
 const overallProgress = computed(() => {
   const list = COURSE.chapters
@@ -145,6 +148,9 @@ const secondaryEntries = computed(() => allEntries.value.slice(4))
 
 const heroInput = ref('')
 const studyMode = ref('course')
+const modeChosen = ref(false)
+const showModeMenu = ref(false)
+const generatingCourse = ref(false)
 const uploadInput = ref()
 const activeUploadKind = ref('')
 const uploadingKind = ref('')
@@ -167,6 +173,9 @@ function loadUploadHistory() {
   }
 }
 const showToolMenu = ref(false)
+const canGenerateCourse = computed(() =>
+  ['admin', 'teacher', 'ta'].includes(userStore.role),
+)
 
 const heroTitle = computed(() =>
   isStudent.value ? '把这一章，学成你自己的' : '把这一周的教学，安排明白',
@@ -175,21 +184,27 @@ const heroTitle = computed(() =>
 const heroSubtitle = computed(() =>
   isStudent.value
     ? '从课前案例到考前速查，我会按你的进度与盲区，安排下一步。'
-    : '从课程材料到班级盲区，我会把该处理的事排好序。',
+    : '从已上传材料到个性化课程，我会先编排大纲，再逐场景生成。',
 )
 
 const heroPlaceholder = computed(() =>
-  isStudent.value
-    ? '问一个问题，或说说你今天想学什么…'
-    : '让我整理本周学情，或直接查看班级盲区…',
+  modeChosen.value
+    ? isStudent.value
+      ? '问一个问题，或说说你今天想学什么…'
+      : '描述课程目标，例如：用本周课件生成一节案例应用课…'
+    : '',
 )
 
 const heroHint = computed(() =>
-  isStudent.value
+  generatingCourse.value
+    ? '正在检索已上传材料并生成可编辑大纲，通常需要数秒…'
+    : canGenerateCourse.value
+    ? `将依据已接入的 ${knowledgeStore.materials.length} 份教师材料生成大纲；未上传补充材料时使用课程纲要。`
+    : isStudent.value
     ? studyMode.value === 'sprint'
       ? '考前冲刺只聚焦重点、易错点和可考表达，不会铺开整章。'
       : '正常上课跟随学校进度，覆盖每一讲、练习与考核。'
-    : '提示：课程资料库里的材料会作为 AI 回答的依据，未经确认的材料不会进入上下文。',
+    : '课程资料库里的材料会作为 AI 回答的依据，未经确认的材料不会进入上下文。',
 )
 
 const heroActions = computed(() =>
@@ -208,6 +223,21 @@ const heroActions = computed(() =>
 )
 
 const assistantTools = computed(() => [
+  ...(canGenerateCourse.value
+    ? [
+        {
+          label: '生成课程',
+          desc: '从已上传材料编排课程',
+          icon: '课',
+          action: () => {
+            heroInput.value =
+              heroInput.value ||
+              `围绕${currentChapter.value?.title || '当前章节'}生成一节能用于案例判断的课程`
+            askHero()
+          },
+        },
+      ]
+    : []),
   {
     label: '板书讲解',
     desc: '从路线图讲到追问',
@@ -257,15 +287,62 @@ const chapterDesc = computed(
   () => `本周进度 ${heroProgress.value}%，先把这一章的概念框架立起来，再做题。`,
 )
 
-function askHero() {
+function chooseStudyMode(mode) {
+  studyMode.value = mode
+  modeChosen.value = true
+  showModeMenu.value = false
+}
+
+async function askHero() {
   const q = heroInput.value.trim()
-  if (!q) return
+  if (!q || generatingCourse.value) return
+  if (!modeChosen.value) {
+    showModeMenu.value = true
+    ElMessage.info('请先选择正常上课或考前冲刺模式')
+    return
+  }
+  if (canGenerateCourse.value) {
+    generatingCourse.value = true
+    try {
+      const result = await generateCourseBlueprint({
+        chapter: currentChapter.value?.title || '未分章材料',
+        objective: q,
+        audience: '管理学本科生',
+        mode: studyMode.value,
+        durationMinutes: 30,
+      })
+      const saved = await courseStudioStore.createDraft({
+        ownerId: userStore.user?.id || '',
+        input: {
+          chapter: currentChapter.value?.title || '未分章材料',
+          objective: q,
+          audience: '管理学本科生',
+          mode: studyMode.value,
+          durationMinutes: 30,
+        },
+        result,
+      })
+      ElMessage.success(
+        result.fallback ? '已基于教师材料生成可编辑大纲（演示缓存）' : '课程大纲已生成',
+      )
+      await router.push({ path: '/app/studio', query: { project: saved.id } })
+    } catch (error) {
+      ElMessage.error(error.message || '课程大纲生成失败')
+    } finally {
+      generatingCourse.value = false
+    }
+    return
+  }
   router.push({ path: '/app/ask', query: { q, mode: studyMode.value } })
 }
 
 function openAssistantTool(tool) {
   showToolMenu.value = false
   tool.action()
+}
+
+function openModeFromDock() {
+  showModeMenu.value = !showModeMenu.value
 }
 
 function openHeroAction(action) {
@@ -522,12 +599,26 @@ onMounted(() => {
           </div>
 
           <div class="ask-box">
-            <textarea
-              v-model="heroInput"
-              rows="2"
-              :placeholder="heroPlaceholder"
-              @keydown.enter.exact.prevent="askHero"
-            />
+            <div class="composer-input-wrap">
+              <div v-if="!modeChosen && !heroInput" class="mode-prompt">
+                <span>请选择</span>
+                <button type="button" @click="chooseStudyMode('course')">
+                  <span>▤</span> 正常上课
+                </button>
+                <span>或</span>
+                <button type="button" @click="chooseStudyMode('sprint')">
+                  <span>ϟ</span> 考前冲刺
+                </button>
+                <span>模式，再输入您的具体要求。</span>
+              </div>
+              <textarea
+                v-model="heroInput"
+                rows="2"
+                :class="{ 'with-mode-prompt': !modeChosen }"
+                :placeholder="heroPlaceholder"
+                @keydown.enter.exact.prevent="askHero"
+              />
+            </div>
             <div class="ask-tools">
               <div class="ask-left">
                 <div class="ask-plus-wrap">
@@ -555,6 +646,37 @@ onMounted(() => {
                     </button>
                   </div>
                 </div>
+                <div v-if="modeChosen" class="mode-dock-wrap">
+                  <button
+                    class="mode-dock"
+                    type="button"
+                    :title="studyMode === 'sprint' ? '当前：考前冲刺' : '当前：正常上课'"
+                    :aria-expanded="showModeMenu"
+                    @click.stop="openModeFromDock"
+                  >
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M3 10.2 12 5l9 5.2-9 5.2-9-5.2Z" />
+                      <path d="M6.5 12.3v4.2c2.8 2 8.2 2 11 0v-4.2" />
+                      <path d="M21 10.5v5" />
+                    </svg>
+                  </button>
+                  <div v-if="showModeMenu" class="mode-dock-menu" @click.stop>
+                    <button
+                      type="button"
+                      :class="{ active: studyMode === 'course' }"
+                      @click="chooseStudyMode('course')"
+                    >
+                      <span>▤</span> 正常上课
+                    </button>
+                    <button
+                      type="button"
+                      :class="{ active: studyMode === 'sprint' }"
+                      @click="chooseStudyMode('sprint')"
+                    >
+                      <span>ϟ</span> 考前冲刺
+                    </button>
+                  </div>
+                </div>
                 <div class="ask-chips">
                   <button
                     v-for="a in heroActions"
@@ -566,36 +688,23 @@ onMounted(() => {
                     {{ a.label }}
                   </button>
                 </div>
-                <span class="ask-sync">学校同步</span>
+                <span class="ask-sync">
+                  {{ canGenerateCourse ? '本校课程材料' : '学校同步' }}
+                </span>
               </div>
               <div class="ask-right">
                 <span class="model-badge">{{ modelStore.config.model }}</span>
                 <button
                   class="ask-send"
                   type="button"
-                  :disabled="!heroInput.trim()"
+                  :disabled="!heroInput.trim() || generatingCourse"
+                  :title="canGenerateCourse ? '从材料生成课程大纲' : '发送问题'"
+                  :aria-label="canGenerateCourse ? '从材料生成课程大纲' : '发送问题'"
                   @click="askHero"
                 >
-                  ↑
+                  {{ generatingCourse ? '…' : '↑' }}
                 </button>
               </div>
-            </div>
-
-            <div class="study-mode-row" aria-label="学习模式">
-              <button
-                type="button"
-                :class="{ active: studyMode === 'course' }"
-                @click="studyMode = 'course'"
-              >
-                <span>▤</span> 正常上课
-              </button>
-              <button
-                type="button"
-                :class="{ active: studyMode === 'sprint' }"
-                @click="studyMode = 'sprint'"
-              >
-                <span>ϟ</span> 考前冲刺
-              </button>
             </div>
           </div>
         </div>
@@ -936,8 +1045,53 @@ onMounted(() => {
   box-shadow: none;
 }
 
+.composer-input-wrap {
+  position: relative;
+  min-height: 48px;
+}
+
+.mode-prompt {
+  position: absolute;
+  z-index: 2;
+  inset: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  color: color-mix(in srgb, var(--text-faint) 78%, transparent);
+  font-size: 14px;
+  line-height: 1.7;
+  pointer-events: none;
+}
+
+.mode-prompt > span {
+  pointer-events: none;
+}
+
+.mode-prompt button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 8px;
+  color: color-mix(in srgb, var(--text-faint) 82%, transparent);
+  background: color-mix(in srgb, var(--surface-2) 66%, transparent);
+  border: 1px solid color-mix(in srgb, var(--card-border) 72%, transparent);
+  border-radius: var(--radius-pill);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.mode-prompt button:hover {
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-color: color-mix(in srgb, var(--accent) 28%, var(--card-border));
+}
+
 .ask-box textarea {
   width: 100%;
+  min-height: 48px;
   border: none;
   outline: none;
   resize: none;
@@ -946,6 +1100,10 @@ onMounted(() => {
   font-family: inherit;
   font-size: 14px;
   line-height: 1.7;
+}
+
+.ask-box textarea.with-mode-prompt {
+  min-height: 52px;
 }
 
 .ask-box textarea::placeholder {
@@ -985,6 +1143,70 @@ onMounted(() => {
 .ask-plus-wrap {
   position: relative;
   flex: none;
+}
+
+.mode-dock-wrap {
+  position: relative;
+  flex: none;
+}
+
+.mode-dock {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  padding: 6px;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border: 1px solid color-mix(in srgb, var(--accent) 26%, var(--card-border));
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.mode-dock svg {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.mode-dock-menu {
+  position: absolute;
+  z-index: 14;
+  left: 0;
+  bottom: 35px;
+  width: 154px;
+  display: grid;
+  gap: 3px;
+  padding: 5px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--card-shadow);
+}
+
+.mode-dock-menu button {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 8px;
+  color: var(--text-sub);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-sm);
+  font: inherit;
+  font-size: 10.5px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.mode-dock-menu button:hover,
+.mode-dock-menu button.active {
+  color: var(--accent);
+  background: var(--accent-soft);
 }
 
 .assistant-tool-menu {
@@ -1116,33 +1338,6 @@ onMounted(() => {
   margin: 7px 0 0;
   font-size: 11.5px;
   color: var(--text-faint);
-}
-
-.study-mode-row {
-  display: flex;
-  gap: 6px;
-  padding: 7px 16px 10px;
-}
-
-.study-mode-row button {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 4px 9px;
-  color: var(--text-sub);
-  background: var(--surface-2);
-  border: 1px solid var(--card-border);
-  border-radius: var(--radius-pill);
-  font-family: inherit;
-  font-size: 10.5px;
-  cursor: pointer;
-}
-
-.study-mode-row button.active {
-  color: var(--accent);
-  background: var(--accent-soft);
-  border-color: color-mix(in srgb, var(--accent) 35%, var(--card-border));
-  font-weight: 600;
 }
 
 .hidden-upload {

@@ -4,16 +4,19 @@ import { ElMessage } from 'element-plus'
 import {
   useModelStore,
   DEFAULT_MODEL_CONFIG,
+  DEEPSEEK_MODELS,
   STEPFUN_MODELS,
   STEPFUN_TTS_MODELS,
 } from '@/stores/model'
+import { useVoiceStore, VOICE_PRESETS } from '@/stores/voice'
 import { sendChat } from '@/api/chat'
 import { playSpeech } from '@/api/tts'
 
 const modelStore = useModelStore()
+const voiceStore = useVoiceStore()
 
 const form = reactive({
-  provider: 'stepfun',
+  provider: 'deepseek',
   baseUrl: '',
   apiKey: '',
   model: '',
@@ -23,12 +26,13 @@ const form = reactive({
   ttsApiKey: '',
   ttsModel: '',
   ttsVoice: '',
+  ttsSpeed: 0.98,
   ttsInstruction: '',
 })
 
 function loadForm() {
   const c = modelStore.config
-  form.provider = c.provider || 'stepfun'
+  form.provider = c.provider || 'deepseek'
   form.baseUrl = c.baseUrl
   form.apiKey = c.apiKey
   form.model = c.model
@@ -38,23 +42,30 @@ function loadForm() {
   form.ttsApiKey = c.ttsApiKey || ''
   form.ttsModel = c.ttsModel || DEFAULT_MODEL_CONFIG.ttsModel
   form.ttsVoice = c.ttsVoice || DEFAULT_MODEL_CONFIG.ttsVoice
+  form.ttsSpeed = Number(c.ttsSpeed) || voiceStore.speed
   form.ttsInstruction = c.ttsInstruction || DEFAULT_MODEL_CONFIG.ttsInstruction
 }
 loadForm()
 
 const providerOptions = [
-  { value: 'stepfun', label: '阶跃星辰 StepFun（默认）' },
+  { value: 'deepseek', label: 'DeepSeek（默认）' },
+  { value: 'stepfun', label: '阶跃星辰 StepFun' },
   { value: 'custom', label: '自定义 / 其他 OpenAI 兼容服务' },
 ]
 
 const providerLabels = {
+  deepseek: 'DeepSeek',
   stepfun: '阶跃星辰 StepFun',
   custom: '自定义服务',
 }
 
 // 阶跃星辰给出下拉候选，自定义服务时改为手动输入
 const modelOptions = computed(() =>
-  form.provider === 'stepfun' ? STEPFUN_MODELS.map((m) => ({ value: m, label: m })) : [],
+  form.provider === 'deepseek'
+    ? DEEPSEEK_MODELS.map((m) => ({ value: m, label: m }))
+    : form.provider === 'stepfun'
+      ? STEPFUN_MODELS.map((m) => ({ value: m, label: m }))
+      : [],
 )
 
 const maskedKey = computed(() => {
@@ -77,12 +88,21 @@ const testResult = ref('')
 const testingTts = ref(false)
 
 function handleProviderChange(val) {
-  if (val === 'stepfun') {
-    form.baseUrl = DEFAULT_MODEL_CONFIG.baseUrl
+  if (val === 'deepseek') {
+    form.baseUrl = 'https://api.deepseek.com/v1'
+    if (!DEEPSEEK_MODELS.includes(form.model)) form.model = 'deepseek-chat'
+  } else if (val === 'stepfun') {
+    form.baseUrl = 'https://api.stepfun.com/v1'
     if (!STEPFUN_MODELS.includes(form.model)) {
-      form.model = DEFAULT_MODEL_CONFIG.model
+      form.model = 'step-3.5-flash'
     }
   }
+}
+
+function handleVoiceChange(value) {
+  form.ttsVoice = value
+  const preset = VOICE_PRESETS.find((voice) => voice.id === value)
+  if (preset) form.ttsInstruction = preset.instruction
 }
 
 async function handleTest() {
@@ -152,6 +172,8 @@ function handleSave() {
     return
   }
   modelStore.updateConfig({ ...form })
+  voiceStore.setVoice(form.ttsVoice)
+  voiceStore.setSpeed(form.ttsSpeed)
   ElMessage.success('配置已保存，AI 助教将使用该模型')
 }
 
@@ -159,7 +181,7 @@ function handleReset() {
   modelStore.resetConfig()
   loadForm()
   testResult.value = ''
-  ElMessage.success('已恢复并保存默认配置（阶跃星辰）')
+  ElMessage.success('已恢复并保存默认配置（DeepSeek + StepAudio）')
 }
 </script>
 
@@ -168,7 +190,7 @@ function handleReset() {
     <el-alert type="info" :closable="false" show-icon class="tip">
       <template #title>
         配置大模型后，「AI协助 / AI 助教」等智能体功能将调用该模型生成回答。
-        默认使用阶跃星辰（StepFun）的 OpenAI 兼容接口；密钥仅保存在当前浏览器本地，不会上传到任何服务器。
+        默认使用 DeepSeek 的 OpenAI 兼容接口，语音合成继续使用 StepAudio；密钥仅保存在当前浏览器本地。
       </template>
     </el-alert>
 
@@ -207,7 +229,7 @@ function handleReset() {
         </el-form-item>
 
         <el-form-item label="接口地址">
-          <el-input v-model="form.baseUrl" placeholder="https://api.stepfun.com/v1" />
+          <el-input v-model="form.baseUrl" placeholder="https://api.deepseek.com/v1" />
           <div class="form-help">OpenAI 兼容接口地址，无需携带 /chat/completions 后缀</div>
         </el-form-item>
 
@@ -228,7 +250,7 @@ function handleReset() {
             />
           </el-select>
           <div class="form-help">
-            阶跃星辰常用：step-3.5-flash（快）、step-3.7-flash、step-5-preview（百万上下文）等
+            DeepSeek 默认使用 deepseek-chat（速度与质量平衡）；需要深度推理时可切换 deepseek-reasoner
           </div>
         </el-form-item>
 
@@ -286,7 +308,25 @@ function handleReset() {
         </el-form-item>
 
         <el-form-item label="音色">
-          <el-input v-model="form.ttsVoice" placeholder="例如：qinhenvsheng" />
+          <el-select v-model="form.ttsVoice" style="width: 100%" @change="handleVoiceChange">
+            <el-option
+              v-for="voice in VOICE_PRESETS"
+              :key="voice.id"
+              :label="`${voice.name} · ${voice.desc}`"
+              :value="voice.id"
+            />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="语速">
+          <el-slider
+            v-model="form.ttsSpeed"
+            :min="0.8"
+            :max="1.15"
+            :step="0.01"
+            show-input
+            class="slider"
+          />
         </el-form-item>
 
         <el-form-item label="语音密钥">

@@ -4,21 +4,22 @@ import { ref, computed } from 'vue'
 const STORAGE_KEY = 'ai-tutor-model-config'
 
 /**
- * 默认模型配置：阶跃星辰（StepFun）OpenAI 兼容接口
+ * 默认模型配置：DeepSeek 通用对话 + 阶跃星辰语音合成
  * 当前为比赛演示阶段，默认密钥由项目负责人要求临时内置。
- * 迁移到后端代理后必须删除以下两把默认密钥并轮换。
+ * 迁移到后端代理后必须删除明文密钥并轮换。
  */
 export const DEFAULT_MODEL_CONFIG = {
-  configVersion: '2026-11-04-step5',
-  provider: 'stepfun',
-  baseUrl: 'https://api.stepfun.com/v1',
-  apiKey: '3E1uzgEugYnhZ6ptBQpNX73kNjYSh9eCa2ykFYbqXqrpswBbefVAX9AXVaAp0BlK7',
-  model: 'step-5-preview',
+  configVersion: '2026-11-04-deepseek',
+  provider: 'deepseek',
+  baseUrl: 'https://api.deepseek.com/v1',
+  apiKey: 'sk-ebd19ebbc3474bd2a46d107f431a165a',
+  model: 'deepseek-chat',
   temperature: 0.3,
   ttsBaseUrl: 'https://api.stepfun.com/v1',
   ttsApiKey: '1MR8bDu79ioMcWmuyI8RA7qGvk3MDr4uDpn5NmLFe6Y3tWpt2MCTHlZB8QYL62fB6',
   ttsModel: 'stepaudio-3-tts',
   ttsVoice: 'qinhenvsheng',
+  ttsSpeed: 0.98,
   ttsInstruction: '用清晰、温和、有节奏的课堂讲解语气朗读，专业但自然。',
   systemPrompt:
     '你是《管理学》课程的 AI 助教，服务对象是经管专业学生与授课教师。\n' +
@@ -30,14 +31,11 @@ export const DEFAULT_MODEL_CONFIG = {
     '5. 引用教材内容时注明所在章节。',
 }
 
-/** 阶跃星辰常用对话模型，供配置页下拉选择 */
-export const STEPFUN_MODELS = [
-  'step-5-preview',
-  'step-3.5-flash',
-  'step-3.7-flash',
-  'step-3.5-flash-2603',
-  'step-router-v1',
-]
+/** DeepSeek 常用对话模型，供配置页下拉选择 */
+export const DEEPSEEK_MODELS = ['deepseek-chat', 'deepseek-reasoner']
+
+/** 历史 StepFun 模型保留，方便手动切回 */
+export const STEPFUN_MODELS = ['step-5-preview', 'step-3.5-flash', 'step-3.7-flash']
 
 export const STEPFUN_TTS_MODELS = [
   'stepaudio-3-tts',
@@ -73,14 +71,16 @@ function loadFromStorage() {
     const merged = { ...DEFAULT_MODEL_CONFIG, ...stored }
     if (stored.configVersion !== DEFAULT_MODEL_CONFIG.configVersion) {
       merged.configVersion = DEFAULT_MODEL_CONFIG.configVersion
-      if (!stored.apiKey) merged.apiKey = DEFAULT_MODEL_CONFIG.apiKey
-      if (!stored.model || stored.model === 'step-3.5-flash') {
-        merged.model = DEFAULT_MODEL_CONFIG.model
-      }
+      merged.provider = DEFAULT_MODEL_CONFIG.provider
+      merged.baseUrl = DEFAULT_MODEL_CONFIG.baseUrl
+      merged.apiKey = DEFAULT_MODEL_CONFIG.apiKey
+      merged.model = DEFAULT_MODEL_CONFIG.model
+      merged.temperature = DEFAULT_MODEL_CONFIG.temperature
       if (!stored.ttsApiKey) merged.ttsApiKey = DEFAULT_MODEL_CONFIG.ttsApiKey
       if (!stored.ttsBaseUrl) merged.ttsBaseUrl = DEFAULT_MODEL_CONFIG.ttsBaseUrl
       if (!stored.ttsModel) merged.ttsModel = DEFAULT_MODEL_CONFIG.ttsModel
       if (!stored.ttsVoice) merged.ttsVoice = DEFAULT_MODEL_CONFIG.ttsVoice
+      if (!stored.ttsSpeed) merged.ttsSpeed = DEFAULT_MODEL_CONFIG.ttsSpeed
       if (!stored.ttsInstruction) merged.ttsInstruction = DEFAULT_MODEL_CONFIG.ttsInstruction
       safeSetItem(STORAGE_KEY, JSON.stringify(merged))
     }
@@ -110,7 +110,7 @@ export const useModelStore = defineStore('model', () => {
     safeSetItem(STORAGE_KEY, JSON.stringify(config.value))
   }
 
-  /** 恢复默认配置（阶跃星辰）并持久化 */
+  /** 恢复默认配置（DeepSeek 文本 + StepAudio 语音）并持久化 */
   function resetConfig() {
     config.value = { ...DEFAULT_MODEL_CONFIG }
     safeSetItem(STORAGE_KEY, JSON.stringify(config.value))

@@ -27,10 +27,12 @@ async function seedUser(page, role = 'student') {
       localStorage.setItem(
         'ai-tutor-model-config',
         JSON.stringify({
-          configVersion: '2026-11-04-step5',
+          configVersion: '2026-11-04-deepseek',
+          provider: 'deepseek',
+          baseUrl: 'https://api.deepseek.com/v1',
           apiKey: '',
           ttsApiKey: '',
-          model: 'step-5-preview',
+          model: 'deepseek-chat',
         }),
       )
     }
@@ -82,8 +84,10 @@ test('首页采用一体化材料区与双学习模式', async ({ page }) => {
   await expect(page.locator('.aside')).not.toContainText('AI答疑')
   await expect(page.getByRole('button', { name: 'AI协助', exact: true })).toBeVisible()
 
+  await expect(page.locator('.mode-prompt')).toBeVisible()
   await page.getByRole('button', { name: /考前冲刺/ }).click()
-  await expect(page.getByRole('button', { name: /考前冲刺/ })).toHaveClass(/active/)
+  await expect(page.locator('.mode-prompt')).toHaveCount(0)
+  await expect(page.locator('.mode-dock')).toBeVisible()
   await page.getByRole('button', { name: '板书讲解', exact: true }).click()
   await expect(page).toHaveURL(/\/app\/board\?chapter=.*mode=sprint/)
 })
@@ -236,18 +240,18 @@ test('教师可用两阶段编排生成课程并进入板书场景', async ({ pa
   await expect(page.locator('.outline-row')).toHaveCount(6)
 
   await page.getByTestId('studio-generate-course').click()
-  await expect(page.getByRole('heading', { name: '课程资源包' })).toBeVisible()
+  await expect(page).toHaveURL(/\/learn\/course-/)
   await expect(page.locator('.board-canvas')).toBeVisible()
-  await expect(page.getByText('课程资源包已生成')).toBeVisible()
+  await expect(page.locator('.scene-rail button')).toHaveCount(6)
+  await expect(page.locator('.lesson-frame')).toBeVisible()
 
   await page.reload({ waitUntil: 'domcontentloaded' })
-  await expect(page.locator('.outline-row')).toHaveCount(6)
-  await expect(page.getByRole('heading', { name: '课程资源包' })).toBeVisible()
+  await expect(page).toHaveURL(/\/learn\/course-/)
+  await expect(page.locator('.board-canvas')).toBeVisible()
 
-  await page.getByRole('button', { name: '进入板书学习' }).click()
-  await expect(page).toHaveURL(/\/app\/board\?/)
-  await expect(page).toHaveURL(/studio=/)
-  await expect(page.getByTestId('board-canvas')).toBeVisible()
+  await page.getByRole('button', { name: '编辑课程' }).click()
+  await expect(page).toHaveURL(/\/app\/studio\?project=/)
+  await expect(page.locator('.outline-row')).toHaveCount(6)
 })
 
 test('H5 课程编排映射保留查询参数', async ({ page }) => {
@@ -257,4 +261,44 @@ test('H5 课程编排映射保留查询参数', async ({ page }) => {
 
   await expect(page).toHaveURL(/\/m\/studio\?project=course-demo$/)
   await expect(page.getByRole('heading', { name: '先生成大纲，确认后再逐场景生成。' })).toBeVisible()
+})
+
+test('教师可从首页材料输入直接生成课程大纲', async ({ page }) => {
+  await seedUser(page, 'teacher')
+  await page.goto('/app/course')
+
+  await page.getByRole('button', { name: /正常上课/ }).click()
+  await page.locator('.ask-box textarea').fill('用本周课件生成一节案例应用课')
+  await page.getByRole('button', { name: '从材料生成课程大纲' }).click()
+
+  await expect(page).toHaveURL(/\/app\/studio\?project=/)
+  await expect(page.locator('.outline-row').first()).toBeVisible()
+  await expect(page.getByText('演示缓存大纲')).toBeVisible()
+})
+
+test('学生可下载生成板书', async ({ page }) => {
+  await seedUser(page)
+  await page.goto('/app/board?chapter=' + encodeURIComponent('第3章 决策与计划'))
+  await expect(page.getByTestId('board-canvas')).toBeVisible()
+
+  const downloadPromise = page.waitForEvent('download')
+  await page.getByRole('button', { name: '下载板书' }).click()
+  const download = await downloadPromise
+  expect(download.suggestedFilename()).toMatch(/\.html$/)
+})
+
+test('板书语音教学支持开关和音色切换', async ({ page }) => {
+  await seedUser(page)
+  await page.goto('/app/board?chapter=' + encodeURIComponent('第3章 决策与计划'))
+  await expect(page.getByTestId('board-canvas')).toBeVisible()
+
+  await page.getByRole('button', { name: '语音关', exact: true }).click()
+  await expect(page.getByRole('button', { name: /语音开|讲解中/ })).toBeVisible()
+
+  await page.locator('button[title="显示设置"]').click()
+  const voiceSelect = page.locator('.voice-select-row select')
+  await expect(voiceSelect).toBeEnabled()
+  await expect(voiceSelect.locator('option')).toHaveCount(5)
+  await voiceSelect.selectOption('linjiajiejie')
+  await expect(voiceSelect).toHaveValue('linjiajiejie')
 })

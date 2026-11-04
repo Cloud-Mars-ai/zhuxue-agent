@@ -16,7 +16,7 @@ const deviceStore = useDeviceStore()
 watch(
   () => deviceStore.tree,
   (tree) => {
-    if (route.meta.public) return
+    if (route.meta.public || route.meta.standalone) return
     const inMobileTree = route.path.startsWith('/m')
     const needMove =
       (tree === 'mobile' && !inMobileTree) || (tree === 'web' && inMobileTree)

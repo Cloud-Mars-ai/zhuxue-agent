@@ -48,6 +48,7 @@ export async function generateBoardLesson({ chapter, focus = '', studyMode = 'co
       temperature: prompt.temperature,
       maxTokens: prompt.maxTokens,
       reasoningEffort: prompt.reasoningEffort,
+      responseFormat: 'json_object',
       kind: 'board',
       task: 'board.generate',
       promptVersion: PROMPT_VERSION,

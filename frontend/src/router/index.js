@@ -95,6 +95,15 @@ const routes = [
         meta: { title: '智能课程编排', icon: 'MagicStick', roles: ['admin', 'teacher', 'ta'] },
       },
       {
+        path: 'experience',
+        name: 'CourseExperienceLegacy',
+        redirect: (to) =>
+          to.query.project
+            ? { path: `/learn/${encodeURIComponent(String(to.query.project))}`, query: to.query }
+            : '/app/studio',
+        meta: { title: '课程体验', nav: false },
+      },
+      {
         path: 'cases',
         name: 'Cases',
         component: () => import('@/views/web/Cases.vue'),
@@ -151,6 +160,7 @@ const routes = [
     'checkup',
     'materials',
     'studio',
+    'experience',
     'cases',
     'assessment',
     'console',
@@ -230,12 +240,28 @@ const routes = [
         meta: { title: '智能课程编排', mobile: true, roles: ['admin', 'teacher', 'ta'] },
       },
       {
+        path: 'experience',
+        name: 'MCourseExperienceLegacy',
+        redirect: (to) =>
+          to.query.project
+            ? { path: `/learn/${encodeURIComponent(String(to.query.project))}`, query: to.query }
+            : '/m/studio',
+        meta: { title: '课程体验', mobile: true, nav: false },
+      },
+      {
         path: 'mine',
         name: 'MMine',
         component: () => import('@/views/mobile/MMine.vue'),
         meta: { title: '我的', mobile: true },
       },
     ],
+  },
+
+  {
+    path: '/learn/:projectId',
+    name: 'CourseExperience',
+    component: () => import('@/views/CourseExperience.vue'),
+    meta: { title: '课程体验', standalone: true },
   },
 
   {
@@ -263,6 +289,7 @@ const WEB_TO_MOBILE = {
   '/app/cases': '/m/case',
   '/app/assessment': '/m/assessment',
   '/app/studio': '/m/studio',
+  '/app/experience': '/m/experience',
 }
 const MOBILE_TO_WEB = Object.fromEntries(
   Object.entries(WEB_TO_MOBILE).map(([web, mobile]) => [mobile, web]),
@@ -305,7 +332,7 @@ router.beforeEach((to) => {
 // 全局前置守卫：按设备类型在 Web / H5 两棵路由树之间自适应跳转
 // （登录页与 403 为公共页不参与；用户手动切换过端口时以手动选择为准）
 router.beforeEach((to) => {
-  if (to.meta.public) return true
+  if (to.meta.public || to.meta.standalone) return true
 
   const deviceStore = useDeviceStore()
   const tree = deviceStore.tree

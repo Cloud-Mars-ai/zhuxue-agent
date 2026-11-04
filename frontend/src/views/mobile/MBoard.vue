@@ -1,11 +1,14 @@
 <script setup>
-import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { COURSE } from '@/mock/data'
 import BoardCanvas from '@/components/BoardCanvas.vue'
 import SpeakButton from '@/components/SpeakButton.vue'
 import { answerBoardQuestion, generateBoardLesson } from '@/api/board'
 import { useCourseStudioStore } from '@/stores/courseStudio'
+import { VOICE_PRESETS } from '@/stores/voice'
+import { useBoardPlayback } from '@/composables/useBoardPlayback'
+import { downloadBoardLesson } from '@/utils/boardDownload'
 
 const route = useRoute()
 const studioStore = useCourseStudioStore()
@@ -24,7 +27,6 @@ const isStudioLesson = computed(() => !!studioProjectId.value)
 const lesson = ref(null)
 const loading = ref(true)
 const fallback = ref(false)
-const visibleCount = ref(0)
 const showChat = ref(false)
 const input = ref('')
 const asking = ref(false)
@@ -35,18 +37,21 @@ const messages = ref([
     content: '我会按路线、概念、对照、追问展开。点击底部“边听边问”，不会中断板书。',
   },
 ])
-let revealTimer = null
-
-function stopReveal() {
-  if (revealTimer) {
-    clearInterval(revealTimer)
-    revealTimer = null
-  }
-}
+const {
+  visibleCount,
+  narrating,
+  voiceError,
+  voiceEnabled,
+  voiceStore,
+  startReveal,
+  stopNarration,
+  toggleVoice,
+  selectVoice,
+} = useBoardPlayback(lesson)
 
 async function loadLesson() {
   loading.value = true
-  stopReveal()
+  stopNarration()
   try {
     if (isStudioLesson.value) {
       await studioStore.load()
@@ -57,14 +62,7 @@ async function loadLesson() {
       }
       lesson.value = scene.content.lesson
       fallback.value = scene.status === 'fallback'
-      visibleCount.value = 1
-      revealTimer = window.setInterval(() => {
-        if (!lesson.value || visibleCount.value >= lesson.value.blocks.length) {
-          stopReveal()
-          return
-        }
-        visibleCount.value += 1
-      }, 620)
+      nextTick(() => startReveal())
       return
     }
     const result = await generateBoardLesson({
@@ -73,14 +71,7 @@ async function loadLesson() {
     })
     lesson.value = result.lesson
     fallback.value = result.fallback
-    visibleCount.value = 1
-    revealTimer = window.setInterval(() => {
-      if (!lesson.value || visibleCount.value >= lesson.value.blocks.length) {
-        stopReveal()
-        return
-      }
-      visibleCount.value += 1
-    }, 620)
+    nextTick(() => startReveal())
   } finally {
     loading.value = false
   }
@@ -134,7 +125,6 @@ function handleEnter(event) {
 }
 
 onMounted(loadLesson)
-onBeforeUnmount(stopReveal)
 </script>
 
 <template>
@@ -147,6 +137,25 @@ onBeforeUnmount(stopReveal)
       <strong>{{ lesson?.chapter || chapter }}</strong>
     </div>
     <div v-if="fallback" class="m-fallback">演示缓存 · 教师确认稿生成</div>
+    <div class="m-board-tools">
+      <button type="button" :class="{ on: voiceEnabled }" @click="toggleVoice">
+        {{ narrating ? '语音讲解中' : voiceEnabled ? '语音已开启' : '语音教学关闭' }}
+      </button>
+      <select
+        v-if="voiceEnabled"
+        :value="voiceStore.voiceId"
+        aria-label="讲解音色"
+        @change="selectVoice($event.target.value)"
+      >
+        <option v-for="voice in VOICE_PRESETS" :key="voice.id" :value="voice.id">
+          {{ voice.name }}
+        </option>
+      </select>
+      <button type="button" :disabled="!lesson" @click="downloadBoardLesson(lesson)">
+        下载板书
+      </button>
+    </div>
+    <p v-if="voiceError && voiceEnabled" class="m-voice-error">{{ voiceError }}</p>
 
     <van-skeleton v-if="loading" title :row="8" class="m-skeleton" />
     <BoardCanvas
@@ -251,6 +260,41 @@ onBeforeUnmount(stopReveal)
   background: var(--warn-soft);
   border-radius: var(--radius-pill);
   font-size: 9.5px;
+}
+
+.m-board-tools {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 14px 9px;
+}
+
+.m-board-tools button,
+.m-board-tools select {
+  min-height: 28px;
+  padding: 4px 9px;
+  color: var(--text-sub);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-pill);
+  font: inherit;
+  font-size: 10px;
+}
+
+.m-board-tools button.on {
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-color: color-mix(in srgb, var(--accent) 34%, var(--card-border));
+}
+
+.m-board-tools button:disabled {
+  opacity: 0.45;
+}
+
+.m-voice-error {
+  margin: 0 14px 8px;
+  color: var(--warn);
+  font-size: 10px;
 }
 
 .m-skeleton {

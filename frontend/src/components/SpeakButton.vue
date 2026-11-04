@@ -2,10 +2,12 @@
 import { onBeforeUnmount, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { playSpeech, stopSpeech } from '@/api/tts'
+import { useVoiceStore } from '@/stores/voice'
 
 const props = defineProps({
   text: { type: String, default: '' },
 })
+const voiceStore = useVoiceStore()
 
 const loading = ref(false)
 const playing = ref(false)
@@ -20,6 +22,7 @@ async function toggle() {
   loading.value = true
   try {
     await playSpeech(props.text, {
+      config: voiceStore.ttsConfig,
       onEnded: () => {
         playing.value = false
       },

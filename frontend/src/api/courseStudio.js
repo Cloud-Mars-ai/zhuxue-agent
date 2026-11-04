@@ -79,6 +79,7 @@ async function requestStructured({
     temperature: prompt.temperature,
     maxTokens: maxTokens || prompt.maxTokens,
     reasoningEffort: prompt.reasoningEffort,
+    responseFormat: 'json_object',
     kind,
     task,
     promptVersion: COURSE_PROMPT_VERSION,

@@ -1,6 +1,8 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { idbGet, idbSet } from '@/repositories/db'
+import { generateCourseScene } from '@/api/courseStudio'
+import { courseSceneFingerprint } from '@/utils/courseStudio'
 
 const STORAGE_KEY = 'course-studio-projects-v1'
 const MAX_PROJECTS = 12
@@ -59,6 +61,8 @@ function normalizeProject(project) {
 export const useCourseStudioStore = defineStore('courseStudio', () => {
   const projects = ref([])
   const loaded = ref(false)
+  const generatingIds = ref([])
+  const cancelRequests = new Set()
   let loadingPromise = null
 
   const latest = computed(() => projects.value[0] || null)
@@ -85,6 +89,10 @@ export const useCourseStudioStore = defineStore('courseStudio', () => {
 
   function latestFor(ownerId) {
     return projects.value.find((project) => !ownerId || project.ownerId === ownerId) || null
+  }
+
+  function isGenerating(projectId) {
+    return generatingIds.value.includes(projectId)
   }
 
   async function save(project) {
@@ -206,13 +214,113 @@ export const useCourseStudioStore = defineStore('courseStudio', () => {
     await persist()
   }
 
+  /**
+   * 场景生产不再绑定页面组件。进入课程体验页后，该方法继续在后台推进，
+   * 已完成场景会立即写入 IndexedDB，体验页通过响应式状态实时看到。
+   */
+  async function runGeneration(projectId, { concurrency = 3 } = {}) {
+    if (isGenerating(projectId)) return find(projectId)
+    const project = find(projectId)
+    if (!project) throw new Error('课程不存在')
+
+    cancelRequests.delete(projectId)
+    generatingIds.value = [...generatingIds.value, projectId]
+    const resume = project.scenes.some((scene) =>
+      ['ready', 'fallback'].includes(scene.status),
+    )
+    try {
+      await beginGeneration(projectId, { reset: !resume })
+    } catch (error) {
+      generatingIds.value = generatingIds.value.filter((id) => id !== projectId)
+      throw error
+    }
+
+    const currentProject = find(projectId)
+    const outlines = [...currentProject.outlines].sort((a, b) => a.order - b.order)
+    const queue = outlines
+      .map((outline, index) => ({ outline, index }))
+      .filter(({ outline }) => {
+        const existing = currentProject.scenes.find((scene) => scene.outlineId === outline.id)
+        return !(
+          ['ready', 'fallback'].includes(existing?.status) &&
+          existing.fingerprint === courseSceneFingerprint(outline)
+        )
+      })
+
+    let cursor = 0
+    let failed = false
+    async function generateWorker() {
+      while (!cancelRequests.has(projectId)) {
+        const task = queue[cursor]
+        cursor += 1
+        if (!task) return
+        const { outline, index } = task
+        const existing = currentProject.scenes.find((scene) => scene.outlineId === outline.id)
+        if (
+          ['ready', 'fallback'].includes(existing?.status) &&
+          existing.fingerprint === courseSceneFingerprint(outline)
+        ) {
+          continue
+        }
+
+        await updateScene(projectId, outline.id, { status: 'generating', error: '' })
+        try {
+          const result = await generateCourseScene({
+            project: currentProject,
+            outline,
+            previousScene: outlines[index - 1] || null,
+          })
+          await updateScene(projectId, outline.id, {
+            status: result.fallback ? 'fallback' : 'ready',
+            content: result.content,
+            sources: result.sources,
+            repaired: !!result.repaired,
+            fingerprint: courseSceneFingerprint(outline),
+            error: '',
+          })
+        } catch (error) {
+          failed = true
+          await updateScene(projectId, outline.id, {
+            status: 'error',
+            error: error.message || '场景生成失败',
+          })
+        }
+      }
+    }
+
+    try {
+      await Promise.all(
+        Array.from(
+          { length: Math.min(concurrency, Math.max(1, queue.length)) },
+          () => generateWorker(),
+        ),
+      )
+      if (cancelRequests.has(projectId)) {
+        await finishGeneration(projectId, 'outline')
+      } else {
+        await finishGeneration(projectId, failed ? 'failed' : 'ready')
+      }
+    } finally {
+      cancelRequests.delete(projectId)
+      generatingIds.value = generatingIds.value.filter((id) => id !== projectId)
+    }
+    return find(projectId)
+  }
+
+  function cancelGeneration(projectId) {
+    if (!isGenerating(projectId)) return
+    cancelRequests.add(projectId)
+  }
+
   return {
     projects,
     loaded,
     latest,
+    generatingIds,
     load,
     find,
     latestFor,
+    isGenerating,
     save,
     createDraft,
     updateProject,
@@ -220,6 +328,8 @@ export const useCourseStudioStore = defineStore('courseStudio', () => {
     beginGeneration,
     updateScene,
     finishGeneration,
+    runGeneration,
+    cancelGeneration,
     remove,
   }
 })

@@ -103,6 +103,7 @@ function recordTrace(record) {
  * @param {string} [options.systemPrompt] 任务型系统提示词（提供时原样使用，不再注入学科背景）
  * @param {number} [options.temperature]
  * @param {number} [options.maxTokens] 输出上限，默认 2048；长任务请显式调大
+ * @param {'json_object'|undefined} [options.responseFormat] 结构化输出模式
  * @param {AbortSignal} [options.signal]
  * @param {number} [options.timeout]
  * @param {number} [options.retry] 可重试错误的最大重试次数，默认 1
@@ -185,8 +186,12 @@ export async function sendChatDetailed(messages, options = {}) {
           messages: buildMessages(messages, finalSystemPrompt),
           temperature,
           max_tokens: maxTokens,
-          ...(options.reasoningEffort
+          ...(options.reasoningEffort &&
+          (cfg.provider === 'stepfun' || String(cfg.model || '').startsWith('step-'))
             ? { reasoning_effort: options.reasoningEffort }
+            : {}),
+          ...(options.responseFormat
+            ? { response_format: { type: options.responseFormat } }
             : {}),
         }),
         signal: options.signal ?? controller.signal,

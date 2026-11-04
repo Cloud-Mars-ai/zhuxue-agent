@@ -6,6 +6,9 @@ import BoardCanvas from '@/components/BoardCanvas.vue'
 import SpeakButton from '@/components/SpeakButton.vue'
 import { answerBoardQuestion, generateBoardLesson } from '@/api/board'
 import { useCourseStudioStore } from '@/stores/courseStudio'
+import { VOICE_PRESETS } from '@/stores/voice'
+import { useBoardPlayback } from '@/composables/useBoardPlayback'
+import { downloadBoardLesson } from '@/utils/boardDownload'
 
 const route = useRoute()
 const router = useRouter()
@@ -38,8 +41,6 @@ const lesson = ref(null)
 const loading = ref(true)
 const fallback = ref(false)
 const errorMessage = ref('')
-const visibleCount = ref(0)
-const paused = ref(false)
 const zoom = ref(100)
 const showGrid = ref(true)
 const showSettings = ref(false)
@@ -48,7 +49,23 @@ const boardShellRef = ref()
 const conversationRef = ref()
 const input = ref('')
 const asking = ref(false)
-let revealTimer = null
+const {
+  visibleCount,
+  paused,
+  narrating,
+  voiceError,
+  voiceEnabled,
+  revealFinished,
+  voiceStore,
+  startReveal,
+  stopNarration,
+  stopReveal,
+  togglePause,
+  restart,
+  setVoiceEnabled,
+  toggleVoice,
+  selectVoice,
+} = useBoardPlayback(lesson)
 
 const messages = ref([
   {
@@ -65,37 +82,12 @@ const activeQuestion = computed(
       .find((block) => block.type === 'question') || null,
 )
 
-const revealFinished = computed(
-  () => !!lesson.value && visibleCount.value >= lesson.value.blocks.length,
-)
-
-function stopReveal() {
-  if (revealTimer) {
-    clearInterval(revealTimer)
-    revealTimer = null
-  }
-}
-
-function startReveal(fromStart = false) {
-  stopReveal()
-  if (!lesson.value) return
-  if (fromStart) visibleCount.value = 0
-  paused.value = false
-
-  revealTimer = window.setInterval(() => {
-    if (!lesson.value || visibleCount.value >= lesson.value.blocks.length) {
-      stopReveal()
-      return
-    }
-    visibleCount.value += 1
-  }, 620)
-}
-
 async function loadLesson() {
   loading.value = true
   errorMessage.value = ''
   visibleCount.value = 0
   stopReveal()
+  stopNarration()
 
   try {
     if (isStudioLesson.value) {
@@ -107,8 +99,7 @@ async function loadLesson() {
       }
       lesson.value = scene.content.lesson
       fallback.value = scene.status === 'fallback'
-      visibleCount.value = 1
-      nextTick(startReveal)
+      nextTick(() => startReveal())
       return
     }
     const result = await generateBoardLesson({
@@ -118,33 +109,11 @@ async function loadLesson() {
     })
     lesson.value = result.lesson
     fallback.value = result.fallback
-    visibleCount.value = 1
-    nextTick(startReveal)
+    nextTick(() => startReveal())
   } catch (err) {
     errorMessage.value = err?.message || '板书生成失败'
   } finally {
     loading.value = false
-  }
-}
-
-function togglePause() {
-  if (!lesson.value) return
-  if (revealFinished.value) {
-    startReveal(true)
-    return
-  }
-  if (paused.value) {
-    paused.value = false
-    revealTimer = window.setInterval(() => {
-      if (visibleCount.value >= lesson.value.blocks.length) {
-        stopReveal()
-        return
-      }
-      visibleCount.value += 1
-    }, 620)
-  } else {
-    paused.value = true
-    stopReveal()
   }
 }
 
@@ -223,7 +192,6 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  stopReveal()
   document.removeEventListener('click', onDocumentClick)
 })
 </script>
@@ -243,6 +211,24 @@ onBeforeUnmount(() => {
         </div>
 
         <div class="board-tools">
+          <button
+            type="button"
+            class="voice-toggle"
+            :class="{ on: voiceEnabled }"
+            :title="voiceEnabled ? '关闭语音教学' : '开启语音教学'"
+            @click="toggleVoice"
+          >
+            {{ narrating ? '讲解中' : voiceEnabled ? '语音开' : '语音关' }}
+          </button>
+          <button
+            type="button"
+            title="下载板书"
+            aria-label="下载板书"
+            :disabled="!lesson"
+            @click="downloadBoardLesson(lesson)"
+          >
+            ⇩
+          </button>
           <button type="button" title="缩小" @click="zoomBy(-10)">−</button>
           <span class="zoom-value">{{ zoom }}%</span>
           <button type="button" title="放大" @click="zoomBy(10)">＋</button>
@@ -258,7 +244,28 @@ onBeforeUnmount(() => {
                 <span>点阵背景</span>
                 <input v-model="showGrid" type="checkbox" />
               </label>
-              <button type="button" @click="startReveal(true)">从头播放</button>
+              <label>
+                <span>语音教学</span>
+                <input
+                  :checked="voiceEnabled"
+                  type="checkbox"
+                  @change="setVoiceEnabled($event.target.checked)"
+                />
+              </label>
+              <label class="voice-select-row">
+                <span>讲解音色</span>
+                <select
+                  :value="voiceStore.voiceId"
+                  :disabled="!voiceEnabled"
+                  @change="selectVoice($event.target.value)"
+                >
+                  <option v-for="voice in VOICE_PRESETS" :key="voice.id" :value="voice.id">
+                    {{ voice.name }}
+                  </option>
+                </select>
+              </label>
+              <p v-if="voiceError" class="voice-error">{{ voiceError }}</p>
+              <button type="button" @click="restart">从头播放</button>
             </div>
           </div>
         </div>
@@ -268,6 +275,9 @@ onBeforeUnmount(() => {
         <section class="board-stage">
           <div v-if="fallback" class="fallback-banner">
             演示缓存：当前板书由教师确认稿确定性生成
+          </div>
+          <div v-if="voiceError && voiceEnabled" class="voice-error-banner">
+            {{ voiceError }}
           </div>
           <div v-if="loading" class="board-skeleton" aria-label="正在生成板书">
             <span class="skeleton-kicker" />
@@ -299,7 +309,7 @@ onBeforeUnmount(() => {
 
           <div class="playback-bar">
             <button type="button" @click="togglePause">
-              {{ paused ? '继续讲解' : revealFinished ? '重新播放' : '暂停讲解' }}
+              {{ paused ? '继续讲解' : revealFinished ? '重新播放' : narrating ? '暂停语音' : '暂停讲解' }}
             </button>
             <span v-if="lesson">
               {{ Math.min(visibleCount, lesson.blocks.length) }} / {{ lesson.blocks.length }} 个板块
@@ -456,6 +466,23 @@ onBeforeUnmount(() => {
   background: var(--accent-soft);
 }
 
+.board-tools button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.board-tools .voice-toggle {
+  width: auto;
+  padding: 0 9px;
+  border-radius: var(--radius-pill);
+  font-size: 9.5px;
+}
+
+.board-tools .voice-toggle.on {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
 .zoom-value,
 .page-count {
   color: var(--text-sub);
@@ -507,6 +534,30 @@ onBeforeUnmount(() => {
   font-size: 11px;
 }
 
+.voice-select-row {
+  align-items: flex-start !important;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.voice-select-row select {
+  width: 100%;
+  padding: 6px 8px;
+  color: var(--text-main);
+  background: var(--surface-2);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  font: inherit;
+  font-size: 10px;
+}
+
+.voice-error {
+  margin: -4px 0 10px;
+  color: var(--warn);
+  font-size: 9.5px;
+  line-height: 1.45;
+}
+
 .settings-popover button {
   width: 100%;
   padding: 7px;
@@ -534,6 +585,16 @@ onBeforeUnmount(() => {
   position: sticky;
   z-index: 3;
   top: 0;
+  width: fit-content;
+  margin: 0 auto 10px;
+  padding: 5px 10px;
+  color: var(--warn);
+  background: var(--warn-soft);
+  border-radius: var(--radius-pill);
+  font-size: 10px;
+}
+
+.voice-error-banner {
   width: fit-content;
   margin: 0 auto 10px;
   padding: 5px 10px;

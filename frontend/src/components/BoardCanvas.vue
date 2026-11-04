@@ -5,6 +5,7 @@ const props = defineProps({
   lesson: { type: Object, default: null },
   visibleCount: { type: Number, default: 999 },
   interactive: { type: Boolean, default: true },
+  landscape: { type: Boolean, default: false },
 })
 
 const emit = defineEmits(['answer'])
@@ -26,7 +27,12 @@ function chooseAnswer(question, option) {
 </script>
 
 <template>
-  <article v-if="lesson" class="board-canvas" data-testid="board-canvas">
+  <article
+    v-if="lesson"
+    class="board-canvas"
+    :class="{ 'is-landscape': landscape }"
+    data-testid="board-canvas"
+  >
     <header class="board-title">
       <span class="board-kicker">本节板书 · {{ lesson.chapter }}</span>
       <h1>{{ lesson.title }}</h1>
@@ -137,6 +143,14 @@ function chooseAnswer(question, option) {
   font-size: 15px;
   line-height: 1.82;
   letter-spacing: 0.015em;
+}
+
+.board-canvas.is-landscape {
+  min-width: 1050px;
+}
+
+.board-canvas.is-landscape .board-blocks {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .board-title {
@@ -460,6 +474,14 @@ th {
   .board-block,
   .board-block.is-question {
     grid-column: 1;
+  }
+
+  .board-canvas.is-landscape {
+    min-width: 860px;
+  }
+
+  .board-canvas.is-landscape .board-blocks {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 </style>
