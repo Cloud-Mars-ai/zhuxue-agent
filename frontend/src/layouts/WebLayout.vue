@@ -29,6 +29,7 @@ const GROUP_META = {
 const GROUP_ORDER = ['首页', '学习', '考核', '教学', '讨论', '作业', '设置']
 const GROUP_OF = {
   course: '首页',
+  board: '学习',
   ask: '学习',
   practice: '学习',
   selftest: '学习',

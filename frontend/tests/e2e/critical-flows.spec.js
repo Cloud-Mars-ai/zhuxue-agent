@@ -1,0 +1,164 @@
+import { expect, test } from '@playwright/test'
+
+const USERS = {
+  student: {
+    id: '2024010001',
+    name: '张同学',
+    role: 'student',
+    discipline: '管理类',
+  },
+  teacher: {
+    id: 'T001',
+    name: '王教授',
+    role: 'teacher',
+  },
+}
+
+async function seedUser(page, role = 'student') {
+  await page.addInitScript((user) => {
+    if (!localStorage.getItem('ai-tutor-user')) {
+      localStorage.setItem('ai-tutor-user', JSON.stringify(user))
+    }
+    if (!localStorage.getItem('ai-tutor-theme')) {
+      localStorage.setItem('ai-tutor-theme', 'yun')
+    }
+    localStorage.setItem('ai-tutor-flags', JSON.stringify({ offlineFallback: true }))
+  }, USERS[role])
+}
+
+test('登录后进入课程主页', async ({ page }) => {
+  await page.goto('/login')
+  await page.getByPlaceholder('学号 / 工号').fill('student')
+  await page.getByPlaceholder('密码').fill('123456')
+  await page.getByRole('button', { name: '登录', exact: true }).click()
+
+  await expect(page).toHaveURL(/\/app\/course$/)
+  await expect(page.getByTestId('yun-greeting')).toBeVisible()
+})
+
+test('本地意图规则直接跳转作业页', async ({ page }) => {
+  await seedUser(page)
+  await page.goto('/app/ask')
+
+  await page
+    .getByPlaceholder('输入你的问题或指令，Enter 发送，Shift+Enter 换行')
+    .fill('我想交作业')
+  await page.getByRole('button', { name: '发送', exact: true }).click()
+  await expect(page.getByRole('button', { name: '前往作业页面' })).toBeVisible()
+  await page.getByRole('button', { name: '前往作业页面' }).click()
+
+  await expect(page).toHaveURL(/\/app\/homework$/)
+})
+
+test('首页工具菜单一步进入板书讲解', async ({ page }) => {
+  await seedUser(page)
+  await page.goto('/app/course')
+
+  await page.getByRole('button', { name: '打开学习工具' }).click()
+  await expect(page.getByText('从路线图讲到追问')).toBeVisible()
+  await page.locator('.assistant-tool-menu button').first().click()
+
+  await expect(page).toHaveURL(/\/app\/board/)
+  await expect(page.getByTestId('board-canvas')).toBeVisible()
+})
+
+test('无模型时一人一题仍可生成并获取确定性反馈', async ({ page }) => {
+  await seedUser(page)
+  await page.goto('/app/practice')
+
+  await page.getByRole('button', { name: 'AI 生成练习题' }).click()
+  await expect(page.getByText('本题情境')).toBeVisible()
+  await expect(page.locator('.question-text')).toContainText('演示缓存')
+
+  await page
+    .getByPlaceholder('请用口头表达的方式写下你的作答（就像在课堂上回答老师一样）')
+    .fill('我会先判断组织结构与授权是否匹配，再提出调整建议。')
+  await page.getByRole('button', { name: '提交并获取反馈' }).click()
+
+  await expect(page.getByText('AI 三维反馈')).toBeVisible()
+  await expect(page.locator('.feedback-text')).toContainText('演示缓存')
+})
+
+test('无模型时章节自测仍可进入答题态', async ({ page }) => {
+  await seedUser(page)
+  await page.goto('/app/selftest')
+
+  await page.getByRole('button', { name: '开始自测' }).click()
+
+  await expect(page.locator('.test-counter')).toContainText('第 1 /')
+  await expect(page.locator('.q-option')).not.toHaveCount(0)
+})
+
+test('无模型时速查表仍可从教师确认稿生成', async ({ page }) => {
+  await seedUser(page)
+  await page.goto('/app/cheatsheet')
+
+  await page.getByRole('button', { name: '生成速查表' }).click()
+  const dialog = page.locator('.el-dialog').filter({ hasText: '先确认用途' })
+  await expect(dialog).toBeVisible()
+  await dialog.getByRole('button', { name: '生成速查表' }).click()
+
+  await expect(page.locator('.sheet')).toBeVisible()
+  await expect(page.getByText('AI 生成，仅供复习参考；以教师课件与课堂讲授为准。')).toBeVisible()
+})
+
+test('教师可生成、复核并发布考核任务', async ({ page }) => {
+  await seedUser(page, 'teacher')
+  await page.goto('/app/assessment')
+
+  await page.locator('.el-select').first().click()
+  await page.getByText('第3章 决策与计划', { exact: true }).last().click()
+  await page.getByText('圈人选范围 · AI 出题', { exact: true }).click()
+  await expect(page.locator('.el-select-dropdown:visible')).toHaveCount(0)
+  await page.getByText('张同学', { exact: true }).click()
+
+  const generate = page.getByRole('button', { name: 'AI 智能生成模拟面试题' })
+  await expect(generate).toBeEnabled()
+  await generate.click()
+  await page.getByRole('button', { name: '开始生成' }).click()
+
+  await expect(page.getByText('任务复核：')).toBeVisible()
+  await page.getByRole('button', { name: '批量通过' }).click()
+  await page
+    .locator('.el-message-box')
+    .getByRole('button', { name: '通过', exact: true })
+    .click()
+  await page.getByRole('button', { name: '发布任务' }).click()
+
+  await expect(page.getByRole('button', { name: '已发布' })).toBeVisible()
+})
+
+test('皮肤切换刷新后仍持久化', async ({ page }) => {
+  await seedUser(page)
+  await page.goto('/app/course')
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'yun')
+
+  await page.getByTestId('web-theme-toggle').click()
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'mo')
+  await page.reload({ waitUntil: 'domcontentloaded' })
+
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'mo')
+})
+
+test('生产服务器支持板书深链接刷新', async ({ page }) => {
+  await seedUser(page)
+  const path =
+    '/app/board?chapter=' + encodeURIComponent('第3章 决策与计划')
+  await page.goto(path)
+  await expect(page.getByTestId('board-canvas')).toBeVisible()
+
+  await page.reload()
+  await expect(page).toHaveURL(/\/app\/board\?chapter=/)
+  await expect(page.getByTestId('board-canvas')).toBeVisible()
+})
+
+test('H5 板书可打开讨论面板', async ({ page }) => {
+  await seedUser(page)
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/m/board?chapter=' + encodeURIComponent('第3章 决策与计划'))
+
+  await expect(page.getByTestId('board-canvas')).toBeVisible()
+  await page.getByRole('button', { name: /边听边问/ }).click()
+  await expect(page.locator('.van-popup')).toBeVisible()
+  await expect(page.getByText('边听边问', { exact: true }).last()).toBeVisible()
+})

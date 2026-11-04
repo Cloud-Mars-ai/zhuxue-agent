@@ -7,6 +7,7 @@ import { useUserStore } from '@/stores/user'
 import { useModelStore } from '@/stores/model'
 import { useSelfTestStore } from '@/stores/selftest'
 import { generateSelfTest } from '@/api/aiTasks'
+import { isEnabled } from '@/config/flags'
 
 const route = useRoute()
 const router = useRouter()
@@ -30,6 +31,7 @@ const submitting = ref(false)
 let startedAt = 0
 
 const isConfigured = computed(() => modelStore.isConfigured)
+const fallbackOn = computed(() => isEnabled('offlineFallback'))
 
 const answeredCount = computed(() => Object.keys(answers.value).length)
 const unansweredCount = computed(() => questions.value.length - answeredCount.value)
@@ -88,7 +90,7 @@ function planBatches(chapters, total) {
 }
 
 async function start() {
-  if (!isConfigured.value) {
+  if (!isConfigured.value && !fallbackOn.value) {
     ElMessage.warning('请先到「模型接入」页面完成配置')
     return
   }
@@ -263,10 +265,15 @@ function formatDuration(ms) {
       </div>
 
       <div class="start-row">
-        <el-button type="primary" :disabled="!isConfigured" @click="start">
+        <el-button type="primary" :disabled="!isConfigured && !fallbackOn" @click="start">
           开始自测
         </el-button>
-        <span v-if="!isConfigured" class="hint">请先到「模型接入」完成配置</span>
+        <span v-if="!isConfigured && !fallbackOn" class="hint">
+          请先到「模型接入」完成配置
+        </span>
+        <span v-else-if="!isConfigured" class="hint">
+          未配置模型，将使用教师确认稿生成演示缓存题库
+        </span>
         <span v-else class="hint">
           选择题会自动判分；提交后才显示解析，作答期间没有任何提示。
         </span>

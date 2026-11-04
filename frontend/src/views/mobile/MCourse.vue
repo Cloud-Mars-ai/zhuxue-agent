@@ -109,6 +109,7 @@ const todoRows = computed(() => {
 const quickEntries = computed(() =>
   isStudent.value
     ? [
+        { ic: '板', color: '#3D5BD9', name: '板书讲解', sub: '边讲解 · 边追问', to: '/m/board' },
         { ic: '题', color: '#E8590C', name: '一人一题', sub: 'AI 出题练习', to: '/m/practice' },
         { ic: '测', color: '#3B5BDB', name: '章节自测', sub: '先测后学', to: '/m/selftest' },
         { ic: '表', color: '#9C36B5', name: '备考速查', sub: '按主题重组', to: '/m/cheatsheet' },
@@ -119,6 +120,7 @@ const quickEntries = computed(() =>
         { ic: '我', color: '#495057', name: '我的', sub: '背景与设置', to: '/m/mine' },
       ]
     : [
+        { ic: '板', color: '#3D5BD9', name: '板书讲解', sub: '课程内容对照', to: '/m/board' },
         { ic: '稿', color: '#3B5BDB', name: '案例选稿台', sub: '筛选 / 选用 / 驳回', to: '/m/case' },
         { ic: '卷', color: '#E8590C', name: '出题阅卷台', sub: '圈人出题 · 评分', to: '/m/assessment' },
         { ic: '问', color: '#F59F00', name: 'AI 答疑', sub: '小管同学', to: '/m/ask' },

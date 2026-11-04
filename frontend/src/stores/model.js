@@ -5,12 +5,13 @@ const STORAGE_KEY = 'ai-tutor-model-config'
 
 /**
  * 默认模型配置：阶跃星辰（StepFun）OpenAI 兼容接口
- * 密钥由项目负责人提供，仅用于竞赛演示；可在「模型接入」页随时修改
+ * 密钥只在当前浏览器的「模型接入」页填写并通过 localStorage 保存。
+ * 仓库内禁止提供默认密钥，避免公开构建产物把凭据下发给访问者。
  */
 export const DEFAULT_MODEL_CONFIG = {
   provider: 'stepfun',
   baseUrl: 'https://api.stepfun.com/v1',
-  apiKey: '3E1uzgEugYnhZ6ptBQpNX73kNjYSh9eCa2ykFYbqXqrpswBbefVAX9AXVaAp0BlK7',
+  apiKey: '',
   model: 'step-3.5-flash',
   temperature: 0.3,
   systemPrompt:

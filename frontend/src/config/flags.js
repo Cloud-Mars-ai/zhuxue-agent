@@ -30,9 +30,9 @@ export const FEATURE_FLAGS = {
 
   // —— S4 学习形态 ——
   deepLearn: false, // 章节学习路径
-  boardMode: false, // 板书卡
-  socratic: false, // 苏格拉底追问
-  tutorEntry: false, // 助教单入口
+  boardMode: true, // 结构化板书 + 板书内追问
+  socratic: true, // 苏格拉底追问
+  tutorEntry: true, // 首页统一助教入口
 }
 
 const STORAGE_KEY = 'ai-tutor-flags'

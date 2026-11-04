@@ -6,6 +6,7 @@ import { useUserStore } from '@/stores/user'
 import { useModelStore } from '@/stores/model'
 import { usePracticeStore } from '@/stores/practice'
 import { useThemeStore } from '@/stores/theme'
+import { isEnabled } from '@/config/flags'
 import { renderMd } from '@/utils/md'
 import { generatePracticeQuestion, reviewPracticeAnswer, PRACTICE_TYPES } from '@/api/aiTasks'
 
@@ -33,6 +34,7 @@ const reviewing = ref(false)
 const error = ref('')
 
 const isConfigured = computed(() => modelStore.isConfigured)
+const fallbackOn = computed(() => isEnabled('offlineFallback'))
 const myRecords = computed(() => practiceStore.myRecords(userStore.user?.id))
 
 async function generate() {
@@ -165,7 +167,7 @@ function formatTime(iso) {
               <el-button
                 type="primary"
                 :loading="generating"
-                :disabled="!isConfigured"
+                :disabled="!isConfigured && !fallbackOn"
                 @click="generate"
               >
                 {{ question ? '换一题' : 'AI 生成练习题' }}

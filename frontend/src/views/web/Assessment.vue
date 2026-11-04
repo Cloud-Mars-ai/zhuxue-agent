@@ -7,6 +7,7 @@ import { useModelStore } from '@/stores/model'
 import { useAssessmentStore } from '@/stores/assessment'
 import { usePracticeStore } from '@/stores/practice'
 import { useThemeStore } from '@/stores/theme'
+import { isEnabled } from '@/config/flags'
 import { renderMd } from '@/utils/md'
 import {
   generateAssessmentQuestion,
@@ -24,6 +25,7 @@ const themeStore = useThemeStore()
 const isStudent = computed(() => userStore.role === 'student')
 const isTeacher = computed(() => ['admin', 'teacher', 'ta'].includes(userStore.role))
 const isConfigured = computed(() => modelStore.isConfigured)
+const fallbackOn = computed(() => isEnabled('offlineFallback'))
 
 // 学生视图文案随皮肤切换：夜读下考核题目装帧为「面试函」
 const studentSectionTitle = computed(() =>
@@ -285,7 +287,13 @@ async function submitAnswer(entry) {
   <div class="assessment-page">
     <!-- ================= 教师视图 ================= -->
     <template v-if="isTeacher">
-      <el-alert v-if="!isConfigured" type="warning" :closable="false" show-icon class="mb12">
+      <el-alert
+        v-if="!isConfigured && !fallbackOn"
+        type="warning"
+        :closable="false"
+        show-icon
+        class="mb12"
+      >
         <template #title>
           尚未完成模型配置，
           <el-link type="primary" :underline="false" @click="$router.push('/app/model')">
@@ -361,7 +369,7 @@ async function submitAnswer(entry) {
               type="primary"
               class="gen-btn"
               :loading="generating"
-              :disabled="!isConfigured || !scopeReady"
+              :disabled="(!isConfigured && !fallbackOn) || !scopeReady"
               @click="generate"
             >
               AI 智能生成模拟面试题

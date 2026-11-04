@@ -47,6 +47,12 @@ const routes = [
         meta: { title: '课程主页', icon: 'HomeFilled' },
       },
       {
+        path: 'board',
+        name: 'Board',
+        component: () => import('@/views/web/Board.vue'),
+        meta: { title: '板书讲解', icon: 'Notebook' },
+      },
+      {
         path: 'ask',
         name: 'Ask',
         component: () => import('@/views/web/Ask.vue'),
@@ -131,6 +137,7 @@ const routes = [
   // 保留 query 与 hash：如 /forum?id=12 仍能跳到 /app/forum?id=12
   ...[
     'course',
+    'board',
     'ask',
     'practice',
     'selftest',
@@ -160,6 +167,12 @@ const routes = [
         name: 'MCourse',
         component: () => import('@/views/mobile/MCourse.vue'),
         meta: { title: '课程', mobile: true },
+      },
+      {
+        path: 'board',
+        name: 'MBoard',
+        component: () => import('@/views/mobile/MBoard.vue'),
+        meta: { title: '板书讲解', mobile: true },
       },
       {
         path: 'ask',
@@ -228,6 +241,7 @@ const routes = [
  * ============================================================ */
 const WEB_TO_MOBILE = {
   '/app/course': '/m/course',
+  '/app/board': '/m/board',
   '/app/ask': '/m/ask',
   '/app/practice': '/m/practice',
   '/app/selftest': '/m/selftest',

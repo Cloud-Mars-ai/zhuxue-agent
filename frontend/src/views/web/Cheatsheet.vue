@@ -8,6 +8,7 @@ import { useUserStore } from '@/stores/user'
 import { useModelStore } from '@/stores/model'
 import { useCheatsheetStore } from '@/stores/cheatsheets'
 import { generateCheatsheet } from '@/api/aiTasks'
+import { isEnabled } from '@/config/flags'
 import { cheatsheetToText } from '@/utils/cheatsheet'
 import ClarifyDialog from '@/components/web/ClarifyDialog.vue'
 
@@ -15,6 +16,7 @@ const route = useRoute()
 const userStore = useUserStore()
 const modelStore = useModelStore()
 const sheetStore = useCheatsheetStore()
+const fallbackOn = isEnabled('offlineFallback')
 
 const chapterOptions = COURSE.chapters.map((c) => c.title)
 const selectedChapters = ref([COURSE.chapters[2]?.title || chapterOptions[0]])
@@ -89,9 +91,12 @@ function toggleChapter(ch) {
 }
 
 function openGenerate() {
-  if (!isConfigured.value) {
+  if (!isConfigured.value && !fallbackOn) {
     ElMessage.warning('请先到「模型接入」页面完成配置')
     return
+  }
+  if (!isConfigured.value && fallbackOn) {
+    ElMessage.info('未配置模型，将使用教师确认稿生成演示缓存版')
   }
   clarifyOpen.value = true
 }

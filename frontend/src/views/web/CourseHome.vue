@@ -119,6 +119,7 @@ const todoRows = computed(() => {
 const allEntries = computed(() =>
   isStudent.value
     ? [
+        { ic: '板', color: '#3D5BD9', name: '板书讲解', sub: '边讲解 · 边追问', to: '/app/board' },
         { ic: '题', color: '#E8590C', name: '一人一题', sub: 'AI 出题练习', to: '/app/practice' },
         { ic: '测', color: '#3D5BD9', name: '章节自测', sub: '先测后学', to: '/app/selftest' },
         { ic: '表', color: '#9C36B5', name: '备考速查', sub: '按主题重组', to: '/app/cheatsheet' },
@@ -140,6 +141,7 @@ const primaryEntries = computed(() => allEntries.value.slice(0, 4))
 const secondaryEntries = computed(() => allEntries.value.slice(4))
 
 const heroInput = ref('')
+const showToolMenu = ref(false)
 
 const heroTitle = computed(() =>
   isStudent.value ? '把这一章，学成你自己的' : '把这一周的教学，安排明白',
@@ -166,6 +168,7 @@ const heroHint = computed(() =>
 const heroActions = computed(() =>
   isStudent.value
     ? [
+        { label: '板书讲解', to: '/app/board' },
         { label: '章节自测', to: '/app/selftest' },
         { label: '备考速查', to: '/app/cheatsheet' },
         { label: '学习体检', to: '/app/checkup' },
@@ -176,6 +179,34 @@ const heroActions = computed(() =>
         { label: '学情统计', to: '/app/statistics' },
       ],
 )
+
+const assistantTools = computed(() => [
+  {
+    label: '板书讲解',
+    desc: '从路线图讲到追问',
+    icon: '板',
+    action: () =>
+      router.push({ path: '/app/board', query: { chapter: currentChapter.value?.title || '' } }),
+  },
+  {
+    label: '直接提问',
+    desc: '围绕当前章节答疑',
+    icon: '问',
+    action: () => router.push('/app/ask'),
+  },
+  {
+    label: '章节自测',
+    desc: '先测后讲',
+    icon: '测',
+    action: () => router.push('/app/selftest'),
+  },
+  {
+    label: '学习体检',
+    desc: '看盲区与下一步',
+    icon: '检',
+    action: () => router.push('/app/checkup'),
+  },
+])
 
 const heroMaterials = computed(() =>
   isStudent.value
@@ -233,6 +264,11 @@ function askHero() {
 
 function openMaterials() {
   router.push(isStudent.value ? '/app/cases' : '/app/materials')
+}
+
+function openAssistantTool(tool) {
+  showToolMenu.value = false
+  tool.action()
 }
 
 function scrollToChapters() {
@@ -421,7 +457,31 @@ function startSelfTest(chapter) {
           />
           <div class="ask-tools">
             <div class="ask-left">
-              <button class="ask-plus" type="button" @click="openMaterials">+</button>
+              <div class="ask-plus-wrap">
+                <button
+                  class="ask-plus"
+                  type="button"
+                  :aria-expanded="showToolMenu"
+                  aria-label="打开学习工具"
+                  @click="showToolMenu = !showToolMenu"
+                >
+                  +
+                </button>
+                <div v-if="showToolMenu" class="assistant-tool-menu">
+                  <button
+                    v-for="tool in assistantTools"
+                    :key="tool.label"
+                    type="button"
+                    @click="openAssistantTool(tool)"
+                  >
+                    <span class="assistant-tool-icon">{{ tool.icon }}</span>
+                    <span>
+                      <strong>{{ tool.label }}</strong>
+                      <small>{{ tool.desc }}</small>
+                    </span>
+                  </button>
+                </div>
+              </div>
               <div class="ask-chips">
                 <button
                   v-for="a in heroActions"
@@ -798,6 +858,73 @@ function startSelfTest(chapter) {
   font-size: 16px;
   line-height: 1;
   cursor: pointer;
+}
+
+.ask-plus-wrap {
+  position: relative;
+  flex: none;
+}
+
+.assistant-tool-menu {
+  position: absolute;
+  z-index: 12;
+  left: 0;
+  bottom: 38px;
+  width: 230px;
+  padding: 6px;
+  text-align: left;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--card-shadow);
+}
+
+.assistant-tool-menu button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px;
+  color: var(--text-main);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.assistant-tool-menu button:hover {
+  background: var(--surface-2);
+}
+
+.assistant-tool-icon {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.assistant-tool-menu button > span:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.assistant-tool-menu strong {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.assistant-tool-menu small {
+  color: var(--text-faint);
+  font-size: 10px;
 }
 
 .ask-plus:hover {

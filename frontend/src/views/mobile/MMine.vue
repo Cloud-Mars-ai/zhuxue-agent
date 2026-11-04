@@ -40,6 +40,7 @@ function onDisciplineConfirm({ selectedOptions }) {
 }
 
 const tools = [
+  { title: '板书讲解', desc: '结构化白板 · 边听边问', path: '/m/board', icon: 'notes-o' },
   { title: '一人一题练习', desc: 'AI 出题 · 三维反馈', path: '/m/practice', icon: 'edit' },
   { title: '章节自测', desc: '先测后学 · 自动判分', path: '/m/selftest', icon: 'clock-o' },
   { title: '备考速查表', desc: '按主题重组 · 可打印', path: '/m/cheatsheet', icon: 'notes-o' },
