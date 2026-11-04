@@ -5,8 +5,10 @@ import { COURSE } from '@/mock/data'
 import BoardCanvas from '@/components/BoardCanvas.vue'
 import SpeakButton from '@/components/SpeakButton.vue'
 import { answerBoardQuestion, generateBoardLesson } from '@/api/board'
+import { useCourseStudioStore } from '@/stores/courseStudio'
 
 const route = useRoute()
+const studioStore = useCourseStudioStore()
 const currentChapter = computed(
   () => COURSE.chapters.find((chapter) => chapter.status === '进行中') || COURSE.chapters[0],
 )
@@ -15,6 +17,9 @@ const studyMode = computed(() => {
   const mode = Array.isArray(route.query.mode) ? route.query.mode[0] : route.query.mode
   return mode === 'sprint' ? 'sprint' : 'course'
 })
+const studioProjectId = computed(() => String(route.query.studio || ''))
+const studioSceneId = computed(() => String(route.query.scene || ''))
+const isStudioLesson = computed(() => !!studioProjectId.value)
 
 const lesson = ref(null)
 const loading = ref(true)
@@ -43,6 +48,25 @@ async function loadLesson() {
   loading.value = true
   stopReveal()
   try {
+    if (isStudioLesson.value) {
+      await studioStore.load()
+      const project = studioStore.find(studioProjectId.value)
+      const scene = project?.scenes?.find((item) => item.outlineId === studioSceneId.value)
+      if (!project || scene?.content?.kind !== 'board') {
+        throw new Error('未找到这门课程中的板书场景')
+      }
+      lesson.value = scene.content.lesson
+      fallback.value = scene.status === 'fallback'
+      visibleCount.value = 1
+      revealTimer = window.setInterval(() => {
+        if (!lesson.value || visibleCount.value >= lesson.value.blocks.length) {
+          stopReveal()
+          return
+        }
+        visibleCount.value += 1
+      }, 620)
+      return
+    }
     const result = await generateBoardLesson({
       chapter: chapter.value,
       studyMode: studyMode.value,
@@ -116,7 +140,10 @@ onBeforeUnmount(stopReveal)
 <template>
   <div class="m-board-page">
     <div class="m-board-meta">
-      <span>板书讲解 · {{ studyMode === 'sprint' ? '考前冲刺' : '正常上课' }}</span>
+      <span>
+        {{ isStudioLesson ? '课程编排' : '板书讲解' }} ·
+        {{ studyMode === 'sprint' ? '考前冲刺' : '正常上课' }}
+      </span>
       <strong>{{ lesson?.chapter || chapter }}</strong>
     </div>
     <div v-if="fallback" class="m-fallback">演示缓存 · 教师确认稿生成</div>
@@ -208,8 +235,10 @@ onBeforeUnmount(stopReveal)
 
 .m-board-meta strong {
   overflow: hidden;
-  color: var(--text-main);
+  color: var(--board-heading);
+  font-family: var(--board-display);
   font-size: 13px;
+  font-weight: 600;
   text-overflow: ellipsis;
   white-space: nowrap;
 }

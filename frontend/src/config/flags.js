@@ -27,6 +27,7 @@ export const FEATURE_FLAGS = {
   // —— S3 知识地基 ——
   knowledgeBase: true, // 课程资料库与材料注入（教师确认稿已内置）
   citation: false, // 引用标签渲染（S3 后续：chunkId 回填页码）
+  courseStudio: true, // 两阶段智能课程编排（大纲确认 → 逐场景生成）
 
   // —— S4 学习形态 ——
   deepLearn: false, // 章节学习路径

@@ -603,3 +603,25 @@ npm run build
 npm run test:e2e
 npm start
 ```
+
+---
+
+## 附录 D：OpenMAIC 调研与智能课程编排（2026-11-04）
+
+已基于 OpenMAIC `main@10a92d6` 完成源码级调研，产出：
+
+- `docs/research/openmaic-project-review.md`：架构、课程生成链路、复用取舍、风险与验收。
+- `THIRD_PARTY_NOTICES.md`：OpenMAIC MIT 许可证与改编范围声明。
+
+已落地到前端：
+
+- 新页面 `/app/studio`（H5 为 `/m/studio`）：教师生成可编辑大纲，确认后逐场景生成课程。
+- 两阶段提示词与生成服务：`api/prompts/courseStudio.js`、`api/courseStudio.js`。
+- schema 归一化与确定性兜底：`utils/courseStudio.js`；无模型时可完整生成 5–6 个场景。
+- 课程包持久化：`stores/courseStudio.js`，使用 IndexedDB，按场景保存状态与内容。
+- 生成内容包含板书、检索练习、案例应用、收束复盘；板书可直达 `/app/board` 与 `/m/board`。
+- 课程生成专用材料检索：`knowledge.buildGenerationContext()`，默认最多 6 片 / 6000 字，模型只回填 `chunkId`。
+
+边界：未引入 OpenMAIC 的 Next.js/PostgreSQL 长任务、多 Agent 演播、自由画布、互动 HTML、PBL、图片/视频生成与品牌资产。
+
+验收：常规构建、单文件离线构建均通过；Playwright 确定性回归 15/15 通过；Step 5 Preview 真实大纲 + 首个板书场景测试 1/1 通过。

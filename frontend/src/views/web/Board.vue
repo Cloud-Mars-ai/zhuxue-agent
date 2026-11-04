@@ -5,9 +5,11 @@ import { COURSE } from '@/mock/data'
 import BoardCanvas from '@/components/BoardCanvas.vue'
 import SpeakButton from '@/components/SpeakButton.vue'
 import { answerBoardQuestion, generateBoardLesson } from '@/api/board'
+import { useCourseStudioStore } from '@/stores/courseStudio'
 
 const route = useRoute()
 const router = useRouter()
+const studioStore = useCourseStudioStore()
 
 const currentChapter = computed(
   () => COURSE.chapters.find((chapter) => chapter.status === '进行中') || COURSE.chapters[0],
@@ -23,6 +25,14 @@ const studyMode = computed(() => {
   const mode = Array.isArray(route.query.mode) ? route.query.mode[0] : route.query.mode
   return mode === 'sprint' ? 'sprint' : 'course'
 })
+const studioProjectId = computed(() => String(route.query.studio || ''))
+const studioSceneId = computed(() => String(route.query.scene || ''))
+const isStudioLesson = computed(() => !!studioProjectId.value)
+const returnPath = computed(() =>
+  isStudioLesson.value
+    ? `/app/studio?project=${encodeURIComponent(studioProjectId.value)}`
+    : '/app/course',
+)
 
 const lesson = ref(null)
 const loading = ref(true)
@@ -88,6 +98,19 @@ async function loadLesson() {
   stopReveal()
 
   try {
+    if (isStudioLesson.value) {
+      await studioStore.load()
+      const project = studioStore.find(studioProjectId.value)
+      const scene = project?.scenes?.find((item) => item.outlineId === studioSceneId.value)
+      if (!project || scene?.content?.kind !== 'board') {
+        throw new Error('未找到这门课程中的板书场景')
+      }
+      lesson.value = scene.content.lesson
+      fallback.value = scene.status === 'fallback'
+      visibleCount.value = 1
+      nextTick(startReveal)
+      return
+    }
     const result = await generateBoardLesson({
       chapter: requestedChapter.value,
       focus: String(route.query.focus || ''),
@@ -209,12 +232,14 @@ onBeforeUnmount(() => {
   <div class="board-page" data-testid="board-page">
     <div ref="boardShellRef" class="board-shell">
       <header class="board-topbar">
-        <button class="icon-button" type="button" title="返回课程主页" @click="router.push('/app/course')">
+        <button class="icon-button" type="button" title="返回课程主页" @click="router.push(returnPath)">
           ×
         </button>
         <div class="course-title">
           <span>{{ lesson?.chapter || requestedChapter }}</span>
-          <small>{{ studyMode === 'sprint' ? '考前冲刺' : '正常上课' }}</small>
+          <small>
+            {{ isStudioLesson ? '课程编排 · ' : '' }}{{ studyMode === 'sprint' ? '考前冲刺' : '正常上课' }}
+          </small>
         </div>
 
         <div class="board-tools">
@@ -223,7 +248,7 @@ onBeforeUnmount(() => {
           <button type="button" title="放大" @click="zoomBy(10)">＋</button>
           <span class="tool-divider" />
           <span class="page-count">1 / 1</span>
-          <button type="button" title="重新生成板书" @click="loadLesson">↻</button>
+          <button v-if="!isStudioLesson" type="button" title="重新生成板书" @click="loadLesson">↻</button>
           <button type="button" title="全屏" @click="toggleFullscreen">⛶</button>
           <div ref="settingsRef" class="settings-wrap">
             <button type="button" title="显示设置" @click.stop="showSettings = !showSettings">⚙</button>
@@ -392,8 +417,10 @@ onBeforeUnmount(() => {
 
 .course-title span {
   overflow: hidden;
+  color: var(--board-heading);
+  font-family: var(--board-display);
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   text-overflow: ellipsis;
   white-space: nowrap;
 }

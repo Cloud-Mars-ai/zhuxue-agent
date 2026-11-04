@@ -58,3 +58,32 @@ test('@live Step 5 Preview 可生成结构化板书', async ({ page }) => {
   await expect(page.locator('.fallback-banner')).toHaveCount(0)
   await expect(page.locator('.board-block')).not.toHaveCount(0)
 })
+
+test('@live Step 5 Preview 可完成课程大纲与首个场景生成', async ({ page }) => {
+  page.on('console', (message) => {
+    if (message.type() === 'warning' || message.type() === 'error') {
+      console.log(`[browser:${message.type()}] ${message.text()}`)
+    }
+  })
+  await page.addInitScript(() => {
+    localStorage.setItem(
+      'ai-tutor-user',
+      JSON.stringify({
+        id: 'T001',
+        name: '王教授',
+        role: 'teacher',
+      }),
+    )
+    localStorage.setItem('ai-tutor-theme', 'yun')
+  })
+  await page.goto('/app/studio')
+
+  await page.getByTestId('studio-generate-outline').click()
+  await expect(page.locator('.outline-row').first()).toBeVisible({ timeout: 90_000 })
+  await expect(page.getByText('演示缓存大纲')).toHaveCount(0)
+
+  await page.getByTestId('studio-generate-course').click()
+  await page.getByRole('button', { name: '当前场景后停止' }).click()
+  await expect(page.locator('.board-canvas')).toBeVisible({ timeout: 90_000 })
+  await expect(page.getByText('课程资源包')).toBeVisible()
+})

@@ -196,6 +196,81 @@ export const useKnowledgeStore = defineStore('knowledge', () => {
     return { text, chunks: chosen }
   }
 
+  /**
+   * 课程编排需要比答疑更宽的上下文：优先本章材料，再按关键词补足，
+   * 但仍保留硬上限，避免把整本教材塞进一次生成请求。
+   */
+  async function buildGenerationContext({
+    chapter = '',
+    query = '',
+    maxContextChars = 6000,
+    topK = 6,
+  } = {}) {
+    await ensureLoaded()
+    const pool = allChunks.value.filter((c) => c.materialId)
+    if (!pool.length) return { text: '', chunks: [] }
+
+    const terms = queryTerms(`${query} ${chapter}`)
+    const scored = pool.map((c) => {
+      let score = 0
+      if (chapter && c.chapter === chapter) score += 10
+      if (chapter && c.chapter.includes(chapter.replace(/^第\d+章\s*/, ''))) score += 4
+      terms.forEach((term) => {
+        if (c.text.toLowerCase().includes(term)) score += 2
+        if (c.title.toLowerCase().includes(term)) score += 1
+      })
+      return { ...c, score }
+    })
+
+    const chapterChunks = scored.filter((c) => !chapter || c.chapter === chapter)
+    const selected = []
+    const seen = new Set()
+    const add = (chunk) => {
+      if (!chunk || seen.has(chunk.id) || selected.length >= topK) return
+      seen.add(chunk.id)
+      selected.push(chunk)
+    }
+
+    chapterChunks
+      .sort((a, b) => b.score - a.score)
+      .forEach(add)
+    scored
+      .filter((c) => c.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .forEach(add)
+    chapterChunks.forEach(add)
+
+    let used = 0
+    const chunks = []
+    for (const chunk of selected) {
+      if (used + chunk.text.length > maxContextChars) {
+        const remaining = maxContextChars - used
+        if (remaining < 160) continue
+        chunks.push({ ...chunk, text: `${chunk.text.slice(0, remaining - 1)}…` })
+        break
+      }
+      chunks.push(chunk)
+      used += chunk.text.length
+    }
+    if (!chunks.length) return { text: '', chunks: [] }
+
+    const text = chunks
+      .map(
+        (chunk, index) =>
+          `[${chunk.id}｜材料${index + 1}｜${chunk.title}｜${chunk.chapter}]\n${chunk.text}`,
+      )
+      .join('\n\n')
+
+    return { text, chunks }
+  }
+
+  async function chunksByIds(ids = []) {
+    await ensureLoaded()
+    const wanted = new Set((Array.isArray(ids) ? ids : []).filter(Boolean))
+    if (!wanted.size) return []
+    return allChunks.value.filter((chunk) => wanted.has(chunk.id))
+  }
+
   function byChapter(chapter) {
     return materials.value.filter((m) => m.chapter === chapter)
   }
@@ -212,6 +287,8 @@ export const useKnowledgeStore = defineStore('knowledge', () => {
     removeMaterial,
     resetToOutline,
     buildContext,
+    buildGenerationContext,
+    chunksByIds,
     byChapter,
   }
 })

@@ -65,6 +65,10 @@ html[data-theme='yun'] {
     BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', 'Cascadia Code', Consolas,
     'Courier New', monospace;
+  --board-font: 'Segoe Print', 'KaiTi', 'STKaiti', 'Kaiti SC', 'FangSong',
+    'Noto Serif SC', serif;
+  --board-display: 'STKaiti', 'KaiTi', 'Kaiti SC', 'Segoe Print', 'Noto Serif SC',
+    serif;
   --title-weight: 700;
   --title-tracking: 0;
   --body-leading: 1.75;
@@ -86,6 +90,18 @@ html[data-theme='yun'] {
   --grid-line: rgba(120, 105, 80, 0.08);
   --glow-accent: none;
   --accent-ring: rgba(61, 91, 217, 0.25);
+  --board-paper: #fffefa;
+  --board-ink: #292943;
+  --board-muted: #5f6279;
+  --board-faint: #9295a8;
+  --board-grid: rgba(111, 118, 154, 0.15);
+  --board-heading: #5647bd;
+  --board-heading-alt: #4459c6;
+  --board-highlight: rgba(218, 208, 255, 0.68);
+  --board-accent: #4e5ec8;
+  --board-accent-soft: #f0f1ff;
+  --board-line: #4d5067;
+  --board-note: #f6f3ff;
 
   /* —— 兼容旧变量（历史页面引用） —— */
   --brand: #3d5bd9;
@@ -255,6 +271,10 @@ html[data-theme='mo'] {
   --font-body: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', 'SimSun', serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', 'Cascadia Code', Consolas,
     'Courier New', monospace;
+  --board-font: 'Segoe Print', 'KaiTi', 'STKaiti', 'Kaiti SC', 'FangSong',
+    'Noto Serif SC', serif;
+  --board-display: 'STKaiti', 'KaiTi', 'Kaiti SC', 'Segoe Print', 'Noto Serif SC',
+    serif;
   --title-weight: 700;
   --title-tracking: 2px;
   --body-leading: 1.9;
@@ -275,6 +295,18 @@ html[data-theme='mo'] {
   --grid-line: rgba(120, 105, 80, 0.06);
   --glow-accent: none;
   --accent-ring: rgba(180, 85, 45, 0.25);
+  --board-paper: #fffdf5;
+  --board-ink: #332d38;
+  --board-muted: #6a6070;
+  --board-faint: #9a8f9c;
+  --board-grid: rgba(121, 104, 124, 0.15);
+  --board-heading: #74478b;
+  --board-heading-alt: #725c9a;
+  --board-highlight: rgba(232, 215, 241, 0.72);
+  --board-accent: #8c5c9f;
+  --board-accent-soft: #f6eff8;
+  --board-line: #5b4a5f;
+  --board-note: #f8f1f8;
 
   /* —— 兼容旧变量 —— */
   --brand: #b4552d;

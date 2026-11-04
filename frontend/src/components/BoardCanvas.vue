@@ -51,11 +51,10 @@ function chooseAnswer(question, option) {
         </template>
 
         <template v-else-if="block.type === 'definition'">
-          <span class="block-label">{{ block.title }}</span>
-          <h2>{{ block.term }}</h2>
-          <p class="definition-text">{{ block.definition }}</p>
+          <h2>{{ block.title }}：{{ block.term }}</h2>
+          <p class="definition-text"><span>定义：</span>{{ block.definition }}</p>
           <p v-if="block.analogy" class="analogy">
-            <span>理解抓手</span>
+            <span>形象比喻：</span>
             {{ block.analogy }}
           </p>
         </template>
@@ -94,7 +93,7 @@ function chooseAnswer(question, option) {
 
         <template v-else-if="block.type === 'callout'">
           <div class="callout" :class="`tone-${block.tone}`">
-            <span class="callout-label">{{ toneLabel(block.tone) }} · {{ block.title }}</span>
+            <span class="callout-label">{{ toneLabel(block.tone) }}：{{ block.title }}</span>
             <p>{{ block.text }}</p>
           </div>
         </template>
@@ -127,60 +126,73 @@ function chooseAnswer(question, option) {
 .board-canvas {
   position: relative;
   min-height: 560px;
-  padding: 28px 34px 56px;
-  background-color: var(--card-bg);
-  background-image: radial-gradient(var(--grid-line) 1px, transparent 1px);
-  background-size: 22px 22px;
-  border: 1px solid var(--card-border);
-  border-radius: var(--card-radius);
-  color: var(--text-main);
+  padding: 34px 42px 58px;
+  color: var(--board-ink);
+  background-color: var(--board-paper);
+  background-image: radial-gradient(var(--board-grid) 1px, transparent 1px);
+  background-size: 18px 18px;
+  border: 1px solid color-mix(in srgb, var(--board-line) 14%, var(--card-border));
+  border-radius: var(--radius-md);
+  font-family: var(--board-font);
+  font-size: 15px;
+  line-height: 1.82;
+  letter-spacing: 0.015em;
 }
 
 .board-title {
-  max-width: 760px;
-  margin-bottom: 24px;
-  padding-bottom: 18px;
-  border-bottom: 1px dashed var(--divider);
+  max-width: 880px;
+  margin-bottom: 30px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid color-mix(in srgb, var(--board-line) 18%, transparent);
 }
 
 .board-kicker,
 .block-label,
 .callout-label {
-  color: var(--text-faint);
+  color: var(--board-faint);
+  font-family: var(--board-font);
   font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
+  font-weight: 500;
+  letter-spacing: 0.05em;
 }
 
 .board-title h1 {
-  margin: 7px 0 6px;
-  font-family: var(--font-title);
-  font-size: clamp(24px, 2.4vw, 34px);
-  line-height: 1.2;
-  letter-spacing: var(--title-tracking);
+  width: fit-content;
+  margin: 8px 0 7px;
+  padding: 0 5px 2px 0;
+  color: var(--board-heading);
+  background: linear-gradient(
+    to top,
+    var(--board-highlight) 0,
+    var(--board-highlight) 38%,
+    transparent 38%
+  );
+  font-family: var(--board-display);
+  font-size: clamp(26px, 2.6vw, 36px);
+  font-weight: 600;
+  line-height: 1.26;
+  letter-spacing: 0.025em;
 }
 
 .board-title p {
   margin: 0;
-  color: var(--text-sub);
-  font-size: 13px;
-  line-height: var(--body-leading);
+  color: var(--board-muted);
+  font-size: 14px;
+  line-height: 1.75;
 }
 
 .board-blocks {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   align-items: start;
-  gap: 20px;
+  gap: 34px 52px;
 }
 
 .board-block {
   min-width: 0;
-  padding: 20px 22px;
-  background: color-mix(in srgb, var(--card-bg) 92%, transparent);
-  border: 1px solid var(--card-border);
-  border-radius: var(--radius-md);
+  padding: 0;
+  background: transparent;
+  border: 0;
 }
 
 .board-block.is-outline,
@@ -194,71 +206,74 @@ function chooseAnswer(question, option) {
 }
 
 .board-block h2 {
-  margin: 0 0 14px;
-  font-family: var(--font-title);
-  font-size: 18px;
-  line-height: 1.45;
+  width: fit-content;
+  margin: 0 0 15px;
+  padding: 0 5px 2px 0;
+  color: var(--board-heading);
+  background: linear-gradient(
+    to top,
+    var(--board-highlight) 0,
+    var(--board-highlight) 42%,
+    transparent 42%
+  );
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  font-family: var(--board-display);
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.42;
+  letter-spacing: 0.035em;
 }
 
 .outline-list {
   display: grid;
-  gap: 12px;
+  gap: 10px;
   margin: 0;
-  padding: 0;
+  padding: 0 0 0 8px;
   list-style: none;
-  counter-reset: outline;
 }
 
 .outline-list li {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
-  color: var(--text-sub);
-  font-size: 14px;
-  line-height: 1.65;
-  counter-increment: outline;
+  gap: 12px;
+  color: var(--board-ink);
+  font-size: 15px;
+  line-height: 1.78;
 }
 
 .outline-dot {
   flex: none;
-  width: 23px;
-  height: 23px;
+  width: 8px;
+  height: 8px;
   display: grid;
   place-items: center;
-  margin-top: 1px;
-  color: var(--accent);
-  background: var(--accent-soft);
+  margin-top: 9px;
+  color: transparent;
+  background: var(--board-paper);
+  border: 1px solid var(--board-accent);
   border-radius: 50%;
-  font-family: var(--font-mono);
-  font-size: 10px;
-}
-
-.outline-dot::before {
-  content: counter(outline);
+  font-size: 0;
 }
 
 .definition-text {
-  margin: 12px 0;
-  font-size: 14px;
-  line-height: var(--body-leading);
+  margin: 0 0 10px;
+  color: var(--board-ink);
+  font-size: 15px;
+  line-height: 1.85;
+}
+
+.definition-text span,
+.analogy span {
+  color: var(--board-heading-alt);
+  font-weight: 600;
 }
 
 .analogy {
-  margin: 14px 0 0;
-  padding: 12px 14px;
-  color: var(--text-sub);
-  background: var(--surface-2);
-  border-left: 3px solid var(--accent);
-  font-size: 12.5px;
-  line-height: 1.75;
-}
-
-.analogy span {
-  display: block;
-  margin-bottom: 3px;
-  color: var(--accent);
-  font-size: 10.5px;
-  font-weight: 700;
+  margin: 0;
+  color: var(--board-ink);
+  font-size: 15px;
+  line-height: 1.85;
 }
 
 .table-wrap {
@@ -268,23 +283,25 @@ function chooseAnswer(question, option) {
 table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 12.5px;
-  line-height: 1.55;
+  color: var(--board-ink);
+  font-size: 14px;
+  line-height: 1.65;
 }
 
 th,
 td {
-  padding: 9px 10px;
-  border: 1px solid var(--divider);
+  padding: 9px 11px;
+  border: 1px solid var(--board-line);
   text-align: left;
   vertical-align: top;
 }
 
 th {
-  color: var(--text-sub);
-  background: var(--surface-2);
-  font-size: 11px;
-  letter-spacing: 0.04em;
+  color: var(--board-heading-alt);
+  background: color-mix(in srgb, var(--board-accent-soft) 70%, transparent);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.035em;
 }
 
 .diagram-chain {
@@ -292,16 +309,16 @@ th {
   align-items: stretch;
   gap: 8px;
   overflow-x: auto;
-  padding-bottom: 4px;
+  padding: 2px 0 5px;
 }
 
 .diagram-node {
   flex: 1 0 110px;
   min-height: 84px;
-  padding: 12px;
-  background: var(--surface-2);
-  border: 1px solid var(--divider);
-  border-radius: var(--radius-sm);
+  padding: 12px 13px;
+  background: color-mix(in srgb, var(--board-paper) 84%, transparent);
+  border: 1px solid var(--board-line);
+  border-radius: 3px;
 }
 
 .diagram-node strong,
@@ -310,65 +327,70 @@ th {
 }
 
 .diagram-node strong {
-  font-size: 12px;
+  color: var(--board-heading-alt);
+  font-family: var(--board-display);
+  font-size: 13px;
+  font-weight: 600;
 }
 
 .diagram-node span {
   margin-top: 6px;
-  color: var(--text-faint);
-  font-size: 10.5px;
-  line-height: 1.5;
+  color: var(--board-muted);
+  font-size: 11.5px;
+  line-height: 1.55;
 }
 
 .diagram-arrow {
   align-self: center;
-  color: var(--accent);
-  font-size: 18px;
+  color: var(--board-accent);
+  font-size: 16px;
 }
 
 .diagram-caption {
   margin: 10px 0 0;
-  color: var(--text-faint);
-  font-size: 11px;
-  line-height: 1.6;
+  color: var(--board-faint);
+  font-size: 11.5px;
+  line-height: 1.65;
 }
 
 .callout {
-  padding: 15px 16px;
-  border: 1px solid var(--card-border);
-  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  background: var(--board-note);
+  border-left: 3px solid var(--board-accent);
 }
 
 .callout.tone-warn {
-  background: var(--warn-soft);
-  border-color: color-mix(in srgb, var(--warn) 28%, var(--card-border));
+  background: color-mix(in srgb, var(--warn-soft) 78%, var(--board-paper));
+  border-left-color: var(--warn);
 }
 
 .callout.tone-idea {
-  background: var(--accent-soft);
-  border-color: color-mix(in srgb, var(--accent) 25%, var(--card-border));
+  background: var(--board-accent-soft);
+  border-left-color: var(--board-accent);
 }
 
 .callout.tone-note {
-  background: var(--surface-2);
+  background: var(--board-note);
 }
 
 .callout p {
   margin: 7px 0 0;
-  font-size: 12.5px;
-  line-height: 1.75;
+  color: var(--board-ink);
+  font-size: 13px;
+  line-height: 1.72;
 }
 
 .question-card {
-  padding: 18px 20px;
-  background: var(--accent-soft);
-  border: 1px solid color-mix(in srgb, var(--accent) 28%, var(--card-border));
-  border-radius: var(--radius-md);
+  padding: 18px 20px 17px;
+  background: color-mix(in srgb, var(--board-highlight) 44%, var(--board-paper));
+  border: 1px solid color-mix(in srgb, var(--board-line) 24%, transparent);
+  border-radius: 4px;
 }
 
 .question-card h2 {
   margin: 8px 0 14px;
-  font-size: 16px;
+  background: none;
+  font-size: 17px;
 }
 
 .question-options {
@@ -382,9 +404,9 @@ th {
   align-items: center;
   gap: 8px;
   padding: 7px 12px 7px 7px;
-  color: var(--text-main);
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
+  color: var(--board-ink);
+  background: var(--board-paper);
+  border: 1px solid var(--board-line);
   border-radius: var(--radius-pill);
   font: inherit;
   font-size: 12px;
@@ -392,7 +414,7 @@ th {
 }
 
 .question-options button:hover {
-  border-color: var(--accent);
+  border-color: var(--board-accent);
 }
 
 .question-options button span {
@@ -400,8 +422,8 @@ th {
   height: 21px;
   display: grid;
   place-items: center;
-  color: var(--accent-on);
-  background: var(--accent);
+  color: var(--board-paper);
+  background: var(--board-accent);
   border-radius: 50%;
   font-family: var(--font-mono);
   font-size: 10px;
@@ -409,7 +431,7 @@ th {
 
 .question-tip {
   margin: 11px 0 0;
-  color: var(--text-faint);
+  color: var(--board-faint);
   font-size: 10.5px;
 }
 
@@ -426,11 +448,13 @@ th {
 
 @media (max-width: 880px) {
   .board-canvas {
-    padding: 22px 18px 36px;
+    padding: 24px 18px 38px;
+    font-size: 14px;
   }
 
   .board-blocks {
     grid-template-columns: 1fr;
+    gap: 26px;
   }
 
   .board-block,

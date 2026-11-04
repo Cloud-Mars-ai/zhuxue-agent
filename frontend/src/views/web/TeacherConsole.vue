@@ -45,6 +45,9 @@ const levelTagType = { 高: 'danger', 中: 'warning', 低: 'info' }
         </p>
       </div>
       <div class="head-actions">
+        <el-button plain @click="router.push('/app/studio')">
+          <el-icon><MagicStick /></el-icon>智能课程编排
+        </el-button>
         <el-button plain @click="router.push('/app/materials')">
           <el-icon><FolderOpened /></el-icon>课程资料库
         </el-button>

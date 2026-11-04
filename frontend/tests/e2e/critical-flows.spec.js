@@ -223,3 +223,38 @@ test('H5 板书可打开讨论面板', async ({ page }) => {
   await expect(page.locator('.van-popup')).toBeVisible()
   await expect(page.getByText('边听边问', { exact: true }).last()).toBeVisible()
 })
+
+test('教师可用两阶段编排生成课程并进入板书场景', async ({ page }) => {
+  await seedUser(page, 'teacher')
+  await page.goto('/app/studio')
+
+  await expect(page.getByRole('heading', { name: '先生成大纲，确认后再逐场景生成。' })).toBeVisible()
+  await page.getByTestId('studio-generate-outline').click()
+
+  await expect(page.getByText('演示缓存大纲')).toBeVisible()
+  await expect(page.locator('.outline-row').first()).toBeVisible()
+  await expect(page.locator('.outline-row')).toHaveCount(6)
+
+  await page.getByTestId('studio-generate-course').click()
+  await expect(page.getByRole('heading', { name: '课程资源包' })).toBeVisible()
+  await expect(page.locator('.board-canvas')).toBeVisible()
+  await expect(page.getByText('课程资源包已生成')).toBeVisible()
+
+  await page.reload({ waitUntil: 'domcontentloaded' })
+  await expect(page.locator('.outline-row')).toHaveCount(6)
+  await expect(page.getByRole('heading', { name: '课程资源包' })).toBeVisible()
+
+  await page.getByRole('button', { name: '进入板书学习' }).click()
+  await expect(page).toHaveURL(/\/app\/board\?/)
+  await expect(page).toHaveURL(/studio=/)
+  await expect(page.getByTestId('board-canvas')).toBeVisible()
+})
+
+test('H5 课程编排映射保留查询参数', async ({ page }) => {
+  await seedUser(page, 'teacher')
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/app/studio?project=course-demo')
+
+  await expect(page).toHaveURL(/\/m\/studio\?project=course-demo$/)
+  await expect(page.getByRole('heading', { name: '先生成大纲，确认后再逐场景生成。' })).toBeVisible()
+})

@@ -89,6 +89,12 @@ const routes = [
         meta: { title: '课程资料库', icon: 'FolderOpened', roles: ['admin', 'teacher', 'ta'] },
       },
       {
+        path: 'studio',
+        name: 'CourseStudio',
+        component: () => import('@/views/web/CourseStudio.vue'),
+        meta: { title: '智能课程编排', icon: 'MagicStick', roles: ['admin', 'teacher', 'ta'] },
+      },
+      {
         path: 'cases',
         name: 'Cases',
         component: () => import('@/views/web/Cases.vue'),
@@ -144,6 +150,7 @@ const routes = [
     'cheatsheet',
     'checkup',
     'materials',
+    'studio',
     'cases',
     'assessment',
     'console',
@@ -217,6 +224,12 @@ const routes = [
         meta: { title: '课程考核', mobile: true },
       },
       {
+        path: 'studio',
+        name: 'MCourseStudio',
+        component: () => import('@/views/web/CourseStudio.vue'),
+        meta: { title: '智能课程编排', mobile: true, roles: ['admin', 'teacher', 'ta'] },
+      },
+      {
         path: 'mine',
         name: 'MMine',
         component: () => import('@/views/mobile/MMine.vue'),
@@ -249,6 +262,7 @@ const WEB_TO_MOBILE = {
   '/app/checkup': '/m/checkup',
   '/app/cases': '/m/case',
   '/app/assessment': '/m/assessment',
+  '/app/studio': '/m/studio',
 }
 const MOBILE_TO_WEB = Object.fromEntries(
   Object.entries(WEB_TO_MOBILE).map(([web, mobile]) => [mobile, web]),
@@ -299,10 +313,12 @@ router.beforeEach((to) => {
 
   // 手机落在 Web 树 → 转 /m；平板 / 桌面落在 /m → 转 /
   if (tree === 'mobile' && !inMobileTree) {
-    return mapPathToTree(to.path, 'mobile') || homeOf('mobile')
+    const path = mapPathToTree(to.path, 'mobile')
+    return path ? { path, query: to.query, hash: to.hash } : homeOf('mobile')
   }
   if (tree === 'web' && inMobileTree) {
-    return mapPathToTree(to.path, 'web') || homeOf('web')
+    const path = mapPathToTree(to.path, 'web')
+    return path ? { path, query: to.query, hash: to.hash } : homeOf('web')
   }
   return true
 })
