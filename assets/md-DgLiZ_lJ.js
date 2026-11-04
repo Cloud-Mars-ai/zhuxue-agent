@@ -1,0 +1,1 @@
+function e(e){return e.replace(/&/g,`&amp;`).replace(/</g,`&lt;`).replace(/>/g,`&gt;`).replace(/"/g,`&quot;`)}function t(t){return t?e(String(t)).split(/\r?\n/).map(e=>{let t=e;t=t.replace(/\*\*([^*]+)\*\*/g,`<b>$1</b>`);let n=t.match(/^\s*#{1,6}\s*(.+)$/);if(n)return`<b>${n[1]}</b>`;let r=t.match(/^\s*[-*]\s+(.+)$/);return r?`· ${r[1]}`:t}).join(`<br>`):``}export{t};
