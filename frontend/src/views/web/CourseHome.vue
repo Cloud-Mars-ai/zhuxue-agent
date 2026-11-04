@@ -16,6 +16,7 @@ import { diagnoseGaps } from '@/utils/diagnose'
 import { buildFeed } from '@/utils/feed'
 import { importMaterialFile } from '@/utils/materialImport'
 import { generateCourseBlueprint } from '@/api/courseStudio'
+import danceBuddySrc from '@/assets/nailong-dance.webp'
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -175,11 +176,8 @@ function loadUploadHistory() {
 const showToolMenu = ref(false)
 const canGenerateCourse = computed(() => !!userStore.user)
 
-const heroTitle = computed(() =>
-  isStudent.value ? '把这一章，学成你自己的' : '把这一周的教学，安排明白',
-)
-
-const heroSubtitle = computed(() => '从已接入材料到个性化课程，我会先编排大纲，再逐场景生成。')
+const heroTitle = '奶龙陪你定制专属课程~'
+const heroSubtitle = ''
 
 const heroPlaceholder = computed(() =>
   modeChosen.value
@@ -555,7 +553,7 @@ onMounted(() => {
           {{ greeting }}，{{ userStore.name || '同学' }} · 《{{ COURSE.name }}》第 8 周
         </div>
         <h1 class="hero-title">{{ heroTitle }}</h1>
-        <p class="hero-sub">{{ heroSubtitle }}</p>
+        <p v-if="heroSubtitle" class="hero-sub">{{ heroSubtitle }}</p>
 
         <div class="learning-composer">
           <div class="material-row">
@@ -699,7 +697,12 @@ onMounted(() => {
           @change="handleFilesSelected"
         />
         <p class="hero-hint">{{ heroHint }}</p>
+        <div class="hero-dance" aria-hidden="true">
+          <img :src="danceBuddySrc" alt="" draggable="false" decoding="async" />
+        </div>
       </section>
+
+      <div class="home-below-fold-spacer" aria-hidden="true"></div>
 
       <div class="home-columns">
         <section class="card continue-card">
@@ -873,6 +876,7 @@ onMounted(() => {
 
 /* —— 运行台顶部（示意 B-1）—— */
 .home-hero {
+  position: relative;
   max-width: 800px;
   margin: 6px auto 12px;
   text-align: center;
@@ -915,9 +919,12 @@ onMounted(() => {
   margin: 0;
   font-size: 38px;
   line-height: 1.25;
-  font-weight: 700;
-  letter-spacing: -0.5px;
+  font-family: var(--font-calligraphy);
+  font-weight: 400;
+  letter-spacing: 1px;
   color: var(--text-main);
+  -webkit-text-stroke: 0.28px currentColor;
+  text-shadow: 0.4px 0.25px 0 color-mix(in srgb, var(--text-main) 24%, transparent);
 }
 
 .hero-sub {
@@ -1326,11 +1333,50 @@ onMounted(() => {
   display: none;
 }
 
+.hero-dance {
+  position: absolute;
+  z-index: 2;
+  right: -126px;
+  bottom: 46px;
+  width: 116px;
+  pointer-events: none;
+  filter: drop-shadow(0 8px 14px rgba(74, 62, 38, 0.12));
+  animation: dance-bob 3.2s ease-in-out infinite;
+}
+
+.hero-dance img {
+  display: block;
+  width: 100%;
+  height: auto;
+  user-select: none;
+}
+
+.home-below-fold-spacer {
+  height: max(260px, calc(100svh - 430px));
+}
+
+@keyframes dance-bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-1deg);
+  }
+  50% {
+    transform: translateY(-5px) rotate(1deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-dance {
+    animation: none;
+  }
+}
+
 .home-columns {
   display: grid;
   grid-template-columns: 1.05fr 0.95fr;
   align-items: start;
   gap: 12px;
+  margin-top: 12px;
   margin-bottom: 12px;
 }
 
@@ -1511,6 +1557,11 @@ onMounted(() => {
   .home-columns {
     grid-template-columns: 1fr;
   }
+
+  .hero-dance {
+    right: -66px;
+    width: 96px;
+  }
 }
 
 @media (max-width: 760px) {
@@ -1519,7 +1570,13 @@ onMounted(() => {
     grid-template-columns: 1fr;
   }
   .hero-title {
-    font-size: 26px;
+    font-size: 27px;
+  }
+
+  .hero-dance {
+    right: 10px;
+    bottom: -66px;
+    width: 76px;
   }
 }
 

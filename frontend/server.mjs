@@ -10,7 +10,8 @@
  * 监听 0.0.0.0:$PORT，仅使用 Node 内置模块。
  */
 import { createServer } from 'node:http'
-import { readFile, stat } from 'node:fs/promises'
+import { createReadStream } from 'node:fs'
+import { stat } from 'node:fs/promises'
 import { join, normalize, extname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -64,12 +65,49 @@ const server = createServer(async (req, res) => {
       filePath = join(distDir, 'index.html')
     }
 
-    const data = await readFile(filePath)
+    const fileInfo = await stat(filePath)
+    const mime = MIME[extname(filePath).toLowerCase()] || 'application/octet-stream'
+    const range = req.headers.range
+
+    if (range) {
+      const match = /^bytes=(\d*)-(\d*)$/i.exec(range)
+      if (!match) {
+        res.writeHead(416, { 'Content-Range': `bytes */${fileInfo.size}` })
+        res.end()
+        return
+      }
+      const start = match[1] ? Number(match[1]) : 0
+      const end = match[2] ? Number(match[2]) : fileInfo.size - 1
+      if (
+        !Number.isInteger(start) ||
+        !Number.isInteger(end) ||
+        start < 0 ||
+        end < start ||
+        start >= fileInfo.size
+      ) {
+        res.writeHead(416, { 'Content-Range': `bytes */${fileInfo.size}` })
+        res.end()
+        return
+      }
+      const safeEnd = Math.min(end, fileInfo.size - 1)
+      res.writeHead(206, {
+        'Content-Type': mime,
+        'Content-Length': safeEnd - start + 1,
+        'Content-Range': `bytes ${start}-${safeEnd}/${fileInfo.size}`,
+        'Accept-Ranges': 'bytes',
+        'Cache-Control': 'no-cache',
+      })
+      createReadStream(filePath, { start, end: safeEnd }).pipe(res)
+      return
+    }
+
     res.writeHead(200, {
-      'Content-Type': MIME[extname(filePath).toLowerCase()] || 'application/octet-stream',
+      'Content-Type': mime,
+      'Content-Length': fileInfo.size,
+      'Accept-Ranges': 'bytes',
       'Cache-Control': 'no-cache',
     })
-    res.end(data)
+    createReadStream(filePath).pipe(res)
   } catch (err) {
     res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' })
     res.end('Server Error: ' + err.message)

@@ -50,6 +50,29 @@ test('登录后进入课程主页', async ({ page }) => {
   await expect(page.getByTestId('yun-greeting')).toBeVisible()
 })
 
+test('落地页欢迎视频播放后循环招手并在点击后进入主页', async ({ page }) => {
+  await page.goto('/')
+  const gate = page.locator('.welcome-gate')
+  const video = gate.locator('video')
+
+  await expect(gate).toBeVisible()
+  await expect(video).toBeVisible()
+  await expect(page.locator('.welcome-prompt')).toBeVisible({ timeout: 12_000 })
+
+  const firstWaveTime = await video.evaluate((element) => element.currentTime)
+  expect(firstWaveTime).toBeGreaterThanOrEqual(5)
+  expect(firstWaveTime).toBeLessThan(8)
+
+  await page.waitForTimeout(900)
+  const nextWaveTime = await video.evaluate((element) => element.currentTime)
+  expect(nextWaveTime).toBeGreaterThanOrEqual(5)
+  expect(nextWaveTime).toBeLessThan(8)
+
+  await gate.click({ position: { x: 18, y: 80 } })
+  await expect(gate).toHaveCount(0)
+  await expect(page.locator('#main')).toBeVisible()
+})
+
 test('本地意图规则直接跳转作业页', async ({ page }) => {
   await seedUser(page)
   await page.goto('/app/ask')
@@ -218,6 +241,30 @@ test('生产服务器支持板书深链接刷新', async ({ page }) => {
   await page.reload()
   await expect(page).toHaveURL(/\/app\/board\?chapter=/)
   await expect(page.getByTestId('board-canvas')).toBeVisible()
+})
+
+test('板书沉浸播放可跟随当前板块', async ({ page }) => {
+  await seedUser(page)
+  await page.setViewportSize({ width: 1280, height: 650 })
+  await page.goto('/app/board?chapter=' + encodeURIComponent('第3章 决策与计划'))
+
+  await expect(page.getByTestId('board-canvas')).toBeVisible()
+  await expect(page.locator('.aside')).toHaveCount(0)
+  await expect(page.locator('.header')).toHaveCount(0)
+  const boardStage = page.getByTestId('board-stage')
+  await expect(boardStage).toBeVisible()
+
+  const follow = page.getByTestId('follow-toggle')
+  await expect(follow).toHaveText('跟随中')
+  await expect
+    .poll(() => boardStage.evaluate((element) => element.scrollTop), {
+      timeout: 10_000,
+    })
+    .toBeGreaterThan(0)
+  await follow.click()
+  await expect(follow).toHaveText('跟随已关')
+  await follow.click()
+  await expect(follow).toHaveText('跟随中')
 })
 
 test('H5 板书可打开讨论面板', async ({ page }) => {

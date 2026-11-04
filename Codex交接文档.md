@@ -639,5 +639,7 @@ npm start
 - 板书可从 Web、H5 和课程编排预览下载为自包含 HTML。
 - 点击“确认大纲并生成课程”后会立即进入独立 `/learn/:projectId` 体验页；首场景完成即可体验，后续场景在后台继续生成并实时出现。
 - 体验页采用无侧栏的干净布局、横向 16:9 板书与轻阴影展示框。
+- `/` 落地页增加欢迎视频入口：播放一次后循环招手段，直到点击进入落地主页。
+- `frontend/server.mjs` 与 `deploy/server.mjs` 支持 HTTP Range，视频拖动和循环不依赖整文件加载。
 
-验收：确定性 E2E 19/19，真实服务 E2E 5/5；真实首页建课实测 7.9 秒出大纲、17.6 秒完成 6 个场景。详见 `docs/release/EVIDENCE-2026-11-04-deepseek-course.md`。
+验收：确定性 E2E 20/20，真实服务 E2E 5/5；真实首页建课实测 7.9 秒出大纲、17.6 秒完成 6 个场景。详见 `docs/release/EVIDENCE-2026-11-04-deepseek-course.md`。

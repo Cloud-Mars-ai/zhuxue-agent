@@ -15,6 +15,7 @@ import { useCourseStudioStore } from '@/stores/courseStudio'
 import { diagnoseGaps } from '@/utils/diagnose'
 import { buildFeed } from '@/utils/feed'
 import { generateCourseBlueprint } from '@/api/courseStudio'
+import danceBuddySrc from '@/assets/nailong-dance.webp'
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -138,11 +139,8 @@ const studyMode = ref('course')
 const modeChosen = ref(false)
 const showModeMenu = ref(false)
 const generatingCourse = ref(false)
-const heroLine1 = computed(() => (isStudent.value ? '把这一章，' : '把这一周的教学，'))
-const heroLine2 = computed(() => (isStudent.value ? '学成你自己的' : '安排明白'))
-const mHeroSub = computed(() =>
-  '从已接入材料到个性化课程，先生成大纲，再逐场景展开。',
-)
+const mHeroTitle = '奶龙陪你定制专属课程~'
+const mHeroSub = ''
 
 const mHeroMaterials = computed(() =>
   isStudent.value
@@ -338,8 +336,8 @@ knowledgeStore.load()
           <span class="on">开始学习</span>
           <span @click="router.push('/m/ask')">AI协助</span>
         </div>
-        <h1 class="m-hero-title">{{ heroLine1 }}<br />{{ heroLine2 }}</h1>
-        <p class="m-hero-sub">{{ mHeroSub }}</p>
+        <h1 class="m-hero-title">{{ mHeroTitle }}</h1>
+        <p v-if="mHeroSub" class="m-hero-sub">{{ mHeroSub }}</p>
 
         <div class="m-material-row">
           <div
@@ -428,7 +426,12 @@ knowledgeStore.load()
         <p class="m-hero-hint">
           将依据已接入的 {{ knowledgeStore.materials.length }} 份教师确认材料生成课程。
         </p>
+        <div class="m-hero-dance" aria-hidden="true">
+          <img :src="danceBuddySrc" alt="" draggable="false" decoding="async" />
+        </div>
       </section>
+
+      <div class="m-home-below-fold-spacer" aria-hidden="true"></div>
 
       <section class="m-card m-continue">
         <div class="m-continue-head">
@@ -543,6 +546,7 @@ knowledgeStore.load()
 
 /* —— 纸感首页（对齐 HyperKnow 首屏）—— */
 .m-home-hero {
+  position: relative;
   padding: 14px 16px 6px;
   text-align: center;
 }
@@ -573,9 +577,12 @@ knowledgeStore.load()
   margin: 0;
   font-size: 28px;
   line-height: 1.3;
-  font-weight: 700;
-  letter-spacing: -0.4px;
+  font-family: var(--font-calligraphy);
+  font-weight: 400;
+  letter-spacing: 0.6px;
   color: var(--text-main);
+  -webkit-text-stroke: 0.24px currentColor;
+  text-shadow: 0.35px 0.2px 0 color-mix(in srgb, var(--text-main) 22%, transparent);
 }
 
 .m-hero-sub {
@@ -815,8 +822,46 @@ knowledgeStore.load()
   color: var(--text-faint);
 }
 
+.m-hero-dance {
+  position: absolute;
+  z-index: 2;
+  right: 18px;
+  bottom: -70px;
+  width: 76px;
+  pointer-events: none;
+  filter: drop-shadow(0 7px 12px rgba(74, 62, 38, 0.12));
+  animation: m-dance-bob 3.2s ease-in-out infinite;
+}
+
+.m-hero-dance img {
+  display: block;
+  width: 100%;
+  height: auto;
+  user-select: none;
+}
+
+.m-home-below-fold-spacer {
+  height: max(250px, calc(100svh - 460px));
+}
+
+@keyframes m-dance-bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-1deg);
+  }
+  50% {
+    transform: translateY(-4px) rotate(1deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .m-hero-dance {
+    animation: none;
+  }
+}
+
 .m-continue {
-  margin-top: 4px;
+  margin-top: 0;
 }
 
 .m-continue-head {

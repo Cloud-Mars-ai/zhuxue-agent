@@ -1,5 +1,34 @@
 <template>
   <div class="landing">
+    <div
+      v-if="showWelcome"
+      class="welcome-gate"
+      role="dialog"
+      aria-modal="true"
+      aria-label="欢迎进入人机协同助学智能体"
+      @click="enterLanding"
+    >
+      <video
+        ref="welcomeVideo"
+        class="welcome-video"
+        :src="welcomeVideoSrc"
+        autoplay
+        muted
+        playsinline
+        preload="auto"
+        disablepictureinpicture
+        aria-label="欢迎动画"
+        @timeupdate="handleWelcomeTimeUpdate"
+      />
+      <button class="welcome-skip" type="button" @click.stop="enterLanding">跳过欢迎</button>
+      <Transition name="welcome-hint">
+        <div v-if="welcomeReady" class="welcome-prompt">
+          <span class="welcome-prompt-dot" aria-hidden="true" />
+          点击任意位置进入主页
+        </div>
+      </Transition>
+    </div>
+
     <a class="skip-link" href="#main">跳到主要内容</a>
 
     <!-- ================= 导航：浮动控制台条 ================= -->
@@ -333,6 +362,30 @@ const router = useRouter()
 const userStore = useUserStore()
 const themeStore = useThemeStore()
 
+const WAVE_LOOP_START = 5.2
+const WAVE_LOOP_END = 7.2
+
+const showWelcome = ref(true)
+const welcomeReady = ref(false)
+const welcomeVideo = ref(null)
+const welcomeVideoSrc = `${import.meta.env.BASE_URL}media/welcome-intro.mp4`
+
+function enterLanding() {
+  if (!showWelcome.value) return
+  welcomeVideo.value?.pause()
+  showWelcome.value = false
+  welcomeReady.value = false
+  document.body.style.overflow = ''
+  window.scrollTo({ top: 0, behavior: 'auto' })
+}
+
+function handleWelcomeTimeUpdate() {
+  const video = welcomeVideo.value
+  if (!video || video.currentTime < WAVE_LOOP_END) return
+  welcomeReady.value = true
+  video.currentTime = WAVE_LOOP_START
+}
+
 /* ---------- 主行动按钮：已登录回课程，未登录去演示 ---------- */
 const ctaLabel = computed(() => (userStore.isLogin ? '回到课程' : '进入在线演示'))
 
@@ -536,6 +589,10 @@ let revealObserver = null
 let taglineObserver = null
 
 onMounted(() => {
+  if (showWelcome.value) {
+    document.body.style.overflow = 'hidden'
+  }
+
   revealObserver = new IntersectionObserver(
     (entries) => {
       for (const entry of entries) {
@@ -570,6 +627,8 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
+  welcomeVideo.value?.pause()
+  document.body.style.overflow = ''
   window.removeEventListener('scroll', onScroll)
   if (scrollFrame) cancelAnimationFrame(scrollFrame)
   if (logTimer) clearInterval(logTimer)
@@ -602,6 +661,103 @@ function scrollTop() {
   color: var(--text-main);
   font-family: var(--font-body);
   min-height: 100vh;
+}
+
+.welcome-gate {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: var(--page-bg);
+  cursor: pointer;
+}
+
+.welcome-video {
+  width: min(100vw, calc(100vh * 1.5));
+  height: min(100vh, calc(100vw / 1.5));
+  display: block;
+  object-fit: contain;
+  background: var(--page-bg);
+}
+
+.welcome-skip {
+  position: fixed;
+  top: max(18px, env(safe-area-inset-top));
+  right: max(20px, env(safe-area-inset-right));
+  padding: 7px 12px;
+  color: var(--text-sub);
+  background: color-mix(in srgb, var(--card-bg) 78%, transparent);
+  border: 1px solid color-mix(in srgb, var(--card-border) 70%, transparent);
+  border-radius: var(--radius-pill);
+  font: inherit;
+  font-size: 11px;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+}
+
+.welcome-skip:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.welcome-prompt {
+  position: fixed;
+  left: 50%;
+  bottom: max(34px, env(safe-area-inset-bottom));
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 15px;
+  color: var(--text-main);
+  background: color-mix(in srgb, var(--card-bg) 86%, transparent);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--card-shadow);
+  font-size: 12px;
+  transform: translateX(-50%);
+  backdrop-filter: blur(10px);
+}
+
+.welcome-prompt-dot {
+  width: 7px;
+  height: 7px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: welcome-pulse 1.2s ease-in-out infinite;
+}
+
+.welcome-hint-enter-active,
+.welcome-hint-leave-active {
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
+}
+
+.welcome-hint-enter-from,
+.welcome-hint-leave-to {
+  opacity: 0;
+  transform: translate(-50%, 8px);
+}
+
+@keyframes welcome-pulse {
+  50% {
+    opacity: 0.35;
+    transform: scale(0.82);
+  }
+}
+
+@media (max-width: 640px) {
+  .welcome-skip {
+    top: max(12px, env(safe-area-inset-top));
+    right: 12px;
+  }
+
+  .welcome-prompt {
+    bottom: max(24px, env(safe-area-inset-bottom));
+    white-space: nowrap;
+  }
 }
 
 .container {

@@ -14,6 +14,15 @@
  * 高于 :root，才能覆写 Vant / Element Plus 的默认变量。
  * ============================================================ */
 
+/* 毛笔标题字体：只打包首页标题所需字形，避免依赖用户电脑字体。 */
+@font-face {
+  font-family: 'Ma Shan Zheng Title';
+  src: url('../assets/ma-shan-zheng-title.ttf') format('truetype');
+  font-display: swap;
+  font-style: normal;
+  font-weight: 400;
+}
+
 /* ------------------------------------------------------------
  * 纸感（默认皮肤）
  * 卡其底 #F3EEE3 + 米白卡 #FFFDF8 + 靛蓝 #3D5BD9
@@ -65,6 +74,8 @@ html[data-theme='yun'] {
     BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', 'Cascadia Code', Consolas,
     'Courier New', monospace;
+  --font-calligraphy: 'STXingkai', '华文行楷', 'FZSTK', '方正行楷',
+    'Ma Shan Zheng Title', 'STKaiti', 'KaiTi', serif;
   --board-font: 'Segoe Print', 'KaiTi', 'STKaiti', 'Kaiti SC', 'FangSong',
     'Noto Serif SC', serif;
   --board-display: 'STKaiti', 'KaiTi', 'Kaiti SC', 'Segoe Print', 'Noto Serif SC',
@@ -271,6 +282,8 @@ html[data-theme='mo'] {
   --font-body: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', 'SimSun', serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', 'Cascadia Code', Consolas,
     'Courier New', monospace;
+  --font-calligraphy: 'STXingkai', '华文行楷', 'FZSTK', '方正行楷',
+    'Ma Shan Zheng Title', 'STKaiti', 'KaiTi', serif;
   --board-font: 'Segoe Print', 'KaiTi', 'STKaiti', 'Kaiti SC', 'FangSong',
     'Noto Serif SC', serif;
   --board-display: 'STKaiti', 'KaiTi', 'Kaiti SC', 'Segoe Print', 'Noto Serif SC',
