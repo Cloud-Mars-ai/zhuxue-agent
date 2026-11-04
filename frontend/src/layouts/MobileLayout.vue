@@ -19,8 +19,8 @@ const tabs = [
 
 const active = computed(() => tabs.findIndex((t) => t.path === route.path))
 
-// 皮肤快捷切换：显示目标皮肤名，点击即切换（纸感 ⇄ 夜读）
-const switchLabel = computed(() => (themeStore.isMo ? '纸感' : '夜读'))
+// 皮肤快捷切换：显示目标皮肤名，点击即切换（澄蓝 ⇄ 纸感）
+const switchLabel = computed(() => (themeStore.isYun ? '澄蓝' : '纸感'))
 
 // 手动切换到电脑端：写入手动选择并跳转（之后该设备固定走 /，直至清除）
 function switchToWeb() {

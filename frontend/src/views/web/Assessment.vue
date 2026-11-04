@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed, reactive } from 'vue'
+import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { COURSE, MOCK_STUDENTS } from '@/mock/data'
 import { useUserStore } from '@/stores/user'
@@ -17,6 +18,7 @@ import {
 } from '@/api/aiTasks'
 
 const userStore = useUserStore()
+const router = useRouter()
 const modelStore = useModelStore()
 const assessmentStore = useAssessmentStore()
 const practiceStore = usePracticeStore()
@@ -403,6 +405,21 @@ async function submitAnswer(entry) {
                   {{ t.scope.questionType }} · {{ t.scope.difficulty }} · {{ t.scope.studentCount }} 人 ·
                   已通过 {{ taskProgress(t).approved }}/{{ taskProgress(t).total }} ·
                   {{ formatTime(t.createdAt) }}
+                  <el-button
+                    v-if="t.status === 'published' && canPublish"
+                    link
+                    type="primary"
+                    size="small"
+                    class="task-analysis-link"
+                    @click.stop="
+                      router.push({
+                        path: '/app/console',
+                        query: { activity: `assessment:${t.id}` },
+                      })
+                    "
+                  >
+                    班级知识点分析
+                  </el-button>
                 </div>
               </div>
             </div>
@@ -418,6 +435,19 @@ async function submitAnswer(entry) {
             任务复核：{{ activeTask.scope.chapters.join('、') }}（{{ activeTask.scope.questionType }}）
           </h3>
           <div class="review-ops">
+            <el-button
+              v-if="activeTask.status === 'published'"
+              size="small"
+              plain
+              @click="
+                router.push({
+                  path: '/app/console',
+                  query: { activity: `assessment:${activeTask.id}` },
+                })
+              "
+            >
+              班级知识点分析
+            </el-button>
             <el-button size="small" @click="approveAll">批量通过</el-button>
             <el-button
               size="small"
@@ -716,6 +746,11 @@ async function submitAnswer(entry) {
   margin-top: 4px;
   font-size: 12px;
   color: var(--text-sub);
+}
+
+.task-analysis-link {
+  margin-left: 6px;
+  vertical-align: baseline;
 }
 
 .review-card {

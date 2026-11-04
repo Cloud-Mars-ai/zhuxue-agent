@@ -202,21 +202,21 @@ async function handleLogout() {
       </div>
     </el-aside>
 
-    <el-container>
+    <el-container class="workspace">
       <el-header v-if="!immersive" class="header">
         <div class="header-left">
           <el-icon v-if="isNarrow" class="hamburger" @click="drawerOpen = true"><Fold /></el-icon>
           <div class="header-title">{{ route.meta.title }}</div>
         </div>
         <div class="header-right">
-          <el-tooltip :content="`切换到${themeStore.isMo ? '纸感' : '夜读'}皮肤`" placement="bottom">
+          <el-tooltip :content="`切换到${themeStore.isYun ? '澄蓝' : '纸感'}皮肤`" placement="bottom">
             <el-button
               size="small"
               round
               data-testid="web-theme-toggle"
               @click="themeStore.toggle()"
             >
-              {{ themeStore.isMo ? '纸感' : '夜读' }}
+              {{ themeStore.isYun ? '澄蓝' : '纸感' }}
             </el-button>
           </el-tooltip>
           <el-link :underline="false" class="text-sub switch-link" @click="switchToMobile">
@@ -282,6 +282,14 @@ async function handleLogout() {
 <style scoped>
 .web-layout {
   height: 100vh;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.workspace {
+  min-width: 0;
+  overflow: hidden;
 }
 
 .aside {
@@ -525,6 +533,7 @@ async function handleLogout() {
 }
 
 .main {
+  min-width: 0;
   background-color: var(--page-bg);
   background-image: radial-gradient(
     circle at 1px 1px,

@@ -1,13 +1,14 @@
 /* ============================================================
- * 双皮肤装饰层（浅色纸感体系）
- * 纸感：卡其纸底 + 米白卡面 + 靛蓝强调 + 轻阴影
- * 夜读：象牙纸底 + 米黄卡面 + 朱砂强调 + 衬线 + 近直角
+ * 双皮肤装饰层
+ * 澄蓝：冷白蓝雾 + 纯白卡面 + 蓝紫强调 + 柔和阴影
+ * 纸感：卡其纸底 + 米白卡面 + 靛蓝强调 + 点阵纹理
  * 页面结构类名与各视图约定，本文件只做皮肤化覆写，
  * 不引入新的信息架构，保证切换皮肤不影响功能与数据。
  * ============================================================ */
 
 /* 标签 / 导航用的无衬线字体栈（两套皮肤共用） */
 :root,
+html[data-theme='blue'],
 html[data-theme='yun'],
 html[data-theme='mo'] {
   --font-ui: 'PingFang SC', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont,
@@ -49,7 +50,8 @@ html[data-theme='mo'] {
   color: var(--accent-on);
 }
 
-/* 夜读印章在纸感皮肤下不展示 */
+/* 历史印章装饰在现行皮肤下不展示 */
+html[data-theme='blue'] .mo-stamp,
 html[data-theme='yun'] .mo-stamp {
   display: none;
 }
@@ -754,4 +756,71 @@ html[data-theme='mo'] .login-box .brand-mark {
 html[data-theme='mo'] .el-card,
 html[data-theme='mo'] .el-table {
   border-radius: 4px;
+}
+
+/* ============================================================
+ * 澄蓝工作台装饰层
+ * ============================================================ */
+html[data-theme='blue'] body,
+html[data-theme='blue'] .mobile-layout,
+html[data-theme='blue'] .web-layout .main {
+  background-color: var(--page-bg);
+  background-image: var(--paper-texture);
+  background-size: auto, auto, 86px 86px, 86px 86px;
+  background-attachment: fixed;
+}
+
+html[data-theme='blue'] .web-layout .aside,
+html[data-theme='blue'] .web-layout .header {
+  background: color-mix(in srgb, var(--card-bg) 82%, transparent);
+  border-color: color-mix(in srgb, var(--card-border) 74%, transparent);
+  backdrop-filter: blur(16px);
+}
+
+html[data-theme='blue'] .web-layout .aside {
+  background: color-mix(in srgb, #f5f8fd 78%, transparent);
+}
+
+html[data-theme='blue'] .web-layout .logo-mark,
+html[data-theme='blue'] .login-box .brand-mark {
+  background: linear-gradient(145deg, #5880f5, #3f62d8);
+  box-shadow: 0 8px 20px rgba(74, 115, 242, 0.18);
+}
+
+html[data-theme='blue'] .web-layout .menu .el-menu-item,
+html[data-theme='blue'] .web-layout .menu .el-sub-menu__title {
+  border-radius: 12px;
+}
+
+html[data-theme='blue'] .web-layout .menu .el-menu-item.is-active {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--accent-soft) 86%, transparent),
+    color-mix(in srgb, #eef3ff 58%, transparent)
+  );
+  box-shadow: inset 0 0 0 1px rgba(74, 115, 242, 0.08);
+}
+
+html[data-theme='blue'] .web-layout .side-course,
+html[data-theme='blue'] .card,
+html[data-theme='blue'] .cw-card,
+html[data-theme='blue'] .el-card {
+  border-color: color-mix(in srgb, var(--card-border) 80%, transparent);
+  box-shadow: var(--card-shadow);
+}
+
+html[data-theme='blue'] .login-box {
+  border-color: color-mix(in srgb, var(--card-border) 78%, transparent);
+  box-shadow: 0 24px 80px rgba(53, 92, 160, 0.13);
+  backdrop-filter: blur(18px);
+}
+
+html[data-theme='blue'] .skin-chip {
+  border-color: color-mix(in srgb, var(--card-border) 82%, transparent);
+  background: color-mix(in srgb, var(--card-bg) 76%, transparent);
+  font-family: var(--font-ui);
+}
+
+html[data-theme='blue'] .skin-badge {
+  border-radius: 999px;
 }

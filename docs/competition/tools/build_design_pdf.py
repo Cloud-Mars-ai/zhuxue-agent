@@ -27,9 +27,10 @@ from reportlab.pdfgen import canvas as pdfcanvas
 
 ROOT = Path(__file__).resolve().parents[3]
 OUTPUT = ROOT / "output" / "pdf" / "智慧学伴设计方案.pdf"
-DATA_IMG = ROOT / "tmp" / "competition-workbench-data.png"
-ANALYSIS_IMG = ROOT / "tmp" / "competition-workbench-analysis.png"
-PLAN_IMG = ROOT / "tmp" / "competition-workbench-plan-v2.png"
+DATA_IMG = ROOT / "docs" / "competition" / "screenshots" / "teacher-workbench-data-blue.png"
+ANALYSIS_IMG = ROOT / "docs" / "competition" / "screenshots" / "teacher-workbench-analysis-blue.png"
+PLAN_IMG = ROOT / "docs" / "competition" / "screenshots" / "teacher-workbench-plan-blue.png"
+CLASS_IMG = ROOT / "docs" / "competition" / "screenshots" / "teacher-class-analysis.png"
 MOBILE_IMG = ROOT / "tmp" / "competition-student-mobile.png"
 
 FONT_BODY = "CJK-Song"
@@ -447,9 +448,37 @@ def build():
         PageBreak(),
     ]
 
-    # 7 Recommendations
+    # 7 Class knowledge analytics
     story += section_title(
-        "06 / RECOMMENDATION",
+        "06B / CLASS KNOWLEDGE ANALYTICS",
+        "每次作业或考试，都能形成一份班级知识点分析",
+        "教师主控台汇总提交覆盖、知识点掌握、分数分布、学生风险、小组差异与教学建议。",
+    )
+    story += [
+        data_table(
+            [
+                ["分析对象", "输出", "边界"],
+                ["每次作业", "提交率、班级平均、知识点矩阵、全员明细", "未提交不计 0 分"],
+                ["每次考试", "及格率、优秀率、风险学生、小组差异", "信息不足标记为未评估"],
+                ["教师操作", "切换活动、重新生成、导出 CSV", "可回到考核任务直接跳转"],
+            ],
+            [35 * mm, 79 * mm, 60 * mm],
+        ),
+        Spacer(1, 5 * mm),
+        KeepTogether(
+            [
+                safe_image(CLASS_IMG, 168 * mm, 94 * mm),
+                P("教师主控台：班级知识点掌握矩阵、成绩分布与教学建议同屏。", CAPTION),
+            ]
+        ),
+        Spacer(1, 5 * mm),
+        P("默认分析使用当前仿真作业与考试数据；正式接口接入后复用同一套活动选择、聚合和导出结构。", BODY_SMALL),
+        PageBreak(),
+    ]
+
+    # 8 Recommendations
+    story += section_title(
+        "07 / RECOMMENDATION",
         "每条建议都是可执行、可调整的行动链",
         "建议不只写“多练习”，而要回答练什么、为什么先练、达到什么标准。",
     )
@@ -486,9 +515,9 @@ def build():
         PageBreak(),
     ]
 
-    # 8 Course generation
+    # 9 Course generation
     story += section_title(
-        "07 / COURSE EXPERIENCE",
+        "08 / COURSE EXPERIENCE",
         "从建议直接进入学习，不让建议停在列表",
         "复用既有两阶段课程生成、渐进展示、结构化板书和语音讲解。",
     )
@@ -512,9 +541,9 @@ def build():
         PageBreak(),
     ]
 
-    # 9 UI overview
+    # 10 UI overview
     story += section_title(
-        "08 / WORKBENCH",
+        "09 / WORKBENCH",
         "内容、学情与建议在同一页面完成",
         "教师不需要在多个工作台之间搬数据；三步导航始终可见。",
     )
@@ -535,9 +564,9 @@ def build():
         PageBreak(),
     ]
 
-    # 10 Plan/mobile
+    # 11 Plan/mobile
     story += section_title(
-        "09 / EVIDENCE CHAIN",
+        "10 / EVIDENCE CHAIN",
         "建议、核验与学生端保持同一条证据链",
         "教师端可调整，学生端看到的是同一套行动顺序与学习依据。",
     )
@@ -598,9 +627,9 @@ def build():
         PageBreak(),
     ]
 
-    # 11 Security
+    # 12 Security
     story += section_title(
-        "10 / SECURITY & COMPLIANCE",
+        "11 / SECURITY & COMPLIANCE",
         "把密钥、内容边界和数据边界写进工程实现",
         "安全要求不能只放在方案说明里，必须在请求链路中执行。",
     )
@@ -626,9 +655,9 @@ def build():
         PageBreak(),
     ]
 
-    # 12 Verification
+    # 13 Verification
     story += section_title(
-        "11 / VERIFICATION",
+        "12 / VERIFICATION",
         "样例覆盖的是边界条件，而不只是顺利路径",
         "固定种子使输入可重放，质量问题与信息不足也能稳定复现。",
     )
@@ -655,9 +684,9 @@ def build():
         PageBreak(),
     ]
 
-    # 13 Deliverables and roadmap
+    # 14 Deliverables and roadmap
     story += section_title(
-        "12 / DELIVERY",
+        "13 / DELIVERY",
         "交付物与执行顺序",
         "先完成可复核的数据与分析，再完成演示材料和发布。",
     )
@@ -687,9 +716,9 @@ def build():
         PageBreak(),
     ]
 
-    # 14 Boundary
+    # 15 Boundary
     story += section_title(
-        "13 / LIMITS",
+        "14 / LIMITS",
         "适用范围与需要人工把关的部分",
         "明确边界比夸大结果更符合比赛对准确性、依据充分性和建议合理性的要求。",
     )

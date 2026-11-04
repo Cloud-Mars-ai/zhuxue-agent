@@ -23,7 +23,10 @@ body,
 #app {
   margin: 0;
   padding: 0;
+  width: 100%;
+  max-width: 100%;
   min-height: 100%;
+  overflow-x: hidden;
 }
 
 /* 落地页锚点跳转：平滑滚动并为固定导航留出偏移 */

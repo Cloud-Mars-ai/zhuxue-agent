@@ -20,7 +20,7 @@ const isStudent = computed(() => userStore.role === 'student')
 
 const disciplineLabel = computed(() => userStore.discipline || '未设置')
 
-// 界面皮肤（双皮肤方案：运行台默认 / 夜读阅读模式）
+// 界面皮肤（澄蓝工作台 / 纸感学习台）
 const showThemePicker = ref(false)
 
 function onThemeSelect(value) {
@@ -176,7 +176,7 @@ function toggleMock() {
           </template>
         </van-cell>
         <div class="theme-sheet-tip">
-          两套皮肤共用同一套信息架构与功能，仅更换视觉样式；「夜读」适合阅读与答辩演示。
+          两套皮肤共用同一套信息架构与功能；教师默认澄蓝，学生默认纸感，可随时切换。
         </div>
       </div>
     </van-popup>

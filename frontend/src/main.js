@@ -22,14 +22,19 @@ import './theme/skins.css'
 // 设备自适应样式层（断点 / 字体 / 图片 / 触控，置于最后按端微调）
 import './style/responsive.css'
 // 首屏挂载前同步应用皮肤，避免主题闪烁
-import { THEME_KEY, DEFAULT_THEME } from './stores/theme'
+import { THEME_KEY, THEME_EXPLICIT_KEY, DEFAULT_THEME, TEACHER_DEFAULT_THEME } from './stores/theme'
 import { useDeviceStore } from './stores/device'
 
 try {
   const stored = window.localStorage.getItem(THEME_KEY)
+  const explicit = window.localStorage.getItem(THEME_EXPLICIT_KEY) === '1'
+  const user = JSON.parse(window.localStorage.getItem('ai-tutor-user') || 'null')
+  const roleDefault = ['teacher', 'admin', 'ta'].includes(user?.role)
+    ? TEACHER_DEFAULT_THEME
+    : DEFAULT_THEME
   document.documentElement.setAttribute(
     'data-theme',
-    stored === 'mo' || stored === 'yun' ? stored : DEFAULT_THEME,
+    explicit && (stored === 'blue' || stored === 'yun') ? stored : roleDefault,
   )
 } catch {
   document.documentElement.setAttribute('data-theme', DEFAULT_THEME)

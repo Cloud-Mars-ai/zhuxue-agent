@@ -20,9 +20,6 @@ async function seedUser(page, role = 'student') {
     if (!localStorage.getItem('ai-tutor-user')) {
       localStorage.setItem('ai-tutor-user', JSON.stringify(user))
     }
-    if (!localStorage.getItem('ai-tutor-theme')) {
-      localStorage.setItem('ai-tutor-theme', 'yun')
-    }
     if (!localStorage.getItem('ai-tutor-model-config')) {
       localStorage.setItem(
         'ai-tutor-model-config',
@@ -48,6 +45,17 @@ test('登录后进入课程主页', async ({ page }) => {
 
   await expect(page).toHaveURL(/\/app\/course$/)
   await expect(page.getByTestId('yun-greeting')).toBeVisible()
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'yun')
+})
+
+test('教师首次登录默认使用澄蓝皮肤', async ({ page }) => {
+  await page.goto('/login')
+  await page.getByPlaceholder('学号 / 工号').fill('teacher')
+  await page.getByPlaceholder('密码').fill('123456')
+  await page.getByRole('button', { name: '登录', exact: true }).click()
+
+  await expect(page).toHaveURL(/\/app\/course$/)
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'blue')
 })
 
 test('落地页欢迎视频播放后循环招手并在点击后进入主页', async ({ page }) => {
@@ -217,18 +225,40 @@ test('教师可生成、复核并发布考核任务', async ({ page }) => {
   await page.getByRole('button', { name: '发布任务' }).click()
 
   await expect(page.getByRole('button', { name: '已发布' })).toBeVisible()
+  await page.getByRole('button', { name: '班级知识点分析' }).click()
+  await expect(page).toHaveURL(/\/app\/console\?activity=assessment(?::|%3A)/)
+  await expect(page.getByTestId('class-knowledge-analysis')).toBeVisible()
 })
 
 test('皮肤切换刷新后仍持久化', async ({ page }) => {
   await seedUser(page)
   await page.goto('/app/course')
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'yun')
+  await expect(page.locator('body')).not.toContainText('夜读')
 
   await page.getByTestId('web-theme-toggle').click()
-  await expect(page.locator('html')).toHaveAttribute('data-theme', 'mo')
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'blue')
   await page.reload({ waitUntil: 'domcontentloaded' })
 
-  await expect(page.locator('html')).toHaveAttribute('data-theme', 'mo')
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'blue')
+})
+
+test('教师端可按作业生成班级知识点分析并导出', async ({ page }) => {
+  await seedUser(page, 'teacher')
+  await page.goto('/app/console')
+
+  await expect(page.getByTestId('class-knowledge-analysis')).toBeVisible()
+  await expect(page.getByRole('heading', { name: '班级知识点掌握分析' })).toBeVisible()
+  await expect(page.locator('.knowledge-row').first()).toBeVisible()
+  await expect(page.getByText('教学建议', { exact: true })).toBeVisible()
+
+  await page.getByText(/查看全部学生明细/).click()
+  await expect(page.locator('.student-detail-collapse .el-table__row').first()).toBeVisible()
+
+  const downloadPromise = page.waitForEvent('download')
+  await page.getByRole('button', { name: '导出 CSV' }).click()
+  const download = await downloadPromise
+  expect(download.suggestedFilename()).toMatch(/^班级知识点分析-.*\.csv$/)
 })
 
 test('生产服务器支持板书深链接刷新', async ({ page }) => {

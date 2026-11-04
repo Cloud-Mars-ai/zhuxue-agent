@@ -52,14 +52,14 @@
           <button
             class="skin-btn"
             type="button"
-            :title="`切换到${themeStore.isMo ? '纸感' : '夜读'}皮肤`"
+            :title="`切换到${themeStore.isYun ? '澄蓝' : '纸感'}皮肤`"
             @click="themeStore.toggle()"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
               <circle cx="12" cy="12" r="8" />
               <path d="M12 4a8 8 0 0 0 0 16z" fill="currentColor" stroke="none" />
             </svg>
-            <span>{{ themeStore.isMo ? '纸感' : '夜读' }}</span>
+            <span>{{ themeStore.isYun ? '澄蓝' : '纸感' }}</span>
           </button>
           <button class="btn btn-primary nav-cta" type="button" @click="enterApp">{{ ctaLabel }}</button>
           <button
@@ -350,7 +350,7 @@
  * 运行台签名元素：hero 实况遥测面板（脉冲状态点 / 滚动运行日志 /
  * 三维反馈条 / 队列读数）、等宽数据标签、模块编号、HUD 角标。
  * 视觉层全部走语义令牌（--page-bg / --card-bg / --accent 等），
- * 因此落地页随产品双皮肤（运行台 / 夜读）自动换装。
+ * 因此落地页随产品双皮肤（澄蓝 / 纸感）自动换装。
  */
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -488,7 +488,7 @@ const faqs = [
   },
   {
     q: '两套皮肤有什么区别？',
-    a: '纸感是浅卡其纸面：靛蓝强调、点阵底纹、轻阴影，适合日常学习与操作；夜读是浅象牙纸：衬线标题、朱砂批注、近直角，适合阅读与展示场景。',
+    a: '澄蓝是冷白蓝雾工作台：轻盈留白、柔和网格、蓝色强调；纸感是浅卡其纸面：靛蓝强调、点阵底纹、轻阴影。教师首次登录默认澄蓝，学生默认纸感，两种皮肤都可在页面右上角手动切换。',
   },
 ]
 const openFaq = ref(-1)

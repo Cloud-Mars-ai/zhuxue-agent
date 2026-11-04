@@ -4,12 +4,14 @@ import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { useUserStore } from '@/stores/user'
 import { useDeviceStore } from '@/stores/device'
+import { useThemeStore } from '@/stores/theme'
 import { MOCK_USERS } from '@/mock/data'
 
 const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
 const deviceStore = useDeviceStore()
+const themeStore = useThemeStore()
 
 const formRef = ref()
 const loading = ref(false)
@@ -36,6 +38,7 @@ async function handleSubmit() {
   loading.value = true
   try {
     await userStore.loginByUsername(form.username, form.password)
+    themeStore.applyRoleDefault(userStore.role)
     ElMessage.success(`欢迎回来，${userStore.name}`)
 
     const redirect = route.query.redirect

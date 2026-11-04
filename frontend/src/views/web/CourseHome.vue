@@ -438,7 +438,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="course-home">
+  <div class="course-home" :class="{ 'is-blue': themeStore.isBlue }">
     <!-- ==================================================
       方案一 · 夜读：杂志封面式课程主页（示意 A-1）
       ================================================== -->
@@ -876,6 +876,53 @@ onMounted(() => {
   padding-bottom: 12px;
 }
 
+.course-home.is-blue {
+  isolation: isolate;
+}
+
+.course-home.is-blue .home-hero::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: -34px -9% 10%;
+  background:
+    radial-gradient(circle at 50% 18%, rgba(176, 202, 255, 0.42), transparent 48%),
+    radial-gradient(circle at 18% 38%, rgba(219, 230, 255, 0.5), transparent 40%);
+  pointer-events: none;
+}
+
+.course-home.is-blue .hero-title {
+  -webkit-text-stroke: 0;
+  text-shadow: none;
+  font-weight: 600;
+}
+
+.course-home.is-blue .hero-tab.on {
+  background: rgba(255, 255, 255, 0.84);
+  border-color: rgba(107, 138, 201, 0.2);
+  box-shadow: 0 8px 22px rgba(73, 103, 164, 0.08);
+}
+
+.course-home.is-blue .learning-composer {
+  border-color: rgba(192, 207, 232, 0.82);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow:
+    0 1px 2px rgba(38, 62, 105, 0.05),
+    0 28px 70px rgba(50, 84, 146, 0.13);
+}
+
+.course-home.is-blue .material-row {
+  background: linear-gradient(180deg, rgba(246, 249, 255, 0.92), rgba(238, 244, 253, 0.76));
+}
+
+.course-home.is-blue .ask-box {
+  padding-top: 20px;
+}
+
+.course-home.is-blue .hero-hint {
+  color: rgba(84, 103, 132, 0.66);
+}
+
 /* —— 夜读杂志封面（示意 A-1）—— */
 .mo-magazine {
   margin-bottom: 16px;
@@ -887,16 +934,16 @@ onMounted(() => {
 /* —— 运行台顶部（示意 B-1）—— */
 .home-hero {
   position: relative;
-  max-width: 800px;
-  margin: 6px auto 12px;
+  max-width: 860px;
+  margin: 24px auto 28px;
   text-align: center;
-  padding: 4px 8px 0;
+  padding: 10px 16px 0;
 }
 
 .hero-tabs {
   display: inline-flex;
   gap: 8px;
-  margin-bottom: 20px;
+  margin-bottom: 28px;
 }
 
 .hero-tab {
@@ -919,26 +966,27 @@ onMounted(() => {
 }
 
 .hero-kicker {
-  margin-bottom: 10px;
-  font-size: 12px;
-  letter-spacing: 0.4px;
+  margin-bottom: 14px;
+  font-size: 12.5px;
+  letter-spacing: 0.7px;
   color: var(--text-faint);
 }
 
 .hero-title {
-  margin: 0;
-  font-size: 38px;
-  line-height: 1.25;
+  margin: 0 auto;
+  max-width: 760px;
+  font-size: clamp(36px, 4vw, 46px);
+  line-height: 1.22;
   font-family: var(--font-calligraphy);
   font-weight: 400;
-  letter-spacing: 1px;
+  letter-spacing: -0.5px;
   color: var(--text-main);
   -webkit-text-stroke: 0.28px currentColor;
   text-shadow: 0.4px 0.25px 0 color-mix(in srgb, var(--text-main) 24%, transparent);
 }
 
 .hero-sub {
-  margin: 8px 0 14px;
+  margin: 12px 0 0;
   font-size: 14px;
   line-height: 1.7;
   color: var(--text-sub);
@@ -946,8 +994,8 @@ onMounted(() => {
 
 .learning-composer {
   position: relative;
-  max-width: 720px;
-  margin: 0 auto;
+  max-width: 760px;
+  margin: 26px auto 0;
   background: var(--card-bg);
   border: 1px solid var(--card-border);
   border-radius: 16px;
@@ -1334,7 +1382,7 @@ onMounted(() => {
 }
 
 .hero-hint {
-  margin: 7px 0 0;
+  margin: 14px 0 0;
   font-size: 11.5px;
   color: var(--text-faint);
 }

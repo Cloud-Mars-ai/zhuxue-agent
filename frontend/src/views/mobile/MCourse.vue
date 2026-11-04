@@ -61,7 +61,7 @@ const currentCase = computed(() => casesStore.currentCase())
 const isStudent = computed(() => userStore.role === 'student')
 
 /* ==================================================
- * 纸感首页数据
+ * 澄蓝首页数据
  * ================================================== */
 const currentChapter = computed(
   () => COURSE.chapters.find((c) => c.status === '进行中') || COURSE.chapters[0],
@@ -549,17 +549,17 @@ knowledgeStore.load()
   padding-bottom: 12px;
 }
 
-/* —— 纸感首页（对齐 HyperKnow 首屏）—— */
+/* —— 澄蓝首页（对齐轻盈首屏）—— */
 .m-home-hero {
   position: relative;
-  padding: 14px 16px 6px;
+  padding: 24px 16px 12px;
   text-align: center;
 }
 
 .m-hero-tabs {
   display: inline-flex;
   gap: 8px;
-  margin-bottom: 14px;
+  margin-bottom: 24px;
 }
 
 .m-hero-tabs span {
@@ -579,7 +579,8 @@ knowledgeStore.load()
 }
 
 .m-hero-title {
-  margin: 0;
+  margin: 0 auto;
+  max-width: 340px;
   font-size: 28px;
   line-height: 1.3;
   font-family: var(--font-calligraphy);
@@ -591,7 +592,7 @@ knowledgeStore.load()
 }
 
 .m-hero-sub {
-  margin: 8px 0 16px;
+  margin: 12px 0 22px;
   font-size: 12.5px;
   line-height: 1.7;
   color: var(--text-sub);
@@ -601,7 +602,7 @@ knowledgeStore.load()
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin-bottom: 10px;
+  margin-bottom: 18px;
   text-align: left;
 }
 
@@ -652,7 +653,7 @@ knowledgeStore.load()
 
 .m-ask-box {
   position: relative;
-  padding: 10px 12px 8px;
+  padding: 14px 14px 10px;
   text-align: left;
   background: var(--card-bg);
   border: 1px solid var(--card-border);

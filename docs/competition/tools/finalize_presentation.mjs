@@ -15,9 +15,9 @@ const runtimePython =
 const candidatePath =
   'D:/黑客松/经管Agent/output/presentations/zhuxue-defense-candidate.pptx'
 const finalPath =
-  'D:/黑客松/经管Agent/output/presentations/智慧学伴答辩-final-v2.pptx'
+  'D:/黑客松/经管Agent/output/presentations/智慧学伴答辩-final-v3.pptx'
 const stagingDir = path.join(workspaceDir, 'tmp', 'presentation-finalizer')
-const receiptPath = path.join(stagingDir, 'validation-v2.json')
+const receiptPath = path.join(stagingDir, 'validation-v3.json')
 
 await fs.mkdir(stagingDir, { recursive: true })
 await fs.mkdir(path.dirname(finalPath), { recursive: true })

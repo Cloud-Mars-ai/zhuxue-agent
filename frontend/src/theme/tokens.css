@@ -1,11 +1,11 @@
 /* ============================================================
- * 双皮肤设计令牌（浅色纸感体系）
- * 默认皮肤「纸感」：html[data-theme="yun"]
- *   卡其纸底 + 米白卡面 + 靛蓝强调 + 无衬线 + 轻阴影 + 点阵纹理
- *   定位：日常学习工作台（接近 HyperKnow 的浅色纸感）
- * 阅读模式「夜读」：html[data-theme="mo"]
- *   象牙纸底 + 米黄卡面 + 朱砂强调 + 衬线标题 + 近直角 + 无阴影
- *   定位：沉浸阅读（书卷感、安静、专注），同样是浅色
+ * 双皮肤设计令牌
+ * 工作台皮肤「澄蓝」：html[data-theme="blue"]
+ *   冷白底 + 雾蓝渐变 + 纯白玻璃卡面 + 蓝色强调
+ *   定位：轻盈、专注的日常学习与教师工作台
+ * 学习台皮肤「纸感」：html[data-theme="yun"]
+ *   卡其纸底 + 米白卡面 + 靛蓝强调 + 点阵纹理
+ *   定位：日常学习与学生默认工作台
  *
  * 两套皮肤共用同一套变量名，仅取值不同——切换皮肤不改变
  * 信息架构与功能，只更换色彩 / 字体 / 圆角 / 阴影 / 质感。
@@ -24,8 +24,7 @@
 }
 
 /* ------------------------------------------------------------
- * 纸感（默认皮肤）
- * 卡其底 #F3EEE3 + 米白卡 #FFFDF8 + 靛蓝 #3D5BD9
+ * 旧版 yun 主题仅保留兼容样式；运行时会被迁移为 blue。
  * ------------------------------------------------------------ */
 :root,
 html[data-theme='yun'] {
@@ -95,7 +94,7 @@ html[data-theme='yun'] {
   --paper-texture: none;
   --hover-lift: translateY(-1px);
 
-  /* —— 纸感专属质感 —— */
+  /* —— 旧版兼容质感 —— */
   --surface-2: #f7f2e7; /* 嵌套表面：输入框 / 次级块 */
   --surface-3: #efe8da; /* 悬浮表面 */
   --grid-line: rgba(120, 105, 80, 0.08);
@@ -241,7 +240,7 @@ html[data-theme='yun'] {
 }
 
 /* ------------------------------------------------------------
- * 夜读（阅读模式皮肤）
+ * 历史阅读模式令牌（已从主题选择器下线，仅保留样式兼容）
  * 象牙纸底 + 米黄卡面 + 朱砂唯一强调 + 衬线标题 + 近直角
  * ------------------------------------------------------------ */
 html[data-theme='mo'] {
@@ -445,4 +444,220 @@ html[data-theme='mo'] {
   --el-box-shadow-light: none;
   --el-box-shadow: 0 1px 0 #e3d8c2;
   --el-font-family: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', 'SimSun', serif;
+}
+
+/* ------------------------------------------------------------
+ * 澄蓝（默认工作台皮肤）
+ * 冷白底 + 雾蓝渐变 + 纯白玻璃卡面 + 蓝色强调
+ * ------------------------------------------------------------ */
+:root,
+html[data-theme='blue'] {
+  --page-bg: #edf3fc;
+  --card-bg: #ffffff;
+  --card-border: #d9e3f2;
+  --card-radius: 18px;
+  --card-shadow:
+    0 1px 2px rgba(39, 70, 130, 0.04),
+    0 18px 48px rgba(53, 92, 160, 0.09);
+
+  --text-main: #1f2b3d;
+  --text-sub: #607087;
+  --text-faint: #8e9bae;
+
+  --accent: #4a73f2;
+  --accent-deep: #3159d4;
+  --accent-soft: #e9f0ff;
+  --accent-on: #ffffff;
+  --link: #3566dc;
+
+  --ok: #2f8f70;
+  --ok-soft: #e8f6f0;
+  --warn: #a97720;
+  --warn-soft: #fbf3e2;
+  --danger: #c04b55;
+  --danger-soft: #fbecef;
+  --divider: #e3eaf4;
+
+  --hero-bg:
+    radial-gradient(circle at 12% 0%, rgba(179, 204, 255, 0.62), transparent 34%),
+    radial-gradient(circle at 88% 8%, rgba(207, 220, 255, 0.72), transparent 38%),
+    linear-gradient(rgba(88, 119, 176, 0.055) 1px, transparent 1px) 0 0 / 86px 86px,
+    linear-gradient(90deg, rgba(88, 119, 176, 0.055) 1px, transparent 1px) 0 0 / 86px 86px,
+    linear-gradient(180deg, #f5f8fd 0%, #edf3fc 100%);
+  --hero-text: #1f2b3d;
+  --hero-sub: #607087;
+  --hero-progress: #4a73f2;
+  --hero-track: #dce6f4;
+  --login-bg:
+    radial-gradient(circle at 18% 12%, rgba(190, 212, 255, 0.78), transparent 38%),
+    radial-gradient(circle at 82% 6%, rgba(220, 229, 255, 0.8), transparent 42%),
+    linear-gradient(160deg, #f7f9fe 0%, #eaf1fb 100%);
+
+  --font-title: 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', -apple-system,
+    BlinkMacSystemFont, sans-serif;
+  --font-body: 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', -apple-system,
+    BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', 'Cascadia Code', Consolas,
+    'Courier New', monospace;
+  --font-calligraphy: 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei',
+    -apple-system, BlinkMacSystemFont, sans-serif;
+  --board-font: 'Segoe Print', 'KaiTi', 'STKaiti', 'Noto Serif SC', serif;
+  --board-display: 'STKaiti', 'KaiTi', 'Noto Serif SC', serif;
+  --title-weight: 600;
+  --title-tracking: -0.6px;
+  --body-leading: 1.72;
+  --question-leading: 1.82;
+
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-pill: 999px;
+  --btn-radius: 12px;
+  --border-w: 1px;
+  --border-style: solid;
+  --paper-texture:
+    radial-gradient(circle at 18% 10%, rgba(186, 208, 255, 0.34), transparent 36%),
+    radial-gradient(circle at 84% 4%, rgba(220, 230, 255, 0.45), transparent 38%),
+    linear-gradient(rgba(88, 119, 176, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(88, 119, 176, 0.045) 1px, transparent 1px);
+  --hover-lift: translateY(-2px);
+
+  --surface-2: #f1f5fb;
+  --surface-3: #e7eef9;
+  --grid-line: rgba(89, 117, 170, 0.08);
+  --glow-accent: 0 0 0 3px rgba(74, 115, 242, 0.1);
+  --accent-ring: rgba(74, 115, 242, 0.22);
+  --board-paper: #fbfdff;
+  --board-ink: #27354a;
+  --board-muted: #5c6c82;
+  --board-faint: #8f9daf;
+  --board-grid: rgba(91, 119, 172, 0.13);
+  --board-heading: #4a5ec8;
+  --board-heading-alt: #4569d4;
+  --board-highlight: rgba(217, 227, 255, 0.75);
+  --board-accent: #4d67ce;
+  --board-accent-soft: #eef2ff;
+  --board-line: #4a5871;
+  --board-note: #f4f7ff;
+
+  --brand: #4a73f2;
+  --brand-light: #e9f0ff;
+  --bg-page: #edf3fc;
+  --text-sub-legacy: #607087;
+  --border: #d9e3f2;
+  --radius: 12px;
+
+  --van-primary-color: #4a73f2;
+  --van-success-color: #2f8f70;
+  --van-danger-color: #c04b55;
+  --van-warning-color: #a97720;
+  --van-text-color: #1f2b3d;
+  --van-text-color-2: #607087;
+  --van-text-color-3: #8e9bae;
+  --van-background: #edf3fc;
+  --van-background-2: #ffffff;
+  --van-background-3: #f1f5fb;
+  --van-active-color: #e7eef9;
+  --van-border-color: #d9e3f2;
+  --van-radius-sm: 10px;
+  --van-radius-md: 14px;
+  --van-radius-lg: 18px;
+  --van-button-radius: 12px;
+  --van-cell-background: #ffffff;
+  --van-cell-group-background: #ffffff;
+  --van-cell-group-inset-radius: 18px;
+  --van-cell-group-inset-padding: 0 12px;
+  --van-cell-group-inset-title-padding: 16px 16px 8px;
+  --van-cell-group-title-color: #607087;
+  --van-cell-group-title-font-size: 13px;
+  --van-cell-text-color: #1f2b3d;
+  --van-cell-label-color: #607087;
+  --van-cell-value-color: #607087;
+  --van-cell-border-color: #e3eaf4;
+  --van-cell-right-icon-color: #8e9bae;
+  --van-nav-bar-background: rgba(255, 255, 255, 0.92);
+  --van-nav-bar-title-text-color: #1f2b3d;
+  --van-nav-bar-icon-color: #1f2b3d;
+  --van-tabbar-background: rgba(255, 255, 255, 0.96);
+  --van-tabbar-item-text-color: #607087;
+  --van-tabbar-item-active-color: #4a73f2;
+  --van-tag-radius: 999px;
+  --van-tag-padding: 0 8px;
+  --van-tag-font-size: 11px;
+  --van-tag-line-height: 18px;
+  --van-popup-background: #ffffff;
+  --van-popup-round-radius: 18px;
+  --van-picker-background: #ffffff;
+  --van-picker-option-text-color: #1f2b3d;
+  --van-picker-confirm-action-color: #4a73f2;
+  --van-picker-cancel-action-color: #607087;
+  --van-notice-bar-background: #eef4ff;
+  --van-notice-bar-text-color: #4569d4;
+  --van-field-input-text-color: #1f2b3d;
+  --van-field-placeholder-text-color: #8e9bae;
+  --van-progress-color: #4a73f2;
+  --van-progress-background: #e3eaf4;
+  --van-skeleton-paragraph-background: #e7eef9;
+  --van-skeleton-avatar-background: #e7eef9;
+  --van-checkbox-label-color: #1f2b3d;
+  --van-checkbox-checked-icon-color: #4a73f2;
+  --van-popover-light-background: #ffffff;
+  --van-popover-light-text-color: #1f2b3d;
+  --van-popover-radius: 14px;
+  --van-overlay-background: rgba(27, 42, 65, 0.32);
+
+  --el-color-primary: #4a73f2;
+  --el-color-primary-dark-2: #3159d4;
+  --el-color-primary-light-3: #7f9af6;
+  --el-color-primary-light-5: #aabcf9;
+  --el-color-primary-light-7: #cbd5fb;
+  --el-color-primary-light-8: #dde4fc;
+  --el-color-primary-light-9: #eef2ff;
+  --el-color-success: #2f8f70;
+  --el-color-success-light-3: #61ad94;
+  --el-color-success-light-5: #91c8b7;
+  --el-color-success-light-7: #c0dfd5;
+  --el-color-success-light-8: #d5ebe4;
+  --el-color-success-light-9: #eaf5f1;
+  --el-color-warning: #a97720;
+  --el-color-warning-light-3: #bd954d;
+  --el-color-warning-light-5: #d0b17b;
+  --el-color-warning-light-7: #e2cfaa;
+  --el-color-warning-light-8: #eadbc2;
+  --el-color-warning-light-9: #f8f2e7;
+  --el-color-danger: #c04b55;
+  --el-color-danger-light-3: #d0777f;
+  --el-color-danger-light-5: #df9fa4;
+  --el-color-danger-light-7: #ebc5c9;
+  --el-color-danger-light-8: #f1d6d9;
+  --el-color-danger-light-9: #faebed;
+  --el-color-info: #607087;
+  --el-color-info-light-3: #8a96a7;
+  --el-color-info-light-5: #aeb7c3;
+  --el-color-info-light-7: #cfd5dd;
+  --el-color-info-light-8: #dfe3e8;
+  --el-color-info-light-9: #f0f2f5;
+  --el-bg-color: #ffffff;
+  --el-bg-color-page: #edf3fc;
+  --el-bg-color-overlay: #ffffff;
+  --el-text-color-primary: #1f2b3d;
+  --el-text-color-regular: #42536a;
+  --el-text-color-secondary: #607087;
+  --el-text-color-placeholder: #8e9bae;
+  --el-border-color: #d9e3f2;
+  --el-border-color-light: #e2e9f4;
+  --el-border-color-lighter: #ebf0f7;
+  --el-border-radius-base: 12px;
+  --el-border-radius-small: 10px;
+  --el-fill-color: #f1f5fb;
+  --el-fill-color-light: #f5f8fc;
+  --el-fill-color-lighter: #f9fbfe;
+  --el-fill-color-dark: #e7eef9;
+  --el-fill-color-blank: #ffffff;
+  --el-mask-color: rgba(27, 42, 65, 0.32);
+  --el-disabled-bg-color: #f0f3f8;
+  --el-disabled-text-color: #adb7c4;
+  --el-disabled-border-color: #e2e8f1;
+  --el-box-shadow-light: 0 4px 16px rgba(48, 78, 133, 0.08);
+  --el-box-shadow: 0 18px 50px rgba(48, 78, 133, 0.12);
+  --el-font-family: 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
 }
