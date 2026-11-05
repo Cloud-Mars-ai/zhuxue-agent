@@ -1,6 +1,6 @@
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useUserStore } from '@/stores/user'
 import { useCompetitionStore } from '@/stores/competition'
@@ -14,6 +14,7 @@ import {
 } from '@/competition/analysis'
 
 const router = useRouter()
+const route = useRoute()
 const userStore = useUserStore()
 const store = useCompetitionStore()
 const courseStudioStore = useCourseStudioStore()
@@ -40,11 +41,13 @@ const teacherSteps = [
   { key: 'data', no: '01', title: '内容与数据', desc: '课程要求、材料出处、数据质量' },
   { key: 'analysis', no: '02', title: '学情分析', desc: '个体、群体、共性与差异' },
   { key: 'plan', no: '03', title: '建议与核验', desc: '教师调整、证据链、成果导出' },
+  { key: 'checkup', no: '04', title: '学习体检', desc: '盲区、证据与优先处理顺序' },
 ]
 const studentSteps = [
   { key: 'analysis', no: '01', title: '我的学情', desc: '已有表现与信息不足' },
   { key: 'plan', no: '02', title: '学习路径', desc: '先学什么、为什么、用什么材料' },
   { key: 'data', no: '03', title: '内容图谱', desc: '课程要求与材料出处' },
+  { key: 'checkup', no: '04', title: '学习体检', desc: '我的盲区与下一步行动' },
 ]
 const steps = computed(() => (isTeacher.value ? teacherSteps : studentSteps))
 
@@ -80,6 +83,18 @@ const selectedRecords = computed(() =>
     .sort((a, b) => String(b.attemptedAt).localeCompare(String(a.attemptedAt)))
     .slice(0, 12),
 )
+const checkupSignals = computed(() => {
+  const learner = selectedLearner.value
+  const recommendation = selectedRecommendation.value
+  return {
+    weakRequirements: learner?.weakRequirements || [],
+    observations: (recommendation?.actions || []).filter(
+      (item) => item.actionType === 'observation',
+    ),
+    actions: (recommendation?.actions || []).slice(0, 4),
+    status: learner?.status || 'insufficient',
+  }
+})
 const teacherAdjustmentCount = computed(() =>
   Object.values(store.adjustments || {}).reduce(
     (sum, perRecommendation) => sum + Object.keys(perRecommendation || {}).length,
@@ -416,8 +431,11 @@ watch(
 
 onMounted(async () => {
   await store.load()
+  if (String(route.query.step || '') === 'checkup') {
+    activeStep.value = 'checkup'
+  }
   if (!isTeacher.value) {
-    activeStep.value = 'analysis'
+    if (activeStep.value !== 'checkup') activeStep.value = 'analysis'
     if (!store.selectedStudentId) {
       store.selectStudent(store.linkedStudentId)
     }
@@ -478,6 +496,86 @@ onMounted(async () => {
         </span>
       </button>
     </nav>
+
+    <section v-if="activeStep === 'checkup'" class="cw-section checkup-section">
+      <div class="cw-section-title">
+        <div>
+          <span>LEARNING CHECKUP</span>
+          <h2>学习体检与行动优先级</h2>
+          <p>用已有记录定位盲区、证据缺口和下一步，不把“没测过”误判成“不会”。</p>
+        </div>
+        <el-tag :type="statusType(checkupSignals.status)" effect="plain">
+          {{ statusLabel(checkupSignals.status) }}
+        </el-tag>
+      </div>
+
+      <div class="cw-stat-grid">
+        <article>
+          <span>待补强要求</span>
+          <strong>{{ checkupSignals.weakRequirements.length }}</strong>
+          <small>按证据强度排序</small>
+        </article>
+        <article>
+          <span>建议动作</span>
+          <strong>{{ checkupSignals.actions.length }}</strong>
+          <small>可继续执行</small>
+        </article>
+        <article>
+          <span>信息缺口</span>
+          <strong>{{ checkupSignals.observations.length }}</strong>
+          <small>先观察再下结论</small>
+        </article>
+        <article>
+          <span>当前学习者</span>
+          <strong>{{ selectedLearner?.studentName || '当前学生' }}</strong>
+          <small>{{ isTeacher ? '教师视角' : '我的报告' }}</small>
+        </article>
+      </div>
+
+      <div class="cw-two-col">
+        <article class="cw-card">
+          <div class="cw-card-head">
+            <div>
+              <h2>优先处理顺序</h2>
+              <p>薄弱要求按“考核影响 × 证据强弱”排列。</p>
+            </div>
+          </div>
+          <div class="checkup-list">
+            <div
+              v-for="(item, index) in checkupSignals.weakRequirements.slice(0, 6)"
+              :key="item.requirementId || item.topicTitle || index"
+            >
+              <span class="checkup-rank">{{ String(index + 1).padStart(2, '0') }}</span>
+              <div>
+                <strong>{{ item.topicTitle || item.title || item.requirementId }}</strong>
+                <small>{{ item.reason || item.uncertainty || '建议结合最近一次作答证据复核。' }}</small>
+              </div>
+              <el-tag size="small" type="warning" effect="plain">优先补强</el-tag>
+            </div>
+          </div>
+        </article>
+
+        <article class="cw-card">
+          <div class="cw-card-head">
+            <div>
+              <h2>下一步怎么做</h2>
+              <p>与学习路径使用同一份建议，不另造一套结论。</p>
+            </div>
+          </div>
+          <div class="checkup-actions">
+            <div v-for="item in checkupSignals.actions" :key="item.id">
+              <span>{{ actionTypeLabel(item.actionType) }}</span>
+              <strong>{{ item.title }}</strong>
+              <small>{{ item.completionStandard || item.description }}</small>
+            </div>
+          </div>
+          <div class="checkup-cta">
+            <el-button type="primary" @click="activeStep = 'plan'">查看完整学习路径</el-button>
+            <el-button @click="router.push('/app/selftest')">做一组摸底自测</el-button>
+          </div>
+        </article>
+      </div>
+    </section>
 
     <section v-if="activeStep === 'data'" class="cw-section">
       <div class="cw-stat-grid">
@@ -1813,6 +1911,94 @@ onMounted(async () => {
   color: var(--text-main);
 }
 
+.cw-section-title {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.cw-section-title span {
+  font: 9.5px/1.4 var(--font-mono);
+  letter-spacing: 1.4px;
+  color: var(--accent);
+}
+
+.cw-section-title h2 {
+  margin: 4px 0;
+  font-size: 22px;
+  color: var(--text-main);
+}
+
+.cw-section-title p {
+  margin: 0;
+  color: var(--text-sub);
+  line-height: 1.7;
+}
+
+.checkup-list,
+.checkup-actions {
+  display: grid;
+  gap: 9px;
+}
+
+.checkup-list > div {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  background: var(--surface-2);
+  border-radius: var(--radius-md);
+}
+
+.checkup-rank {
+  font: 700 13px/1 var(--font-mono);
+  color: var(--accent);
+}
+
+.checkup-list > div > div,
+.checkup-actions > div {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
+.checkup-list strong,
+.checkup-actions strong {
+  font-size: 12px;
+  color: var(--text-main);
+}
+
+.checkup-list small,
+.checkup-actions small {
+  font-size: 10.5px;
+  line-height: 1.6;
+  color: var(--text-sub);
+}
+
+.checkup-actions > div {
+  padding: 11px;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+}
+
+.checkup-actions > div > span {
+  width: fit-content;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 9.5px;
+}
+
+.checkup-cta {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+}
+
 @media (max-width: 1120px) {
   .cw-two-col,
   .cw-analysis-layout,
@@ -1828,7 +2014,8 @@ onMounted(async () => {
 @media (max-width: 760px) {
   .cw-head,
   .cw-student-hero,
-  .cw-plan-head {
+  .cw-plan-head,
+  .cw-section-title {
     flex-direction: column;
   }
 

@@ -33,17 +33,29 @@ function sourceSummary(sources) {
   }))
 }
 
-function chapterFallback(chapter) {
+function chapterFallback(chapter, domain = 'general') {
+  if (!['management', 'math7'].includes(domain)) return ''
   const outline = getOutlineByTitle(chapter)
   return outline ? outlineToText([outline]) : ''
 }
 
-async function collectSources({ chapter, query, maxContextChars = 6000, topK = 6 }) {
+async function collectSources({
+  chapter,
+  query,
+  materialIds = [],
+  preferUploaded = false,
+  excludeSeeded = false,
+  maxContextChars = 6000,
+  topK = 6,
+}) {
   try {
     const knowledge = useKnowledgeStore()
     return await knowledge.buildGenerationContext({
       chapter,
       query,
+      materialIds,
+      preferUploaded,
+      excludeSeeded,
       maxContextChars,
       topK,
     })
@@ -107,17 +119,22 @@ async function requestStructured({
 export async function generateCourseBlueprint({
   chapter,
   objective,
-  audience = '管理学本科生',
+  audience = '本课程学习者',
   mode = 'course',
   durationMinutes = 30,
+  domain = 'general',
+  materialIds = [],
 }) {
   const sources = await collectSources({
     chapter,
     query: objective,
+    materialIds,
+    preferUploaded: true,
+    excludeSeeded: domain === 'general',
     maxContextChars: 7000,
     topK: 7,
   })
-  const materialText = sources.text || chapterFallback(chapter)
+  const materialText = sources.text || chapterFallback(chapter, domain)
   const sourceChunkIds = sources.chunks.map((chunk) => chunk.id)
   const context = {
     chapter,
@@ -125,6 +142,8 @@ export async function generateCourseBlueprint({
     audience,
     mode,
     durationMinutes,
+    domain,
+    materialText,
     sourceChunkIds,
   }
 
@@ -215,6 +234,8 @@ async function sceneSources(project, outline) {
   return collectSources({
     chapter: project.chapter,
     query: [project.objective, outline.title, ...(outline.keyPoints || [])].join(' '),
+    preferUploaded: project.domain === 'general',
+    excludeSeeded: project.domain === 'general',
     maxContextChars: 4200,
     topK: 5,
   })
@@ -223,7 +244,7 @@ async function sceneSources(project, outline) {
 /** 第二阶段：只生成一个已确认场景，调用方可逐场景更新进度和恢复。 */
 export async function generateCourseScene({ project, outline, previousScene = null, signal }) {
   const sources = await sceneSources(project, outline)
-  const materialText = sources.text || chapterFallback(project.chapter)
+  const materialText = sources.text || chapterFallback(project.chapter, project.domain)
   const allowedSourceIds = sources.chunks.map((chunk) => chunk.id)
   const context = { project, outline, allowedSourceIds }
 

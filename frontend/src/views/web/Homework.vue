@@ -1,13 +1,25 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { HOMEWORKS, HOMEWORK_STATUS } from '@/mock/data'
+import { HOMEWORK_STATUS } from '@/mock/data'
+import { useHomeworkStore } from '@/stores/homework'
 import { useUserStore } from '@/stores/user'
 
+const route = useRoute()
+const router = useRouter()
 const userStore = useUserStore()
+const homeworkStore = useHomeworkStore()
 const isStudent = computed(() => userStore.role === 'student')
+const isMobileRoute = computed(() => route.path.startsWith('/m/'))
 
 const statusFilter = ref('')
+const showPublish = ref(false)
+const publishForm = ref({
+  title: '',
+  deadline: '',
+  description: '',
+})
 
 const statusTabs = [
   { label: '全部', value: '' },
@@ -17,96 +29,174 @@ const statusTabs = [
 ]
 
 const list = computed(() => {
-  if (!statusFilter.value) return HOMEWORKS
-  return HOMEWORKS.filter((h) => h.status === statusFilter.value)
+  const rows = homeworkStore.sortedAssignments
+  if (!statusFilter.value) return rows
+  return rows.filter((item) => item.status === statusFilter.value)
 })
 
-// 距离截止时间还剩几天，已过截止返回负数
+function submissionOf(item) {
+  return homeworkStore.submissionFor(item.id, userStore.user?.id)
+}
+
+function displayStatus(item) {
+  if (!isStudent.value) return HOMEWORK_STATUS[item.status] || HOMEWORK_STATUS.pending
+  const submission = submissionOf(item)
+  if (submission?.status === 'graded') return { label: '已批阅', type: 'success' }
+  if (submission) return { label: '已提交', type: 'warning' }
+  return HOMEWORK_STATUS[item.status] || HOMEWORK_STATUS.pending
+}
+
 function daysLeft(deadline) {
-  const now = new Date('2026-10-17T20:00:00+08:00').getTime()
-  const end = new Date(deadline.replace(' ', 'T') + '+08:00').getTime()
-  return Math.ceil((end - now) / 86400000)
+  const end = new Date(String(deadline || '').replace(' ', 'T') + '+08:00').getTime()
+  if (!Number.isFinite(end)) return null
+  return Math.ceil((end - Date.now()) / 86400000)
 }
 
-function deadlineText(h) {
-  const d = daysLeft(h.deadline)
-  if (h.status === 'graded') return '已截止'
-  if (d < 0) return '已逾期'
-  if (d === 0) return '今天截止'
-  return `还剩 ${d} 天`
+function deadlineText(item) {
+  const submission = submissionOf(item)
+  if (submission?.status === 'graded') return '批阅已完成'
+  const days = daysLeft(item.deadline)
+  if (days == null) return '未设置截止时间'
+  if (days < 0) return '已逾期'
+  if (days === 0) return '今天截止'
+  return `还剩 ${days} 天`
 }
 
-function deadlineType(h) {
-  const d = daysLeft(h.deadline)
-  if (h.status === 'graded') return 'info'
-  if (d < 0) return 'danger'
-  if (d <= 2) return 'warning'
+function deadlineType(item) {
+  const days = daysLeft(item.deadline)
+  if (days == null) return 'info'
+  if (days < 0) return 'danger'
+  if (days <= 2) return 'warning'
   return 'success'
 }
 
-function handleSubmit(h) {
-  // 接口就绪后改为 post('/homework/{id}/submit', formData)
-  ElMessage.success(`已提交「${h.title}」（仿真数据模式）`)
+function openDetail(item) {
+  router.push(`${isMobileRoute.value ? '/m' : '/app'}/homework/${item.id}`)
 }
+
+async function publishAssignment() {
+  if (!publishForm.value.title.trim() || !publishForm.value.deadline) {
+    ElMessage.warning('请填写作业标题和截止时间')
+    return
+  }
+  const item = await homeworkStore.addAssignment({
+    ...publishForm.value,
+    teacher: userStore.name,
+  })
+  showPublish.value = false
+  publishForm.value = { title: '', deadline: '', description: '' }
+  ElMessage.success(`已发布「${item.title}」`)
+}
+
+onMounted(homeworkStore.load)
 </script>
 
 <template>
-  <div>
+  <div class="homework-page">
     <div class="toolbar">
       <div>
-        <h3 class="page-title">作业管理</h3>
+        <h1 class="page-title">作业</h1>
         <p class="text-sub">
-          {{ isStudent ? '查看并提交你的课程作业' : '发布作业、跟踪提交与批改进度' }}
+          {{
+            isStudent
+              ? '点击作业查看要求、上传本地文件并查看老师的批阅回复。'
+              : '发布作业，进入详情查看学生提交并完成批阅。'
+          }}
         </p>
       </div>
-      <el-button v-if="!isStudent" type="primary">
+      <el-button v-if="!isStudent" type="primary" @click="showPublish = true">
         <el-icon><Plus /></el-icon>布置作业
       </el-button>
     </div>
 
     <el-radio-group v-model="statusFilter" class="tabs">
-      <el-radio-button v-for="t in statusTabs" :key="t.value" :value="t.value">
-        {{ t.label }}
+      <el-radio-button v-for="tab in statusTabs" :key="tab.value" :value="tab.value">
+        {{ tab.label }}
       </el-radio-button>
     </el-radio-group>
 
     <div class="card">
       <el-empty v-if="!list.length" description="该状态下暂无作业" />
-      <div v-for="h in list" :key="h.id" class="hw">
-        <div class="hw-main">
+      <div v-for="item in list" :key="item.id" class="hw">
+        <button class="hw-main" type="button" @click="openDetail(item)">
           <div class="hw-title">
-            {{ h.title }}
-            <el-tag size="small" :type="HOMEWORK_STATUS[h.status].type" effect="plain">
-              {{ HOMEWORK_STATUS[h.status].label }}
+            {{ item.title }}
+            <el-tag size="small" :type="displayStatus(item).type" effect="plain">
+              {{ displayStatus(item).label }}
             </el-tag>
           </div>
+          <p class="hw-desc">{{ item.description }}</p>
           <div class="text-sub hw-meta">
-            <span>截止：{{ h.deadline }}</span>
-            <el-tag size="small" :type="deadlineType(h)" effect="light">
-              {{ deadlineText(h) }}
+            <span>截止：{{ item.deadline }}</span>
+            <el-tag size="small" :type="deadlineType(item)" effect="light">
+              {{ deadlineText(item) }}
             </el-tag>
-            <span v-if="h.score !== null">我的得分：<strong>{{ h.score }}</strong></span>
+            <span v-if="submissionOf(item)?.score != null">
+              得分：<strong>{{ submissionOf(item).score }}</strong>
+            </span>
+            <span v-if="submissionOf(item)">提交文件：{{ submissionOf(item).fileName }}</span>
           </div>
           <div v-if="!isStudent" class="hw-progress">
             <el-progress
-              :percentage="Math.round((h.submitted / h.total) * 100)"
-              :stroke-width="10"
+              :percentage="Math.round((item.submitted / Math.max(1, item.total)) * 100)"
+              :stroke-width="8"
             />
-            <span class="text-sub">已提交 {{ h.submitted }}/{{ h.total }} 人</span>
+            <span class="text-sub">已提交 {{ item.submitted }}/{{ item.total }} 人</span>
           </div>
-        </div>
+        </button>
         <div class="hw-actions">
-          <el-button v-if="isStudent" type="primary" plain @click="handleSubmit(h)">
-            {{ h.status === 'graded' ? '查看批阅' : '提交作业' }}
+          <el-button type="primary" :plain="isStudent" @click="openDetail(item)">
+            {{
+              isStudent
+                ? submissionOf(item)?.status === 'graded'
+                  ? '查看批阅'
+                  : submissionOf(item)
+                    ? '查看提交'
+                    : '进入提交'
+                : '查看提交与批改'
+            }}
           </el-button>
-          <el-button v-else type="primary" plain>批改</el-button>
         </div>
       </div>
     </div>
+
+    <el-dialog v-model="showPublish" title="布置作业" width="560px">
+      <el-form label-position="top">
+        <el-form-item label="作业标题">
+          <el-input v-model="publishForm.title" placeholder="例如：第 4 章组织结构案例分析" />
+        </el-form-item>
+        <el-form-item label="截止时间">
+          <el-date-picker
+            v-model="publishForm.deadline"
+            type="datetime"
+            value-format="YYYY-MM-DD HH:mm"
+            placeholder="选择截止时间"
+            class="w-full"
+          />
+        </el-form-item>
+        <el-form-item label="作业要求">
+          <el-input
+            v-model="publishForm.description"
+            type="textarea"
+            :rows="5"
+            placeholder="说明任务、提交格式和评价标准…"
+          />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="showPublish = false">取消</el-button>
+        <el-button type="primary" @click="publishAssignment">发布作业</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <style scoped>
+.homework-page {
+  width: min(1080px, 100%);
+  margin: 0 auto;
+}
+
 .toolbar {
   display: flex;
   align-items: flex-start;
@@ -128,7 +218,7 @@ function handleSubmit(h) {
   align-items: flex-start;
   justify-content: space-between;
   gap: 20px;
-  padding: 14px 0;
+  padding: 15px 0;
   border-bottom: 1px solid var(--border);
 }
 
@@ -139,6 +229,11 @@ function handleSubmit(h) {
 .hw-main {
   flex: 1;
   min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
 }
 
 .hw-title {
@@ -147,6 +242,14 @@ function handleSubmit(h) {
   gap: 8px;
   font-size: 15px;
   font-weight: 600;
+  color: var(--text-main);
+}
+
+.hw-desc {
+  margin: 6px 0 0;
+  color: var(--text-sub);
+  font-size: 12px;
+  line-height: 1.7;
 }
 
 .hw-meta {
@@ -154,16 +257,16 @@ function handleSubmit(h) {
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
-  margin-top: 6px;
+  margin-top: 8px;
 }
 
 .hw-meta strong {
-  color: var(--brand);
+  color: var(--accent);
   font-size: 15px;
 }
 
 .hw-progress {
-  max-width: 260px;
+  max-width: 300px;
   margin-top: 10px;
 }
 
@@ -176,13 +279,17 @@ function handleSubmit(h) {
   flex-shrink: 0;
 }
 
+.w-full {
+  width: 100%;
+}
+
 @media (max-width: 768px) {
+  .toolbar,
   .hw {
     flex-direction: column;
   }
-  .hw-actions {
-    width: 100%;
-  }
+
+  .hw-actions,
   .hw-actions :deep(.el-button) {
     width: 100%;
   }

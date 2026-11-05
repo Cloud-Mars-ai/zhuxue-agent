@@ -2,11 +2,11 @@
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { COURSE } from '@/mock/data'
 import { generateCourseBlueprint } from '@/api/courseStudio'
 import BoardCanvas from '@/components/BoardCanvas.vue'
 import { isEnabled } from '@/config/flags'
 import { useCourseStudioStore } from '@/stores/courseStudio'
+import { useKnowledgeStore } from '@/stores/knowledge'
 import { useModelStore } from '@/stores/model'
 import { useUserStore } from '@/stores/user'
 import {
@@ -22,16 +22,15 @@ const router = useRouter()
 const userStore = useUserStore()
 const modelStore = useModelStore()
 const studio = useCourseStudioStore()
+const knowledgeStore = useKnowledgeStore()
 
-const chapterOptions = COURSE.chapters.map((chapter) => chapter.title)
-const activeChapter =
-  COURSE.chapters.find((chapter) => chapter.status === '进行中') || COURSE.chapters[0]
 const draft = reactive({
-  chapter: activeChapter?.title || chapterOptions[0],
-  objective: '能用自己的话解释核心概念，并把它用于一个管理案例判断。',
-  audience: '管理学本科生',
+  chapter: '',
+  objective: '',
+  audience: '本课程学习者',
   mode: 'course',
   durationMinutes: 30,
+  domain: 'general',
 })
 
 const projectId = ref('')
@@ -102,10 +101,11 @@ function syncDraftFromProject(value) {
   draft.audience = value.audience
   draft.mode = value.mode
   draft.durationMinutes = value.durationMinutes
+  draft.domain = value.domain || 'general'
 }
 
 onMounted(async () => {
-  await studio.load()
+  await Promise.all([studio.load(), knowledgeStore.load()])
   const requested = queryValue(route.query.project)
   const target =
     (requested && studio.find(String(requested))) ||
@@ -137,6 +137,10 @@ async function createOutline() {
       audience: draft.audience,
       mode: draft.mode,
       durationMinutes: Number(draft.durationMinutes),
+      domain: draft.domain,
+      materialIds: knowledgeStore.materials
+        .filter((item) => !item.seeded)
+        .map((item) => item.id),
     })
     const saved = await studio.createDraft({
       ownerId: userStore.user?.id || '',
@@ -149,7 +153,7 @@ async function createOutline() {
     await router.replace({ query: { ...route.query, project: saved.id } })
     ElMessage.success(
       result.fallback
-        ? '已用教师确认稿生成可编辑大纲（演示缓存）'
+        ? '已按用户主题和上传材料在本地生成可编辑大纲'
         : result.repaired
           ? '课程大纲已生成，并自动修复了结构'
           : '课程大纲已生成，请先审阅',
@@ -166,11 +170,12 @@ async function startNewProject() {
   projectId.value = ''
   selectedSceneId.value = ''
   showSetup.value = true
-  draft.chapter = activeChapter?.title || chapterOptions[0]
-  draft.objective = '能用自己的话解释核心概念，并把它用于一个管理案例判断。'
-  draft.audience = '管理学本科生'
+  draft.chapter = ''
+  draft.objective = ''
+  draft.audience = '本课程学习者'
   draft.mode = 'course'
   draft.durationMinutes = 30
+  draft.domain = 'general'
   await router.replace({ query: {} })
 }
 
@@ -285,7 +290,7 @@ function statusLabel(status) {
       pending: '待生成',
       generating: '生成中',
       ready: '已生成',
-      fallback: '演示缓存',
+      fallback: '本地生成',
       error: '需重试',
     }[status] || '待生成'
   )
@@ -371,10 +376,10 @@ function formatTime(value) {
   <div class="studio-page">
     <section class="studio-hero">
       <div>
-        <span class="studio-kicker">COURSE STUDIO · 教师确认制</span>
+        <span class="studio-kicker">COURSE STUDIO · 用户需求优先</span>
         <h1>先生成大纲，确认后再逐场景生成。</h1>
         <p>
-          课程内容只取教师确认材料。系统先做教学编排，再由你修改场景、顺序和要点，最后才生成板书、练习与复盘。
+          课程主题来自你的输入，内容优先取你上传的材料。系统先做教学编排，再由你修改场景、顺序和要点，最后才生成板书、练习与复盘。
         </p>
       </div>
       <div class="hero-actions">
@@ -413,15 +418,12 @@ function formatTime(value) {
 
           <div class="form-grid">
             <label class="field">
-              <span>课程章节</span>
-              <el-select v-model="draft.chapter" :disabled="pipelineRunning">
-                <el-option
-                  v-for="chapter in chapterOptions"
-                  :key="chapter"
-                  :label="chapter"
-                  :value="chapter"
-                />
-              </el-select>
+              <span>单元 / 范围（可选）</span>
+              <el-input
+                v-model="draft.chapter"
+                :disabled="pipelineRunning"
+                placeholder="例如：Python 基础第 3 单元"
+              />
             </label>
             <label class="field">
               <span>目标时长</span>
@@ -438,12 +440,12 @@ function formatTime(value) {
                 type="textarea"
                 :rows="3"
                 resize="none"
-                placeholder="例如：学完后能判断组织问题属于结构、授权还是沟通，并给出第一步调整。"
+                placeholder="例如：学完后能解释 Python 循环，并独立排查常见错误。"
               />
             </label>
             <label class="field">
               <span>学习者</span>
-              <el-input v-model="draft.audience" placeholder="例如：管理学本科生" />
+              <el-input v-model="draft.audience" placeholder="例如：本课程学生" />
             </label>
             <div class="field">
               <span>学习模式</span>
@@ -503,7 +505,7 @@ function formatTime(value) {
               <p>拖动顺序之外，先把每个场景的教学作用说清楚，再确认生成。</p>
             </div>
             <div class="head-tags">
-              <el-tag v-if="project.fallback" type="warning" effect="plain">演示缓存大纲</el-tag>
+              <el-tag v-if="project.fallback" type="warning" effect="plain">本地生成大纲</el-tag>
               <el-tooltip
                 v-if="project.outlineError"
                 :content="project.outlineError"
@@ -645,7 +647,7 @@ function formatTime(value) {
             <li :class="{ done: project?.status === 'ready' }"><span>4</span>资源包审阅与导出</li>
           </ol>
           <div class="pipeline-note">
-            任一模型调用失败都会回退到教师确认稿，并在对应场景标明“演示缓存”。
+            模型调用失败时，系统会按用户主题与已上传材料在本地生成，并在对应场景标明“本地生成”。
           </div>
         </section>
 
@@ -749,7 +751,7 @@ function formatTime(value) {
                   effect="plain"
                   size="small"
                 >
-                  演示缓存
+                  本地生成
                 </el-tag>
                 <el-tag
                   v-if="selectedScene.repaired"

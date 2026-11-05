@@ -1,10 +1,16 @@
 <script setup>
 import { ref, computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { FORUM_POSTS, COURSE } from '@/mock/data'
+import { COURSE } from '@/mock/data'
+import { useForumStore } from '@/stores/forum'
 import { useUserStore } from '@/stores/user'
 
+const route = useRoute()
+const router = useRouter()
 const userStore = useUserStore()
+const forumStore = useForumStore()
+const mobile = computed(() => route.path.startsWith('/m/'))
 
 const keyword = ref('')
 const chapterFilter = ref('')
@@ -12,7 +18,7 @@ const chapterFilter = ref('')
 const chapters = computed(() => [...new Set(COURSE.chapters.map((c) => c.title))])
 
 const posts = computed(() => {
-  let list = [...FORUM_POSTS]
+  let list = [...forumStore.sortedPosts]
   if (chapterFilter.value) {
     list = list.filter((p) => p.chapter === chapterFilter.value)
   }
@@ -22,8 +28,7 @@ const posts = computed(() => {
       (p) => p.title.toLowerCase().includes(kw) || p.content.toLowerCase().includes(kw),
     )
   }
-  // 置顶帖排在最前
-  return list.sort((a, b) => Number(!!b.isTop) - Number(!!a.isTop))
+  return list
 })
 
 const dialogVisible = ref(false)
@@ -41,14 +46,23 @@ function openDialog() {
   dialogVisible.value = true
 }
 
-function submitPost() {
+async function submitPost() {
   if (!newPost.value.title.trim() || !newPost.value.content.trim()) {
     ElMessage.warning('标题和内容都不能为空')
     return
   }
-  // 联调阶段：本地提示，接口就绪后改为 post('/forum/posts', newPost.value)
-  ElMessage.success('发布成功（当前为仿真数据，刷新后不会保留）')
+  const item = forumStore.addPost({
+    ...newPost.value,
+    author: userStore.name,
+    role: userStore.role,
+  })
+  ElMessage.success('研讨主题已发布')
   dialogVisible.value = false
+  await router.push(`${mobile.value ? '/m' : '/app'}/forum/${item.id}`)
+}
+
+function openPost(post) {
+  router.push(`${mobile.value ? '/m' : '/app'}/forum/${post.id}`)
 }
 </script>
 
@@ -75,7 +89,7 @@ function submitPost() {
 
     <div class="card">
       <el-empty v-if="!posts.length" description="没有符合条件的帖子" />
-      <div v-for="p in posts" :key="p.id" class="post">
+      <div v-for="p in posts" :key="p.id" class="post" role="button" tabindex="0" @click="openPost(p)">
         <div class="post-head">
           <el-tag v-if="p.isTop" type="danger" size="small" effect="dark">置顶</el-tag>
           <span class="post-title">{{ p.title }}</span>
@@ -153,8 +167,13 @@ function submitPost() {
 }
 
 .post {
+  cursor: pointer;
   padding: 14px 0;
   border-bottom: 1px solid var(--border);
+}
+
+.post:hover .post-title {
+  color: var(--accent);
 }
 
 .post:last-child {

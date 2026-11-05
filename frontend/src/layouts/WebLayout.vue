@@ -37,6 +37,7 @@ const GROUP_OF = {
   cheatsheet: '学习',
   checkup: '学习',
   competition: '学习',
+  library: '学习',
   cases: '学习',
   assessment: '考核',
   console: '教学',

@@ -12,6 +12,7 @@ import { idbGet, idbSet } from '@/repositories/db'
  */
 
 const STORAGE_KEY = 'knowledge-materials-v1'
+const BOARD_STORAGE_KEY = 'knowledge-boards-v1'
 const MAX_CONTEXT_CHARS = 2000
 const TOP_K = 3
 
@@ -65,8 +66,11 @@ function queryTerms(query) {
 
 export const useKnowledgeStore = defineStore('knowledge', () => {
   const materials = ref([])
+  const savedBoards = ref([])
   const loaded = ref(false)
+  const boardsLoaded = ref(false)
   let loadingPromise = null
+  let boardsLoadingPromise = null
 
   const stats = computed(() => {
     const chars = materials.value.reduce((n, m) => n + (m.text?.length || 0), 0)
@@ -83,6 +87,8 @@ export const useKnowledgeStore = defineStore('knowledge', () => {
           title: m.title,
           chapter: m.chapter,
           text,
+          seeded: !!m.seeded,
+          updatedAt: m.updatedAt || '',
         })
       })
     })
@@ -114,12 +120,65 @@ export const useKnowledgeStore = defineStore('knowledge', () => {
     await idbSet(STORAGE_KEY, materials.value)
   }
 
-  async function addMaterial({ title, chapter, text }) {
+  async function loadBoards() {
+    if (boardsLoaded.value) return savedBoards.value
+    if (boardsLoadingPromise) return boardsLoadingPromise
+    boardsLoadingPromise = (async () => {
+      const saved = await idbGet(BOARD_STORAGE_KEY)
+      savedBoards.value = Array.isArray(saved) ? saved : []
+      boardsLoaded.value = true
+      return savedBoards.value
+    })()
+    return boardsLoadingPromise
+  }
+
+  async function persistBoards() {
+    await idbSet(BOARD_STORAGE_KEY, savedBoards.value)
+  }
+
+  async function saveBoard({
+    title,
+    chapter = '',
+    projectId = '',
+    sceneId = '',
+    route = '',
+    lesson,
+    ownerId = '',
+  }) {
+    await loadBoards()
+    const stableId = `${projectId || 'board'}:${sceneId || title || Date.now()}`
+    const item = {
+      id: stableId,
+      title: String(title || lesson?.title || '未命名板书').trim(),
+      chapter: String(chapter || lesson?.chapter || '').trim(),
+      projectId,
+      sceneId,
+      route,
+      ownerId,
+      lesson,
+      savedAt: new Date().toISOString(),
+    }
+    const existing = savedBoards.value.findIndex((board) => board.id === stableId)
+    if (existing >= 0) savedBoards.value.splice(existing, 1, item)
+    else savedBoards.value.unshift(item)
+    savedBoards.value = savedBoards.value.slice(0, 60)
+    await persistBoards()
+    return item
+  }
+
+  async function removeBoard(id) {
+    await loadBoards()
+    savedBoards.value = savedBoards.value.filter((board) => board.id !== id)
+    await persistBoards()
+  }
+
+  async function addMaterial({ title, chapter, text, size = 0 }) {
     const item = {
       id: `m-${Date.now().toString(36)}`,
       title: title.trim() || `${chapter} 补充材料`,
       chapter,
       text: text.trim(),
+      size: Number(size) || 0,
       confirmedBy: 'teacher',
       seeded: false,
       updatedAt: new Date().toISOString(),
@@ -205,9 +264,19 @@ export const useKnowledgeStore = defineStore('knowledge', () => {
     query = '',
     maxContextChars = 6000,
     topK = 6,
+    materialIds = [],
+    preferUploaded = false,
+    excludeSeeded = false,
   } = {}) {
     await ensureLoaded()
-    const pool = allChunks.value.filter((c) => c.materialId)
+    const restricted = (Array.isArray(materialIds) ? materialIds : []).filter(Boolean)
+    const allowedMaterials = restricted.length ? new Set(restricted) : null
+    const pool = allChunks.value.filter(
+      (chunk) =>
+        chunk.materialId &&
+        (!allowedMaterials || allowedMaterials.has(chunk.materialId)) &&
+        (!excludeSeeded || !chunk.seeded),
+    )
     if (!pool.length) return { text: '', chunks: [] }
 
     const terms = queryTerms(`${query} ${chapter}`)
@@ -222,6 +291,7 @@ export const useKnowledgeStore = defineStore('knowledge', () => {
       return { ...c, score }
     })
 
+    const uploaded = scored.filter((c) => !c.seeded)
     const chapterChunks = scored.filter((c) => !chapter || c.chapter === chapter)
     const selected = []
     const seen = new Set()
@@ -231,6 +301,15 @@ export const useKnowledgeStore = defineStore('knowledge', () => {
       selected.push(chunk)
     }
 
+    if (preferUploaded && uploaded.length) {
+      uploaded
+        .sort(
+          (a, b) =>
+            b.score - a.score ||
+            String(b.updatedAt || '').localeCompare(String(a.updatedAt || '')),
+        )
+        .forEach(add)
+    }
     chapterChunks
       .sort((a, b) => b.score - a.score)
       .forEach(add)
@@ -238,7 +317,7 @@ export const useKnowledgeStore = defineStore('knowledge', () => {
       .filter((c) => c.score > 0)
       .sort((a, b) => b.score - a.score)
       .forEach(add)
-    chapterChunks.forEach(add)
+    if (!preferUploaded || !uploaded.length) chapterChunks.forEach(add)
 
     let used = 0
     const chunks = []
@@ -277,10 +356,12 @@ export const useKnowledgeStore = defineStore('knowledge', () => {
 
   return {
     materials,
+    savedBoards,
     loaded,
     stats,
     allChunks,
     load,
+    loadBoards,
     ensureLoaded,
     addMaterial,
     updateMaterial,
@@ -290,5 +371,7 @@ export const useKnowledgeStore = defineStore('knowledge', () => {
     buildGenerationContext,
     chunksByIds,
     byChapter,
+    saveBoard,
+    removeBoard,
   }
 })

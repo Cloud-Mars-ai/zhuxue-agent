@@ -2,7 +2,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { COURSE, FORUM_POSTS, HOMEWORKS } from '@/mock/data'
+import { COURSE } from '@/mock/data'
 import { useUserStore } from '@/stores/user'
 import { useModelStore } from '@/stores/model'
 import { useCasesStore } from '@/stores/cases'
@@ -12,6 +12,8 @@ import { usePersonaStore } from '@/stores/persona'
 import { useThemeStore } from '@/stores/theme'
 import { useKnowledgeStore } from '@/stores/knowledge'
 import { useCourseStudioStore } from '@/stores/courseStudio'
+import { useHomeworkStore } from '@/stores/homework'
+import { useForumStore } from '@/stores/forum'
 import { diagnoseGaps } from '@/utils/diagnose'
 import { buildFeed } from '@/utils/feed'
 import { importMaterialFile } from '@/utils/materialImport'
@@ -28,6 +30,8 @@ const personaStore = usePersonaStore()
 const themeStore = useThemeStore()
 const knowledgeStore = useKnowledgeStore()
 const courseStudioStore = useCourseStudioStore()
+const homeworkStore = useHomeworkStore()
+const forumStore = useForumStore()
 
 const overallProgress = computed(() => {
   const list = COURSE.chapters
@@ -35,13 +39,14 @@ const overallProgress = computed(() => {
   return Math.round(sum / list.length)
 })
 
-const latestPosts = computed(() => FORUM_POSTS.slice(0, 3))
+const latestPosts = computed(() => forumStore.sortedPosts.slice(0, 3))
 
 // 本节课案例：老师从案例池选用后，课堂主页置顶展示（M3）
 const currentCase = computed(() => casesStore.currentCase())
 
 // 学生看到自己的学习进度，教师看到班级整体情况
 const isStudent = computed(() => userStore.role === 'student')
+const customMaterials = computed(() => knowledgeStore.materials.filter((item) => !item.seeded))
 
 /* ==================================================
  * 双风格设计方案（示意 A-1 / B-1）数据
@@ -90,7 +95,7 @@ const todoRows = computed(() => {
       pendingAssessment: pendingAssessmentCount.value,
       daysSincePractice: practiceStore.daysSinceLast(userStore.user?.id),
       currentChapter: currentChapter.value?.title || '',
-      homeworks: HOMEWORKS,
+      homeworks: homeworkStore.sortedAssignments,
     })
   }
   // 教师：待处理事项
@@ -127,22 +132,23 @@ const todoRows = computed(() => {
 const allEntries = computed(() =>
   isStudent.value
     ? [
-        { ic: '伴', color: '#3D5BD9', name: '智慧学伴', sub: '学情 · 建议 · 核验', to: '/app/competition' },
+        { ic: '伴', color: '#3D5BD9', name: '智慧学伴', sub: '学情 · 体检 · 建议', to: '/app/competition' },
         { ic: '板', color: '#3D5BD9', name: '板书讲解', sub: '边讲解 · 边追问', to: '/app/board' },
         { ic: '题', color: '#E8590C', name: '一人一题', sub: 'AI 出题练习', to: '/app/practice' },
         { ic: '测', color: '#3D5BD9', name: '章节自测', sub: '先测后学', to: '/app/selftest' },
         { ic: '表', color: '#9C36B5', name: '备考速查', sub: '按主题重组', to: '/app/cheatsheet' },
-        { ic: '检', color: '#2F8F5B', name: '学习体检', sub: '盲区与建议', to: '/app/checkup' },
+        { ic: '库', color: '#2F8F5B', name: '知识库', sub: '资料 · 板书', to: '/app/library' },
         { ic: '例', color: '#0C8599', name: '课前案例', sub: '提交兴趣案例', to: '/app/cases' },
         { ic: '考', color: '#2F8F5B', name: '课程考核', sub: '模拟面试', to: '/app/assessment' },
         { ic: '坛', color: '#6B6558', name: '研讨论坛', sub: '同学讨论', to: '/app/forum' },
       ]
     : [
-        { ic: '伴', color: '#3D5BD9', name: '智慧学伴', sub: '内容 · 学情 · 建议', to: '/app/competition' },
+        { ic: '伴', color: '#3D5BD9', name: '智慧学伴', sub: '内容 · 学情 · 体检', to: '/app/competition' },
         { ic: '稿', color: '#3D5BD9', name: '案例选稿台', sub: '筛选 / 选用 / 驳回', to: '/app/cases' },
         { ic: '卷', color: '#E8590C', name: '出题阅卷台', sub: '圈人出题 · 评分', to: '/app/assessment' },
         { ic: '析', color: '#2F8F5B', name: '学情统计', sub: '参与度 · 掌握度', to: '/app/statistics' },
         { ic: '料', color: '#B7791F', name: '课程资料库', sub: '材料接入 · 检索', to: '/app/materials' },
+        { ic: '库', color: '#2F8F5B', name: '知识库', sub: '材料 · 板书归档', to: '/app/library' },
       ],
 )
 
@@ -190,30 +196,33 @@ const heroPlaceholder = computed(() =>
 const heroHint = computed(() =>
   generatingCourse.value
     ? '正在检索已上传材料并生成可编辑大纲，通常需要数秒…'
-    : `将依据已接入的 ${knowledgeStore.materials.length} 份教师确认材料生成大纲；补充材料会优先参与编排。`,
+    : customMaterials.value.length
+      ? `将优先依据你上传的 ${customMaterials.value.length} 份材料生成；输入的主题会决定课程结构。`
+      : '输入你想学的主题即可生成课程；上传资料后，系统会优先按资料内容组织大纲。',
 )
 
 const heroActions = computed(() =>
   isStudent.value
     ? [
-        { label: '智慧学伴', to: '/app/competition' },
+        { label: '智慧学伴与体检', to: '/app/competition?step=checkup' },
         { label: '板书讲解', to: '/app/board' },
         { label: '章节自测', to: '/app/selftest' },
         { label: '备考速查', to: '/app/cheatsheet' },
-        { label: '学习体检', to: '/app/checkup' },
+        { label: '知识库', to: '/app/library' },
       ]
     : [
-        { label: '智慧学伴', to: '/app/competition' },
+        { label: '智慧学伴与体检', to: '/app/competition?step=checkup' },
         { label: '教学主控台', to: '/app/console' },
         { label: '课程资料', to: '/app/materials' },
         { label: '学情统计', to: '/app/statistics' },
+        { label: '知识库', to: '/app/library' },
       ],
 )
 
 const assistantTools = computed(() => [
   {
     label: '智慧学伴',
-    desc: '看依据、调建议、生成课程',
+    desc: '学情、体检、建议与课程',
     icon: '伴',
     action: () => router.push('/app/competition'),
   },
@@ -254,10 +263,10 @@ const assistantTools = computed(() => [
     action: () => router.push('/app/selftest'),
   },
   {
-    label: '学习体检',
-    desc: '看盲区与下一步',
-    icon: '检',
-    action: () => router.push('/app/checkup'),
+    label: '知识库',
+    desc: '上传资料、保存板书',
+    icon: '库',
+    action: () => router.push('/app/library'),
   },
 ])
 
@@ -293,30 +302,34 @@ async function askHero() {
   }
   generatingCourse.value = true
   try {
+    const materialIds = customMaterials.value.map((item) => item.id)
+    const audience =
+      userStore.role === 'student' ? '本课程学生' : '本课程学习者'
     const result = await generateCourseBlueprint({
-      chapter: currentChapter.value?.title || '未分章材料',
+      chapter: q,
       objective: q,
-      audience: userStore.discipline
-        ? `管理学学生（${userStore.discipline}背景）`
-        : '管理学本科生',
+      audience: userStore.discipline ? `${audience}（${userStore.discipline}背景）` : audience,
       mode: studyMode.value,
       durationMinutes: 30,
+      domain: 'general',
+      materialIds,
     })
     const saved = await courseStudioStore.createDraft({
       ownerId: userStore.user?.id || '',
       input: {
-        chapter: currentChapter.value?.title || '未分章材料',
+        chapter: q,
         objective: q,
-        audience: userStore.discipline
-          ? `管理学学生（${userStore.discipline}背景）`
-          : '管理学本科生',
+        audience: userStore.discipline ? `${audience}（${userStore.discipline}背景）` : audience,
         mode: studyMode.value,
         durationMinutes: 30,
+        domain: 'general',
       },
       result,
     })
     ElMessage.success(
-      result.fallback ? '已基于教师材料生成可编辑大纲（演示缓存）' : '课程大纲已生成',
+      result.fallback
+        ? '已按你的主题和上传材料生成可编辑大纲（本地生成）'
+        : '课程大纲已生成',
     )
     await router.push({ path: '/app/studio', query: { project: saved.id } })
   } catch (error) {
@@ -380,8 +393,9 @@ async function handleFilesSelected(event) {
       const text = await importMaterialFile(file)
       await knowledgeStore.addMaterial({
         title: `${MATERIAL_LABELS[kind]} · ${file.name}`,
-        chapter: currentChapter.value?.title || '未分章材料',
+        chapter: '课程自定义资料',
         text,
+        size: file.size,
       })
       const history = uploadHistory.value[kind] || []
       uploadHistory.value[kind] = [
@@ -434,6 +448,7 @@ function startSelfTest(chapter) {
 
 onMounted(() => {
   knowledgeStore.load()
+  homeworkStore.load()
 })
 </script>
 

@@ -39,12 +39,13 @@ export async function idbGet(key) {
   if (!hasIndexedDB()) return fallbackGet(key)
   try {
     const db = await openDB()
-    return await new Promise((resolve, reject) => {
+    const value = await new Promise((resolve, reject) => {
       const tx = db.transaction(STORE_NAME, 'readonly')
       const req = tx.objectStore(STORE_NAME).get(key)
       req.onsuccess = () => resolve(req.result ?? null)
       req.onerror = () => reject(req.error)
     })
+    return value ?? fallbackGet(key)
   } catch {
     return fallbackGet(key)
   }
@@ -62,6 +63,18 @@ export async function idbSet(key, value) {
     })
     return true
   } catch {
+    // 删除可能存在的旧版本记录，避免下次读取时旧值遮住降级副本。
+    try {
+      const db = await openDB()
+      await new Promise((resolve) => {
+        const tx = db.transaction(STORE_NAME, 'readwrite')
+        tx.objectStore(STORE_NAME).delete(key)
+        tx.oncomplete = () => resolve()
+        tx.onerror = () => resolve()
+      })
+    } catch {
+      // 删除失败时仍尝试写降级副本
+    }
     return fallbackSet(key, value)
   }
 }

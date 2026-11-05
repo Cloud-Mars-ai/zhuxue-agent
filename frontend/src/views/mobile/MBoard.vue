@@ -1,17 +1,22 @@
 <script setup>
 import { computed, nextTick, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
+import { showToast } from 'vant'
 import { COURSE } from '@/mock/data'
 import BoardCanvas from '@/components/BoardCanvas.vue'
 import SpeakButton from '@/components/SpeakButton.vue'
 import { answerBoardQuestion, generateBoardLesson } from '@/api/board'
 import { useCourseStudioStore } from '@/stores/courseStudio'
+import { useKnowledgeStore } from '@/stores/knowledge'
+import { useUserStore } from '@/stores/user'
 import { VOICE_PRESETS } from '@/stores/voice'
 import { useBoardPlayback } from '@/composables/useBoardPlayback'
 import { downloadBoardLesson } from '@/utils/boardDownload'
 
 const route = useRoute()
 const studioStore = useCourseStudioStore()
+const knowledgeStore = useKnowledgeStore()
+const userStore = useUserStore()
 const currentChapter = computed(
   () => COURSE.chapters.find((chapter) => chapter.status === '进行中') || COURSE.chapters[0],
 )
@@ -30,6 +35,7 @@ const fallback = ref(false)
 const showChat = ref(false)
 const input = ref('')
 const asking = ref(false)
+const savingBoard = ref(false)
 const listRef = ref()
 const messages = ref([
   {
@@ -124,6 +130,27 @@ function handleEnter(event) {
   }
 }
 
+async function saveToLibrary() {
+  if (!lesson.value || savingBoard.value) return
+  savingBoard.value = true
+  try {
+    await knowledgeStore.saveBoard({
+      title: lesson.value.title,
+      chapter: lesson.value.chapter || chapter.value,
+      projectId: studioProjectId.value,
+      sceneId: studioSceneId.value,
+      route: route.fullPath,
+      lesson: lesson.value,
+      ownerId: userStore.user?.id || '',
+    })
+    showToast('板书已保存到知识库')
+  } catch (error) {
+    showToast(error.message || '保存板书失败')
+  } finally {
+    savingBoard.value = false
+  }
+}
+
 onMounted(loadLesson)
 </script>
 
@@ -136,7 +163,7 @@ onMounted(loadLesson)
       </span>
       <strong>{{ lesson?.chapter || chapter }}</strong>
     </div>
-    <div v-if="fallback" class="m-fallback">演示缓存 · 教师确认稿生成</div>
+    <div v-if="fallback" class="m-fallback">本地生成 · 依据课程主题与可用材料</div>
     <div class="m-board-tools">
       <button type="button" :class="{ on: voiceEnabled }" @click="toggleVoice">
         {{ narrating ? '语音讲解中' : voiceEnabled ? '语音已开启' : '语音教学关闭' }}
@@ -153,6 +180,9 @@ onMounted(loadLesson)
       </select>
       <button type="button" :disabled="!lesson" @click="downloadBoardLesson(lesson)">
         下载板书
+      </button>
+      <button type="button" :disabled="!lesson || savingBoard" @click="saveToLibrary">
+        收藏板书
       </button>
     </div>
     <p v-if="voiceError && voiceEnabled" class="m-voice-error">{{ voiceError }}</p>

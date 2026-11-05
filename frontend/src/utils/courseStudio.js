@@ -1,7 +1,5 @@
-import { COURSE_OUTLINE, getOutlineByTitle } from '@/mock/courseOutline'
 import { normalizeBoardLesson } from '@/utils/board'
 import { normalizeQuestions } from '@/utils/json'
-import { buildLocalQuestions } from '@/utils/localQuiz'
 
 export const COURSE_SCENE_TYPES = ['lecture', 'quiz', 'practice', 'review']
 
@@ -205,7 +203,7 @@ export function normalizeCourseBlueprint(raw, context) {
       `围绕“${context.objective}”组织一次 ${context.durationMinutes} 分钟的短课。`,
     languageDirective:
       text(source?.languageDirective, 260) ||
-      '使用中文授课；管理学专业术语首次出现时保留英文原词并给出中文解释。',
+      '使用用户需求所使用的语言授课；专业术语首次出现时给出清晰解释。',
     outlines,
   }
 }
@@ -228,63 +226,119 @@ function durationPlan(total, count) {
   })
 }
 
-/** 未配置模型或调用失败时，用教师确认稿生成完整且可编辑的大纲。 */
+function courseTopic(context) {
+  const raw = text(
+    context.topicHint ||
+      context.objective ||
+      context.chapter ||
+      '我的专题课程',
+    80,
+  )
+  const compact = raw
+    .replace(/^(请|麻烦|帮我|我想|我要|需要|生成|制作|设计|创建|安排)/, '')
+    .replace(/^(一节|一节关于|关于|一门|一门关于|一个|一次)/, '')
+    .replace(/(课程|短课|微课|学习|讲解|复习|备考)[。！？!?]?$/g, '')
+    .replace(/[。！？!?]+$/g, '')
+    .trim()
+  return text(compact || raw, 28)
+}
+
+function materialKnowledgePoints(context) {
+  const sourceText = String(context.materialText || '')
+    .replace(/^\[[^\n]+\]\s*$/gm, '')
+    .replace(/第\s*\d+\s*页/g, '')
+  const candidates = sourceText
+    .split(/\n+|[。！？!?；;]+/)
+    .map((line) => text(line.replace(/^[-*•\d.\s]+/, ''), 90))
+    .filter((line) => line.length >= 5 && line.length <= 90)
+  const terms = new Set(
+    String(context.objective || '')
+      .toLowerCase()
+      .match(/[a-z0-9]{2,}|[\u4e00-\u9fa5]{2,}/g) || [],
+  )
+  const ranked = candidates
+    .map((line, index) => {
+      const lower = line.toLowerCase()
+      const score = [...terms].reduce(
+        (total, term) => total + (lower.includes(term) ? 1 : 0),
+        0,
+      )
+      return { line, index, score }
+    })
+    .sort((a, b) => b.score - a.score || a.index - b.index)
+    .map((item) => item.line)
+  return [...new Set(ranked)].slice(0, 8)
+}
+
+/**
+ * 模型不可用时的确定性兜底也必须遵守用户需求。
+ * 规划顺序参考 OpenMAIC：需求定主题，材料提供内容证据，最后才套教学场景结构。
+ */
 export function buildLocalCourseBlueprint(context) {
-  const chapter =
-    getOutlineByTitle(context.chapter) ||
-    COURSE_OUTLINE.find((item) => item.title.includes(context.chapter || '')) ||
-    COURSE_OUTLINE[2]
-  const points = chapter.keyPoints
+  const materialPoints = materialKnowledgePoints(context)
+  let topic = courseTopic(context)
+  if (/上传|这份|这些|资料|材料/.test(topic) && materialPoints.length) {
+    topic = text(materialPoints[0], 28)
+  }
+  const points = materialPoints.length
+    ? materialPoints
+    : [
+        `明确「${topic}」要解决的问题与学习边界`,
+        `梳理「${topic}」的核心概念和关键词`,
+        `用例子说明关键步骤、条件与因果关系`,
+        `辨析常见误区，并建立检查方法`,
+        `通过练习把理解转化为可观察的学习成果`,
+      ]
   const count = context.durationMinutes <= 20 ? 5 : 6
   const durations = durationPlan(context.durationMinutes, count)
-  const sources = context.sourceChunkIds.slice(0, 4)
-
+  const sources = context.sourceChunkIds.slice(0, 6)
+  const modeLabel = context.mode === 'sprint' ? '冲刺课' : '主题学习'
   const scenes = [
     {
       type: 'lecture',
-      title: `先看全貌：${chapter.theme}`,
-      description: `从本章要解决的管理问题切入，建立「${chapter.theme}」的知识地图。`,
-      teachingObjective: `能说出「${chapter.theme}」包含的核心问题与判断顺序。`,
-      keyPoints: points.slice(0, 2).map((point) => point.term),
+      title: `课程全景：${topic}`,
+      description: `围绕用户需求建立「${topic}」的问题地图，明确本课要解决什么。`,
+      teachingObjective: `能说清「${topic}」的学习目标、内容边界和评价方式。`,
+      keyPoints: points.slice(0, 3),
     },
     {
       type: 'lecture',
-      title: `核心概念：${points[0].term}`,
-      description: `讲清「${points[0].term}」的定义、边界和一个管理情境。`,
-      teachingObjective: `能用「${points[0].term}」解释一个现象，并说明适用条件。`,
-      keyPoints: [points[0].term, points[1]?.term || chapter.theme, '适用条件与常见误判'],
+      title: `核心内容：${text(points[0], 22)}`,
+      description: `从材料或需求中最关键的内容切入，解释概念之间的关系。`,
+      teachingObjective: `能用自己的话解释「${text(points[0], 24)}」并给出一个例子。`,
+      keyPoints: points.slice(0, 4),
     },
     ...(count > 5
       ? [
           {
             type: 'lecture',
-            title: `概念辨析：${points[2]?.term || points[1]?.term || chapter.theme}`,
-            description: '把相近概念放进同一张对照表，避免只背定义不会判断。',
-            teachingObjective: '能根据案例线索区分相近概念，并说明判断依据。',
-            keyPoints: points.slice(1, 4).map((point) => point.term),
+            title: `材料研读：${text(points[1] || topic, 20)}`,
+            description: '把材料中的证据、步骤或例子组织成可复述的知识结构。',
+            teachingObjective: '能引用材料中的具体信息支持自己的理解。',
+            keyPoints: points.slice(1, 5),
           },
         ]
       : []),
     {
       type: 'quiz',
-      title: '停一下：检索练习',
-      description: '先不看答案，用 2–3 道题检查概念边界和常见误判。',
-      teachingObjective: '能独立回忆定义、识别错误表述并解释原因。',
-      keyPoints: points.slice(0, 3).map((point) => point.term),
+      title: '检索练习：先回忆，再解释',
+      description: `用 2–3 道题检查对「${topic}」核心内容的掌握。`,
+      teachingObjective: '能独立回忆关键内容并识别错误表述。',
+      keyPoints: points.slice(0, 3),
     },
     {
       type: 'practice',
-      title: '把概念用进一个管理情境',
-      description: '用案例题走完“识别现象 → 匹配概念 → 给出行动”的判断链。',
-      teachingObjective: '能把本章概念转化为有依据的管理建议。',
-      keyPoints: points.slice(0, 3).map((point) => point.term),
+      title: `迁移任务：把「${text(topic, 18)}」用出来`,
+      description: '把本课内容应用到一个新情境，完成“判断—依据—行动”的作答链。',
+      teachingObjective: '能把本课知识迁移到新的问题和情境中。',
+      keyPoints: points.slice(0, 3),
     },
     {
       type: 'review',
-      title: '一页收束：下一步怎么学',
-      description: '用一张对照卡收束本课，并给出下一次复习的最短路径。',
-      teachingObjective: '能复述本课判断链，并说出一个仍需回材料核对的问题。',
-      keyPoints: points.slice(0, 4).map((point) => point.term),
+      title: '收束与下一步',
+      description: '用一张结构卡复盘本课，并标记仍需回材料核对的问题。',
+      teachingObjective: '能复述本课结构，并制定下一步复习行动。',
+      keyPoints: points.slice(0, 4),
     },
   ]
 
@@ -297,21 +351,14 @@ export function buildLocalCourseBlueprint(context) {
   }))
 
   return {
-    courseTitle: `${chapter.theme} · ${context.mode === 'sprint' ? '冲刺课' : '短课'}`,
-    courseSummary: `围绕「${chapter.summary}」组织 ${context.durationMinutes} 分钟学习，先建立框架，再用测验和案例检查掌握情况。`,
-    languageDirective: '使用中文授课；管理学专业术语首次出现时保留英文原词并给出中文解释。',
+    courseTitle: `${topic} · ${modeLabel}`,
+    courseSummary: `围绕“${context.objective}”组织 ${context.durationMinutes} 分钟学习。${
+      sources.length ? '内容优先依据已上传材料。' : '当前未上传匹配材料，具体事实需在学习中核对。'
+    }`,
+    languageDirective:
+      '使用用户需求所使用的语言授课；专业术语首次出现时给出清晰解释。',
     outlines,
   }
-}
-
-function matchingPoints(outline, chapter) {
-  const wanted = outline.keyPoints.map((point) =>
-    point.replace(/^[^：:]*[：:]/, '').trim().toLowerCase(),
-  )
-  const exact = chapter.keyPoints.filter((point) =>
-    wanted.some((item) => item.includes(point.term.toLowerCase())),
-  )
-  return (exact.length ? exact : chapter.keyPoints).slice(0, 4)
 }
 
 function shorten(value, max = 52) {
@@ -320,13 +367,12 @@ function shorten(value, max = 52) {
 }
 
 function localBoardContent(project, outline) {
-  const chapter = getOutlineByTitle(project.chapter) || COURSE_OUTLINE[2]
-  const points = matchingPoints(outline, chapter)
-  const primary = points[0] || chapter.keyPoints[0]
+  const points = (outline.keyPoints || []).filter(Boolean)
+  const primary = points[0] || outline.title || courseTopic(project)
   const comparison = points.slice(0, 3)
   const lesson = normalizeBoardLesson(
     {
-      chapter: project.chapter,
+      chapter: project.chapter || courseTopic(project),
       title: outline.title,
       subtitle: outline.description,
       blocks: [
@@ -337,84 +383,98 @@ function localBoardContent(project, outline) {
         },
         {
           type: 'definition',
-          title: '核心概念',
-          term: primary.term,
-          definition: primary.definition,
-          analogy: primary.examTip || '先判断它解决什么问题，再记定义。',
+          title: '本节核心',
+          term: text(primary, 30),
+          definition: text(primary, 160),
+          analogy: '先判断它在解决什么问题，再连接材料中的证据。',
         },
         {
           type: 'table',
-          title: '概念对照',
-          columns: ['概念', '一句话解释', '案例里的用法'],
+          title: '内容结构',
+          columns: ['要点', '一句话理解', '学习动作'],
           rows: comparison.map((point) => [
-            point.term,
-            shorten(point.definition),
-            shorten(point.examTip || '用它解释现象并说明依据', 44),
+            shorten(point, 28),
+            shorten(point, 52),
+            '解释 → 举例 → 自测',
           ]),
         },
         {
           type: 'diagram',
-          title: '管理判断链',
+          title: '理解与应用链',
           nodes: [
-            { label: '看现象', note: '案例发生了什么' },
-            { label: '找概念', note: primary.term },
-            { label: '讲依据', note: '定义与适用条件' },
-            { label: '给行动', note: '下一步做什么' },
+            { label: '定位问题', note: outline.title },
+            { label: '解释内容', note: primary },
+            { label: '回看材料', note: '找到术语、例子或步骤' },
+            { label: '完成任务', note: '用新情境检验理解' },
           ],
-          caption: '板书只呈现判断链，不替学生跳过推理。',
+          caption: '板书只呈现理解链，不替学生跳过推理。',
         },
         {
           type: 'callout',
           title: '材料边界',
           tone: 'note',
-          text: `本页由教师确认稿「${project.chapter}」确定性生成；材料未覆盖的内容不补。`,
+          text: outline.sourceChunkIds?.length
+            ? '本页优先依据已上传材料生成；材料未覆盖的事实需要继续核对。'
+            : '当前没有匹配材料；本页提供学习框架，具体事实需要核对。',
         },
         {
           type: 'question',
           title: '停下来想一想',
-          prompt: `如果案例只告诉你“结果不理想”，你会先用「${primary.term}」检查什么？`,
-          options: ['先检查概念是否适用', '先直接给解决方案'],
+          prompt: `如果要用自己的话讲清「${text(primary, 28)}」，你会先说明什么？`,
+          options: ['先解释含义并连接材料', '只重复标题'],
         },
       ],
     },
-    project.chapter,
+    project.chapter || courseTopic(project),
   )
   return { kind: 'board', lesson, sourceChunkIds: outline.sourceChunkIds }
 }
 
 function localPracticeContent(project, outline) {
-  const chapter = getOutlineByTitle(project.chapter) || COURSE_OUTLINE[2]
-  const points = matchingPoints(outline, chapter)
+  const topic = courseTopic(project)
+  const points = (outline.keyPoints || []).filter(Boolean)
   const [first, second] = points
   return {
     kind: 'practice',
     prompt:
-      `某部门最近出现“会议很多、决策很慢、结果无人负责”的现象。` +
-      `请先用「${first?.term || chapter.theme}」判断问题的性质，` +
-      `再用${second ? `「${second.term}」` : '课程材料中的另一概念'}说明依据，最后给出一个可在两周内执行的改进行动。`,
+      `请设计一个能检验「${topic}」理解的新情境。` +
+      `先用「${text(first || topic, 32)}」说明你会如何判断，` +
+      `再用${second ? `「${text(second, 32)}」` : '另一个课程要点'}补充依据，最后给出一个可执行的结论或方案。`,
     referencePoints: [
-      `能识别现象并用「${first?.term || chapter.theme}」下判断。`,
-      `能引用定义中的适用条件，而不是只背结论。`,
-      '行动建议明确责任、时间与验证方式。',
+      '能准确使用本课关键术语，而不是只复述标题。',
+      '能引用材料中的信息或明确说明当前依据不足。',
+      '结论包含条件、步骤或可验证的行动。',
     ],
     rubric: [
       { criterion: '概念判断', weight: 40 },
       { criterion: '理论依据', weight: 35 },
       { criterion: '行动建议', weight: 25 },
     ],
-    followUp: '如果去掉这个概念的其中一个适用条件，你的结论还成立吗？',
+    followUp: '换一个条件后，你的结论还成立吗？请指出最关键的边界。',
     sourceChunkIds: outline.sourceChunkIds,
   }
+}
+
+function localQuestionsFromOutline(outline) {
+  return (outline.keyPoints || []).slice(0, 3).map((point, index) => ({
+    id: `course-q-${index + 1}`,
+    stem: `关于「${text(point, 48)}」，哪项最符合本课的学习要求？`,
+    options: [
+      '能够解释含义，并说明它与课程材料或具体情境的关系',
+      '只记住标题，不需要理解适用条件',
+      '把它和任意相近概念混用',
+      '跳过材料证据，直接给出结论',
+    ],
+    answerIndex: 0,
+    explanation: `要点「${text(point, 54)}」需要被解释、联系材料并通过练习检验。`,
+    concept: text(point, 30),
+  }))
 }
 
 export function buildLocalCourseSceneContent(project, outline) {
   if (outline.type === 'practice') return localPracticeContent(project, outline)
   if (outline.type === 'quiz') {
-    const chapter = getOutlineByTitle(project.chapter) || COURSE_OUTLINE[2]
-    const questions = buildLocalQuestions({
-      chapters: [chapter.title],
-      count: Math.min(3, Math.max(2, outline.keyPoints.length)),
-    })
+    const questions = localQuestionsFromOutline(outline)
     return { kind: 'quiz', questions, sourceChunkIds: outline.sourceChunkIds }
   }
   return localBoardContent(project, outline)

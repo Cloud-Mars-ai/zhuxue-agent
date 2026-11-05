@@ -27,12 +27,14 @@ export function courseBlueprintPrompt({
   durationMinutes,
   materialText,
   sourceChunkIds = [],
-  domain = 'management',
+  domain = 'general',
 }) {
   const identity =
     domain === 'math7'
       ? '你是七年级数学课程设计助手，熟悉有理数、整式和一元一次方程的规则、常见错误与例题组织。'
-      : TUTOR_IDENTITY
+      : domain === 'management'
+        ? TUTOR_IDENTITY
+        : '你是跨学科课程设计助手。你的首要任务是准确理解用户想学的主题和上传材料，再设计对应课程，不把用户需求改写成其他学科。'
   const modeText =
     mode === 'sprint'
       ? '考前冲刺：先测后讲，压缩背景，突出高频考点、概念辨析和可考表达。'
@@ -43,21 +45,24 @@ export function courseBlueprintPrompt({
 你现在承担教师端的「课程编排师」角色。你的任务不是直接写一篇长讲义，而是先做一份可由教师修改的课程大纲。
 
 课程范围：
-- 章节：${chapter}
+- 用户指定的主题或范围：${objective}
+- 用户补充的章节名：${chapter || '未指定，以用户主题为准'}
 - 教师目标：${objective}
 - 学习者：${audience}
 - 学习模式：${modeText}
 - 目标时长：${durationMinutes} 分钟
 
 教学设计要求：
-1. 只使用给定课程材料；材料未覆盖的内容不补，不引入外部事实。
-2. 大纲要有教学递进：先建立问题与框架，再讲核心概念，再辨析/应用，最后用测验和复盘收束。
-3. 场景类型只能是：${SCENE_TYPES}。
-4. ${durationMinutes <= 20 ? '生成 3–5 个场景' : durationMinutes <= 35 ? '生成 5–7 个场景' : '生成 6–9 个场景'}。
-5. 至少 2 个 lecture；恰好 1 个 quiz；冲刺模式至少有 1 个 practice；最后 1 个是 review。
-6. 每个场景必须有可观察的教学目标、3–5 个要点和预计分钟数。场景时长相加应接近目标时长。
-7. sourceChunkIds 只能填写下列材料 ID，不能编页码、文件名或章节号。
-8. 课程标题要短、可扫读，不超过 30 个汉字；不要写“课程”“讲义”等空泛词。
+1. 用户主题是课程设计的第一依据；不能用系统已有课程、章节或教师确认稿覆盖用户主题。
+2. 有上传材料时，以材料为内容证据，优先使用材料中的术语、结构、例子和限制；材料不足时明确标记“待核对”，不声称引用了教材。
+3. 没有上传材料时，可依据用户主题组织通用课程，但不能编造具体教材页码、作者观点或虚假出处。
+4. 大纲要有教学递进：先建立问题与框架，再讲核心概念，再辨析/应用，最后用测验和复盘收束。
+5. 场景类型只能是：${SCENE_TYPES}。
+6. ${durationMinutes <= 20 ? '生成 3–5 个场景' : durationMinutes <= 35 ? '生成 5–7 个场景' : '生成 6–9 个场景'}。
+7. 至少 2 个 lecture；恰好 1 个 quiz；冲刺模式至少有 1 个 practice；最后 1 个是 review。
+8. 每个场景必须有可观察的教学目标、3–5 个要点和预计分钟数。场景时长相加应接近目标时长。
+9. sourceChunkIds 只能填写下列材料 ID，不能编页码、文件名或章节号。
+10. 课程标题从用户主题提炼，短、可扫读，不超过 30 个汉字；不要写“课程”“讲义”等空泛词。
 
 ${sourceGuide(sourceChunkIds)}
 
@@ -82,10 +87,13 @@ ${jsonOnly(`{
 
 不要输出 JSON 之外的任何内容。`
 
-  const user = `教师确认材料（方括号内第一项是 chunkId）：
-${materialText || '未检索到材料，请仅生成待核对的概念框架。'}
+  const user = `用户原始需求：
+${objective}
 
-请生成课程大纲。`
+可用课程材料（方括号内第一项是 chunkId；没有材料时不要假装有材料）：
+${materialText || '未上传匹配材料。请围绕用户原始需求生成课程；具体事实若无法确认，标注“待核对”。'}
+
+请判断这份需求真正要学的主题、学习目标与难度，再生成课程大纲。`
 
   return {
     system,
@@ -106,7 +114,9 @@ export function courseScenePrompt({ project, outline, materialText, sourceChunkI
   const identity =
     project.domain === 'math7'
       ? '你是七年级数学课程助手，必须把符号规则、步骤和等量关系讲清楚，并用材料中的题目证据检查理解。'
-      : TUTOR_IDENTITY
+      : project.domain === 'management'
+        ? TUTOR_IDENTITY
+        : '你是跨学科课程助教。严格按照用户主题、当前场景目标和材料证据讲解，不切换到其他课程内容。'
   const common = {
     systemIdentity: identity,
     projectTitle: project.title,
@@ -122,7 +132,9 @@ export function courseScenePrompt({ project, outline, materialText, sourceChunkI
     teachingObjective: outline.teachingObjective,
     keyPoints: (outline.keyPoints || []).map((point, index) => `${index + 1}. ${point}`).join('\n'),
     previous: previousSceneLine(previousScene),
-    materialText: materialText || '未检索到匹配材料。只能给出概念框架，并明确标注“待核对”。',
+    materialText:
+      materialText ||
+      '未上传匹配材料。围绕用户主题和场景目标生成内容；具体事实无法确认时标注“待核对”。',
     sourceGuide: sourceGuide(sourceChunkIds),
   }
 

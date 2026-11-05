@@ -1,11 +1,14 @@
 <script setup>
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { ElMessage } from 'element-plus'
 import { COURSE } from '@/mock/data'
 import BoardCanvas from '@/components/BoardCanvas.vue'
 import SpeakButton from '@/components/SpeakButton.vue'
 import { answerBoardQuestion, generateBoardLesson } from '@/api/board'
 import { useCourseStudioStore } from '@/stores/courseStudio'
+import { useKnowledgeStore } from '@/stores/knowledge'
+import { useUserStore } from '@/stores/user'
 import { VOICE_PRESETS } from '@/stores/voice'
 import { useBoardPlayback } from '@/composables/useBoardPlayback'
 import { downloadBoardLesson } from '@/utils/boardDownload'
@@ -13,6 +16,8 @@ import { downloadBoardLesson } from '@/utils/boardDownload'
 const route = useRoute()
 const router = useRouter()
 const studioStore = useCourseStudioStore()
+const knowledgeStore = useKnowledgeStore()
+const userStore = useUserStore()
 
 const currentChapter = computed(
   () => COURSE.chapters.find((chapter) => chapter.status === '进行中') || COURSE.chapters[0],
@@ -50,6 +55,7 @@ const boardStageRef = ref()
 const conversationRef = ref()
 const input = ref('')
 const asking = ref(false)
+const savingBoard = ref(false)
 const followReveal = ref(true)
 const {
   visibleCount,
@@ -208,6 +214,27 @@ function onDocumentClick(event) {
   }
 }
 
+async function saveToLibrary() {
+  if (!lesson.value || savingBoard.value) return
+  savingBoard.value = true
+  try {
+    await knowledgeStore.saveBoard({
+      title: lesson.value.title,
+      chapter: lesson.value.chapter || requestedChapter.value,
+      projectId: studioProjectId.value,
+      sceneId: studioSceneId.value,
+      route: route.fullPath,
+      lesson: lesson.value,
+      ownerId: userStore.user?.id || '',
+    })
+    ElMessage.success('板书已保存到知识库')
+  } catch (error) {
+    ElMessage.error(error.message || '保存板书失败')
+  } finally {
+    savingBoard.value = false
+  }
+}
+
 onMounted(() => {
   document.addEventListener('click', onDocumentClick)
   loadLesson()
@@ -241,6 +268,15 @@ onBeforeUnmount(() => {
             @click="toggleVoice"
           >
             {{ narrating ? '讲解中' : voiceEnabled ? '语音开' : '语音关' }}
+          </button>
+          <button
+            type="button"
+            title="保存到知识库"
+            aria-label="保存到知识库"
+            :disabled="!lesson || savingBoard"
+            @click="saveToLibrary"
+          >
+            ☆
           </button>
           <button
             type="button"
@@ -296,7 +332,7 @@ onBeforeUnmount(() => {
       <main class="board-main">
         <section ref="boardStageRef" class="board-stage" data-testid="board-stage">
           <div v-if="fallback" class="fallback-banner">
-            演示缓存：当前板书由教师确认稿确定性生成
+            本地生成：当前板书依据课程主题与可用材料确定性生成
           </div>
           <div v-if="voiceError && voiceEnabled" class="voice-error-banner">
             {{ voiceError }}

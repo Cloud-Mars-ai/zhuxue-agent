@@ -79,9 +79,11 @@ const routes = [
       },
       {
         path: 'checkup',
-        name: 'Checkup',
-        component: () => import('@/views/web/Checkup.vue'),
-        meta: { title: '学习体检', icon: 'FirstAidKit' },
+        redirect: (to) => ({
+          path: '/app/competition',
+          query: { ...to.query, step: 'checkup' },
+        }),
+        meta: { title: '学习体检', nav: false },
       },
       {
         path: 'competition',
@@ -99,7 +101,13 @@ const routes = [
         path: 'studio',
         name: 'CourseStudio',
         component: () => import('@/views/web/CourseStudio.vue'),
-        meta: { title: '智能课程编排', icon: 'MagicStick' },
+        meta: { title: '智能课程编排', icon: 'MagicStick', nav: false },
+      },
+      {
+        path: 'library',
+        name: 'KnowledgeLibrary',
+        component: () => import('@/views/web/KnowledgeLibrary.vue'),
+        meta: { title: '知识库', icon: 'Collection' },
       },
       {
         path: 'experience',
@@ -135,10 +143,22 @@ const routes = [
         meta: { title: '研讨论坛', icon: 'ChatDotRound' },
       },
       {
+        path: 'forum/:id',
+        name: 'ForumDetail',
+        component: () => import('@/views/web/ForumDetail.vue'),
+        meta: { title: '研讨详情', nav: false },
+      },
+      {
         path: 'homework',
         name: 'Homework',
         component: () => import('@/views/web/Homework.vue'),
         meta: { title: '作业管理', icon: 'Notebook' },
+      },
+      {
+        path: 'homework/:id',
+        name: 'HomeworkDetail',
+        component: () => import('@/views/web/HomeworkDetail.vue'),
+        meta: { title: '作业详情', nav: false },
       },
       {
         path: 'statistics',
@@ -178,6 +198,7 @@ const routes = [
     'forum',
     'homework',
     'statistics',
+    'library',
     'model',
   ].map((p) => ({
     path: `/${p}`,
@@ -228,9 +249,11 @@ const routes = [
       },
       {
         path: 'checkup',
-        name: 'MCheckup',
-        component: () => import('@/views/mobile/MCheckup.vue'),
-        meta: { title: '学习体检', mobile: true },
+        redirect: (to) => ({
+          path: '/m/competition',
+          query: { ...to.query, step: 'checkup' },
+        }),
+        meta: { title: '学习体检', mobile: true, nav: false },
       },
       {
         path: 'competition',
@@ -254,7 +277,13 @@ const routes = [
         path: 'studio',
         name: 'MCourseStudio',
         component: () => import('@/views/web/CourseStudio.vue'),
-        meta: { title: '智能课程编排', mobile: true },
+        meta: { title: '智能课程编排', mobile: true, nav: false },
+      },
+      {
+        path: 'library',
+        name: 'MKnowledgeLibrary',
+        component: () => import('@/views/web/KnowledgeLibrary.vue'),
+        meta: { title: '知识库', mobile: true },
       },
       {
         path: 'experience',
@@ -270,6 +299,30 @@ const routes = [
         name: 'MMine',
         component: () => import('@/views/mobile/MMine.vue'),
         meta: { title: '我的', mobile: true },
+      },
+      {
+        path: 'forum',
+        name: 'MForum',
+        component: () => import('@/views/web/Forum.vue'),
+        meta: { title: '研讨论坛', mobile: true },
+      },
+      {
+        path: 'forum/:id',
+        name: 'MForumDetail',
+        component: () => import('@/views/web/ForumDetail.vue'),
+        meta: { title: '研讨详情', mobile: true, nav: false },
+      },
+      {
+        path: 'homework',
+        name: 'MHomework',
+        component: () => import('@/views/web/Homework.vue'),
+        meta: { title: '作业', mobile: true },
+      },
+      {
+        path: 'homework/:id',
+        name: 'MHomeworkDetail',
+        component: () => import('@/views/web/HomeworkDetail.vue'),
+        meta: { title: '作业详情', mobile: true, nav: false },
       },
     ],
   },
@@ -307,6 +360,9 @@ const WEB_TO_MOBILE = {
   '/app/cases': '/m/case',
   '/app/assessment': '/m/assessment',
   '/app/studio': '/m/studio',
+  '/app/library': '/m/library',
+  '/app/forum': '/m/forum',
+  '/app/homework': '/m/homework',
   '/app/experience': '/m/experience',
 }
 const MOBILE_TO_WEB = Object.fromEntries(
