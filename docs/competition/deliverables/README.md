@@ -18,8 +18,8 @@
 
 ## 重要说明
 
-- 当前数据是固定种子的开发样例，不是赛方正式数据。
-- 正式提交前必须用赛方数据包替换 `frontend/src/competition/dataset.js` 对应的输入。
+- 当前应用已接入赛方公开模拟学情数据：40 名学生、54 道题、2 个测验节点、806 条原始作答记录。
+- 原始 CSV 位于 `frontend/src/competition/official/`；Node 校验和浏览器构建共用同一份规范化数据。
 - 正式赛事数据仅限本次比赛使用，赛后按赛方要求删除。
 - 历史明文 API Key 需要由项目负责人在服务商控制台轮换；当前前端源码不再包含密钥。
 
@@ -27,6 +27,7 @@
 
 ```powershell
 cd frontend
+npm run sync:competition-data
 npm run test:competition
 npm run export:competition
 ```

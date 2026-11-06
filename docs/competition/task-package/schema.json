@@ -22,7 +22,8 @@
       "field": "questionId",
       "aliases": [
         "question_id",
-        "题目编号"
+        "题目编号",
+        "材料编号"
       ],
       "type": "string",
       "required": true
@@ -32,6 +33,39 @@
       "aliases": [
         "material_id",
         "材料编号"
+      ],
+      "type": "string",
+      "required": false
+    },
+    {
+      "field": "attemptEventId",
+      "aliases": [
+        "attempt_event_id",
+        "作答事件编号"
+      ],
+      "type": "string",
+      "required": false
+    },
+    {
+      "field": "revision",
+      "aliases": [
+        "修订版本"
+      ],
+      "type": "number",
+      "required": false
+    },
+    {
+      "field": "gradingStatus",
+      "aliases": [
+        "评分状态"
+      ],
+      "type": "enum",
+      "required": false
+    },
+    {
+      "field": "nodeId",
+      "aliases": [
+        "节点编号"
       ],
       "type": "string",
       "required": false
@@ -66,9 +100,34 @@
       "field": "attemptedAt",
       "aliases": [
         "timestamp",
-        "作答时间"
+        "作答时间",
+        "模拟提交时间"
       ],
       "type": "datetime",
+      "required": false
+    },
+    {
+      "field": "finalAnswer",
+      "aliases": [
+        "学生最终作答"
+      ],
+      "type": "string",
+      "required": false
+    },
+    {
+      "field": "solution",
+      "aliases": [
+        "解答过程"
+      ],
+      "type": "string",
+      "required": false
+    },
+    {
+      "field": "scoringPointScores",
+      "aliases": [
+        "评分点得分"
+      ],
+      "type": "string",
       "required": false
     }
   ],

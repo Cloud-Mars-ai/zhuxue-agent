@@ -7,6 +7,7 @@ import {
   getRequirement,
   getTopic,
 } from './dataset.js'
+import { parseCsv } from './csv.js'
 
 const ANALYSIS_VERSION = 'math7-analysis-v1'
 const VALID_STATUSES = new Set(['correct', 'partial', 'incorrect', 'missing'])
@@ -39,6 +40,9 @@ const FIELD_ALIASES = {
   score: ['score', '得分'],
   maxScore: ['maxScore', 'max_score', '满分'],
   attemptedAt: ['attemptedAt', 'attempted_at', 'timestamp', '作答时间'],
+  attemptEventId: ['attemptEventId', 'attempt_event_id', 'event_id', '作答事件编号'],
+  revision: ['revision', '修订版本'],
+  gradingStatus: ['gradingStatus', 'grading_status', '评分状态'],
   source: ['source', '来源'],
 }
 
@@ -83,10 +87,19 @@ function scoreOf(record) {
 export function normalizeLearningRecord(row, context = {}) {
   const raw = row && typeof row === 'object' ? row : {}
   const statusRaw = text(readField(raw, 'status')).toLowerCase()
-  const status = STATUS_ALIASES[statusRaw] || statusRaw
+  const gradingStatus = text(readField(raw, 'gradingStatus'))
   const questionId = text(readField(raw, 'questionId'))
   const knownQuestion =
     context.questionById?.get?.(questionId) || getQuestion(context.dataset, questionId)
+  const score = finiteNumber(readField(raw, 'score'))
+  const maxScore =
+    finiteNumber(readField(raw, 'maxScore')) ?? finiteNumber(knownQuestion?.maxScore)
+  let status = STATUS_ALIASES[statusRaw] || statusRaw
+  if (gradingStatus === '未作答') status = 'missing'
+  else if (gradingStatus === '待评分') status = 'pending'
+  else if (gradingStatus === '已评分' && score !== null && maxScore !== null) {
+    status = score >= maxScore ? 'correct' : score > 0 ? 'partial' : 'incorrect'
+  }
 
   return {
     id: text(readField(raw, 'recordId')),
@@ -99,57 +112,19 @@ export function normalizeLearningRecord(row, context = {}) {
       text(readField(raw, 'requirementId')) ||
       text(knownQuestion?.requirementId),
     status,
-    score: finiteNumber(readField(raw, 'score')),
-    maxScore: finiteNumber(readField(raw, 'maxScore')),
+    gradingStatus,
+    attemptEventId: text(readField(raw, 'attemptEventId')),
+    revision: finiteNumber(readField(raw, 'revision')) || 1,
+    score,
+    maxScore,
     attemptedAt: text(readField(raw, 'attemptedAt')),
+    topicId: text(raw.topicId || raw['主题编号']),
+    nodeId: text(raw.nodeId || raw['节点编号']),
+    finalAnswer: text(raw.finalAnswer || raw['学生最终作答']),
+    solution: text(raw.solution || raw['解答过程']),
+    scoringPointScores: text(raw.scoringPointScores || raw['评分点得分']),
     source: text(readField(raw, 'source')) || 'imported',
   }
-}
-
-export function parseCsv(textValue) {
-  const source = String(textValue || '').replace(/^\uFEFF/, '')
-  const rows = []
-  let row = []
-  let cell = ''
-  let quoted = false
-
-  for (let index = 0; index < source.length; index += 1) {
-    const char = source[index]
-    const next = source[index + 1]
-    if (quoted) {
-      if (char === '"' && next === '"') {
-        cell += '"'
-        index += 1
-      } else if (char === '"') {
-        quoted = false
-      } else {
-        cell += char
-      }
-      continue
-    }
-    if (char === '"') {
-      quoted = true
-    } else if (char === ',') {
-      row.push(cell)
-      cell = ''
-    } else if (char === '\n') {
-      row.push(cell.replace(/\r$/, ''))
-      if (row.some((item) => item !== '')) rows.push(row)
-      row = []
-      cell = ''
-    } else {
-      cell += char
-    }
-  }
-  if (cell !== '' || row.length) {
-    row.push(cell.replace(/\r$/, ''))
-    if (row.some((item) => item !== '')) rows.push(row)
-  }
-  if (rows.length < 2) return []
-  const headers = rows[0].map((header) => text(header))
-  return rows.slice(1).map((values) =>
-    Object.fromEntries(headers.map((header, index) => [header, values[index] ?? ''])),
-  )
 }
 
 export function mergeImportedRecords(dataset, rows, source = 'csv-import') {
@@ -181,6 +156,28 @@ export function analyzeDataQuality(dataset) {
   const seenRecordIds = new Set()
   const issues = []
   const validRecords = []
+  const normalizedEntries = (dataset?.learningRecords || []).map((rawRecord, index) => ({
+    rawRecord,
+    index,
+    record: normalizeLearningRecord(rawRecord, { dataset, questionById }),
+  }))
+  const latestByEvent = new Map()
+  const supersededIndexes = new Set()
+  normalizedEntries.forEach((entry) => {
+    const eventId = entry.record.attemptEventId
+    if (!eventId) return
+    const previous = latestByEvent.get(eventId)
+    if (!previous) {
+      latestByEvent.set(eventId, entry)
+      return
+    }
+    if (entry.record.revision > previous.record.revision) {
+      supersededIndexes.add(previous.index)
+      latestByEvent.set(eventId, entry)
+    } else {
+      supersededIndexes.add(entry.index)
+    }
+  })
 
   function issue(record, index, code, severity, message, action) {
     issues.push({
@@ -193,8 +190,19 @@ export function analyzeDataQuality(dataset) {
     })
   }
 
-  ;(dataset?.learningRecords || []).forEach((rawRecord, index) => {
-    const record = normalizeLearningRecord(rawRecord, { dataset, questionById })
+  normalizedEntries.forEach(({ record, index }) => {
+    if (supersededIndexes.has(index)) {
+      const latest = latestByEvent.get(record.attemptEventId)
+      issue(
+        record,
+        index,
+        'superseded_revision',
+        'info',
+        '同一作答事件存在更高修订版本',
+        `采用修订版本 ${latest?.record.revision || record.revision + 1}，本条保留原文但不进入统计`,
+      )
+      return
+    }
 
     if (!record.id) {
       issue(record, index, 'missing_required_field', 'error', '记录编号为空', '保留原始行，不进入分析')
@@ -221,6 +229,11 @@ export function analyzeDataQuality(dataset) {
       return
     }
 
+    if (record.status === 'pending') {
+      issue(record, index, 'pending_review', 'warning', '记录仍在待评分状态', '保留原始行，评分完成后重新分析')
+      return
+    }
+
     if (!VALID_STATUSES.has(record.status)) {
       issue(record, index, 'invalid_value', 'error', '作答状态无法识别', '保留原始行，不进入分析')
       return
@@ -233,7 +246,8 @@ export function analyzeDataQuality(dataset) {
     }
 
     let materialId = record.materialId || question.materialId
-    if (materialId && !materialIds.has(materialId)) {
+    const materialIsQuestion = materialId === question.id
+    if (materialId && !materialIds.has(materialId) && !materialIsQuestion) {
       issue(record, index, 'unknown_material_reference', 'warning', '材料编号不存在', '使用题目关联材料继续分析')
       materialId = question.materialId
     }
@@ -272,7 +286,9 @@ export function analyzeDataQuality(dataset) {
       score: record.status === 'missing' ? null : score.score,
       maxScore,
       question,
-      material: getMaterial(dataset, materialId || question.materialId),
+      material: materialIsQuestion
+        ? question
+        : getMaterial(dataset, materialId || question.materialId),
       quality: {
         derivedScore: record.score === null && record.status !== 'missing',
         invalidTimestamp:
@@ -293,6 +309,8 @@ export function analyzeDataQuality(dataset) {
     observedCount: validRecords.filter((item) => item.status !== 'missing').length,
     missingObservationCount: validRecords.filter((item) => item.status === 'missing').length,
     duplicateCount: counts.duplicate_record_id || 0,
+    supersededRevisionCount: counts.superseded_revision || 0,
+    pendingReviewCount: counts.pending_review || 0,
     anomalyCount:
       (counts.invalid_value || 0) +
       (counts.unknown_reference || 0) +
@@ -306,13 +324,17 @@ export function analyzeDataQuality(dataset) {
     validRecords,
     policy: [
       '原始记录永久保留在数据包中，质量问题单独输出。',
-      '重复记录只采用第一条，后续记录不进入统计。',
+      '同一作答事件只采用最高修订版本，旧版本保留原文但不进入统计。',
+      '记录编号完全重复时只采用第一条。',
+      '待评分记录暂不进入分析，完成评分后重新计算。',
       '未知学生、题目或课程要求不进入统计。',
       '状态为 missing 的记录进入信息不足统计，不进入正确率分母。',
       '时间异常不阻断掌握度分析。',
     ],
   }
 }
+
+export { parseCsv }
 
 function summarizeRecords(records) {
   const observed = records.filter((record) => record.status !== 'missing')
@@ -834,7 +856,9 @@ export function buildCaseVerification(dataset, quality, learners) {
       studentId: learner.studentId,
       studentName: learner.displayName,
       group: learner.group,
-      scope: '七年级数学开发样例；仅用于核对分析链路，不代表真实学习效果。',
+      scope: dataset.meta?.official
+        ? '赛方公开模拟学情数据；仅限本次比赛分析、展示与核验使用。'
+        : '七年级数学开发样例；仅用于核对分析链路，不代表真实学习效果。',
       requirement: target
         ? {
             id: target.requirementId,
@@ -952,7 +976,7 @@ export function buildTaskPackage(dataset, analysis) {
         'records-quality-issues.csv',
         'schema.json',
         'input-sample.json',
-        'development-sample-dataset.json',
+        'competition-dataset.json',
         'teacher-adjustments.json',
         'verification-report.json',
       ],
@@ -994,6 +1018,9 @@ export function buildValidRecordsCsv(analysis) {
     'questionId',
     'materialId',
     'requirementId',
+    'attemptEventId',
+    'revision',
+    'gradingStatus',
     'status',
     'score',
     'maxScore',

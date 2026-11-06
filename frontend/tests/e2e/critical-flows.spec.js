@@ -510,7 +510,11 @@ test('赛事工作台合并展示数据质量、个体分析与可审计建议',
 
   await expect(page.getByTestId('competition-workbench')).toBeVisible()
   await expect(page.getByRole('heading', { name: '智慧学伴工作台' })).toBeVisible()
-  await expect(page.getByText('当前为固定种子开发样例')).toBeVisible()
+  await expect(page.getByText('已接入赛方正式模拟学情数据')).toBeVisible()
+  await expect(
+    page.locator('.cw-stat-grid').first().getByText('9', { exact: true }),
+  ).toBeVisible()
+  await expect(page.getByText('40 / 806', { exact: true })).toBeVisible()
   await expect(page.getByText('数据质量', { exact: true })).toBeVisible()
   await expect(page.getByText('重复记录', { exact: true })).toBeVisible()
 
@@ -554,7 +558,9 @@ test('学生从赛事建议生成个性化课程并使用数学内容', async ({
   await expect(page).toHaveURL(/\/learn\/course-/)
   await expect(page.getByTestId('board-canvas')).toBeVisible()
   await expect(page.locator('.scene-rail button')).toHaveCount(6)
-  await expect(page.locator('body')).toContainText(/有理数|整式|一元一次方程/)
+  await expect(page.locator('body')).toContainText(
+    /代数式与整式运算|方程与方程组|不等式与不等式组/,
+  )
 })
 
 test('板书语音教学支持开关和音色切换', async ({ page }) => {

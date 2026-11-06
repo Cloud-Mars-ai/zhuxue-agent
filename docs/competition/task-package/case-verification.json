@@ -1,87 +1,118 @@
 [
   {
-    "caseId": "CASE-S008",
-    "studentId": "S008",
-    "studentName": "苏念一",
-    "group": "B组",
-    "scope": "七年级数学开发样例；仅用于核对分析链路，不代表真实学习效果。",
+    "caseId": "CASE-D03",
+    "studentId": "D03",
+    "studentName": "学生 D03",
+    "group": "DC01",
+    "scope": "赛方公开模拟学情数据；仅限本次比赛分析、展示与核验使用。",
     "requirement": {
-      "id": "REQ-EXP-01",
-      "title": "用字母表示数量关系",
-      "code": "EXP-01",
-      "source": "开发样例·课程标准模块：代数式"
+      "id": "T01I1",
+      "title": "表示数量关系并代入求值",
+      "code": "T01I1",
+      "source": "课程标准 CR01 · 文件页 62／55；教材 上册68—109"
     },
     "performance": {
       "scoreRatePct": 0,
-      "observedCount": 2,
+      "observedCount": 3,
       "correct": 0,
       "partial": 0,
-      "incorrect": 2,
+      "incorrect": 3,
       "missing": 0,
-      "status": "low_confidence",
+      "status": "weak",
       "evidence": [
         {
-          "recordId": "R00112",
-          "questionId": "Q-EXP-03",
+          "recordId": "DR0055",
+          "questionId": "Q007",
           "status": "incorrect",
           "score": 0,
-          "maxScore": 10
+          "maxScore": 1
         },
         {
-          "recordId": "R00114",
-          "questionId": "Q-EXP-01",
+          "recordId": "DR0057",
+          "questionId": "Q014",
           "status": "incorrect",
           "score": 0,
-          "maxScore": 10
+          "maxScore": 3
+        },
+        {
+          "recordId": "DR0069",
+          "questionId": "Q013",
+          "status": "incorrect",
+          "score": 0,
+          "maxScore": 1
         }
       ]
     },
     "recommendation": {
-      "recommendationId": "REC-S008-math7-analysis-v1",
+      "recommendationId": "REC-D03-math7-analysis-v1",
       "actions": [
         {
-          "id": "REC-S008-RELEARN-1",
+          "id": "REC-D03-RELEARN-1",
           "type": "relearn",
-          "title": "重讲：用字母表示数量关系",
-          "description": "重点澄清「列代数式」，用材料中的例题走一遍判断步骤。",
-          "requirementId": "REQ-EXP-01",
+          "title": "重讲：表示数量关系并代入求值",
+          "description": "重点澄清「表示数量关系并代入求值、代数式与整式运算」，用材料中的例题走一遍判断步骤。",
+          "requirementId": "T01I1",
           "materialIds": [
-            "MAT-EXP-01",
-            "MAT-EXP-02"
+            "L01"
           ],
           "questionIds": [
-            "Q-EXP-01",
-            "Q-EXP-02"
+            "Q001",
+            "Q002"
           ],
-          "reason": "该要求得分率 0%，出现 2 次错误和 0 次部分正确。",
+          "reason": "该要求得分率 0%，出现 3 次错误和 0 次部分正确。",
           "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
           "evidenceRefs": [
-            "R00112",
-            "R00114"
+            "DR0055",
+            "DR0057",
+            "DR0069"
           ],
           "estimatedMinutes": 12,
-          "order": 2
+          "order": 1
         },
         {
-          "id": "REC-S008-RETRIEVE-1",
+          "id": "REC-D03-RETRIEVE-1",
           "type": "retrieval",
-          "title": "检索练习：EXP-01",
+          "title": "检索练习：T01I1",
           "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
-          "requirementId": "REQ-EXP-01",
+          "requirementId": "T01I1",
           "materialIds": [
-            "MAT-EXP-01"
+            "L01"
           ],
           "questionIds": [
-            "Q-EXP-01",
-            "Q-EXP-02",
-            "Q-EXP-03",
-            "Q-EXP-04"
+            "Q001",
+            "Q002",
+            "Q007",
+            "Q013"
           ],
           "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
           "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
           "evidenceRefs": [
-            "R00112",
-            "R00114"
+            "DR0055",
+            "DR0057",
+            "DR0069"
+          ],
+          "estimatedMinutes": 15,
+          "order": 2
+        },
+        {
+          "id": "REC-D03-TRANSFER-1",
+          "type": "transfer",
+          "title": "变式迁移：表示数量关系并代入求值",
+          "description": "换情境、换问法完成变式题，解释为什么仍使用同一等量关系或运算规则。",
+          "requirementId": "T01I1",
+          "materialIds": [
+            "L01"
+          ],
+          "questionIds": [
+            "Q006",
+            "Q014"
+          ],
+          "reason": "基础检索通过后，需要验证能否迁移到新情境。",
+          "completionStandard": "能写出求解过程，并用一句话说明适用范围。",
+          "evidenceRefs": [
+            "DR0055",
+            "DR0057",
+            "DR0069"
           ],
           "estimatedMinutes": 15,
           "order": 3
@@ -91,101 +122,19 @@
     "limitations": []
   },
   {
-    "caseId": "CASE-S016",
-    "studentId": "S016",
-    "studentName": "方雨桐",
-    "group": "A组",
-    "scope": "七年级数学开发样例；仅用于核对分析链路，不代表真实学习效果。",
+    "caseId": "CASE-D07",
+    "studentId": "D07",
+    "studentName": "学生 D07",
+    "group": "DC01",
+    "scope": "赛方公开模拟学情数据；仅限本次比赛分析、展示与核验使用。",
     "requirement": {
-      "id": "REQ-EXP-02",
-      "title": "整式、单项式与多项式",
-      "code": "EXP-02",
-      "source": "开发样例·课程标准模块：整式"
+      "id": "T03I1",
+      "title": "运用不等式性质求解，负数乘除时正确改变方向",
+      "code": "T03I1",
+      "source": "课程标准 CR03 · 文件页 63／56；教材 下册120—145"
     },
     "performance": {
-      "scoreRatePct": 0,
-      "observedCount": 1,
-      "correct": 0,
-      "partial": 0,
-      "incorrect": 1,
-      "missing": 0,
-      "status": "low_confidence",
-      "evidence": [
-        {
-          "recordId": "R00217",
-          "questionId": "Q-EXP-06",
-          "status": "incorrect",
-          "score": 0,
-          "maxScore": 10
-        }
-      ]
-    },
-    "recommendation": {
-      "recommendationId": "REC-S016-math7-analysis-v1",
-      "actions": [
-        {
-          "id": "REC-S016-RELEARN-1",
-          "type": "relearn",
-          "title": "重讲：整式、单项式与多项式",
-          "description": "重点澄清「单项式、次数」，用材料中的例题走一遍判断步骤。",
-          "requirementId": "REQ-EXP-02",
-          "materialIds": [
-            "MAT-EXP-03",
-            "MAT-EXP-04"
-          ],
-          "questionIds": [
-            "Q-EXP-05",
-            "Q-EXP-06"
-          ],
-          "reason": "该要求得分率 0%，出现 1 次错误和 0 次部分正确。",
-          "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
-          "evidenceRefs": [
-            "R00217"
-          ],
-          "estimatedMinutes": 12,
-          "order": 1
-        },
-        {
-          "id": "REC-S016-RETRIEVE-1",
-          "type": "retrieval",
-          "title": "检索练习：EXP-02",
-          "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
-          "requirementId": "REQ-EXP-02",
-          "materialIds": [
-            "MAT-EXP-04"
-          ],
-          "questionIds": [
-            "Q-EXP-05",
-            "Q-EXP-06",
-            "Q-EXP-07",
-            "Q-EXP-08"
-          ],
-          "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
-          "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
-          "evidenceRefs": [
-            "R00217"
-          ],
-          "estimatedMinutes": 15,
-          "order": 2
-        }
-      ]
-    },
-    "limitations": []
-  },
-  {
-    "caseId": "CASE-S029",
-    "studentId": "S029",
-    "studentName": "秦乐知",
-    "group": "B组",
-    "scope": "七年级数学开发样例；仅用于核对分析链路，不代表真实学习效果。",
-    "requirement": {
-      "id": "REQ-NUM-01",
-      "title": "理解有理数的意义",
-      "code": "NUM-01",
-      "source": "开发样例·课程标准模块：数与代数"
-    },
-    "performance": {
-      "scoreRatePct": 50,
+      "scoreRatePct": 33,
       "observedCount": 1,
       "correct": 0,
       "partial": 1,
@@ -194,97 +143,197 @@
       "status": "low_confidence",
       "evidence": [
         {
-          "recordId": "R00407",
-          "questionId": "Q-NUM-02",
+          "recordId": "DR0140",
+          "questionId": "Q043",
           "status": "partial",
-          "score": 5,
-          "maxScore": 10
+          "score": 1,
+          "maxScore": 3
         }
       ]
     },
     "recommendation": {
-      "recommendationId": "REC-S029-math7-analysis-v1",
+      "recommendationId": "REC-D07-math7-analysis-v1",
       "actions": [
         {
-          "id": "REC-S029-OBSERVE",
-          "type": "observation",
-          "title": "先补齐观察，不急着下结论",
-          "description": "完成一组覆盖不同主题的基础题，再重新生成学情结论。",
-          "requirementId": "REQ-NUM-01",
+          "id": "REC-D07-RELEARN-1",
+          "type": "relearn",
+          "title": "重讲：运用不等式性质求解，负数乘除时正确改变方向",
+          "description": "重点澄清「运用不等式性质求解，负数乘除时正确改变方向、不等式与不等式组」，用材料中的例题走一遍判断步骤。",
+          "requirementId": "T03I1",
           "materialIds": [
-            "MAT-NUM-01",
-            "MAT-NUM-02",
-            "MAT-NUM-03",
-            "MAT-NUM-04",
-            "MAT-NUM-05",
-            "MAT-NUM-06"
+            "L03"
           ],
           "questionIds": [
-            "Q-NUM-01",
-            "Q-NUM-02",
-            "Q-NUM-05",
-            "Q-NUM-06",
-            "Q-NUM-09",
-            "Q-NUM-10"
+            "Q037",
+            "Q038"
           ],
-          "reason": "当前有效观察 1 条，仅覆盖 11% 的课程要求。",
-          "completionStandard": "至少新增 6 条有效作答，且覆盖 3 个学习主题。",
+          "reason": "该要求得分率 33%，出现 0 次错误和 1 次部分正确。",
+          "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
           "evidenceRefs": [
-            "R00407",
-            "R00408"
+            "DR0140"
           ],
-          "estimatedMinutes": 20,
+          "estimatedMinutes": 12,
           "order": 1
         },
         {
-          "id": "REC-S029-RELEARN-1",
-          "type": "relearn",
-          "title": "重讲：理解有理数的意义",
-          "description": "重点澄清「数轴」，用材料中的例题走一遍判断步骤。",
-          "requirementId": "REQ-NUM-01",
-          "materialIds": [
-            "MAT-NUM-02",
-            "MAT-NUM-02"
-          ],
-          "questionIds": [
-            "Q-NUM-01",
-            "Q-NUM-02"
-          ],
-          "reason": "该要求得分率 50%，出现 0 次错误和 1 次部分正确。",
-          "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
-          "evidenceRefs": [
-            "R00407"
-          ],
-          "estimatedMinutes": 12,
-          "order": 2
-        },
-        {
-          "id": "REC-S029-RETRIEVE-1",
+          "id": "REC-D07-RETRIEVE-1",
           "type": "retrieval",
-          "title": "检索练习：NUM-01",
+          "title": "检索练习：T03I1",
           "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
-          "requirementId": "REQ-NUM-01",
+          "requirementId": "T03I1",
           "materialIds": [
-            "MAT-NUM-01"
+            "L03"
           ],
           "questionIds": [
-            "Q-NUM-01",
-            "Q-NUM-02",
-            "Q-NUM-03",
-            "Q-NUM-04"
+            "Q037",
+            "Q038",
+            "Q039",
+            "Q041"
           ],
           "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
           "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
           "evidenceRefs": [
-            "R00407"
+            "DR0140"
+          ],
+          "estimatedMinutes": 15,
+          "order": 2
+        },
+        {
+          "id": "REC-D07-TRANSFER-1",
+          "type": "transfer",
+          "title": "变式迁移：运用不等式性质求解，负数乘除时正确改变方向",
+          "description": "换情境、换问法完成变式题，解释为什么仍使用同一等量关系或运算规则。",
+          "requirementId": "T03I1",
+          "materialIds": [
+            "L03"
+          ],
+          "questionIds": [
+            "Q040",
+            "Q042",
+            "Q043"
+          ],
+          "reason": "基础检索通过后，需要验证能否迁移到新情境。",
+          "completionStandard": "能写出求解过程，并用一句话说明适用范围。",
+          "evidenceRefs": [
+            "DR0140"
           ],
           "estimatedMinutes": 15,
           "order": 3
         }
       ]
     },
+    "limitations": []
+  },
+  {
+    "caseId": "CASE-D17",
+    "studentId": "D17",
+    "studentName": "学生 D17",
+    "group": "DC01",
+    "scope": "赛方公开模拟学情数据；仅限本次比赛分析、展示与核验使用。",
+    "requirement": {
+      "id": "T01I1",
+      "title": "表示数量关系并代入求值",
+      "code": "T01I1",
+      "source": "课程标准 CR01 · 文件页 62／55；教材 上册68—109"
+    },
+    "performance": {
+      "scoreRatePct": 100,
+      "observedCount": 2,
+      "correct": 2,
+      "partial": 0,
+      "incorrect": 0,
+      "missing": 0,
+      "status": "low_confidence",
+      "evidence": [
+        {
+          "recordId": "DR0369",
+          "questionId": "Q014",
+          "status": "correct",
+          "score": 3,
+          "maxScore": 3
+        },
+        {
+          "recordId": "DR0370",
+          "questionId": "Q013",
+          "status": "correct",
+          "score": 1,
+          "maxScore": 1
+        }
+      ]
+    },
+    "recommendation": {
+      "recommendationId": "REC-D17-math7-analysis-v1",
+      "actions": [
+        {
+          "id": "REC-D17-OBSERVE",
+          "type": "observation",
+          "title": "先补齐观察，不急着下结论",
+          "description": "完成一组覆盖不同主题的基础题，再重新生成学情结论。",
+          "requirementId": "T01I1",
+          "materialIds": [
+            "L01"
+          ],
+          "questionIds": [
+            "Q001",
+            "Q002",
+            "Q003",
+            "Q004"
+          ],
+          "reason": "当前有效观察 4 条，仅覆盖 22% 的课程要求。",
+          "completionStandard": "至少新增 6 条有效作答，且覆盖 3 个学习主题。",
+          "evidenceRefs": [
+            "DR0368",
+            "DR0369",
+            "DR0370",
+            "DR0371"
+          ],
+          "estimatedMinutes": 20,
+          "order": 1
+        },
+        {
+          "id": "REC-D17-RELEARN-1",
+          "type": "relearn",
+          "title": "重讲：表示数量关系并代入求值",
+          "description": "回到课程要求与示例，重建概念边界。",
+          "requirementId": "T01I1",
+          "materialIds": [
+            "L01"
+          ],
+          "questionIds": [
+            "Q001",
+            "Q002"
+          ],
+          "reason": "该要求得分率 100%，出现 0 次错误和 0 次部分正确。",
+          "completionStandard": "能不看材料解释核心规则，并独立完成 1 道示例题。",
+          "evidenceRefs": [],
+          "estimatedMinutes": 12,
+          "order": 2
+        },
+        {
+          "id": "REC-D17-RETRIEVE-1",
+          "type": "retrieval",
+          "title": "检索练习：T01I1",
+          "description": "先回忆规则再作答，错题必须写明错在概念、符号还是步骤。",
+          "requirementId": "T01I1",
+          "materialIds": [
+            "L01"
+          ],
+          "questionIds": [
+            "Q001",
+            "Q002",
+            "Q007",
+            "Q013"
+          ],
+          "reason": "用短间隔检索替代重复阅读，验证刚才的理解是否真正可用。",
+          "completionStandard": "4 题至少正确 3 题；错误题完成一次订正。",
+          "evidenceRefs": [],
+          "estimatedMinutes": 15,
+          "order": 3
+        }
+      ]
+    },
     "limitations": [
-      "当前只有 1 条有效观察，覆盖 1 项课程要求。",
+      "当前只有 4 条有效观察，覆盖 2 项课程要求。",
       "信息不足项不判定为未掌握，优先补充观察。"
     ]
   }

@@ -13,7 +13,7 @@ import {
   learnerFor,
 } from '@/competition/analysis'
 
-const DATASET_KEY = 'competition-dataset-v1'
+const DATASET_KEY = 'competition-dataset-v2'
 const ADJUSTMENTS_KEY = 'competition-teacher-adjustments-v1'
 
 function clone(value) {
@@ -91,8 +91,8 @@ export const useCompetitionStore = defineStore('competition', () => {
     const configured = selectedStudentId.value
     if (configured) return configured
     if (userStore.role !== 'student') return analysis.value.learners[0]?.studentId || ''
-    if (userStore.user?.id === '2024010001') return 'S001'
-    if (userStore.user?.id === '2024010002') return 'S002'
+    if (userStore.user?.id === '2024010001') return 'D01'
+    if (userStore.user?.id === '2024010002') return 'D02'
     const learners = analysis.value.learners
     if (!learners.length) return ''
     const name = String(userStore.name || '')
@@ -136,6 +136,8 @@ export const useCompetitionStore = defineStore('competition', () => {
     questions: dataset.value.questions.length,
     students: dataset.value.students.length,
     records: dataset.value.learningRecords.length,
+    effectiveRecords: analysis.value.quality.validCount,
+    supersededRevisions: analysis.value.quality.supersededRevisionCount,
     quality: analysis.value.quality,
     group: analysis.value.group,
   }))

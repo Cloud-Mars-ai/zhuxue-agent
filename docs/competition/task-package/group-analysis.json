@@ -1,1008 +1,1248 @@
 {
-  "studentCount": 30,
-  "activeStudentCount": 30,
-  "recordCount": 411,
-  "observedCount": 397,
-  "correct": 215,
-  "partial": 82,
-  "incorrect": 100,
-  "missing": 14,
-  "scoreRate": 0.6448362720403022,
-  "accuracy": 0.5415617128463476,
-  "scoreRatePct": 64,
+  "studentCount": 40,
+  "activeStudentCount": 40,
+  "recordCount": 793,
+  "observedCount": 788,
+  "correct": 403,
+  "partial": 111,
+  "incorrect": 274,
+  "missing": 5,
+  "scoreRate": 0.5704441041347627,
+  "accuracy": 0.5114213197969543,
+  "scoreRatePct": 57,
   "requirementStats": [
     {
-      "requirementId": "REQ-NUM-01",
-      "requirementCode": "NUM-01",
-      "requirementTitle": "理解有理数的意义",
-      "topicId": "NUM",
-      "topicTitle": "有理数",
-      "recordCount": 37,
-      "observedCount": 37,
-      "correct": 26,
-      "partial": 9,
-      "incorrect": 2,
+      "requirementId": "T01I1",
+      "requirementCode": "T01I1",
+      "requirementTitle": "表示数量关系并代入求值",
+      "topicId": "T01",
+      "topicTitle": "代数式与整式运算",
+      "recordCount": 125,
+      "observedCount": 125,
+      "correct": 57,
+      "partial": 15,
+      "incorrect": 53,
       "missing": 0,
-      "scoreRate": 0.8243243243243243,
-      "accuracy": 0.7027027027027027,
-      "scoreRatePct": 82,
-      "status": "strong",
+      "scoreRate": 0.4885844748858447,
+      "accuracy": 0.456,
+      "scoreRatePct": 49,
+      "status": "weak",
       "concepts": [
         {
-          "concept": "数轴",
-          "count": 7,
-          "weight": 4.5,
+          "concept": "表示数量关系并代入求值",
+          "count": 68,
+          "weight": 60.5,
           "evidenceRefs": [
-            "R00148",
-            "R00157",
-            "R00219",
-            "R00226",
-            "R00251",
-            "R00376",
-            "R00407"
+            "DR0005",
+            "DR0006",
+            "DR0024",
+            "DR0026",
+            "DR0029",
+            "DR0036",
+            "DR0055",
+            "DR0057"
           ]
         },
         {
-          "concept": "正数",
-          "count": 4,
-          "weight": 3,
+          "concept": "代数式与整式运算",
+          "count": 68,
+          "weight": 60.5,
           "evidenceRefs": [
-            "R00157",
-            "R00226",
-            "R00251",
-            "R00376"
+            "DR0005",
+            "DR0006",
+            "DR0024",
+            "DR0026",
+            "DR0029",
+            "DR0036",
+            "DR0055",
+            "DR0057"
           ]
         },
         {
-          "concept": "有理数",
-          "count": 2,
-          "weight": 1,
+          "concept": "填空题",
+          "count": 33,
+          "weight": 33,
           "evidenceRefs": [
-            "R00035",
-            "R00188"
+            "DR0006",
+            "DR0024",
+            "DR0026",
+            "DR0055",
+            "DR0069",
+            "DR0080",
+            "DR0096",
+            "DR0100"
           ]
         },
         {
-          "concept": "负数",
-          "count": 2,
-          "weight": 1,
+          "concept": "解答题",
+          "count": 35,
+          "weight": 27.5,
           "evidenceRefs": [
-            "R00269",
-            "R00362"
+            "DR0005",
+            "DR0029",
+            "DR0036",
+            "DR0057",
+            "DR0083",
+            "DR0093",
+            "DR0095",
+            "DR0102"
           ]
         }
       ],
       "evidenceRefs": [
-        "R00035",
-        "R00148",
-        "R00157",
-        "R00188",
-        "R00219",
-        "R00226",
-        "R00251",
-        "R00269",
-        "R00362",
-        "R00376",
-        "R00407"
+        "DR0005",
+        "DR0006",
+        "DR0024",
+        "DR0026",
+        "DR0029",
+        "DR0036",
+        "DR0055",
+        "DR0057",
+        "DR0069",
+        "DR0080",
+        "DR0083",
+        "DR0093",
+        "DR0095",
+        "DR0096",
+        "DR0100",
+        "DR0102"
       ],
       "limitations": []
     },
     {
-      "requirementId": "REQ-NUM-02",
-      "requirementCode": "NUM-02",
-      "requirementTitle": "数轴、相反数与绝对值",
-      "topicId": "NUM",
-      "topicTitle": "有理数",
-      "recordCount": 46,
-      "observedCount": 41,
-      "correct": 30,
-      "partial": 7,
-      "incorrect": 4,
-      "missing": 5,
-      "scoreRate": 0.8170731707317073,
-      "accuracy": 0.7317073170731707,
-      "scoreRatePct": 82,
-      "status": "strong",
-      "concepts": [
-        {
-          "concept": "绝对值",
-          "count": 8,
-          "weight": 6,
-          "evidenceRefs": [
-            "R00014",
-            "R00050",
-            "R00054",
-            "R00115",
-            "R00255",
-            "R00263",
-            "R00347",
-            "R00378"
-          ]
-        },
-        {
-          "concept": "有理数比较",
-          "count": 4,
-          "weight": 3,
-          "evidenceRefs": [
-            "R00050",
-            "R00115",
-            "R00255",
-            "R00347"
-          ]
-        },
-        {
-          "concept": "相反数",
-          "count": 3,
-          "weight": 1.5,
-          "evidenceRefs": [
-            "R00075",
-            "R00176",
-            "R00177"
-          ]
-        }
-      ],
-      "evidenceRefs": [
-        "R00014",
-        "R00050",
-        "R00054",
-        "R00075",
-        "R00079",
-        "R00104",
-        "R00115",
-        "R00176",
-        "R00177",
-        "R00234",
-        "R00255",
-        "R00263",
-        "R00285",
-        "R00347",
-        "R00378",
-        "R00399"
-      ],
-      "limitations": []
-    },
-    {
-      "requirementId": "REQ-NUM-03",
-      "requirementCode": "NUM-03",
-      "requirementTitle": "有理数的四则运算",
-      "topicId": "NUM",
-      "topicTitle": "有理数",
-      "recordCount": 50,
-      "observedCount": 49,
-      "correct": 30,
-      "partial": 6,
-      "incorrect": 13,
-      "missing": 1,
-      "scoreRate": 0.673469387755102,
-      "accuracy": 0.6122448979591837,
+      "requirementId": "T01I2",
+      "requirementCode": "T01I2",
+      "requirementTitle": "识别同类项、去括号并化简",
+      "topicId": "T01",
+      "topicTitle": "代数式与整式运算",
+      "recordCount": 191,
+      "observedCount": 188,
+      "correct": 115,
+      "partial": 9,
+      "incorrect": 64,
+      "missing": 3,
+      "scoreRate": 0.6704545454545454,
+      "accuracy": 0.6117021276595744,
       "scoreRatePct": 67,
       "status": "developing",
       "concepts": [
         {
-          "concept": "混合运算",
-          "count": 5,
-          "weight": 5,
+          "concept": "识别同类项、去括号并化简",
+          "count": 73,
+          "weight": 68.5,
           "evidenceRefs": [
-            "R00040",
-            "R00101",
-            "R00168",
-            "R00184",
-            "R00224"
+            "DR0001",
+            "DR0025",
+            "DR0051",
+            "DR0054",
+            "DR0059",
+            "DR0071",
+            "DR0079",
+            "DR0081"
           ]
         },
         {
-          "concept": "乘除混合",
+          "concept": "代数式与整式运算",
+          "count": 73,
+          "weight": 68.5,
+          "evidenceRefs": [
+            "DR0001",
+            "DR0025",
+            "DR0051",
+            "DR0054",
+            "DR0059",
+            "DR0071",
+            "DR0079",
+            "DR0081"
+          ]
+        },
+        {
+          "concept": "填空题",
+          "count": 56,
+          "weight": 56,
+          "evidenceRefs": [
+            "DR0025",
+            "DR0051",
+            "DR0059",
+            "DR0071",
+            "DR0079",
+            "DR0081",
+            "DR0084",
+            "DR0087"
+          ]
+        },
+        {
+          "concept": "解答题",
+          "count": 14,
+          "weight": 9.5,
+          "evidenceRefs": [
+            "DR0001",
+            "DR0082",
+            "DR0114",
+            "DR0243",
+            "DR0319",
+            "DR0375",
+            "DR0392",
+            "DR0485"
+          ]
+        },
+        {
+          "concept": "选择题",
           "count": 3,
           "weight": 3,
           "evidenceRefs": [
-            "R00207",
-            "R00214",
-            "R00336"
-          ]
-        },
-        {
-          "concept": "加减混合",
-          "count": 3,
-          "weight": 2.5,
-          "evidenceRefs": [
-            "R00084",
-            "R00170",
-            "R00355"
-          ]
-        },
-        {
-          "concept": "括号",
-          "count": 2,
-          "weight": 2,
-          "evidenceRefs": [
-            "R00040",
-            "R00184"
-          ]
-        },
-        {
-          "concept": "除法",
-          "count": 2,
-          "weight": 1.5,
-          "evidenceRefs": [
-            "R00052",
-            "R00107"
-          ]
-        },
-        {
-          "concept": "分数",
-          "count": 2,
-          "weight": 1.5,
-          "evidenceRefs": [
-            "R00052",
-            "R00107"
-          ]
-        },
-        {
-          "concept": "有理数加法",
-          "count": 2,
-          "weight": 1,
-          "evidenceRefs": [
-            "R00087",
-            "R00233"
-          ]
-        },
-        {
-          "concept": "绝对值",
-          "count": 1,
-          "weight": 1,
-          "evidenceRefs": [
-            "R00109"
-          ]
-        },
-        {
-          "concept": "加法",
-          "count": 1,
-          "weight": 1,
-          "evidenceRefs": [
-            "R00109"
-          ]
-        },
-        {
-          "concept": "运算顺序",
-          "count": 1,
-          "weight": 1,
-          "evidenceRefs": [
-            "R00224"
-          ]
-        },
-        {
-          "concept": "减法",
-          "count": 1,
-          "weight": 1,
-          "evidenceRefs": [
-            "R00230"
-          ]
-        },
-        {
-          "concept": "有理数除法",
-          "count": 1,
-          "weight": 0.5,
-          "evidenceRefs": [
-            "R00180"
-          ]
-        },
-        {
-          "concept": "有理数减法",
-          "count": 1,
-          "weight": 0.5,
-          "evidenceRefs": [
-            "R00356"
+            "DR0054",
+            "DR0500",
+            "DR0604"
           ]
         }
       ],
       "evidenceRefs": [
-        "R00040",
-        "R00052",
-        "R00084",
-        "R00087",
-        "R00101",
-        "R00107",
-        "R00109",
-        "R00168",
-        "R00170",
-        "R00180",
-        "R00184",
-        "R00207",
-        "R00214",
-        "R00224",
-        "R00230",
-        "R00233"
+        "DR0001",
+        "DR0025",
+        "DR0034",
+        "DR0051",
+        "DR0054",
+        "DR0059",
+        "DR0071",
+        "DR0079",
+        "DR0081",
+        "DR0082",
+        "DR0084",
+        "DR0087",
+        "DR0098",
+        "DR0101",
+        "DR0112",
+        "DR0114"
       ],
       "limitations": []
     },
     {
-      "requirementId": "REQ-EXP-01",
-      "requirementCode": "EXP-01",
-      "requirementTitle": "用字母表示数量关系",
-      "topicId": "EXP",
-      "topicTitle": "整式",
-      "recordCount": 43,
-      "observedCount": 41,
-      "correct": 21,
-      "partial": 7,
-      "incorrect": 13,
-      "missing": 2,
-      "scoreRate": 0.5975609756097561,
-      "accuracy": 0.5121951219512195,
-      "scoreRatePct": 60,
+      "requirementId": "T01I3",
+      "requirementCode": "T01I3",
+      "requirementTitle": "用整式解释具体问题",
+      "topicId": "T01",
+      "topicTitle": "代数式与整式运算",
+      "recordCount": 40,
+      "observedCount": 40,
+      "correct": 8,
+      "partial": 22,
+      "incorrect": 10,
+      "missing": 0,
+      "scoreRate": 0.5333333333333333,
+      "accuracy": 0.2,
+      "scoreRatePct": 53,
       "status": "weak",
       "concepts": [
         {
-          "concept": "列代数式",
-          "count": 12,
-          "weight": 11,
+          "concept": "用整式解释具体问题",
+          "count": 32,
+          "weight": 21,
           "evidenceRefs": [
-            "R00009",
-            "R00060",
-            "R00086",
-            "R00112",
-            "R00114",
-            "R00202",
-            "R00239",
-            "R00244"
+            "DR0009",
+            "DR0012",
+            "DR0014",
+            "DR0033",
+            "DR0049",
+            "DR0053",
+            "DR0060",
+            "DR0092"
           ]
         },
         {
-          "concept": "字母表示数",
-          "count": 8,
-          "weight": 5.5,
+          "concept": "代数式与整式运算",
+          "count": 32,
+          "weight": 21,
           "evidenceRefs": [
-            "R00006",
-            "R00012",
-            "R00072",
-            "R00076",
-            "R00297",
-            "R00330",
-            "R00340",
-            "R00352"
+            "DR0009",
+            "DR0012",
+            "DR0014",
+            "DR0033",
+            "DR0049",
+            "DR0053",
+            "DR0060",
+            "DR0092"
+          ]
+        },
+        {
+          "concept": "解答题",
+          "count": 32,
+          "weight": 21,
+          "evidenceRefs": [
+            "DR0009",
+            "DR0012",
+            "DR0014",
+            "DR0033",
+            "DR0049",
+            "DR0053",
+            "DR0060",
+            "DR0092"
           ]
         }
       ],
       "evidenceRefs": [
-        "R00006",
-        "R00009",
-        "R00012",
-        "R00060",
-        "R00072",
-        "R00076",
-        "R00086",
-        "R00112",
-        "R00114",
-        "R00202",
-        "R00239",
-        "R00244",
-        "R00261",
-        "R00284",
-        "R00297",
-        "R00327"
+        "DR0009",
+        "DR0012",
+        "DR0014",
+        "DR0033",
+        "DR0049",
+        "DR0053",
+        "DR0060",
+        "DR0092",
+        "DR0120",
+        "DR0158",
+        "DR0202",
+        "DR0329",
+        "DR0349",
+        "DR0357",
+        "DR0421",
+        "DR0423"
       ],
       "limitations": []
     },
     {
-      "requirementId": "REQ-EXP-02",
-      "requirementCode": "EXP-02",
-      "requirementTitle": "整式、单项式与多项式",
-      "topicId": "EXP",
-      "topicTitle": "整式",
-      "recordCount": 42,
-      "observedCount": 41,
-      "correct": 24,
-      "partial": 9,
-      "incorrect": 8,
-      "missing": 1,
-      "scoreRate": 0.6951219512195121,
-      "accuracy": 0.5853658536585366,
-      "scoreRatePct": 70,
-      "status": "developing",
-      "concepts": [
-        {
-          "concept": "单项式",
-          "count": 10,
-          "weight": 7,
-          "evidenceRefs": [
-            "R00027",
-            "R00098",
-            "R00108",
-            "R00111",
-            "R00164",
-            "R00173",
-            "R00193",
-            "R00198"
-          ]
-        },
-        {
-          "concept": "多项式",
-          "count": 7,
-          "weight": 5.5,
-          "evidenceRefs": [
-            "R00010",
-            "R00033",
-            "R00122",
-            "R00254",
-            "R00306",
-            "R00353",
-            "R00397"
-          ]
-        },
-        {
-          "concept": "项",
-          "count": 7,
-          "weight": 5.5,
-          "evidenceRefs": [
-            "R00010",
-            "R00033",
-            "R00122",
-            "R00254",
-            "R00306",
-            "R00353",
-            "R00397"
-          ]
-        },
-        {
-          "concept": "次数",
-          "count": 7,
-          "weight": 5,
-          "evidenceRefs": [
-            "R00027",
-            "R00098",
-            "R00164",
-            "R00173",
-            "R00193",
-            "R00217",
-            "R00316"
-          ]
-        },
-        {
-          "concept": "系数",
-          "count": 3,
-          "weight": 2,
-          "evidenceRefs": [
-            "R00108",
-            "R00111",
-            "R00198"
-          ]
-        }
-      ],
-      "evidenceRefs": [
-        "R00010",
-        "R00027",
-        "R00033",
-        "R00098",
-        "R00108",
-        "R00111",
-        "R00122",
-        "R00164",
-        "R00173",
-        "R00193",
-        "R00198",
-        "R00217",
-        "R00254",
-        "R00306",
-        "R00316",
-        "R00353"
-      ],
-      "limitations": []
-    },
-    {
-      "requirementId": "REQ-EXP-03",
-      "requirementCode": "EXP-03",
-      "requirementTitle": "同类项与整式加减",
-      "topicId": "EXP",
-      "topicTitle": "整式",
-      "recordCount": 49,
-      "observedCount": 48,
-      "correct": 23,
-      "partial": 8,
-      "incorrect": 17,
-      "missing": 1,
-      "scoreRate": 0.5625,
-      "accuracy": 0.4791666666666667,
-      "scoreRatePct": 56,
-      "status": "weak",
-      "concepts": [
-        {
-          "concept": "整式加减",
-          "count": 8,
-          "weight": 7.5,
-          "evidenceRefs": [
-            "R00039",
-            "R00123",
-            "R00131",
-            "R00149",
-            "R00208",
-            "R00228",
-            "R00240",
-            "R00300"
-          ]
-        },
-        {
-          "concept": "合并同类项",
-          "count": 6,
-          "weight": 5,
-          "evidenceRefs": [
-            "R00005",
-            "R00103",
-            "R00171",
-            "R00174",
-            "R00283",
-            "R00348"
-          ]
-        },
-        {
-          "concept": "去括号",
-          "count": 5,
-          "weight": 4.5,
-          "evidenceRefs": [
-            "R00039",
-            "R00123",
-            "R00228",
-            "R00315",
-            "R00342"
-          ]
-        },
-        {
-          "concept": "代数式求值",
-          "count": 5,
-          "weight": 4,
-          "evidenceRefs": [
-            "R00146",
-            "R00205",
-            "R00292",
-            "R00364",
-            "R00367"
-          ]
-        },
-        {
-          "concept": "同类项",
-          "count": 3,
-          "weight": 2.5,
-          "evidenceRefs": [
-            "R00152",
-            "R00304",
-            "R00343"
-          ]
-        },
-        {
-          "concept": "整式减法",
-          "count": 1,
-          "weight": 0.5,
-          "evidenceRefs": [
-            "R00311"
-          ]
-        }
-      ],
-      "evidenceRefs": [
-        "R00005",
-        "R00039",
-        "R00103",
-        "R00106",
-        "R00123",
-        "R00131",
-        "R00146",
-        "R00149",
-        "R00152",
-        "R00171",
-        "R00174",
-        "R00205",
-        "R00208",
-        "R00228",
-        "R00240",
-        "R00283"
-      ],
-      "limitations": []
-    },
-    {
-      "requirementId": "REQ-EQA-01",
-      "requirementCode": "EQA-01",
-      "requirementTitle": "等式与方程",
-      "topicId": "EQA",
-      "topicTitle": "一元一次方程",
-      "recordCount": 52,
-      "observedCount": 51,
-      "correct": 25,
-      "partial": 12,
-      "incorrect": 14,
-      "missing": 1,
-      "scoreRate": 0.6078431372549019,
-      "accuracy": 0.49019607843137253,
-      "scoreRatePct": 61,
-      "status": "developing",
-      "concepts": [
-        {
-          "concept": "方程",
-          "count": 13,
-          "weight": 10,
-          "evidenceRefs": [
-            "R00007",
-            "R00023",
-            "R00078",
-            "R00119",
-            "R00165",
-            "R00194",
-            "R00195",
-            "R00216"
-          ]
-        },
-        {
-          "concept": "等式性质",
-          "count": 13,
-          "weight": 10,
-          "evidenceRefs": [
-            "R00032",
-            "R00047",
-            "R00051",
-            "R00063",
-            "R00066",
-            "R00186",
-            "R00190",
-            "R00213"
-          ]
-        },
-        {
-          "concept": "等式",
-          "count": 6,
-          "weight": 4.5,
-          "evidenceRefs": [
-            "R00078",
-            "R00165",
-            "R00216",
-            "R00308",
-            "R00309",
-            "R00337"
-          ]
-        }
-      ],
-      "evidenceRefs": [
-        "R00007",
-        "R00023",
-        "R00032",
-        "R00047",
-        "R00051",
-        "R00063",
-        "R00066",
-        "R00078",
-        "R00119",
-        "R00165",
-        "R00186",
-        "R00190",
-        "R00194",
-        "R00195",
-        "R00213",
-        "R00216"
-      ],
-      "limitations": []
-    },
-    {
-      "requirementId": "REQ-EQA-02",
-      "requirementCode": "EQA-02",
-      "requirementTitle": "解一元一次方程",
-      "topicId": "EQA",
-      "topicTitle": "一元一次方程",
-      "recordCount": 53,
-      "observedCount": 50,
-      "correct": 20,
+      "requirementId": "T02I1",
+      "requirementCode": "T02I1",
+      "requirementTitle": "运用等式性质解一元一次方程",
+      "topicId": "T02",
+      "topicTitle": "方程与方程组",
+      "recordCount": 116,
+      "observedCount": 116,
+      "correct": 56,
       "partial": 16,
-      "incorrect": 14,
-      "missing": 3,
-      "scoreRate": 0.56,
-      "accuracy": 0.4,
-      "scoreRatePct": 56,
+      "incorrect": 44,
+      "missing": 0,
+      "scoreRate": 0.550561797752809,
+      "accuracy": 0.4827586206896552,
+      "scoreRatePct": 55,
       "status": "weak",
       "concepts": [
         {
-          "concept": "去分母",
-          "count": 12,
-          "weight": 9,
+          "concept": "运用等式性质解一元一次方程",
+          "count": 60,
+          "weight": 52,
           "evidenceRefs": [
-            "R00018",
-            "R00041",
-            "R00089",
-            "R00129",
-            "R00140",
-            "R00156",
-            "R00189",
-            "R00227"
+            "DR0004",
+            "DR0007",
+            "DR0011",
+            "DR0028",
+            "DR0031",
+            "DR0056",
+            "DR0058",
+            "DR0074"
           ]
         },
         {
-          "concept": "移项",
-          "count": 10,
-          "weight": 7.5,
+          "concept": "方程与方程组",
+          "count": 60,
+          "weight": 52,
           "evidenceRefs": [
-            "R00026",
-            "R00056",
-            "R00105",
-            "R00182",
-            "R00196",
-            "R00204",
-            "R00277",
-            "R00289"
+            "DR0004",
+            "DR0007",
+            "DR0011",
+            "DR0028",
+            "DR0031",
+            "DR0056",
+            "DR0058",
+            "DR0074"
           ]
         },
         {
-          "concept": "去括号",
-          "count": 8,
-          "weight": 5.5,
+          "concept": "填空题",
+          "count": 33,
+          "weight": 33,
           "evidenceRefs": [
-            "R00044",
-            "R00049",
-            "R00147",
-            "R00247",
-            "R00317",
-            "R00331",
-            "R00359",
-            "R00380"
+            "DR0004",
+            "DR0028",
+            "DR0113",
+            "DR0121",
+            "DR0179",
+            "DR0180",
+            "DR0186",
+            "DR0198"
           ]
         },
         {
-          "concept": "系数化为1",
-          "count": 7,
-          "weight": 5.5,
+          "concept": "解答题",
+          "count": 22,
+          "weight": 14,
           "evidenceRefs": [
-            "R00056",
-            "R00105",
-            "R00182",
-            "R00196",
-            "R00204",
-            "R00277",
-            "R00289"
+            "DR0007",
+            "DR0031",
+            "DR0056",
+            "DR0058",
+            "DR0074",
+            "DR0115",
+            "DR0185",
+            "DR0273"
+          ]
+        },
+        {
+          "concept": "选择题",
+          "count": 5,
+          "weight": 5,
+          "evidenceRefs": [
+            "DR0011",
+            "DR0208",
+            "DR0409",
+            "DR0653",
+            "DR0771"
           ]
         }
       ],
       "evidenceRefs": [
-        "R00018",
-        "R00026",
-        "R00041",
-        "R00044",
-        "R00049",
-        "R00056",
-        "R00089",
-        "R00105",
-        "R00129",
-        "R00140",
-        "R00147",
-        "R00156",
-        "R00169",
-        "R00178",
-        "R00182",
-        "R00189"
+        "DR0004",
+        "DR0007",
+        "DR0011",
+        "DR0028",
+        "DR0031",
+        "DR0056",
+        "DR0058",
+        "DR0074",
+        "DR0113",
+        "DR0115",
+        "DR0121",
+        "DR0179",
+        "DR0180",
+        "DR0185",
+        "DR0186",
+        "DR0198"
       ],
       "limitations": []
     },
     {
-      "requirementId": "REQ-EQA-03",
-      "requirementCode": "EQA-03",
-      "requirementTitle": "一元一次方程的应用",
-      "topicId": "EQA",
-      "topicTitle": "一元一次方程",
-      "recordCount": 39,
-      "observedCount": 39,
-      "correct": 16,
-      "partial": 8,
+      "requirementId": "T02I2",
+      "requirementCode": "T02I2",
+      "requirementTitle": "用消元法解二元一次方程组",
+      "topicId": "T02",
+      "topicTitle": "方程与方程组",
+      "recordCount": 99,
+      "observedCount": 97,
+      "correct": 50,
+      "partial": 11,
+      "incorrect": 36,
+      "missing": 2,
+      "scoreRate": 0.564625850340136,
+      "accuracy": 0.5154639175257731,
+      "scoreRatePct": 56,
+      "status": "weak",
+      "concepts": [
+        {
+          "concept": "用消元法解二元一次方程组",
+          "count": 47,
+          "weight": 41.5,
+          "evidenceRefs": [
+            "DR0016",
+            "DR0042",
+            "DR0043",
+            "DR0045",
+            "DR0065",
+            "DR0066",
+            "DR0103",
+            "DR0110"
+          ]
+        },
+        {
+          "concept": "方程与方程组",
+          "count": 47,
+          "weight": 41.5,
+          "evidenceRefs": [
+            "DR0016",
+            "DR0042",
+            "DR0043",
+            "DR0045",
+            "DR0065",
+            "DR0066",
+            "DR0103",
+            "DR0110"
+          ]
+        },
+        {
+          "concept": "填空题",
+          "count": 30,
+          "weight": 30,
+          "evidenceRefs": [
+            "DR0016",
+            "DR0043",
+            "DR0066",
+            "DR0103",
+            "DR0110",
+            "DR0148",
+            "DR0174",
+            "DR0360"
+          ]
+        },
+        {
+          "concept": "解答题",
+          "count": 17,
+          "weight": 11.5,
+          "evidenceRefs": [
+            "DR0042",
+            "DR0045",
+            "DR0065",
+            "DR0142",
+            "DR0167",
+            "DR0191",
+            "DR0269",
+            "DR0282"
+          ]
+        }
+      ],
+      "evidenceRefs": [
+        "DR0016",
+        "DR0017",
+        "DR0042",
+        "DR0043",
+        "DR0045",
+        "DR0065",
+        "DR0066",
+        "DR0103",
+        "DR0110",
+        "DR0142",
+        "DR0148",
+        "DR0167",
+        "DR0174",
+        "DR0191",
+        "DR0269",
+        "DR0282"
+      ],
+      "limitations": []
+    },
+    {
+      "requirementId": "T02I3",
+      "requirementCode": "T02I3",
+      "requirementTitle": "列方程或方程组解决简单实际问题并检验",
+      "topicId": "T02",
+      "topicTitle": "方程与方程组",
+      "recordCount": 56,
+      "observedCount": 56,
+      "correct": 24,
+      "partial": 13,
+      "incorrect": 19,
+      "missing": 0,
+      "scoreRate": 0.5272727272727272,
+      "accuracy": 0.42857142857142855,
+      "scoreRatePct": 53,
+      "status": "weak",
+      "concepts": [
+        {
+          "concept": "列方程或方程组解决简单实际问题并检验",
+          "count": 32,
+          "weight": 25.5,
+          "evidenceRefs": [
+            "DR0027",
+            "DR0039",
+            "DR0085",
+            "DR0124",
+            "DR0125",
+            "DR0173",
+            "DR0177",
+            "DR0194"
+          ]
+        },
+        {
+          "concept": "方程与方程组",
+          "count": 32,
+          "weight": 25.5,
+          "evidenceRefs": [
+            "DR0027",
+            "DR0039",
+            "DR0085",
+            "DR0124",
+            "DR0125",
+            "DR0173",
+            "DR0177",
+            "DR0194"
+          ]
+        },
+        {
+          "concept": "填空题",
+          "count": 13,
+          "weight": 13,
+          "evidenceRefs": [
+            "DR0027",
+            "DR0039",
+            "DR0173",
+            "DR0177",
+            "DR0246",
+            "DR0425",
+            "DR0433",
+            "DR0473"
+          ]
+        },
+        {
+          "concept": "解答题",
+          "count": 19,
+          "weight": 12.5,
+          "evidenceRefs": [
+            "DR0085",
+            "DR0124",
+            "DR0125",
+            "DR0194",
+            "DR0213",
+            "DR0401",
+            "DR0407",
+            "DR0566"
+          ]
+        }
+      ],
+      "evidenceRefs": [
+        "DR0027",
+        "DR0039",
+        "DR0085",
+        "DR0124",
+        "DR0125",
+        "DR0173",
+        "DR0177",
+        "DR0194",
+        "DR0213",
+        "DR0246",
+        "DR0401",
+        "DR0407",
+        "DR0425",
+        "DR0433",
+        "DR0473",
+        "DR0504"
+      ],
+      "limitations": []
+    },
+    {
+      "requirementId": "T03I1",
+      "requirementCode": "T03I1",
+      "requirementTitle": "运用不等式性质求解，负数乘除时正确改变方向",
+      "topicId": "T03",
+      "topicTitle": "不等式与不等式组",
+      "recordCount": 69,
+      "observedCount": 69,
+      "correct": 38,
+      "partial": 10,
+      "incorrect": 21,
+      "missing": 0,
+      "scoreRate": 0.5619047619047619,
+      "accuracy": 0.5507246376811594,
+      "scoreRatePct": 56,
+      "status": "weak",
+      "concepts": [
+        {
+          "concept": "运用不等式性质求解，负数乘除时正确改变方向",
+          "count": 31,
+          "weight": 26,
+          "evidenceRefs": [
+            "DR0013",
+            "DR0020",
+            "DR0023",
+            "DR0048",
+            "DR0064",
+            "DR0067",
+            "DR0105",
+            "DR0107"
+          ]
+        },
+        {
+          "concept": "不等式与不等式组",
+          "count": 31,
+          "weight": 26,
+          "evidenceRefs": [
+            "DR0013",
+            "DR0020",
+            "DR0023",
+            "DR0048",
+            "DR0064",
+            "DR0067",
+            "DR0105",
+            "DR0107"
+          ]
+        },
+        {
+          "concept": "填空题",
+          "count": 18,
+          "weight": 18,
+          "evidenceRefs": [
+            "DR0013",
+            "DR0020",
+            "DR0048",
+            "DR0064",
+            "DR0067",
+            "DR0105",
+            "DR0107",
+            "DR0187"
+          ]
+        },
+        {
+          "concept": "解答题",
+          "count": 13,
+          "weight": 8,
+          "evidenceRefs": [
+            "DR0023",
+            "DR0140",
+            "DR0195",
+            "DR0259",
+            "DR0367",
+            "DR0385",
+            "DR0493",
+            "DR0536"
+          ]
+        }
+      ],
+      "evidenceRefs": [
+        "DR0013",
+        "DR0020",
+        "DR0023",
+        "DR0048",
+        "DR0064",
+        "DR0067",
+        "DR0105",
+        "DR0107",
+        "DR0140",
+        "DR0187",
+        "DR0193",
+        "DR0195",
+        "DR0259",
+        "DR0289",
+        "DR0367",
+        "DR0385"
+      ],
+      "limitations": []
+    },
+    {
+      "requirementId": "T03I2",
+      "requirementCode": "T03I2",
+      "requirementTitle": "求两个一元一次不等式解集的交集",
+      "topicId": "T03",
+      "topicTitle": "不等式与不等式组",
+      "recordCount": 69,
+      "observedCount": 69,
+      "correct": 44,
+      "partial": 10,
       "incorrect": 15,
       "missing": 0,
-      "scoreRate": 0.5128205128205128,
-      "accuracy": 0.41025641025641024,
-      "scoreRatePct": 51,
-      "status": "weak",
+      "scoreRate": 0.6880733944954128,
+      "accuracy": 0.6376811594202898,
+      "scoreRatePct": 69,
+      "status": "developing",
       "concepts": [
         {
-          "concept": "解方程",
-          "count": 8,
+          "concept": "求两个一元一次不等式解集的交集",
+          "count": 25,
+          "weight": 20,
+          "evidenceRefs": [
+            "DR0015",
+            "DR0040",
+            "DR0047",
+            "DR0061",
+            "DR0062",
+            "DR0127",
+            "DR0139",
+            "DR0143"
+          ]
+        },
+        {
+          "concept": "不等式与不等式组",
+          "count": 25,
+          "weight": 20,
+          "evidenceRefs": [
+            "DR0015",
+            "DR0040",
+            "DR0047",
+            "DR0061",
+            "DR0062",
+            "DR0127",
+            "DR0139",
+            "DR0143"
+          ]
+        },
+        {
+          "concept": "填空题",
+          "count": 10,
+          "weight": 10,
+          "evidenceRefs": [
+            "DR0047",
+            "DR0062",
+            "DR0219",
+            "DR0287",
+            "DR0292",
+            "DR0430",
+            "DR0467",
+            "DR0511"
+          ]
+        },
+        {
+          "concept": "解答题",
+          "count": 12,
           "weight": 7,
           "evidenceRefs": [
-            "R00028",
-            "R00071",
-            "R00183",
-            "R00185",
-            "R00262",
-            "R00264",
-            "R00349",
-            "R00366"
+            "DR0040",
+            "DR0061",
+            "DR0127",
+            "DR0139",
+            "DR0143",
+            "DR0514",
+            "DR0558",
+            "DR0626"
           ]
         },
         {
-          "concept": "等量关系",
-          "count": 6,
-          "weight": 5.5,
-          "evidenceRefs": [
-            "R00082",
-            "R00144",
-            "R00260",
-            "R00312",
-            "R00332",
-            "R00377"
-          ]
-        },
-        {
-          "concept": "方程应用",
-          "count": 4,
+          "concept": "选择题",
+          "count": 3,
           "weight": 3,
           "evidenceRefs": [
-            "R00116",
-            "R00314",
-            "R00322",
-            "R00329"
-          ]
-        },
-        {
-          "concept": "列方程",
-          "count": 3,
-          "weight": 2,
-          "evidenceRefs": [
-            "R00203",
-            "R00334",
-            "R00363"
-          ]
-        },
-        {
-          "concept": "行程问题",
-          "count": 2,
-          "weight": 1.5,
-          "evidenceRefs": [
-            "R00001",
-            "R00038"
+            "DR0015",
+            "DR0288",
+            "DR0740"
           ]
         }
       ],
       "evidenceRefs": [
-        "R00001",
-        "R00028",
-        "R00038",
-        "R00071",
-        "R00082",
-        "R00116",
-        "R00144",
-        "R00183",
-        "R00185",
-        "R00203",
-        "R00260",
-        "R00262",
-        "R00264",
-        "R00312",
-        "R00314",
-        "R00322"
+        "DR0015",
+        "DR0040",
+        "DR0047",
+        "DR0061",
+        "DR0062",
+        "DR0127",
+        "DR0139",
+        "DR0143",
+        "DR0219",
+        "DR0287",
+        "DR0288",
+        "DR0292",
+        "DR0430",
+        "DR0467",
+        "DR0511",
+        "DR0514"
+      ],
+      "limitations": []
+    },
+    {
+      "requirementId": "T03I3",
+      "requirementCode": "T03I3",
+      "requirementTitle": "根据实际限制列不等式并解释取值范围",
+      "topicId": "T03",
+      "topicTitle": "不等式与不等式组",
+      "recordCount": 28,
+      "observedCount": 28,
+      "correct": 11,
+      "partial": 5,
+      "incorrect": 12,
+      "missing": 0,
+      "scoreRate": 0.4444444444444444,
+      "accuracy": 0.39285714285714285,
+      "scoreRatePct": 44,
+      "status": "weak",
+      "concepts": [
+        {
+          "concept": "根据实际限制列不等式并解释取值范围",
+          "count": 17,
+          "weight": 14.5,
+          "evidenceRefs": [
+            "DR0063",
+            "DR0089",
+            "DR0106",
+            "DR0126",
+            "DR0128",
+            "DR0166",
+            "DR0189",
+            "DR0268"
+          ]
+        },
+        {
+          "concept": "不等式与不等式组",
+          "count": 17,
+          "weight": 14.5,
+          "evidenceRefs": [
+            "DR0063",
+            "DR0089",
+            "DR0106",
+            "DR0126",
+            "DR0128",
+            "DR0166",
+            "DR0189",
+            "DR0268"
+          ]
+        },
+        {
+          "concept": "填空题",
+          "count": 8,
+          "weight": 8,
+          "evidenceRefs": [
+            "DR0063",
+            "DR0128",
+            "DR0166",
+            "DR0286",
+            "DR0386",
+            "DR0465",
+            "DR0471",
+            "DR0552"
+          ]
+        },
+        {
+          "concept": "解答题",
+          "count": 9,
+          "weight": 6.5,
+          "evidenceRefs": [
+            "DR0089",
+            "DR0106",
+            "DR0126",
+            "DR0189",
+            "DR0268",
+            "DR0285",
+            "DR0359",
+            "DR0474"
+          ]
+        }
+      ],
+      "evidenceRefs": [
+        "DR0063",
+        "DR0089",
+        "DR0106",
+        "DR0126",
+        "DR0128",
+        "DR0166",
+        "DR0189",
+        "DR0268",
+        "DR0285",
+        "DR0286",
+        "DR0359",
+        "DR0386",
+        "DR0465",
+        "DR0471",
+        "DR0474",
+        "DR0552"
       ],
       "limitations": []
     }
   ],
   "groups": [
     {
-      "group": "A组",
-      "studentCount": 10,
-      "observedCount": 141,
-      "scoreRatePct": 63,
+      "group": "DC01",
+      "studentCount": 21,
+      "observedCount": 420,
+      "scoreRatePct": 59,
       "coveragePct": 100,
-      "weakStudentCount": 4
+      "weakStudentCount": 16
     },
     {
-      "group": "B组",
-      "studentCount": 10,
-      "observedCount": 125,
-      "scoreRatePct": 62,
+      "group": "DC02",
+      "studentCount": 19,
+      "observedCount": 368,
+      "scoreRatePct": 55,
       "coveragePct": 100,
-      "weakStudentCount": 6
-    },
-    {
-      "group": "C组",
-      "studentCount": 10,
-      "observedCount": 131,
-      "scoreRatePct": 68,
-      "coveragePct": 100,
-      "weakStudentCount": 5
+      "weakStudentCount": 13
     }
   ],
   "commonGaps": [
     {
-      "requirementId": "REQ-EXP-03",
-      "requirementCode": "EXP-03",
-      "requirementTitle": "同类项与整式加减",
-      "topicId": "EXP",
-      "topicTitle": "整式",
-      "recordCount": 49,
-      "observedCount": 48,
-      "correct": 23,
-      "partial": 8,
-      "incorrect": 17,
-      "missing": 1,
-      "scoreRate": 0.5625,
-      "accuracy": 0.4791666666666667,
-      "scoreRatePct": 56,
+      "requirementId": "T01I1",
+      "requirementCode": "T01I1",
+      "requirementTitle": "表示数量关系并代入求值",
+      "topicId": "T01",
+      "topicTitle": "代数式与整式运算",
+      "recordCount": 125,
+      "observedCount": 125,
+      "correct": 57,
+      "partial": 15,
+      "incorrect": 53,
+      "missing": 0,
+      "scoreRate": 0.4885844748858447,
+      "accuracy": 0.456,
+      "scoreRatePct": 49,
       "status": "weak",
       "concepts": [
         {
-          "concept": "整式加减",
-          "count": 8,
-          "weight": 7.5,
+          "concept": "表示数量关系并代入求值",
+          "count": 68,
+          "weight": 60.5,
           "evidenceRefs": [
-            "R00039",
-            "R00123",
-            "R00131",
-            "R00149",
-            "R00208",
-            "R00228",
-            "R00240",
-            "R00300"
+            "DR0005",
+            "DR0006",
+            "DR0024",
+            "DR0026",
+            "DR0029",
+            "DR0036",
+            "DR0055",
+            "DR0057"
           ]
         },
         {
-          "concept": "合并同类项",
-          "count": 6,
-          "weight": 5,
+          "concept": "代数式与整式运算",
+          "count": 68,
+          "weight": 60.5,
           "evidenceRefs": [
-            "R00005",
-            "R00103",
-            "R00171",
-            "R00174",
-            "R00283",
-            "R00348"
+            "DR0005",
+            "DR0006",
+            "DR0024",
+            "DR0026",
+            "DR0029",
+            "DR0036",
+            "DR0055",
+            "DR0057"
           ]
         },
         {
-          "concept": "去括号",
-          "count": 5,
-          "weight": 4.5,
+          "concept": "填空题",
+          "count": 33,
+          "weight": 33,
           "evidenceRefs": [
-            "R00039",
-            "R00123",
-            "R00228",
-            "R00315",
-            "R00342"
+            "DR0006",
+            "DR0024",
+            "DR0026",
+            "DR0055",
+            "DR0069",
+            "DR0080",
+            "DR0096",
+            "DR0100"
           ]
         },
         {
-          "concept": "代数式求值",
-          "count": 5,
-          "weight": 4,
+          "concept": "解答题",
+          "count": 35,
+          "weight": 27.5,
           "evidenceRefs": [
-            "R00146",
-            "R00205",
-            "R00292",
-            "R00364",
-            "R00367"
-          ]
-        },
-        {
-          "concept": "同类项",
-          "count": 3,
-          "weight": 2.5,
-          "evidenceRefs": [
-            "R00152",
-            "R00304",
-            "R00343"
-          ]
-        },
-        {
-          "concept": "整式减法",
-          "count": 1,
-          "weight": 0.5,
-          "evidenceRefs": [
-            "R00311"
+            "DR0005",
+            "DR0029",
+            "DR0036",
+            "DR0057",
+            "DR0083",
+            "DR0093",
+            "DR0095",
+            "DR0102"
           ]
         }
       ],
       "evidenceRefs": [
-        "R00005",
-        "R00039",
-        "R00103",
-        "R00106",
-        "R00123",
-        "R00131",
-        "R00146",
-        "R00149",
-        "R00152",
-        "R00171",
-        "R00174",
-        "R00205",
-        "R00208",
-        "R00228",
-        "R00240",
-        "R00283"
+        "DR0005",
+        "DR0006",
+        "DR0024",
+        "DR0026",
+        "DR0029",
+        "DR0036",
+        "DR0055",
+        "DR0057",
+        "DR0069",
+        "DR0080",
+        "DR0083",
+        "DR0093",
+        "DR0095",
+        "DR0096",
+        "DR0100",
+        "DR0102"
+      ],
+      "limitations": []
+    },
+    {
+      "requirementId": "T02I1",
+      "requirementCode": "T02I1",
+      "requirementTitle": "运用等式性质解一元一次方程",
+      "topicId": "T02",
+      "topicTitle": "方程与方程组",
+      "recordCount": 116,
+      "observedCount": 116,
+      "correct": 56,
+      "partial": 16,
+      "incorrect": 44,
+      "missing": 0,
+      "scoreRate": 0.550561797752809,
+      "accuracy": 0.4827586206896552,
+      "scoreRatePct": 55,
+      "status": "weak",
+      "concepts": [
+        {
+          "concept": "运用等式性质解一元一次方程",
+          "count": 60,
+          "weight": 52,
+          "evidenceRefs": [
+            "DR0004",
+            "DR0007",
+            "DR0011",
+            "DR0028",
+            "DR0031",
+            "DR0056",
+            "DR0058",
+            "DR0074"
+          ]
+        },
+        {
+          "concept": "方程与方程组",
+          "count": 60,
+          "weight": 52,
+          "evidenceRefs": [
+            "DR0004",
+            "DR0007",
+            "DR0011",
+            "DR0028",
+            "DR0031",
+            "DR0056",
+            "DR0058",
+            "DR0074"
+          ]
+        },
+        {
+          "concept": "填空题",
+          "count": 33,
+          "weight": 33,
+          "evidenceRefs": [
+            "DR0004",
+            "DR0028",
+            "DR0113",
+            "DR0121",
+            "DR0179",
+            "DR0180",
+            "DR0186",
+            "DR0198"
+          ]
+        },
+        {
+          "concept": "解答题",
+          "count": 22,
+          "weight": 14,
+          "evidenceRefs": [
+            "DR0007",
+            "DR0031",
+            "DR0056",
+            "DR0058",
+            "DR0074",
+            "DR0115",
+            "DR0185",
+            "DR0273"
+          ]
+        },
+        {
+          "concept": "选择题",
+          "count": 5,
+          "weight": 5,
+          "evidenceRefs": [
+            "DR0011",
+            "DR0208",
+            "DR0409",
+            "DR0653",
+            "DR0771"
+          ]
+        }
+      ],
+      "evidenceRefs": [
+        "DR0004",
+        "DR0007",
+        "DR0011",
+        "DR0028",
+        "DR0031",
+        "DR0056",
+        "DR0058",
+        "DR0074",
+        "DR0113",
+        "DR0115",
+        "DR0121",
+        "DR0179",
+        "DR0180",
+        "DR0185",
+        "DR0186",
+        "DR0198"
+      ],
+      "limitations": []
+    },
+    {
+      "requirementId": "T01I2",
+      "requirementCode": "T01I2",
+      "requirementTitle": "识别同类项、去括号并化简",
+      "topicId": "T01",
+      "topicTitle": "代数式与整式运算",
+      "recordCount": 191,
+      "observedCount": 188,
+      "correct": 115,
+      "partial": 9,
+      "incorrect": 64,
+      "missing": 3,
+      "scoreRate": 0.6704545454545454,
+      "accuracy": 0.6117021276595744,
+      "scoreRatePct": 67,
+      "status": "developing",
+      "concepts": [
+        {
+          "concept": "识别同类项、去括号并化简",
+          "count": 73,
+          "weight": 68.5,
+          "evidenceRefs": [
+            "DR0001",
+            "DR0025",
+            "DR0051",
+            "DR0054",
+            "DR0059",
+            "DR0071",
+            "DR0079",
+            "DR0081"
+          ]
+        },
+        {
+          "concept": "代数式与整式运算",
+          "count": 73,
+          "weight": 68.5,
+          "evidenceRefs": [
+            "DR0001",
+            "DR0025",
+            "DR0051",
+            "DR0054",
+            "DR0059",
+            "DR0071",
+            "DR0079",
+            "DR0081"
+          ]
+        },
+        {
+          "concept": "填空题",
+          "count": 56,
+          "weight": 56,
+          "evidenceRefs": [
+            "DR0025",
+            "DR0051",
+            "DR0059",
+            "DR0071",
+            "DR0079",
+            "DR0081",
+            "DR0084",
+            "DR0087"
+          ]
+        },
+        {
+          "concept": "解答题",
+          "count": 14,
+          "weight": 9.5,
+          "evidenceRefs": [
+            "DR0001",
+            "DR0082",
+            "DR0114",
+            "DR0243",
+            "DR0319",
+            "DR0375",
+            "DR0392",
+            "DR0485"
+          ]
+        },
+        {
+          "concept": "选择题",
+          "count": 3,
+          "weight": 3,
+          "evidenceRefs": [
+            "DR0054",
+            "DR0500",
+            "DR0604"
+          ]
+        }
+      ],
+      "evidenceRefs": [
+        "DR0001",
+        "DR0025",
+        "DR0034",
+        "DR0051",
+        "DR0054",
+        "DR0059",
+        "DR0071",
+        "DR0079",
+        "DR0081",
+        "DR0082",
+        "DR0084",
+        "DR0087",
+        "DR0098",
+        "DR0101",
+        "DR0112",
+        "DR0114"
       ],
       "limitations": []
     }
@@ -1010,321 +1250,416 @@
   "insufficientRequirements": [],
   "differences": [
     {
-      "group": "C组",
-      "scoreRatePct": 68,
-      "weakStudentCount": 5
+      "group": "DC01",
+      "scoreRatePct": 59,
+      "weakStudentCount": 16
     },
     {
-      "group": "A组",
-      "scoreRatePct": 63,
-      "weakStudentCount": 4
-    },
-    {
-      "group": "B组",
-      "scoreRatePct": 62,
-      "weakStudentCount": 6
+      "group": "DC02",
+      "scoreRatePct": 55,
+      "weakStudentCount": 13
     }
   ],
   "learners": [
     {
-      "studentId": "S001",
-      "displayName": "林晓禾",
-      "group": "A组",
+      "studentId": "D01",
+      "displayName": "学生 D01",
+      "group": "DC01",
       "status": "ready",
-      "observedCount": 13,
-      "scoreRatePct": 58,
-      "coveragePct": 89,
-      "weakCount": 7
-    },
-    {
-      "studentId": "S002",
-      "displayName": "周予安",
-      "group": "B组",
-      "status": "ready",
-      "observedCount": 14,
-      "scoreRatePct": 75,
-      "coveragePct": 89,
-      "weakCount": 6
-    },
-    {
-      "studentId": "S003",
-      "displayName": "陈知夏",
-      "group": "C组",
-      "status": "ready",
-      "observedCount": 15,
-      "scoreRatePct": 60,
-      "coveragePct": 100,
-      "weakCount": 8
-    },
-    {
-      "studentId": "S004",
-      "displayName": "赵清川",
-      "group": "A组",
-      "status": "ready",
-      "observedCount": 16,
-      "scoreRatePct": 63,
-      "coveragePct": 67,
-      "weakCount": 4
-    },
-    {
-      "studentId": "S005",
-      "displayName": "许星遥",
-      "group": "B组",
-      "status": "ready",
-      "observedCount": 13,
-      "scoreRatePct": 73,
+      "observedCount": 21,
+      "scoreRatePct": 49,
       "coveragePct": 89,
       "weakCount": 8
     },
     {
-      "studentId": "S006",
-      "displayName": "沈嘉树",
-      "group": "C组",
+      "studentId": "D02",
+      "displayName": "学生 D02",
+      "group": "DC01",
       "status": "ready",
-      "observedCount": 13,
-      "scoreRatePct": 77,
-      "coveragePct": 89,
-      "weakCount": 8
-    },
-    {
-      "studentId": "S007",
-      "displayName": "顾明澈",
-      "group": "A组",
-      "status": "ready",
-      "observedCount": 15,
-      "scoreRatePct": 80,
-      "coveragePct": 100,
-      "weakCount": 9
-    },
-    {
-      "studentId": "S008",
-      "displayName": "苏念一",
-      "group": "B组",
-      "status": "ready",
-      "observedCount": 14,
-      "scoreRatePct": 32,
-      "coveragePct": 89,
-      "weakCount": 8
-    },
-    {
-      "studentId": "S009",
-      "displayName": "唐乐言",
-      "group": "C组",
-      "status": "ready",
-      "observedCount": 13,
-      "scoreRatePct": 77,
-      "coveragePct": 78,
-      "weakCount": 7
-    },
-    {
-      "studentId": "S010",
-      "displayName": "韩若宁",
-      "group": "A组",
-      "status": "ready",
-      "observedCount": 14,
-      "scoreRatePct": 86,
-      "coveragePct": 78,
-      "weakCount": 5
-    },
-    {
-      "studentId": "S011",
-      "displayName": "叶书宁",
-      "group": "B组",
-      "status": "ready",
-      "observedCount": 15,
-      "scoreRatePct": 57,
-      "coveragePct": 78,
-      "weakCount": 7
-    },
-    {
-      "studentId": "S012",
-      "displayName": "程亦舟",
-      "group": "C组",
-      "status": "ready",
-      "observedCount": 15,
-      "scoreRatePct": 60,
-      "coveragePct": 67,
-      "weakCount": 4
-    },
-    {
-      "studentId": "S013",
-      "displayName": "陆知远",
-      "group": "A组",
-      "status": "ready",
-      "observedCount": 12,
-      "scoreRatePct": 46,
-      "coveragePct": 78,
-      "weakCount": 6
-    },
-    {
-      "studentId": "S014",
-      "displayName": "江可欣",
-      "group": "B组",
-      "status": "ready",
-      "observedCount": 14,
-      "scoreRatePct": 61,
-      "coveragePct": 67,
-      "weakCount": 5
-    },
-    {
-      "studentId": "S015",
-      "displayName": "何予辰",
-      "group": "C组",
-      "status": "ready",
-      "observedCount": 15,
-      "scoreRatePct": 47,
-      "coveragePct": 78,
-      "weakCount": 7
-    },
-    {
-      "studentId": "S016",
-      "displayName": "方雨桐",
-      "group": "A组",
-      "status": "ready",
-      "observedCount": 16,
-      "scoreRatePct": 66,
-      "coveragePct": 78,
-      "weakCount": 4
-    },
-    {
-      "studentId": "S017",
-      "displayName": "高云舒",
-      "group": "B组",
-      "status": "ready",
-      "observedCount": 12,
-      "scoreRatePct": 75,
-      "coveragePct": 56,
-      "weakCount": 4
-    },
-    {
-      "studentId": "S018",
-      "displayName": "罗一诺",
-      "group": "C组",
-      "status": "ready",
-      "observedCount": 14,
-      "scoreRatePct": 79,
-      "coveragePct": 89,
-      "weakCount": 6
-    },
-    {
-      "studentId": "S019",
-      "displayName": "魏思齐",
-      "group": "A组",
-      "status": "ready",
-      "observedCount": 14,
-      "scoreRatePct": 64,
-      "coveragePct": 78,
-      "weakCount": 6
-    },
-    {
-      "studentId": "S020",
-      "displayName": "谢知微",
-      "group": "B组",
-      "status": "ready",
-      "observedCount": 14,
-      "scoreRatePct": 82,
-      "coveragePct": 78,
-      "weakCount": 6
-    },
-    {
-      "studentId": "S021",
-      "displayName": "梁景行",
-      "group": "C组",
-      "status": "ready",
-      "observedCount": 13,
-      "scoreRatePct": 85,
-      "coveragePct": 78,
-      "weakCount": 6
-    },
-    {
-      "studentId": "S022",
-      "displayName": "蒋言溪",
-      "group": "A组",
-      "status": "ready",
-      "observedCount": 14,
+      "observedCount": 26,
       "scoreRatePct": 36,
-      "coveragePct": 78,
-      "weakCount": 7
-    },
-    {
-      "studentId": "S023",
-      "displayName": "宋南乔",
-      "group": "B组",
-      "status": "ready",
-      "observedCount": 14,
-      "scoreRatePct": 39,
-      "coveragePct": 67,
+      "coveragePct": 89,
       "weakCount": 6
     },
     {
-      "studentId": "S024",
-      "displayName": "杜清和",
-      "group": "C组",
+      "studentId": "D03",
+      "displayName": "学生 D03",
+      "group": "DC01",
       "status": "ready",
-      "observedCount": 16,
+      "observedCount": 19,
+      "scoreRatePct": 17,
+      "coveragePct": 89,
+      "weakCount": 8
+    },
+    {
+      "studentId": "D04",
+      "displayName": "学生 D04",
+      "group": "DC01",
+      "status": "ready",
+      "observedCount": 24,
       "scoreRatePct": 59,
       "coveragePct": 89,
+      "weakCount": 5
+    },
+    {
+      "studentId": "D05",
+      "displayName": "学生 D05",
+      "group": "DC01",
+      "status": "ready",
+      "observedCount": 16,
+      "scoreRatePct": 25,
+      "coveragePct": 67,
+      "weakCount": 5
+    },
+    {
+      "studentId": "D06",
+      "displayName": "学生 D06",
+      "group": "DC01",
+      "status": "ready",
+      "observedCount": 18,
+      "scoreRatePct": 34,
+      "coveragePct": 78,
       "weakCount": 7
     },
     {
-      "studentId": "S025",
-      "displayName": "夏予宁",
-      "group": "A组",
+      "studentId": "D07",
+      "displayName": "学生 D07",
+      "group": "DC01",
       "status": "ready",
-      "observedCount": 12,
-      "scoreRatePct": 54,
+      "observedCount": 22,
+      "scoreRatePct": 65,
       "coveragePct": 89,
-      "weakCount": 8
+      "weakCount": 6
     },
     {
-      "studentId": "S026",
-      "displayName": "钟书言",
-      "group": "B组",
+      "studentId": "D08",
+      "displayName": "学生 D08",
+      "group": "DC01",
       "status": "ready",
-      "observedCount": 14,
-      "scoreRatePct": 68,
+      "observedCount": 26,
+      "scoreRatePct": 70,
+      "coveragePct": 100,
+      "weakCount": 6
+    },
+    {
+      "studentId": "D09",
+      "displayName": "学生 D09",
+      "group": "DC01",
+      "status": "ready",
+      "observedCount": 20,
+      "scoreRatePct": 27,
+      "coveragePct": 78,
+      "weakCount": 7
+    },
+    {
+      "studentId": "D10",
+      "displayName": "学生 D10",
+      "group": "DC01",
+      "status": "ready",
+      "observedCount": 23,
+      "scoreRatePct": 80,
+      "coveragePct": 89,
+      "weakCount": 3
+    },
+    {
+      "studentId": "D11",
+      "displayName": "学生 D11",
+      "group": "DC01",
+      "status": "ready",
+      "observedCount": 23,
+      "scoreRatePct": 71,
+      "coveragePct": 78,
+      "weakCount": 5
+    },
+    {
+      "studentId": "D12",
+      "displayName": "学生 D12",
+      "group": "DC01",
+      "status": "ready",
+      "observedCount": 26,
+      "scoreRatePct": 73,
+      "coveragePct": 100,
+      "weakCount": 5
+    },
+    {
+      "studentId": "D13",
+      "displayName": "学生 D13",
+      "group": "DC01",
+      "status": "ready",
+      "observedCount": 19,
+      "scoreRatePct": 45,
+      "coveragePct": 89,
+      "weakCount": 7
+    },
+    {
+      "studentId": "D14",
+      "displayName": "学生 D14",
+      "group": "DC01",
+      "status": "ready",
+      "observedCount": 26,
+      "scoreRatePct": 98,
+      "coveragePct": 100,
+      "weakCount": 5
+    },
+    {
+      "studentId": "D15",
+      "displayName": "学生 D15",
+      "group": "DC01",
+      "status": "ready",
+      "observedCount": 27,
+      "scoreRatePct": 81,
+      "coveragePct": 100,
+      "weakCount": 5
+    },
+    {
+      "studentId": "D16",
+      "displayName": "学生 D16",
+      "group": "DC01",
+      "status": "ready",
+      "observedCount": 20,
+      "scoreRatePct": 63,
+      "coveragePct": 78,
+      "weakCount": 4
+    },
+    {
+      "studentId": "D17",
+      "displayName": "学生 D17",
+      "group": "DC01",
+      "status": "partial",
+      "observedCount": 4,
+      "scoreRatePct": 100,
+      "coveragePct": 22,
+      "weakCount": 2
+    },
+    {
+      "studentId": "D18",
+      "displayName": "学生 D18",
+      "group": "DC01",
+      "status": "ready",
+      "observedCount": 19,
+      "scoreRatePct": 77,
+      "coveragePct": 89,
+      "weakCount": 6
+    },
+    {
+      "studentId": "D19",
+      "displayName": "学生 D19",
+      "group": "DC01",
+      "status": "ready",
+      "observedCount": 18,
+      "scoreRatePct": 59,
       "coveragePct": 67,
       "weakCount": 4
     },
     {
-      "studentId": "S027",
-      "displayName": "白知遥",
-      "group": "C组",
+      "studentId": "D20",
+      "displayName": "学生 D20",
+      "group": "DC01",
       "status": "ready",
-      "observedCount": 15,
-      "scoreRatePct": 73,
+      "observedCount": 12,
+      "scoreRatePct": 33,
+      "coveragePct": 56,
+      "weakCount": 5
+    },
+    {
+      "studentId": "D21",
+      "displayName": "学生 D21",
+      "group": "DC01",
+      "status": "ready",
+      "observedCount": 11,
+      "scoreRatePct": 47,
+      "coveragePct": 89,
+      "weakCount": 8
+    },
+    {
+      "studentId": "D22",
+      "displayName": "学生 D22",
+      "group": "DC02",
+      "status": "ready",
+      "observedCount": 23,
+      "scoreRatePct": 46,
+      "coveragePct": 89,
+      "weakCount": 8
+    },
+    {
+      "studentId": "D23",
+      "displayName": "学生 D23",
+      "group": "DC02",
+      "status": "ready",
+      "observedCount": 18,
+      "scoreRatePct": 38,
+      "coveragePct": 89,
+      "weakCount": 8
+    },
+    {
+      "studentId": "D24",
+      "displayName": "学生 D24",
+      "group": "DC02",
+      "status": "ready",
+      "observedCount": 22,
+      "scoreRatePct": 37,
+      "coveragePct": 78,
+      "weakCount": 7
+    },
+    {
+      "studentId": "D25",
+      "displayName": "学生 D25",
+      "group": "DC02",
+      "status": "ready",
+      "observedCount": 22,
+      "scoreRatePct": 56,
+      "coveragePct": 89,
+      "weakCount": 5
+    },
+    {
+      "studentId": "D26",
+      "displayName": "学生 D26",
+      "group": "DC02",
+      "status": "ready",
+      "observedCount": 19,
+      "scoreRatePct": 74,
       "coveragePct": 78,
       "weakCount": 5
     },
     {
-      "studentId": "S028",
-      "displayName": "邵安澜",
-      "group": "A组",
+      "studentId": "D27",
+      "displayName": "学生 D27",
+      "group": "DC02",
       "status": "ready",
-      "observedCount": 15,
-      "scoreRatePct": 77,
-      "coveragePct": 78,
-      "weakCount": 5
+      "observedCount": 17,
+      "scoreRatePct": 64,
+      "coveragePct": 89,
+      "weakCount": 6
     },
     {
-      "studentId": "S029",
-      "displayName": "秦乐知",
-      "group": "B组",
-      "status": "insufficient",
-      "observedCount": 1,
-      "scoreRatePct": 50,
-      "coveragePct": 11,
+      "studentId": "D28",
+      "displayName": "学生 D28",
+      "group": "DC02",
+      "status": "ready",
+      "observedCount": 14,
+      "scoreRatePct": 54,
+      "coveragePct": 56,
+      "weakCount": 3
+    },
+    {
+      "studentId": "D29",
+      "displayName": "学生 D29",
+      "group": "DC02",
+      "status": "ready",
+      "observedCount": 23,
+      "scoreRatePct": 86,
+      "coveragePct": 78,
       "weakCount": 1
     },
     {
-      "studentId": "S030",
-      "displayName": "孟星河",
-      "group": "C组",
-      "status": "insufficient",
-      "observedCount": 2,
-      "scoreRatePct": 75,
-      "coveragePct": 22,
+      "studentId": "D30",
+      "displayName": "学生 D30",
+      "group": "DC02",
+      "status": "ready",
+      "observedCount": 24,
+      "scoreRatePct": 38,
+      "coveragePct": 89,
+      "weakCount": 7
+    },
+    {
+      "studentId": "D31",
+      "displayName": "学生 D31",
+      "group": "DC02",
+      "status": "ready",
+      "observedCount": 12,
+      "scoreRatePct": 41,
+      "coveragePct": 78,
+      "weakCount": 6
+    },
+    {
+      "studentId": "D32",
+      "displayName": "学生 D32",
+      "group": "DC02",
+      "status": "ready",
+      "observedCount": 21,
+      "scoreRatePct": 67,
+      "coveragePct": 56,
       "weakCount": 2
+    },
+    {
+      "studentId": "D33",
+      "displayName": "学生 D33",
+      "group": "DC02",
+      "status": "ready",
+      "observedCount": 22,
+      "scoreRatePct": 79,
+      "coveragePct": 89,
+      "weakCount": 5
+    },
+    {
+      "studentId": "D34",
+      "displayName": "学生 D34",
+      "group": "DC02",
+      "status": "ready",
+      "observedCount": 23,
+      "scoreRatePct": 29,
+      "coveragePct": 89,
+      "weakCount": 8
+    },
+    {
+      "studentId": "D35",
+      "displayName": "学生 D35",
+      "group": "DC02",
+      "status": "ready",
+      "observedCount": 10,
+      "scoreRatePct": 67,
+      "coveragePct": 56,
+      "weakCount": 5
+    },
+    {
+      "studentId": "D36",
+      "displayName": "学生 D36",
+      "group": "DC02",
+      "status": "ready",
+      "observedCount": 20,
+      "scoreRatePct": 87,
+      "coveragePct": 89,
+      "weakCount": 4
+    },
+    {
+      "studentId": "D37",
+      "displayName": "学生 D37",
+      "group": "DC02",
+      "status": "ready",
+      "observedCount": 13,
+      "scoreRatePct": 29,
+      "coveragePct": 78,
+      "weakCount": 7
+    },
+    {
+      "studentId": "D38",
+      "displayName": "学生 D38",
+      "group": "DC02",
+      "status": "ready",
+      "observedCount": 22,
+      "scoreRatePct": 71,
+      "coveragePct": 78,
+      "weakCount": 4
+    },
+    {
+      "studentId": "D39",
+      "displayName": "学生 D39",
+      "group": "DC02",
+      "status": "ready",
+      "observedCount": 21,
+      "scoreRatePct": 35,
+      "coveragePct": 67,
+      "weakCount": 5
+    },
+    {
+      "studentId": "D40",
+      "displayName": "学生 D40",
+      "group": "DC02",
+      "status": "ready",
+      "observedCount": 22,
+      "scoreRatePct": 34,
+      "coveragePct": 100,
+      "weakCount": 9
     }
   ]
 }

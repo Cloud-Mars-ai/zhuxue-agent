@@ -1,11 +1,11 @@
 {
   "name": "智慧学伴任务成果包",
-  "version": "math7-competition-v1",
+  "version": "math7-official-v1",
   "analysisVersion": "math7-analysis-v1",
-  "generatedAt": "2026-11-04T14:00:04.516Z",
-  "sourceType": "development-sample",
-  "officialData": false,
-  "disclaimer": "当前数据由固定种子生成，仅用于开发和演示。正式评测须以赛方发布的数据包及字段说明为准。",
+  "generatedAt": "2026-11-06T04:40:46.939Z",
+  "sourceType": "official-competition-package",
+  "officialData": true,
+  "disclaimer": "已接入赛方公开模拟学情数据，仅限本次比赛开发、分析与展示使用，不得引入真实学生个人信息。",
   "files": [
     "curriculum.json",
     "data-quality.json",
@@ -18,7 +18,7 @@
     "records-quality-issues.csv",
     "schema.json",
     "input-sample.json",
-    "development-sample-dataset.json",
+    "competition-dataset.json",
     "teacher-adjustments.json",
     "verification-report.json"
   ]

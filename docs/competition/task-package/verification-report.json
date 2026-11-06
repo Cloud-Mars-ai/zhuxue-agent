@@ -1,47 +1,64 @@
 {
-  "generatedAt": "2026-11-04T14:00:04.533Z",
-  "datasetVersion": "math7-competition-v1",
+  "generatedAt": "2026-11-06T04:40:46.969Z",
+  "datasetVersion": "math7-official-v1",
   "analysisVersion": "math7-analysis-v1",
-  "developmentSample": true,
+  "officialData": true,
   "checks": [
     {
       "id": "topics",
       "passed": true,
       "value": 3,
-      "expectation": "2-3 个学习主题"
+      "expectation": "3 个学习主题"
+    },
+    {
+      "id": "requirements",
+      "passed": true,
+      "value": 9,
+      "expectation": "9 个官方观察指标"
+    },
+    {
+      "id": "materials_questions",
+      "passed": true,
+      "value": {
+        "materials": 11,
+        "questions": 54
+      },
+      "expectation": "11 份学习材料、54 道题"
     },
     {
       "id": "students",
       "passed": true,
-      "value": 30,
-      "expectation": "公开样例参考规模 20-50 名学生"
+      "value": 40,
+      "expectation": "40 名模拟学生"
     },
     {
       "id": "records",
       "passed": true,
-      "value": 417,
-      "expectation": "公开样例参考规模 300-1000 条记录"
+      "value": 806,
+      "expectation": "806 条原始作答记录"
     },
     {
       "id": "quality_issues",
       "passed": true,
       "value": {
-        "duplicate": 1,
-        "anomaly": 4,
-        "missingObservation": 14
+        "supersededRevision": 7,
+        "pendingReview": 4,
+        "duplicate": 0,
+        "anomaly": 2,
+        "missingObservation": 5
       },
-      "expectation": "样例覆盖重复、异常和缺失观察"
+      "expectation": "正确区分旧修订、待评分、异常和缺失观察"
     },
     {
       "id": "individual_cases",
       "passed": true,
-      "value": 30,
+      "value": 40,
       "expectation": "每名模拟学生均有个体摘要"
     },
     {
       "id": "recommendation_traceability",
       "passed": true,
-      "value": 30,
+      "value": 40,
       "expectation": "每条建议包含理由、完成标准和证据"
     }
   ],

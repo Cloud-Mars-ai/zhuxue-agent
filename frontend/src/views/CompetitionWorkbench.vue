@@ -55,6 +55,17 @@ const overview = computed(() => store.overview)
 const quality = computed(() => store.analysis.quality)
 const group = computed(() => store.analysis.group)
 const curriculum = computed(() => store.dataset)
+const datasetOfficial = computed(() => !!curriculum.value.meta?.official)
+const datasetStatusTitle = computed(() =>
+  datasetOfficial.value
+    ? '已接入赛方正式模拟学情数据，仅限本次比赛使用。'
+    : '当前为固定种子开发样例，不是赛方正式数据。',
+)
+const datasetStatusDescription = computed(
+  () =>
+    curriculum.value.meta?.disclaimer ||
+    '正式数据到位后，可通过“导入数据”替换原始记录，分析与导出逻辑保持不变。',
+)
 const selectedStudentId = computed({
   get: () =>
     store.selectedStudentId ||
@@ -200,16 +211,16 @@ async function handleImport(event) {
 async function resetSample() {
   try {
     await ElMessageBox.confirm(
-      '将清除当前导入数据并恢复固定种子的开发样例。教师调整记录会保留。',
-      '恢复开发样例',
+      '将清除当前导入数据并重新载入赛方模拟学情数据。教师调整记录会保留。',
+      '重新载入赛方数据',
       {
-        confirmButtonText: '恢复',
+        confirmButtonText: '重新载入',
         cancelButtonText: '取消',
         type: 'warning',
       },
     )
     await store.resetDataset()
-    ElMessage.success('已恢复开发样例')
+    ElMessage.success('已重新载入赛方模拟学情数据')
   } catch {
     // 用户取消
   }
@@ -321,7 +332,7 @@ async function downloadPackage() {
     ),
   )
   zip.file(
-    'development-sample-dataset.json',
+      'competition-dataset.json',
     JSON.stringify(store.dataset, null, 2),
   )
   zip.file(
@@ -335,7 +346,7 @@ async function downloadPackage() {
         generatedAt: new Date().toISOString(),
         datasetVersion: store.dataset.meta?.version || '',
         analysisVersion: store.analysis.meta?.analysisVersion || '',
-        developmentSample: !store.dataset.meta?.official,
+        officialData: !!store.dataset.meta?.official,
         checks: {
           topics: store.dataset.topics.length,
           students: store.dataset.students.length,
@@ -471,14 +482,11 @@ onMounted(async () => {
 
     <el-alert
       class="cw-alert"
-      type="warning"
+      :type="datasetOfficial ? 'success' : 'warning'"
       :closable="false"
       show-icon
-      title="当前为固定种子开发样例，不是赛方正式数据。"
-      :description="
-        curriculum.meta?.disclaimer ||
-        '正式数据到位后，可通过“导入数据”替换原始记录，分析与导出逻辑保持不变。'
-      "
+      :title="datasetStatusTitle"
+      :description="datasetStatusDescription"
     />
 
     <nav class="cw-steps" aria-label="工作台步骤">
@@ -587,7 +595,7 @@ onMounted(async () => {
         <article>
           <span>课程要求</span>
           <strong>{{ overview.requirements }}</strong>
-          <small>含前置关系</small>
+          <small>官方观察指标</small>
         </article>
         <article>
           <span>材料 / 题目</span>
@@ -597,7 +605,7 @@ onMounted(async () => {
         <article>
           <span>学生 / 原始记录</span>
           <strong>{{ overview.students }} / {{ overview.records }}</strong>
-          <small>脱敏开发样例</small>
+          <small>{{ datasetOfficial ? '赛方脱敏模拟数据' : '脱敏开发样例' }}</small>
         </article>
       </div>
 
@@ -614,6 +622,8 @@ onMounted(async () => {
           </div>
           <div class="cw-quality-grid">
             <div><span>有效记录</span><strong>{{ quality.validCount }}</strong></div>
+            <div><span>修订覆盖</span><strong>{{ quality.supersededRevisionCount }}</strong></div>
+            <div><span>待评分</span><strong>{{ quality.pendingReviewCount }}</strong></div>
             <div><span>重复记录</span><strong>{{ quality.duplicateCount }}</strong></div>
             <div><span>异常引用</span><strong>{{ quality.anomalyCount }}</strong></div>
             <div><span>缺失字段</span><strong>{{ quality.missingFieldCount }}</strong></div>
@@ -641,7 +651,7 @@ onMounted(async () => {
           </el-table>
           <div v-if="isTeacher" class="cw-sub-actions">
             <el-button plain @click="openImport">导入正式数据包</el-button>
-            <el-button text @click="resetSample">恢复开发样例</el-button>
+            <el-button text @click="resetSample">重新载入赛方数据</el-button>
           </div>
         </article>
 

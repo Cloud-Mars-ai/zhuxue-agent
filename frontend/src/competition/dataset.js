@@ -1,11 +1,11 @@
 /**
- * 七年级数学赛事开发样例。
+ * 七年级数学赛事数据。
  *
- * 这不是赛方正式数据。正式数据到位后，保持字段契约不变，只替换原始对象。
- * 所有记录由固定种子生成，保证每次分析结果可复现。
+ * 默认加载赛方公开模拟学情数据；固定种子开发样例仅作为离线开发兜底。
  */
+import { buildOfficialCompetitionDataset } from './officialDataset.js'
 
-export const COMPETITION_DATASET_VERSION = 'math7-competition-v1'
+export const COMPETITION_DATASET_VERSION = 'math7-official-v1'
 export const COMPETITION_DATASET_SEED = 20261104
 
 export const TOPICS = [
@@ -692,15 +692,22 @@ function buildLearningRecords(random, questions) {
 export const DATA_DICTIONARY = [
   { field: 'recordId', aliases: ['id', 'record_id'], type: 'string', required: true },
   { field: 'studentId', aliases: ['student_id', '学生编号'], type: 'string', required: true },
-  { field: 'questionId', aliases: ['question_id', '题目编号'], type: 'string', required: true },
+  { field: 'questionId', aliases: ['question_id', '题目编号', '材料编号'], type: 'string', required: true },
   { field: 'materialId', aliases: ['material_id', '材料编号'], type: 'string', required: false },
+  { field: 'attemptEventId', aliases: ['attempt_event_id', '作答事件编号'], type: 'string', required: false },
+  { field: 'revision', aliases: ['修订版本'], type: 'number', required: false },
+  { field: 'gradingStatus', aliases: ['评分状态'], type: 'enum', required: false },
+  { field: 'nodeId', aliases: ['节点编号'], type: 'string', required: false },
   { field: 'status', aliases: ['result', '作答结果'], type: 'enum', required: true },
   { field: 'score', aliases: ['得分'], type: 'number', required: false },
   { field: 'maxScore', aliases: ['满分', 'max_score'], type: 'number', required: false },
-  { field: 'attemptedAt', aliases: ['timestamp', '作答时间'], type: 'datetime', required: false },
+  { field: 'attemptedAt', aliases: ['timestamp', '作答时间', '模拟提交时间'], type: 'datetime', required: false },
+  { field: 'finalAnswer', aliases: ['学生最终作答'], type: 'string', required: false },
+  { field: 'solution', aliases: ['解答过程'], type: 'string', required: false },
+  { field: 'scoringPointScores', aliases: ['评分点得分'], type: 'string', required: false },
 ]
 
-export function buildCompetitionDataset(seed = COMPETITION_DATASET_SEED) {
+export function buildDevelopmentCompetitionDataset(seed = COMPETITION_DATASET_SEED) {
   const random = mulberry32(seed)
   const questions = buildQuestions(random)
   const learningRecords = buildLearningRecords(random, questions)
@@ -748,6 +755,10 @@ export function buildCompetitionDataset(seed = COMPETITION_DATASET_SEED) {
     ],
     learningRecords,
   }
+}
+
+export function buildCompetitionDataset() {
+  return buildOfficialCompetitionDataset()
 }
 
 export function getRequirement(dataset, requirementId) {

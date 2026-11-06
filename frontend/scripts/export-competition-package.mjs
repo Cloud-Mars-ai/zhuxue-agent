@@ -44,7 +44,8 @@ await write('recommendations.json', json(taskPackage.recommendations))
 await write('case-verification.json', json(taskPackage.caseVerification))
 await write('schema.json', json(taskPackage.schema))
 await write('input-sample.json', json(inputSample))
-await write('development-sample-dataset.json', json(dataset))
+await write('competition-dataset.json', json(dataset))
+await write('teacher-adjustments.json', json({}))
 await write(
   'recommendations-flat.csv',
   `\uFEFF${toCsv(buildFlattenedRecommendations(analysis), [
@@ -73,36 +74,52 @@ await write(
 const checks = [
   {
     id: 'topics',
-    passed: dataset.topics.length >= 2 && dataset.topics.length <= 3,
+    passed: dataset.topics.length === 3,
     value: dataset.topics.length,
-    expectation: '2-3 个学习主题',
+    expectation: '3 个学习主题',
+  },
+  {
+    id: 'requirements',
+    passed: dataset.requirements.length === 9,
+    value: dataset.requirements.length,
+    expectation: '9 个官方观察指标',
+  },
+  {
+    id: 'materials_questions',
+    passed: dataset.materials.length === 11 && dataset.questions.length === 54,
+    value: {
+      materials: dataset.materials.length,
+      questions: dataset.questions.length,
+    },
+    expectation: '11 份学习材料、54 道题',
   },
   {
     id: 'students',
-    passed: dataset.students.length >= 20 && dataset.students.length <= 50,
+    passed: dataset.students.length === 40,
     value: dataset.students.length,
-    expectation: '公开样例参考规模 20-50 名学生',
+    expectation: '40 名模拟学生',
   },
   {
     id: 'records',
-    passed:
-      dataset.learningRecords.length >= 300 &&
-      dataset.learningRecords.length <= 1000,
+    passed: dataset.learningRecords.length === 806,
     value: dataset.learningRecords.length,
-    expectation: '公开样例参考规模 300-1000 条记录',
+    expectation: '806 条原始作答记录',
   },
   {
     id: 'quality_issues',
     passed:
-      analysis.quality.duplicateCount > 0 &&
+      analysis.quality.supersededRevisionCount === 7 &&
+      analysis.quality.pendingReviewCount === 4 &&
       analysis.quality.anomalyCount > 0 &&
       analysis.quality.missingObservationCount > 0,
     value: {
+      supersededRevision: analysis.quality.supersededRevisionCount,
+      pendingReview: analysis.quality.pendingReviewCount,
       duplicate: analysis.quality.duplicateCount,
       anomaly: analysis.quality.anomalyCount,
       missingObservation: analysis.quality.missingObservationCount,
     },
-    expectation: '样例覆盖重复、异常和缺失观察',
+    expectation: '正确区分旧修订、待评分、异常和缺失观察',
   },
   {
     id: 'individual_cases',
@@ -129,7 +146,7 @@ const verification = {
   generatedAt: new Date().toISOString(),
   datasetVersion: dataset.meta.version,
   analysisVersion: analysis.meta.analysisVersion,
-  developmentSample: !dataset.meta.official,
+  officialData: !!dataset.meta.official,
   checks,
   passed: checks.every((item) => item.passed),
 }
@@ -139,7 +156,7 @@ console.log(
   JSON.stringify(
     {
       outputDir,
-      files: 14,
+      files: 15,
       validationPassed: verification.passed,
       rawRecords: analysis.quality.rawCount,
       validRecords: analysis.quality.validCount,
