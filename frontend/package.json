@@ -16,6 +16,7 @@
     "test:text-repair": "node scripts/test-text-repair.mjs",
     "test:visualization": "node scripts/test-visualization.mjs",
     "test:course-script": "node scripts/test-course-script.mjs",
+    "test:course-compiler": "node scripts/test-course-compiler.mjs",
     "sync:competition-data": "node scripts/sync-competition-data.mjs",
     "export:competition": "node scripts/export-competition-package.mjs"
   },

@@ -5,6 +5,7 @@ import {
 } from '@/utils/learnerProfile'
 import { SIMULATION_MODELS } from '@/utils/knowledgeVisualization'
 import { errorPatternsFor, highEmphasisPatterns } from '@/data/errorPatterns'
+import { buildSceneRepairPrompt } from '@/utils/courseRepair'
 
 /** 交互模型白名单：提示词只允许模型从这里选，参数以模型声明为准。 */
 function simulationGuide() {
@@ -56,6 +57,16 @@ function sourceGuide(sourceChunkIds = []) {
   return sourceChunkIds.length
     ? `可用材料片段 ID：${sourceChunkIds.map((id) => `"${id}"`).join('、')}。只能从这里选。`
     : '当前没有片段 ID；sourceChunkIds 返回空数组。'
+}
+
+/**
+ * 证据账本契约（编译器第三层）：关键结论、例题解析和题目必须能回到
+ * 一个来源；模型只能引用给定 chunkId，不能凭空增加来源。
+ */
+function evidenceGuide(sourceChunkIds = []) {
+  return sourceChunkIds.length
+    ? '证据契约：关键结论、例题解析和题目必须在 evidenceRefs 中给出依据的材料片段 ID（只能从上面可用 ID 里选，没有依据就标注"待核对"或删除；不许编造来源）。'
+    : '证据契约：当前没有可用材料片段，evidenceRefs 一律返回空数组；无法确认的事实标注"待核对"，不许编造出处。'
 }
 
 export function courseBlueprintPrompt({
@@ -119,6 +130,9 @@ export function courseBlueprintPrompt({
 16. 课程标题从用户主题提炼，短、可扫读，不超过 30 个汉字；不要写“课程”“讲义”等空泛词。
 17. learnerProfile 必须先判断再填写；若用户或材料明确给出年级，必须采用，不能机械沿用系统初判。
 18. 理科、几何、函数类概念如果存在“改变一个条件看结果”的结构，在 visualHint 中标注 recommend，并在 description 中说明该场景需要配可交互模型（拖动参数看变化）。
+19. 知识点声明（课程编译 IR）：在 knowledgePoints 中列出本课全部知识点，name 必须与场景 keyPoints 用词一致（跨场景复用时写同一个名称）；每个知识点给 difficulty（1=识记、单一条件；2=应用、两个条件；3=综合、含易错点）和 prerequisites（先修知识点名称，没有就留空数组）。先修关系必须真实：后面的知识点依赖前面的，不允许把先修写在后面。
+20. 每个场景用 knowledgePoints 声明讲授/练习的知识点名称，用 prerequisites 声明"开始本场景前必须已掌握"的知识点；prerequisites 指向的知识点必须由更早的场景引入。
+21. 每个 quiz/practice 场景给出 exerciseSpec（题型从 choice/fill/judge 选，至少 2 类、共 2 题以上）；每个场景给出 completionCriteria（1–2 条可观察的完成标准，学生能做到什么算过关）。
 
 ${TEXT_INTEGRITY_RULE}
 
@@ -141,6 +155,13 @@ ${jsonOnly(`{
     "teaching": "适配该学段的教学方式与例子类型",
     "board": "板书、模型或交互演示方式"
   },
+  "knowledgePoints": [
+    {
+      "name": "知识点名称（与场景 keyPoints 用词一致，跨场景复用同一名称）",
+      "difficulty": 1,
+      "prerequisites": ["先修知识点名称"]
+    }
+  ],
   "outlines": [
     {
       "id": "scene_1",
@@ -152,6 +173,10 @@ ${jsonOnly(`{
       "takeaways": ["带走就能用的结论1", "结论2", "结论3"],
       "difficultyTier": 1,
       "estimatedMinutes": 4,
+      "knowledgePoints": ["本场景讲授的知识点名称"],
+      "prerequisites": ["本场景开始前必须已掌握的知识点名称"],
+      "exerciseSpec": { "types": ["choice", "judge"], "count": 2 },
+      "completionCriteria": ["可观察的完成标准1", "完成标准2"],
       "sourceChunkIds": ["材料片段ID"],
       "visualHint": {
         "level": "recommend|optional|skip",
@@ -212,7 +237,9 @@ function blockContractGuide() {
 - grow:"staged"：分类树按 stages 阶段生长（stages:[{label, branches:[分支下标], expand:[展开下标的分支]}]）
 - persistent:true：常驻面板，不随揭示进度撤下
 - marks：[{target: 正文中的原词, style: box|underline|circle|circle-char|cross|check|stop}] 文本高亮
-- reveal:"tap"：需学生点击后展开（默认随讲解自动出现）`
+- reveal:"tap"：需学生点击后展开（默认随讲解自动出现）
+
+证据标注（编译器第三层）：definition / wrong-first / callout(tone=warn) / question 这四类关键 block 可带 evidenceRefs:["材料片段ID"]，声明这块内容的材料依据；没有依据的内容改为"待核对"或删除，不许编造片段 ID。`
 }
 
 export function courseScenePrompt({ project, outline, materialText, sourceChunkIds = [], previousScene }) {
@@ -274,6 +301,7 @@ export function courseScenePrompt({ project, outline, materialText, sourceChunkI
 - ${common.previous}
 - ${common.sourceGuide}
 - 每道题必须有一个明确正确答案，干扰项要合理且互斥。
+- ${evidenceGuide(sourceChunkIds)}
 - ${common.textIntegrity}
 - 只输出 JSON，不要 Markdown、解释或代码块。
 
@@ -285,7 +313,8 @@ ${jsonOnly(`{
       "options": ["选项A", "选项B", "选项C", "选项D"],
       "answerIndex": 0,
       "explanation": "为什么这个答案正确，以及主要易错点",
-      "concept": "考查概念"
+      "concept": "考查概念",
+      "evidenceRefs": ["材料片段ID"]
     }
   ]
 }`)}`
@@ -327,11 +356,13 @@ ${common.materialText}
 - 参考答案只列判断要点，不给一篇标准答案。
 - ${common.previous}
 - ${common.sourceGuide}
+- ${evidenceGuide(sourceChunkIds)}
 - ${common.textIntegrity}
 - 只输出 JSON，不要 Markdown、解释或代码块。
 
 ${jsonOnly(`{
   "sourceChunkIds": ["材料片段ID"],
+  "evidenceRefs": ["材料片段ID"],
   "prompt": "案例情境与作答要求",
   "referencePoints": ["参考要点1", "参考要点2", "参考要点3"],
   "rubric": [
@@ -394,6 +425,7 @@ ${errorPatternGuide(project.domain, learnerProfile.subject)}
 - 小学内容使用 2–3 帧、短句和一个具体比喻；初中使用 3–4 帧和可操作模型；高中及大学只有在推演关系确实需要时才使用 animation。
 - ${common.visualHint} 预判为 recommend 时，必须加入恰好 1 个 simulation block，放在 definition 之后；model 从下面清单中选最贴切的一个，params 只填该模型声明的参数，observe 写 2–3 条"只改一个条件"的观察任务，linkConcept 填本页 definition 的概念名。预判为 optional 时，存在明确参数关系才加；skip 时不加。
 - ${common.sourceGuide}
+- ${evidenceGuide(sourceChunkIds)}
 - ${common.textIntegrity}
 - 只输出 JSON，不要 Markdown、解释或代码块。
 
@@ -409,13 +441,13 @@ ${jsonOnly(`{
     "subtitle": "一句话说明本页解决什么问题",
     "blocks": [
       { "type": "outline", "title": "本节路线图", "items": ["第一站", "第二站", "第三站"], "persistent": true },
-      { "type": "definition", "title": "核心概念", "term": "概念名", "concreteAnchor": "学生能指认的具体例子", "definition": "定义", "analogy": "理解抓手", "method": ["步骤1", "步骤2"], "verify": "回带检查" },
+      { "type": "definition", "title": "核心概念", "term": "概念名", "concreteAnchor": "学生能指认的具体例子", "definition": "定义", "analogy": "理解抓手", "method": ["步骤1", "步骤2"], "verify": "回带检查", "evidenceRefs": ["材料片段ID"] },
       { "type": "simulation", "title": "动手看：圆周运动与向心力", "model": "circular-motion", "params": { "radius": 90, "speed": 4, "mass": 2 }, "observe": ["保持半径不变，把速度调到最大，看向心力怎么变", "保持速度不变，把半径拉到最大"], "linkConcept": "向心力", "caption": "先读定义，再拖参数验证它" },
       { "type": "table", "title": "概念对照", "columns": ["概念", "一句话解释", "案例用法"], "rows": [["A", "解释A", "用法A"], ["B", "解释B", "用法B"]] },
       { "type": "classification-tree", "title": "有理数怎么分", "root": { "label": "有理数", "note": "可写成两个整数之比" }, "branches": [{ "label": "整数", "note": "正整数、0、负整数", "children": [{ "label": "正整数", "note": "1,2,3…" }, { "label": "负整数", "note": "-1,-2…" }] }, { "label": "分数", "note": "含有限小数和循环小数" }], "grow": "staged", "stages": [{ "label": "第一层：先分整数和分数", "branches": [0, 1] }, { "label": "第二层：展开整数", "branches": [0, 1], "expand": [0] }], "caption": "分类看边界，别漏负数" },
       { "type": "number-line", "title": "在数轴上定位", "min": -4, "max": 4, "ticks": [{ "value": -4, "label": "-4" }, { "value": 0, "label": "0" }, { "value": 4, "label": "4" }], "points": [{ "value": -2, "label": "-2", "tone": "negative" }, { "value": 3, "label": "3", "tone": "positive" }], "caption": "原点左边是负数" },
       { "type": "fill-blank", "title": "口诀留白", "prompt": "两数相乘，同号得___，异号得___。", "answers": ["正", "负"], "hint": "先想 (-2)×3 和 (-2)×(-3)" },
-      { "type": "wrong-first", "title": "这道题先看错解", "wrongSteps": ["移项：3x = 5 - 2x", "得 5x = 5", "x = 1"], "errorIndex": 0, "errorHint": "检查移项后符号对不对", "correctSteps": ["移项要变号：3x + 2x = 5", "5x = 5", "x = 1，回带检验"], "takeaway": "移项必变号" },
+      { "type": "wrong-first", "title": "这道题先看错解", "wrongSteps": ["移项：3x = 5 - 2x", "得 5x = 5", "x = 1"], "errorIndex": 0, "errorHint": "检查移项后符号对不对", "correctSteps": ["移项要变号：3x + 2x = 5", "5x = 5", "x = 1，回带检验"], "takeaway": "移项必变号", "evidenceRefs": ["材料片段ID"] },
       { "type": "animation", "title": "跟着变化看", "caption": "点下一步观察条件改变后发生了什么", "steps": [{ "label": "初始状态", "detail": "先看起点" }, { "label": "改变条件", "detail": "只改变一个条件" }, { "label": "观察结果", "detail": "说出变化与原因" }] },
       { "type": "callout", "title": "易错点", "tone": "warn", "text": "提醒", "mnemonic": "口诀：异号两数相加，取绝对值大的符号" },
       { "type": "question", "title": "停下来想一想", "prompt": "问题", "options": ["选项A", "选项B"], "transition": { "enter": "pop", "durationMs": 420 } }
@@ -540,4 +572,22 @@ export function reviewEmphasisGuide(domain = 'math7') {
   return `本课高频易错点（开场与收尾各强调一次）：${patterns
     .map((pattern) => pattern.wrong)
     .join('；')}。`
+}
+
+/**
+ * 第四阶段：定向修复提示词（验证—修复循环的模型侧）。
+ *
+ * 与"重新生成整门课"相对：只把未通过校验的问题场景/block 发给模型，
+ * 要求最小改动。提示词主体由 utils/courseRepair.js 的
+ * buildSceneRepairPrompt 生成（node 可单测），这里只包一层
+ * 请求参数（低温、JSON 契约）。
+ */
+export function courseSceneRepairPrompt({ plan, scene, issues = [], materialText = '', allowedChunkIds = [] }) {
+  return {
+    system: buildSceneRepairPrompt({ plan, scene, issues, materialText, allowedChunkIds }),
+    user: `请输出修复后的场景 JSON（字段契约与首次生成一致）。课程：${plan?.title || ''}；场景：${scene?.title || ''}。`,
+    temperature: 0.2,
+    maxTokens: 3600,
+    reasoningEffort: 'low',
+  }
 }

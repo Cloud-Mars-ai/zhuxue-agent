@@ -1,5 +1,10 @@
 import { sendChatJSON } from './chat'
-import { courseBlueprintPrompt, courseScenePrompt, courseScriptPrompt } from './prompts/courseStudio'
+import {
+  courseBlueprintPrompt,
+  courseScenePrompt,
+  courseSceneRepairPrompt,
+  courseScriptPrompt,
+} from './prompts/courseStudio'
 import { PROMPT_VERSION } from './prompts/shared'
 import { isEnabled } from '@/config/flags'
 import { useKnowledgeStore } from '@/stores/knowledge'
@@ -12,6 +17,17 @@ import {
   normalizeCourseBlueprint,
   normalizeCourseSceneContent,
 } from '@/utils/courseStudio'
+import {
+  normalizeCoursePlan,
+  planFromBlueprint,
+} from '@/utils/courseIR'
+import { validateCoursePlan } from '@/utils/courseValidator'
+import { repairCoursePlan, repairSceneContent } from '@/utils/courseRepair'
+import {
+  auditLedger,
+  extractSceneClaims,
+} from '@/utils/evidenceLedger'
+import { checkSubjectConsistency } from '@/utils/subjectCheck/index'
 import {
   buildLocalCourseScript,
   normalizeCourseScript,
@@ -276,7 +292,14 @@ async function sceneSources(project, outline) {
 }
 
 /** 第二阶段：只生成一个已确认场景，调用方可逐场景更新进度和恢复。 */
-export async function generateCourseScene({ project, outline, previousScene = null, signal }) {
+export async function generateCourseScene({
+  project,
+  outline,
+  previousScene = null,
+  signal,
+  plan = null,
+  ledger = null,
+}) {
   const sources = await sceneSources(project, outline)
   const materialText = sources.text || chapterFallback(project.chapter, project.domain)
   const allowedSourceIds = sources.chunks.map((chunk) => chunk.id)
@@ -299,10 +322,22 @@ export async function generateCourseScene({ project, outline, previousScene = nu
       : null
 
   if (!modelReady()) {
+    const compiled = isEnabled('courseCompiler')
+      ? compileSceneContent({
+          project: profiledProject,
+          outline,
+          content: localCompetitionContent || buildLocalCourseSceneContent(profiledProject, outline),
+          plan,
+          ledger,
+        })
+      : null
     return {
-      content: localCompetitionContent || buildLocalCourseSceneContent(profiledProject, outline),
+      content: compiled?.content || localCompetitionContent || buildLocalCourseSceneContent(profiledProject, outline),
       sources: sourceSummary(sources.chunks),
       fallback: true,
+      evidence: compiled?.evidence || [],
+      subjectIssues: compiled?.subjectIssues || [],
+      repairs: compiled?.repairs || [],
       error: null,
     }
   }
@@ -328,11 +363,47 @@ export async function generateCourseScene({ project, outline, previousScene = nu
       },
       signal,
     })
+    let content = result.value
+    let compiled = null
+    if (isEnabled('courseCompiler')) {
+      compiled = compileSceneContent({
+        project: profiledProject,
+        outline,
+        content,
+        plan,
+        ledger,
+      })
+      content = compiled.content
+      // 仍有 error 级学科问题且模型可用时，做一次定向修复（不重生成整门课）
+      const blocking = (compiled.unresolved || []).filter((item) => item.severity === 'error')
+      if (blocking.length) {
+        const repaired = await repairCourseSceneWithModel({
+          project: profiledProject,
+          outline,
+          content,
+          issues: blocking,
+          signal,
+        })
+        if (repaired?.content) {
+          compiled = compileSceneContent({
+            project: profiledProject,
+            outline,
+            content: repaired.content,
+            plan,
+            ledger,
+          })
+          content = compiled.content
+        }
+      }
+    }
     return {
-      content: result.value,
+      content,
       sources: sourceSummary(sources.chunks),
       fallback: false,
       repaired: result.repaired,
+      evidence: compiled?.evidence || [],
+      subjectIssues: compiled?.subjectIssues || [],
+      repairs: compiled?.repairs || [],
       error: null,
     }
   } catch (error) {
@@ -390,4 +461,153 @@ export async function generateCourseScript({ project, outline, scene, signal }) 
     console.warn(`[course-studio] ${outline.type} script fell back:`, error)
     return { script: local, fallback: true, error }
   }
+}
+
+// ============================================================
+// 课程编译器（Course Compiler）—— 研究型管线
+// 规划 IR → 内容生成 → 约束验证 → 自动修复 → 板书/讲稿渲染
+// ============================================================
+
+/**
+ * 蓝图编译：在第一阶段（大纲）之后插入 IR 化与硬约束验证/修复。
+ * 返回原 blueprint 结果 + plan / validation / repairs / unresolved。
+ */
+export async function compileCourseBlueprint(input = {}) {
+  const base = await generateCourseBlueprint(input)
+  if (!isEnabled('courseCompiler')) {
+    return { ...base, plan: null, validation: null, repairs: [], unresolved: [] }
+  }
+  const context = {
+    chapter: input.chapter || '',
+    objective: input.objective || '',
+    audience: input.audience || '',
+    durationMinutes: input.durationMinutes || 30,
+    domain: input.domain || base.blueprint?.domain || 'general',
+    allowedChunkIds: (base.sources || []).map((source) => source.id),
+    requirements: input.requirements || [],
+  }
+  const plan = planFromBlueprint(base.blueprint, context)
+  if (!plan) {
+    return { ...base, plan: null, validation: null, repairs: [], unresolved: [] }
+  }
+  const validation = validateCoursePlan(plan)
+  const { plan: repaired, repairs, unresolved } = repairCoursePlan(plan, validation)
+  return {
+    ...base,
+    plan: repaired,
+    validation: validateCoursePlan(repaired),
+    repairs,
+    unresolved,
+  }
+}
+
+/**
+ * 场景内容编译：学科一致性检查 → 证据账本抽取 → 确定性修复。
+ * 不替换 generateCourseScene 的生成结果，只在其后挂审计信息。
+ */
+function compileSceneContent({ project, outline, content, plan, ledger }) {
+  const scene =
+    plan?.scenes?.find((item) => item.id === outline.id) ||
+    plan?.scenes?.[plan.scenes.length - 1] ||
+    outline
+  const subject = checkSubjectConsistency({
+    domain: project.domain,
+    subject: project.learnerProfile?.subject || '',
+    scene,
+    content,
+  })
+  const evidence = ledger ? extractSceneClaims(ledger, { plan, scene, content }) : []
+  const { content: fixed, repairs, unresolved } = repairSceneContent(scene, content, subject.issues)
+  const recheck = checkSubjectConsistency({
+    domain: project.domain,
+    subject: project.learnerProfile?.subject || '',
+    scene,
+    content: fixed,
+  })
+  // 修复后重新抽取证据，保证账本与最终内容一致
+  if (ledger && fixed !== content) {
+    for (const claim of evidence) {
+      const index = ledger.claims.findIndex((item) => item.id === claim.id)
+      if (index >= 0) ledger.claims.splice(index, 1)
+    }
+    evidence.length = 0
+    evidence.push(...extractSceneClaims(ledger, { plan, scene, content: fixed }))
+  }
+  return {
+    content: fixed,
+    evidence,
+    subjectIssues: recheck.issues,
+    subjectChecker: subject.checker,
+    repairs,
+    unresolved,
+  }
+}
+
+/**
+ * 定向模型修复：只重生成未通过校验的场景（验证—修复循环的模型侧）。
+ * 失败返回 null，由调用方保留确定性修复后的内容。
+ */
+export async function repairCourseSceneWithModel({
+  project,
+  outline,
+  content,
+  issues = [],
+  signal,
+}) {
+  if (!modelReady() || !issues.length) return null
+  const prompt = courseSceneRepairPrompt({
+    plan: null,
+    scene: outline,
+    issues,
+    materialText: '',
+    allowedChunkIds: outline.sourceChunkIds || project.sourceChunkIds || [],
+  })
+  try {
+    const result = await requestStructured({
+      prompt,
+      normalize: (data) =>
+        normalizeCourseSceneContent(data, {
+          project,
+          outline,
+          allowedSourceIds: outline.sourceChunkIds || [],
+        }),
+      task: 'course.scene.repair',
+      kind: 'course',
+      traceRefs: { projectId: project.id, outlineId: outline.id, type: outline.type },
+      signal,
+    })
+    return { content: result.value, repaired: true }
+  } catch (error) {
+    console.warn('[course-studio] scene repair fell back:', error)
+    return null
+  }
+}
+
+/** 从项目大纲重建 IR（教师编辑大纲后调用）。 */
+export function recompilePlan(project) {
+  if (!isEnabled('courseCompiler')) return { plan: null, validation: null, repairs: [] }
+  const plan = normalizeCoursePlan(
+    {
+      courseId: project.id,
+      courseTitle: project.title,
+      courseSummary: project.summary,
+      languageDirective: project.languageDirective,
+      learnerProfile: project.learnerProfile,
+      domain: project.domain,
+      outlines: project.outlines || [],
+    },
+    {
+      chapter: project.chapter,
+      objective: project.objective,
+      audience: project.audience,
+      durationMinutes: project.durationMinutes,
+      domain: project.domain,
+      allowedChunkIds: project.sourceChunkIds || [],
+      requirements: [],
+    },
+  )
+  if (!plan) return { plan: null, validation: null, repairs: [] }
+  const validation = validateCoursePlan(plan)
+  const { plan: repaired, repairs } = repairCoursePlan(plan, validation)
+  return { plan: repaired, validation: validateCoursePlan(repaired), repairs }
 }

@@ -2,7 +2,7 @@
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { generateCourseBlueprint } from '@/api/courseStudio'
+import { compileCourseBlueprint } from '@/api/courseStudio'
 import BoardCanvas from '@/components/BoardCanvas.vue'
 import { isEnabled } from '@/config/flags'
 import { useCourseStudioStore } from '@/stores/courseStudio'
@@ -137,7 +137,7 @@ async function createOutline() {
     // 草稿回显、重新生成时反复出现（净化在 API 入口还有一道，这里双保险）
     const cleanObjective = repairText(draft.objective.trim()).text
     const cleanChapter = repairText(draft.chapter.trim()).text
-    const result = await generateCourseBlueprint({
+    const result = await compileCourseBlueprint({
       chapter: cleanChapter,
       objective: cleanObjective,
       audience: draft.audience,
@@ -158,12 +158,15 @@ async function createOutline() {
     selectedSceneId.value = saved.outlines[0]?.id || ''
     showSetup.value = false
     await router.replace({ query: { ...route.query, project: saved.id } })
+    const repairCount = result.repairs?.length || 0
     ElMessage.success(
       result.fallback
         ? '已按用户主题和上传材料在本地生成可编辑大纲'
         : result.repaired
           ? '课程大纲已生成，并自动修复了结构'
-          : '课程大纲已生成，请先审阅',
+          : repairCount
+            ? `课程大纲已生成，编译器自动修复 ${repairCount} 处约束问题`
+            : '课程大纲已生成，请先审阅',
     )
   } catch (error) {
     ElMessage.error(error.message || '课程大纲生成失败')

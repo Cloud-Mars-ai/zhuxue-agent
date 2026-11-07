@@ -29,6 +29,7 @@ export const FEATURE_FLAGS = {
   citation: false, // 引用标签渲染（S3 后续：chunkId 回填页码）
   courseStudio: true, // 两阶段智能课程编排（大纲确认 → 逐场景生成）
   courseScript: true, // 第三层讲稿 beats（设问—停顿—确认链，与板书视觉事件对齐）
+  courseCompiler: true, // 课程编译器：规划 IR + 硬约束验证 + 证据账本 + 学科一致性 + 自动修复
 
   // —— S4 学习形态 ——
   deepLearn: false, // 章节学习路径

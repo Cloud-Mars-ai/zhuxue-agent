@@ -18,7 +18,7 @@ import { diagnoseGaps } from '@/utils/diagnose'
 import { buildFeed } from '@/utils/feed'
 import { importMaterialFile } from '@/utils/materialImport'
 import { repairText } from '@/utils/textRepair'
-import { generateCourseBlueprint } from '@/api/courseStudio'
+import { compileCourseBlueprint } from '@/api/courseStudio'
 import danceBuddySrc from '@/assets/nailong-dance.webp'
 
 const router = useRouter()
@@ -306,7 +306,7 @@ async function askHero() {
     const materialIds = customMaterials.value.map((item) => item.id)
     const audience =
       userStore.role === 'student' ? '本课程学生' : '本课程学习者'
-    const result = await generateCourseBlueprint({
+    const result = await compileCourseBlueprint({
       chapter: q,
       objective: q,
       audience: userStore.discipline ? `${audience}（${userStore.discipline}背景）` : audience,

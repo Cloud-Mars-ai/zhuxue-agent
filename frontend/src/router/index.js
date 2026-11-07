@@ -138,6 +138,12 @@ const routes = [
         meta: { title: '教师主控台', icon: 'DataBoard', roles: ['admin', 'teacher', 'ta'] },
       },
       {
+        path: 'compiler',
+        name: 'CourseCompiler',
+        component: () => import('@/views/web/CourseCompilerView.vue'),
+        meta: { title: '课程编译器', icon: 'Aim', roles: ['admin', 'teacher', 'ta'] },
+      },
+      {
         path: 'forum',
         name: 'Forum',
         component: () => import('@/views/web/Forum.vue'),
@@ -202,6 +208,7 @@ const routes = [
     'cases',
     'assessment',
     'console',
+    'compiler',
     'forum',
     'homework',
     'statistics',
@@ -286,6 +293,12 @@ const routes = [
         name: 'MCourseStudio',
         component: () => import('@/views/web/CourseStudio.vue'),
         meta: { title: '智能课程编排', mobile: true, nav: false },
+      },
+      {
+        path: 'compiler',
+        name: 'MCourseCompiler',
+        component: () => import('@/views/web/CourseCompilerView.vue'),
+        meta: { title: '课程编译器', mobile: true, nav: false },
       },
       {
         path: 'library',
@@ -374,6 +387,7 @@ const WEB_TO_MOBILE = {
   '/app/cases': '/m/case',
   '/app/assessment': '/m/assessment',
   '/app/studio': '/m/studio',
+  '/app/compiler': '/m/compiler',
   '/app/library': '/m/library',
   '/app/forum': '/m/forum',
   '/app/homework': '/m/homework',

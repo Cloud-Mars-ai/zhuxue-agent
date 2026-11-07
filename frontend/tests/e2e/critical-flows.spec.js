@@ -673,3 +673,30 @@ test('板书语音教学支持开关和音色切换', async ({ page }) => {
   await voiceSelect.selectOption('linjiajiejie')
   await expect(voiceSelect).toHaveValue('linjiajiejie')
 })
+
+test('课程编译器可在无项目时运行离线实验并给出组间指标', async ({ page }) => {
+  await seedUser(page, 'teacher')
+  await page.goto('/app/compiler')
+
+  await expect(page.getByRole('heading', { name: /把课程生成过程变成可验证的对象/ })).toBeVisible()
+  // 没有已编译课程时给出提示，但实验与评测仍可用
+  await expect(page.getByText(/还没有已编译的课程/)).toBeVisible()
+
+  await page.getByRole('tab', { name: '实验与评测' }).click()
+  await expect(page.getByTestId('compiler-run-experiment')).toBeVisible()
+
+  // 每组重复 1 次，缩短运行时间（12 任务 × 4 组 × 1 = 48 次生成）
+  await page.getByTestId('compiler-repeats').click()
+  await page.getByRole('option', { name: '1 次' }).click()
+
+  await page.getByTestId('compiler-run-experiment').click()
+  await expect(page.getByText(/实验完成：\d+ 次运行/)).toBeVisible({ timeout: 60_000 })
+
+  // 组间指标表：Full Compiler 应 100% 通过硬约束（模拟数据下）
+  const compilerRow = page.locator('.el-table__row', { hasText: 'Full Compiler' }).first()
+  await expect(compilerRow).toContainText('100%')
+
+  // 导出按钮可用
+  await expect(page.getByRole('button', { name: '导出 Markdown 报告' })).toBeEnabled()
+  await expect(page.getByRole('button', { name: '导出教师评分表' })).toBeEnabled()
+})

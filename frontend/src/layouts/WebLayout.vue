@@ -43,6 +43,7 @@ const GROUP_OF = {
   console: '教学',
   materials: '教学',
   studio: '教学',
+  compiler: '教学',
   statistics: '教学',
   forum: '讨论',
   homework: '作业',

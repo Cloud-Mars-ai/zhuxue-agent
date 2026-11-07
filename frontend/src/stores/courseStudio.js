@@ -1,8 +1,10 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { idbGet, idbSet } from '@/repositories/db'
-import { generateCourseScene, generateCourseScript } from '@/api/courseStudio'
+import { generateCourseScene, generateCourseScript, recompilePlan } from '@/api/courseStudio'
 import { courseSceneFingerprint } from '@/utils/courseStudio'
+import { createLedger } from '@/utils/evidenceLedger'
+import { auditLedger } from '@/utils/evidenceLedger'
 import { isEnabled } from '@/config/flags'
 import { normalizeLearnerProfile } from '@/utils/learnerProfile'
 
@@ -29,6 +31,20 @@ function normalizeSceneState(scene) {
     error: scene?.error || '',
     repaired: !!scene?.repaired,
     fingerprint: scene?.fingerprint || '',
+    // 编译器审计信息（courseCompiler 开启时填充）
+    evidence: Array.isArray(scene?.evidence) ? scene.evidence : [],
+    subjectIssues: Array.isArray(scene?.subjectIssues) ? scene.subjectIssues : [],
+    repairs: Array.isArray(scene?.repairs) ? scene.repairs : [],
+  }
+}
+
+function normalizeLedger(ledger) {
+  if (!ledger || typeof ledger !== 'object') return null
+  return {
+    planId: ledger.planId || '',
+    entries: Array.isArray(ledger.entries) ? ledger.entries : [],
+    claims: Array.isArray(ledger.claims) ? ledger.claims : [],
+    seq: Number(ledger.seq) || 0,
   }
 }
 
@@ -60,6 +76,11 @@ function normalizeProject(project) {
     sourceChunkIds: Array.isArray(project.sourceChunkIds) ? project.sourceChunkIds : [],
     sources: Array.isArray(project.sources) ? project.sources : [],
     scenes: (Array.isArray(project.scenes) ? project.scenes : []).map(normalizeSceneState),
+    // 课程编译器：IR / 验证报告 / 修复历史 / 证据账本
+    plan: project.plan && typeof project.plan === 'object' ? clone(project.plan) : null,
+    validation: project.validation && typeof project.validation === 'object' ? project.validation : null,
+    repairs: Array.isArray(project.repairs) ? project.repairs : [],
+    ledger: normalizeLedger(project.ledger),
     fallback: !!project.fallback,
     outlineError: project.outlineError || '',
     generatorVersion: project.generatorVersion || '',
@@ -125,6 +146,7 @@ export const useCourseStudioStore = defineStore('courseStudio', () => {
   async function createDraft({ ownerId, input, result }) {
     const now = new Date().toISOString()
     const outlines = clone(result.blueprint.outlines)
+    const compilerOn = isEnabled('courseCompiler') && !!result.plan
     const project = {
       id: `course-${Date.now().toString(36)}`,
       ownerId,
@@ -151,6 +173,10 @@ export const useCourseStudioStore = defineStore('courseStudio', () => {
       ),
       sources: clone(result.sources || []),
       scenes: outlines.map((scene) => normalizeSceneState({ outlineId: scene.id })),
+      plan: compilerOn ? clone(result.plan) : null,
+      validation: compilerOn ? result.validation : null,
+      repairs: compilerOn ? result.repairs || [] : [],
+      ledger: compilerOn ? createLedger(result.plan.courseId) : null,
       fallback: !!result.fallback,
       outlineError: result.error?.message || '',
       generatorVersion: 'openmaic-10a92d6-adapt-v3',
@@ -158,6 +184,21 @@ export const useCourseStudioStore = defineStore('courseStudio', () => {
       updatedAt: now,
     }
     return save(project)
+  }
+
+  /** 教师编辑大纲后重建 IR 并复检（验证—修复循环的计划侧重跑）。 */
+  async function recompile(projectId) {
+    const project = find(projectId)
+    if (!project) return null
+    const { plan, validation, repairs } = recompilePlan(project)
+    if (!plan) return project
+    project.plan = clone(plan)
+    project.validation = validation
+    project.repairs = [...(project.repairs || []), ...repairs]
+    project.ledger = normalizeLedger(project.ledger) || createLedger(plan.courseId)
+    project.updatedAt = new Date().toISOString()
+    await persist()
+    return project
   }
 
   async function updateProject(projectId, patch) {
@@ -256,6 +297,12 @@ export const useCourseStudioStore = defineStore('courseStudio', () => {
 
     const currentProject = find(projectId)
     const outlines = [...currentProject.outlines].sort((a, b) => a.order - b.order)
+    const plan = currentProject.plan || null
+    const ledger = currentProject.ledger || (isEnabled('courseCompiler') ? createLedger(projectId) : null)
+    if (ledger && !currentProject.ledger) {
+      currentProject.ledger = ledger
+      await persist()
+    }
     const queue = outlines
       .map((outline, index) => ({ outline, index }))
       .filter(({ outline }) => {
@@ -288,6 +335,8 @@ export const useCourseStudioStore = defineStore('courseStudio', () => {
             project: currentProject,
             outline,
             previousScene: outlines[index - 1] || null,
+            plan,
+            ledger,
           })
         await updateScene(projectId, outline.id, {
           status: result.fallback ? 'fallback' : 'ready',
@@ -295,6 +344,15 @@ export const useCourseStudioStore = defineStore('courseStudio', () => {
           sources: result.sources,
           repaired: !!result.repaired,
           fingerprint: courseSceneFingerprint(outline),
+          evidence: (result.evidence || []).map((claim) => ({
+            id: claim.id,
+            target: claim.target,
+            kind: claim.kind,
+            text: claim.text,
+            evidenceIds: claim.evidenceIds,
+          })),
+          subjectIssues: result.subjectIssues || [],
+          repairs: result.repairs || [],
           error: '',
         })
         // 第三层：讲稿 beats。失败不影响场景本身（内部已有确定性兜底）
@@ -362,6 +420,7 @@ export const useCourseStudioStore = defineStore('courseStudio', () => {
     finishGeneration,
     runGeneration,
     cancelGeneration,
+    recompile,
     remove,
   }
 })
