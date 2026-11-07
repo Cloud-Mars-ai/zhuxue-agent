@@ -1,9 +1,9 @@
 # 项目日志 · 2026-11-07（Agent 协作与交接基线）
 
-> 编制：WorkBuddy ｜ 编制时间：2026-11-07 20:30（GMT+8）
-> 事实基准：`git main = 38f519b`，工作树 clean（0 未提交）；唯一远端 `mygithub`；tags：`v0.5-baseline` / `v0.6-hyperknow-core` / `v0.7-competition`
-> 编制依据：git 历史（30 提交）、`.workbuddy/memory/` 逐日日志（10-27 → 11-07）、`docs/release/PROJECT-HANDOFF-2026-11-07.md`、代码实勘（路由/开关/测试脚本/构建产物哈希）
-> **任务系统说明**：当前任务管理列表为空——近几天的工作未走任务清单记录，而是以逐日记忆日志 + git 提交为载体。本日志即按这些一手记录梳理而成，可作为后续 agent 协作的任务台账模板。
+> 编制：WorkBuddy ｜ 编制时间：2026-11-07 22:00（GMT+8）
+> 事实基准：`git main = add20fd`（20:30 基线 `38f519b` 之后新增 2 个提交：`baf094b` 课程编译器、`add20fd` 乱码放大字形修复），工作树 clean（0 未提交）；唯一远端 `mygithub`，两提交均已推送；tags：`v0.5-baseline` / `v0.6-hyperknow-core` / `v0.7-competition`
+> 编制依据：git 历史（32 提交）、`.workbuddy/memory/` 逐日日志（10-27 → 11-07）、`docs/release/PROJECT-HANDOFF-2026-11-07.md`、代码实勘（路由/开关/测试脚本/构建产物哈希）
+> **任务系统说明**：20:30 前的工作以逐日记忆日志 + git 提交为载体；20:30 后的深夜工作（课程编译器、乱码修复、双通道部署）已走任务清单管理，12 项任务全部完成并核验。本日志即按这些一手记录梳理而成，可作为后续 agent 协作的任务台账模板。
 
 ---
 
@@ -11,13 +11,13 @@
 
 | 读数 | 当前值 | 判断 |
 | --- | --- | --- |
-| 代码基线 | `main = 38f519b`，工作树 clean，**WIP 已全部提交** | 可安全接手，无未提交改动风险 |
-| 源码规模 | `frontend/src` 133 文件（50 vue + 66 js + 其他），约 4.39 万行 | 主体功能完成 |
-| 确定性测试 | E2E **36/36**（critical-flows 33 + access-log 3）；text-repair 34/34；visualization 26/26；course-script 36/36；competition 校验通过 | 回归基线健康 |
-| 真实模型测试 | live E2E **5/5**（2026-11-04 记录）；**11-07 新改动未复测** | 见风险 R-4 |
-| 公网三通道 | ① WorkBuddy 链接已发最新版；② GitHub Pages 落后 main **32 个提交**；③ 腾讯云服务器已部署但域名未解析 | 发布收尾中 |
+| 代码基线 | `main = add20fd`，工作树 clean，**WIP 已全部提交并推送** | 可安全接手，无未提交改动风险 |
+| 源码规模 | `frontend/src` 143 文件（51 vue + 75 js + 其他），约 4.65 万行 | 主体功能完成 |
+| 确定性测试 | E2E **37/37**；text-repair **48/48**；course-compiler **41/41**；visualization 26/26；course-script 36/36；competition 校验通过 | 回归基线健康 |
+| 真实模型测试 | live E2E **5/5**（2026-11-04 记录）；**11-07 新改动（含编译器、乱码修复）未复测** | 见风险 R-4 |
+| 公网三通道 | ① WorkBuddy 链接已发**最新版**（add20fd 构建，verified）；② GitHub Pages 落后 main **34 个提交**；③ 腾讯云服务器已部署**最新版**但域名未解析 | 发布收尾中（仅剩 Pages） |
 | 待用户操作 | API Key 轮换（历史提交含明文）；DNSPod 加 A 记录 | 阻塞项见 §4 |
-| 阶段判断 | **功能开发主体完成 → 收口 / 发布 / 验收阶段**。下一步不是大规模新开发，而是补缺口、发布、真实链路验收、文档对齐 | — |
+| 阶段判断 | **功能开发主体完成 → 收口 / 发布 / 验收阶段**；新增研究线「课程编译器」已落地。下一步不是大规模新开发，而是补缺口、发布、真实链路验收、文档对齐 | — |
 
 ---
 
@@ -41,6 +41,8 @@
        → 课程通俗化 + 理科可视化交互模型（c58805e）
        → 41 个教学视频分析 → courseStudio v3 讲稿层
        → 云服务 PoC → 腾讯云部署 → 安全硬化 + 三通道发布（38f519b）
+11-07 深夜  课程编译器六层管线（baf094b）→ 生成课程乱码放大字形修复
+       （add20fd）→ 双通道部署最新版 + 推送 mygithub
 ```
 
 ### 1.3 整体完成度判断
@@ -50,9 +52,10 @@
 | 教学闭环（M1–M5） | ✅ 完成（双端） |
 | 学习范式（S0–S3） | ✅ 完成；S4 部分（板书/追问/单入口已开，学习规划/页码引用未做） |
 | 课程生成（courseStudio v3） | ✅ 完成（16 种 block + 五拍讲稿 + 可视化交互） |
+| 课程编译器（研究线） | ✅ 六层管线落地（IR/验证/证据账本/学科检查/修复循环/实验评测），41/41 质量门 |
 | 赛事模式 | ✅ 功能完成；等赛方正式数据包 |
 | 板书/白板学习形态 | ✅ 完成（原最大形态缺口，11-04 补齐） |
-| 部署（公网演示） | 🟡 三通道两通一欠（Pages 落后、域名未解析） |
+| 部署（公网演示） | 🟡 三通道两通一欠（WorkBuddy/腾讯云已发最新版；Pages 落后 34 提交；域名未解析） |
 | 安全 | 🟡 源码已无明文 key，但 git 历史需轮换 |
 | 后端 / 云服务 | 🟡 PoC 通过，正式集成未开始 |
 | 文档 | 🟡 部分过期（见 §6） |
@@ -65,6 +68,8 @@
 
 | # | 任务 | 完成日期 | 核心交付 | 验证 |
 | --- | --- | --- | --- | --- |
+| T-17 | 生成课程乱码（放大字形）修复 + 双通道部署 | 11-07 深夜 | `add20fd`：textRepair 第四层（AMPLIFIED_MAP 荞→p、株→q + 上下文感知，数字/句首不触发）；提示词禁令 v2.3；store `repairDeep` migration-on-read；部署腾讯云（pm2 4173 → 200）+ WorkBuddy 公网（200），均验证服务新构建 `index-D1trn0Ip.js` | test:text-repair **48/48**（新增 13 项含零误伤组）；E2E 37/37；build 通过；推送 mygithub |
+| T-16 | 课程编译器六层管线（研究线） | 11-07 深夜 | `baf094b`：六层管线（IR → 生成 → 验证 → 修复 → 渲染 + 实验层）；utils 六件套（courseIR/courseValidator 9 约束码/evidenceLedger 五类证据+伪造检测/subjectCheck/courseRepair validate-and-accept/courseExperiment 四组对照）；`CourseCompilerView.vue` 研究面板（5 tab，实验台不依赖已有项目）；`/app/compiler` + `/m/compiler` 双端路由；设计文档 `docs/research/course-compiler-design.md`（RQ1–RQ4） | test:course-compiler **41/41**；E2E 37/37（新增编译器实验用例）；build 通过 |
 | T-15 | 安全硬化 + 部署收尾 | 11-07 深夜 | server.mjs 安全响应头四件套 + 穿越防护 + 500 通用文案；aiProxy per-IP 限流（chat 30/min、tts 20/min）+ 错误分级；三通道全部打通 | 穿越/限流/GET 405 实测；E2E 36/36；npm audit 0 漏洞 |
 | T-14 | GitHub 推送与公网发布 | 11-07 | 提交 c58805e（54 文件）+ 38f519b（33 文件）推送 mygithub；恢复误删交付 ZIP；复用应用 `wbapp_VcMqXrvl668JPEwXlPHsxU` 发布，sharecode 不变 | 公网链接 verified=true |
 | T-13 | 后端部署到腾讯云 152.136.121.153 | 11-07 | `/home/wppjkw/zhuxue-agent/`（server.mjs + aiProxy.mjs + dist + .env），pm2 `zhuxue-agent` 端口 4173，`@reboot pm2 resurrect` 保活；nginx 反代配置就绪 | 服务器本地 health/深链接/安全头全 200 |
@@ -73,7 +78,7 @@
 | T-10 | 41 个教学视频逐帧+讲稿分析 | 11-07 | `docs/research/teaching-video-advantages-and-ai-reuse.md`：五维 35 条优势（带帧号/时间戳）+ 复用映射表 + 易错点库种子 12 条 | ffmpeg 抽帧 + stepaudio-2.5-asr 转写 41/41 |
 | T-9 | 数据可用性梳理与设计 | 11-07 | 教材摘录提取链（B02/B05/B06 → 70 段 / 18.9KB，残留乱码 0）；数据集字段说明 42 条；工作台数据字典 + 边界声明卡 | E2E 31/31 + 页面目检 |
 | T-8 | 教师账号与学科数据归属拆分 | 11-07 | 新增李老师（`math`/T003/数学）；赛事数据显式归属；调整可审计（operatorId）；数学教师登录落地赛事工作台 | build + E2E 31/31 |
-| T-7 | 课程生成乱码修复 | 11-07 | `utils/textRepair.js`（映射表 + 区块启发式，白名单零误伤）；四层防御（导入/入库/输入/输出）+ 提示词 TEXT_INTEGRITY_RULE；PROMPT_VERSION v2.2 | test:text-repair 34/34（含 23.7 万字符真实语料） |
+| T-7 | 课程生成乱码修复 | 11-07 | `utils/textRepair.js`（映射表 + 区块启发式，白名单零误伤）；四层防御（导入/入库/输入/输出）+ 提示词 TEXT_INTEGRITY_RULE；PROMPT_VERSION v2.2 | test:text-repair 34/34（含 23.7 万字符真实语料）；11-07 深夜由 T-17 增加第四层并扩充至 48/48 |
 | T-6 | 官方赛事数据接入 | 11-04→11-05 | `b048828`：3 主题/9 指标/11 材料/54 题/40 学生/806 原始记录（793 有效） | 赛事校验通过 |
 | T-5 | 赛事模式（竞争学习伴侣工作台） | 11-04 | `/app/competition` + `/m/competition`；教师/学生双角色步骤流；成果包导出；tag `v0.7-competition` | E2E 覆盖 |
 | T-4 | DeepSeek 课程生成与渐进体验 | 11-04 | 默认文本模型切 DeepSeek；3 路并发生成、单场景完成即入体验页；`/learn/:projectId` 独立体验页；语音教学 5 音色 | EVIDENCE-2026-11-04-deepseek-course.md；实测 7.9s 出大纲 / 17.6s 完成 6 场景 |
@@ -108,7 +113,8 @@
 - 跨学科自适应学习者画像（`learnerProfile.js`：学科 + 七学段推断，规则/关键词法，用户明确年级优先）；
 - 可视化交互模型（理科知识点自动识别：motion/geometry/function/quantity/process/comparison 六组信号加权）；
 - "正常上课 / 考前冲刺"双模式；教师与学生均可发起生成；
-- 全程确定性兜底：无模型时可完整生成大纲 + 5–6 场景，标「演示缓存」。
+- 全程确定性兜底：无模型时可完整生成大纲 + 5–6 场景，标「演示缓存」；
+- **课程编译器**（`flags.courseCompiler` 默认开）：生成过程物化为可验证研究对象——课程 IR（知识点/先修/场景序列）→ 9 类硬约束验证 → 五类证据账本（requirement/chunk/attempt/rule/derived，含伪造检测）→ 定向修复循环（validate-and-accept）→ 研究面板 `/app/compiler`（违规定位/修复历史/四组对照实验 Vanilla·RAG-only·Prompt+Schema·Full Compiler）。
 
 **D. 赛事工作台（CompetitionWorkbench，Web/H5 复用同一组件）**
 
@@ -133,11 +139,12 @@
 | # | 事项 | 当前状态 | 缺口 |
 | --- | --- | --- | --- |
 | W-1 | animation block（分步动画板书） | 渲染器已提交（c58805e 内含），E2E 已覆盖 3 帧动画 | `boardNarration.js` 不识别 animation → **语音教学跳过该 block**；`boardDownload.js` 不识别 → **下载 HTML 缺该 block**。发布前必须补两个分支 + 测试 |
-| W-2 | GitHub Pages 发布 | gh-pages = `be009a3`（11-05），**落后 main 32 个提交** | 官方数据接入、可视化、账号拆分、安全硬化均未上网；需 build:pages → 镜像 pages-deploy-2 工作树 → 推送 → 等 status=built → 浏览器验收 |
-| W-3 | 腾讯云域名通道 | 服务器 + nginx 反代 + pm2 全部就绪（本地验证 200） | **待用户在 DNSPod 加 A 记录** `zhuxue.wppjkw.online` → 152.136.121.153；HTTPS 待签（需 DNSPod API key → acme.sh） |
+| W-2 | GitHub Pages 发布 | gh-pages = `be009a3`（11-05），**落后 main 34 个提交**（11-07 深夜两提交也未上网） | 官方数据接入、可视化、账号拆分、安全硬化、课程编译器、乱码修复均未上网；需 build:pages → 镜像 pages-deploy-2 工作树 → 推送 → 等 status=built → 浏览器验收 |
+| W-3 | 腾讯云域名通道 | 服务器 + nginx 反代 + pm2 全部就绪，**最新版（add20fd 构建）已部署并本地验证 200** | **待用户在 DNSPod 加 A 记录** `zhuxue.wppjkw.online` → 152.136.121.153；HTTPS 待签（需 DNSPod API key → acme.sh） |
 | W-4 | 云服务正式集成 | PoC 全链路通过（表/RLS/JWT/搜索/隔离） | 零产品代码接入：mock 登录 → 云 Auth（手机 OTP UI + auth gate）；课程历史 localStorage → 云 DB；分享码需另建 public-read 表 |
-| W-5 | 真实模型验收 | 11-04 记录 5/5；公网 AI 代理已带密钥发布 | 11-07 的可视化/乱码修复/画像改动**未做 live 复测**；需配真实环境跑 `test:e2e:live` + 黄金题库抽测 |
-| W-6 | 文档对齐 | `PROJECT-HANDOFF-2026-11-07.md` 写于 c58805e 之前 | 其"未提交 WIP"已提交（c58805e/38f519b）、交付 ZIP 已恢复、E2E 31→36；`Codex交接文档.md`/`AGENTS.md`/两个 README 均已过期（夜读皮肤、旧 key 风险、HyperKnow 待办等描述与现状不符） |
+| W-5 | 真实模型验收 | 11-04 记录 5/5；公网 AI 代理已带密钥发布 | 11-07 的可视化/画像/课程编译器/乱码修复改动**未做 live 复测**；需配真实环境跑 `test:e2e:live` + 黄金题库抽测 |
+| W-6 | 文档对齐 | `PROJECT-HANDOFF-2026-11-07.md` 写于 c58805e 之前 | 其"未提交 WIP"已提交（c58805e/38f519b/baf094b/add20fd）、交付 ZIP 已恢复、E2E 36→37；`Codex交接文档.md`/`AGENTS.md`/两个 README 均已过期（夜读皮肤、旧 key 风险、HyperKnow 待办等描述与现状不符） |
+| W-7 | 乱码修复已知局限 | 放大字形（荞→p、株→q）已按上下文修复，23.7 万字符语料零误伤 | 模型把繁体 狀 简化出的"状"是极常用字（形状/状况），不做映射，"荞状"只能修成"p状"；已写入测试注释，属可接受残留 |
 
 ---
 
@@ -149,7 +156,7 @@
 | --- | --- | --- | --- |
 | P0-1 | **历史提交中的明文 API Key 轮换**（阶跃星辰/DeepSeek/StepFun，曾随公开仓库发布） | **项目负责人**（agent 无法代做） | 服务商后台轮换；src 已无明文（`grep -rn "apiKey: '" src` 为空串） |
 | P0-2 | **animation block 语音 + 下载出口**（W-1） | 开发 agent | boardNarration/boardDownload 增加 animation 分支；E2E 补下载/语音用例 |
-| P0-3 | **GitHub Pages 发布最新 main**（W-2） | 开发 agent | Pages status=built 且 commit = 新推送；8 项发布后验收（首页 200、#/app/course、#/m/course、材料生成、知识库、作业回信、论坛评论、#/app/competition?step=checkup） |
+| P0-3 | **GitHub Pages 发布最新 main**（W-2） | 开发 agent | Pages status=built 且 commit = 新推送（现落后 34 提交）；8 项发布后验收（首页 200、#/app/course、#/m/course、材料生成、知识库、作业回信、论坛评论、#/app/competition?step=checkup） |
 | P0-4 | **真实模型复测**（W-5） | 开发 agent | `test:e2e:live` 全绿；黄金题库抽 10 条记录到 EVIDENCE |
 | P0-5 | **交付物收口**：重建并校验 `智慧学伴任务成果包.zip` hash，更新 deliverables README / 根 README / Release 资产 | 开发 agent | SHA256 记录在案；ZIP 已存在于 deliverables/（11-07 14:34 恢复），需确认与 task-package/ 版本一致性 |
 
@@ -226,7 +233,7 @@
 
 | # | 问题 | 影响 |
 | --- | --- | --- |
-| R-4 | 11-07 改动未经真实模型复测 | 现场若密钥失效/接口变更，兜底可演示但真实链路未验 |
+| R-4 | 11-07 改动（含课程编译器、乱码修复）未经真实模型复测 | 现场若密钥失效/接口变更，兜底可演示但真实链路未验 |
 | R-5 | animation block 语音/下载缺口（W-1） | 语音教学与 HTML 下载会静默跳过该 block |
 | R-6 | 包体偏大（两 chunk >500KB） | 首屏慢，比赛现场弱网风险 |
 | R-7 | 文档漂移（W-6） | 新旧交接文档/README/AGENTS 相互矛盾，接手方易被误导 |
@@ -258,16 +265,14 @@
 ### 第 1 步 · 收口半成品（1–2 个工作日）
 
 1. 补 `boardNarration.js` / `boardDownload.js` 的 animation 分支，E2E 补 2 条用例（P0-2）；
-2. 配真实 DeepSeek/StepAudio 环境跑 `npm run test:e2e:live` + 黄金题库抽 10 条，写 EVIDENCE（P0-4）；
-3. 全量回归：`npm run build` / `test:e2e` / `test:competition` / `test:text-repair` / `test:visualization` / `test:course-script` / `npm audit --omit=dev`。
+2. 配真实 DeepSeek/StepAudio 环境跑 `npm run test:e2e:live` + 黄金题库抽 10 条，写 EVIDENCE（P0-4）；**乱码修复与课程编译器路径需纳入 live 复测范围**（用带乱码的主题生成一次，确认无荞/株残留）；
+3. 全量回归：`npm run build` / `test:e2e` / `test:competition` / `test:text-repair` / `test:course-compiler` / `test:visualization` / `test:course-script` / `npm audit --omit=dev`。
 
-### 第 2 步 · 发布三通道（0.5 个工作日）
+### 第 2 步 · 发布三通道（仅剩 Pages，0.5 个工作日）
 
-1. 提交 WIP 收口 → 推送 mygithub；
-2. `npm run build:pages` → robocopy 镜像 pages-deploy-2 工作树 → `git push mygithub HEAD:gh-pages` → `gh api` 等 `status=built` → 8 项浏览器验收（P0-3）；
-3. 同步腾讯云：scp 新 dist + server.mjs + aiProxy.mjs → `pm2 restart zhuxue-agent` → curl 127.0.0.1:4173 验证；
-4. WorkBuddy 链接：从 `deploy/` 重新发布（复用应用，链接不变）；
-5. 提醒用户：DNSPod A 记录（P1-2）；负责人：轮换 Key（P0-1）。
+1. ✅ 已完成（11-07 深夜）：`baf094b` + `add20fd` 已推送 mygithub；腾讯云已同步最新 dist + server.mjs + aiProxy.mjs（pm2 `zhuxue-agent`，4173 本地 200）；WorkBuddy 链接已重新发布（复用应用 `wbapp_VcMqXrvl668JPEwXlPHsxU`，sharecode 不变，`https://zhuxue-agent.app.workbuddy.host/?sharecode=Z7X276B67K`），两条通道均验证服务新构建 `index-D1trn0Ip.js`；
+2. **仅剩**：`npm run build:pages` → robocopy 镜像 pages-deploy-2 工作树 → `git push mygithub HEAD:gh-pages` → `gh api` 等 `status=built` → 8 项浏览器验收（P0-3）；
+3. 提醒用户：DNSPod A 记录（P1-2）；负责人：轮换 Key（P0-1）。
 
 ### 第 3 步 · 交付物与文档（0.5 个工作日）
 
@@ -295,10 +300,11 @@ npm start                           # build + server.mjs（4173，深链接验�
 npm run build:offline               # dist-offline 单文件离线演示
 
 # 回归（交付前全跑）
-npm run test:e2e                    # 36 确定性
+npm run test:e2e                    # 37 确定性
 npm run test:e2e:live               # 5 真实模型（需真 key）
 npm run test:competition
 npm run test:text-repair && npm run test:visualization && npm run test:course-script
+npm run test:course-compiler        # 41 编译器质量门
 
 # 发布
 npm run build:pages                 # dist-pages（Hash 路由 + 404.html）
@@ -313,7 +319,7 @@ scp -i ~/.ssh/id_rsa frontend/dist/* server.mjs aiProxy.mjs wppjkw@152.136.121.1
 ssh wppjkw@152.136.121.153 "pm2 restart zhuxue-agent"
 ```
 
-**入口文件索引**：课程生成 `api/courseStudio.js` + `api/prompts/courseStudio.js` + `utils/courseStudio.js` + `stores/courseStudio.js`；板书 `api/board.js` + `utils/board.js` + `components/BoardCanvas.vue`；画像 `utils/learnerProfile.js`；可视化 `utils/knowledgeVisualization.js` + `components/simulations/`；赛事 `src/competition/` + `views/CompetitionWorkbench.vue` + `stores/competition.js`；修复 `utils/textRepair.js` + `utils/materialImport.js`；主题 `theme/tokens.css`；路由/守卫 `router/index.js`；开关 `config/flags.js`。
+**入口文件索引**：课程生成 `api/courseStudio.js` + `api/prompts/courseStudio.js` + `utils/courseStudio.js` + `stores/courseStudio.js`；板书 `api/board.js` + `utils/board.js` + `components/BoardCanvas.vue`；画像 `utils/learnerProfile.js`；可视化 `utils/knowledgeVisualization.js` + `components/simulations/`；赛事 `src/competition/` + `views/CompetitionWorkbench.vue` + `stores/competition.js`；修复 `utils/textRepair.js` + `utils/materialImport.js`；主题 `theme/tokens.css`；路由/守卫 `router/index.js`；开关 `config/flags.js`；课程编译器 `utils/courseIR.js` + `courseValidator.js` + `evidenceLedger.js` + `subjectCheck.js` + `courseRepair.js` + `courseExperiment.js` + `views/web/CourseCompilerView.vue` + `api/experiments.js`，设计文档 `docs/research/course-compiler-design.md`。
 
 ## 附录 B：环境坑（本机沙箱，实测）
 
@@ -328,4 +334,4 @@ ssh wppjkw@152.136.121.153 "pm2 restart zhuxue-agent"
 
 ---
 
-*本日志由 WorkBuddy 依据 git 38f519b、逐日记忆日志与代码实勘生成；与旧文档冲突时，以本日志 + `PROJECT-HANDOFF-2026-11-07.md` + 代码为准。建议后续 agent 每次完成实质工作后，在本文档或对应记忆日志中追加台账条目（任务 / 日期 / 交付 / 验证 / 遗留），保持交接链不断。*
+*本日志由 WorkBuddy 依据 git `add20fd`、逐日记忆日志与代码实勘生成；与旧文档冲突时，以本日志 + `PROJECT-HANDOFF-2026-11-07.md` + 代码为准。建议后续 agent 每次完成实质工作后，在本文档或对应记忆日志中追加台账条目（任务 / 日期 / 交付 / 验证 / 遗留），保持交接链不断。*
