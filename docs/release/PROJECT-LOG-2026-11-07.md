@@ -1,10 +1,10 @@
 # 项目日志 · 2026-11-07（Agent 协作与交接基线）
 
-> 编制：WorkBuddy ｜ 编制时间：2026-11-07 22:00（GMT+8）／数字复核：22:00 / 22:10 / 22:15
-> 事实基准：`git main = 3ae081c`（20:30 基线 `38f519b` 之后新增 4 个提交：`baf094b` 课程编译器、`add20fd` 乱码放大字形修复、`eb0566c` 日志台账、`3ae081c` 数字复核 + 三方对标章节），**git 历史共 36 提交**，工作树 clean（0 未提交）；唯一远端 `mygithub`，四提交均已推送；tags：`v0.5-baseline` / `v0.6-hyperknow-core` / `v0.7-competition`
-> 编制依据：git 历史（36 提交）、`.workbuddy/memory/` 逐日日志（10-27 → 11-07）、`docs/release/PROJECT-HANDOFF-2026-11-07.md`、代码实勘（路由/开关/测试脚本/构建产物哈希）；**22:10 复核**：全量确定性测试实跑复验（E2E 37/37、text-repair 48/48、course-compiler 41/41、visualization 26/26、course-script 36/36、competition 通过），`frontend/src` 143 文件（51 vue + 75 js + 其他）/ 46,501 行，dist 构建 `index-D1trn0Ip.js`，与下文所有数字一致
-> **计数自指说明**：本文档自身的提交会使「总提交数 / Pages 落后数」各 +1。上述计数钉在真实提交 `3ae081c` 上，可随时用 `git rev-list --count be009a3..3ae081c`（= 36）复验；若其后又有新提交，以 `git rev-list --count be009a3..main` 的实时结果为准。
-> **任务系统说明**：20:30 前的工作以逐日记忆日志 + git 提交为载体；20:30 后的深夜工作（课程编译器、乱码修复、双通道部署）已走任务清单管理，12 项任务全部完成并核验。本日志即按这些一手记录梳理而成，可作为后续 agent 协作的任务台账模板。
+> 编制：WorkBuddy ｜ 编制时间：2026-11-07 22:00（GMT+8）／数字复核：22:00 / 22:10 / 22:15 / 22:40
+> 事实基准：`git main = c7e00a0`（20:30 基线 `38f519b` 之后新增 5 个提交：`baf094b` 课程编译器、`add20fd` 乱码放大字形修复、`eb0566c` 日志台账、`3ae081c` 数字复核 + 三方对标章节、`c7e00a0` 计数钉定），**git 历史共 37 提交**（`git rev-list --count be009a3..main` 实勘），工作树 clean（0 未提交）；唯一远端 `mygithub`，五提交均已推送；**gh-pages = `cb7a064`（22:39 status=built，三通道全部发布最新版）**；tags：`v0.5-baseline` / `v0.6-hyperknow-core` / `v0.7-competition`
+> 编制依据：git 历史（37 提交）、`.workbuddy/memory/` 逐日日志（10-27 → 11-07）、`docs/release/PROJECT-HANDOFF-2026-11-07.md`、代码实勘（路由/开关/测试脚本/构建产物哈希）；**22:10 复核**：全量确定性测试实跑复验（E2E 37/37、text-repair 48/48、course-compiler 41/41、visualization 26/26、course-script 36/36、competition 通过），`frontend/src` 143 文件（51 vue + 75 js + 其他）/ 46,501 行；**22:39 复核**：GitHub Pages 构建产物 `dist-pages/assets/index-DFHJxuu-.js`（与 server 通道 `dist/assets/index-D1trn0Ip.js` 同源码不同 base，故哈希不同），线上服务该文件即新构建，与下文所有数字一致
+> **计数自指说明**：本文档自身的提交会使「总提交数」+1。上述计数钉在真实提交 `3ae081c` 上，可随时用 `git rev-list --count be009a3..3ae081c`（= 36）复验；当前 main = `c7e00a0` 实勘 37，若其后又有新提交，以 `git rev-list --count be009a3..main` 的实时结果为准。**gh-pages 为 deploy 提交（`cb7a064`，parent = `be009a3`），与 main 非同一分支，比较时只比产物哈希，不比提交数。**
+> **任务系统说明**：20:30 前的工作以逐日记忆日志 + git 提交为载体；20:30 后的深夜工作（课程编译器、乱码修复、双通道部署、GitHub Pages 发布）已走任务清单管理，13 项任务全部完成并核验。本日志即按这些一手记录梳理而成，可作为后续 agent 协作的任务台账模板。
 
 ---
 
@@ -12,11 +12,11 @@
 
 | 读数 | 当前值 | 判断 |
 | --- | --- | --- |
-| 代码基线 | `main = 3ae081c`，工作树 clean，**WIP 已全部提交并推送** | 可安全接手，无未提交改动风险 |
+| 代码基线 | `main = c7e00a0`，工作树 clean，**WIP 已全部提交并推送** | 可安全接手，无未提交改动风险 |
 | 源码规模 | `frontend/src` 143 文件（51 vue + 75 js + 其他），约 4.65 万行 | 主体功能完成 |
 | 确定性测试 | E2E **37/37**；text-repair **48/48**；course-compiler **41/41**；visualization 26/26；course-script 36/36；competition 校验通过 | 回归基线健康 |
 | 真实模型测试 | live E2E **5/5**（2026-11-04 记录）；**11-07 新改动（含编译器、乱码修复）未复测** | 见风险 R-4 |
-| 公网三通道 | ① WorkBuddy 链接已发**最新版**（add20fd 构建，verified）；② GitHub Pages 落后 main **36 个提交**（gh-pages = `be009a3`@11-05，`git rev-list --count be009a3..main` 实勘）；③ 腾讯云服务器已部署**最新版**但域名未解析 | 发布收尾中（仅剩 Pages） |
+| 公网三通道 | ① WorkBuddy 链接已发**最新版**（add20fd 构建，verified）；② GitHub Pages **已发布最新版**（gh-pages = `cb7a064`，22:39 status=built，线上服务 `index-DFHJxuu-.js`，11 项定向验收全过）；③ 腾讯云服务器已部署**最新版**但域名未解析 | 三通道全通，仅剩 DNSPod 解析 |
 | 待用户操作 | API Key 轮换（历史提交含明文）；DNSPod 加 A 记录 | 阻塞项见 §4 |
 | 阶段判断 | **功能开发主体完成 → 收口 / 发布 / 验收阶段**；新增研究线「课程编译器」已落地。下一步不是大规模新开发，而是补缺口、发布、真实链路验收、文档对齐 | — |
 
@@ -44,6 +44,7 @@
        → 云服务 PoC → 腾讯云部署 → 安全硬化 + 三通道发布（38f519b）
 11-07 深夜  课程编译器六层管线（baf094b）→ 生成课程乱码放大字形修复
        （add20fd）→ 双通道部署最新版 + 推送 mygithub
+       → GitHub Pages 发布 cb7a064（三通道全通，22:39 status=built）
 ```
 
 ### 1.3 整体完成度判断
@@ -56,7 +57,7 @@
 | 课程编译器（研究线） | ✅ 六层管线落地（IR/验证/证据账本/学科检查/修复循环/实验评测），41/41 质量门 |
 | 赛事模式 | ✅ 功能完成；等赛方正式数据包 |
 | 板书/白板学习形态 | ✅ 完成（原最大形态缺口，11-04 补齐） |
-| 部署（公网演示） | 🟡 三通道两通一欠（WorkBuddy/腾讯云已发最新版；Pages 落后 36 提交；域名未解析） |
+| 部署（公网演示） | ✅ 三通道全通（WorkBuddy / GitHub Pages / 腾讯云均已发最新版）；仅剩 DNSPod 域名解析（P1-2） |
 | 安全 | 🟡 源码已无明文 key，但 git 历史需轮换 |
 | 后端 / 云服务 | 🟡 PoC 通过，正式集成未开始 |
 | 文档 | 🟡 部分过期（见 §6） |
@@ -69,6 +70,7 @@
 
 | # | 任务 | 完成日期 | 核心交付 | 验证 |
 | --- | --- | --- | --- | --- |
+| T-18 | GitHub Pages 发布最新版（三通道全通） | 11-07 深夜 | `cb7a064`（deploy 提交）：`build:pages` → 镜像 `pages-deploy-2` 工作树 → push `mygithub HEAD:gh-pages`；SPA 404 回退保留 `location.search + location.hash`；定向验收脚本 `tmp/verify-pages-acceptance.mjs`（11 项） | `gh api pages/builds/latest` = `status: built`（22:39）；线上服务 `index-DFHJxuu-.js`；**11/11 定向验收通过**（含登录直接复验 `/#/app/course`）；排障：传播期 GitHub 自家 404 + CDN 慢导致 37 连测两次全挂，改轻量定向验收 |
 | T-17 | 生成课程乱码（放大字形）修复 + 双通道部署 | 11-07 深夜 | `add20fd`：textRepair 第四层（AMPLIFIED_MAP 荞→p、株→q + 上下文感知，数字/句首不触发）；提示词禁令 v2.3；store `repairDeep` migration-on-read；部署腾讯云（pm2 4173 → 200）+ WorkBuddy 公网（200），均验证服务新构建 `index-D1trn0Ip.js` | test:text-repair **48/48**（新增 13 项含零误伤组）；E2E 37/37；build 通过；推送 mygithub |
 | T-16 | 课程编译器六层管线（研究线） | 11-07 深夜 | `baf094b`：六层管线（IR → 生成 → 验证 → 修复 → 渲染 + 实验层）；utils 六件套（courseIR/courseValidator 9 约束码/evidenceLedger 五类证据+伪造检测/subjectCheck/courseRepair validate-and-accept/courseExperiment 四组对照）；`CourseCompilerView.vue` 研究面板（5 tab，实验台不依赖已有项目）；`/app/compiler` + `/m/compiler` 双端路由；设计文档 `docs/research/course-compiler-design.md`（RQ1–RQ4） | test:course-compiler **41/41**；E2E 37/37（新增编译器实验用例）；build 通过 |
 | T-15 | 安全硬化 + 部署收尾 | 11-07 深夜 | server.mjs 安全响应头四件套 + 穿越防护 + 500 通用文案；aiProxy per-IP 限流（chat 30/min、tts 20/min）+ 错误分级；三通道全部打通 | 穿越/限流/GET 405 实测；E2E 36/36；npm audit 0 漏洞 |
@@ -140,11 +142,11 @@
 | # | 事项 | 当前状态 | 缺口 |
 | --- | --- | --- | --- |
 | W-1 | animation block（分步动画板书） | 渲染器已提交（c58805e 内含），E2E 已覆盖 3 帧动画 | `boardNarration.js` 不识别 animation → **语音教学跳过该 block**；`boardDownload.js` 不识别 → **下载 HTML 缺该 block**。发布前必须补两个分支 + 测试 |
-| W-2 | GitHub Pages 发布 | gh-pages = `be009a3`（11-05 15:20），**落后 main 36 个提交**（实勘 `be009a3..3ae081c`；含 11-07 深夜四提交 baf094b/add20fd/eb0566c/3ae081c 均未上网） | 官方数据接入、可视化、账号拆分、安全硬化、课程编译器、乱码修复均未上网；需 build:pages → 镜像 pages-deploy-2 工作树 → 推送 → 等 status=built → 浏览器验收 |
+| W-2 | GitHub Pages 发布 | ✅ **已完成（11-07 22:39）**：gh-pages = `cb7a064`（deploy 提交，parent `be009a3`），`gh api pages/builds/latest` = `status: built`；线上 `https://cloud-mars-ai.github.io/zhuxue-agent/` 服务新构建 `index-DFHJxuu-.js`；`404.html` SPA 回退保留 `location.search + location.hash` | 无（已闭环）。排障备注：推送后约 50 分钟传播期内 GitHub 自家 404 间歇出现（非本站 404.html），且本机到 GitHub CDN 大文件极慢（1MB bundle ~38s），37 连测因此两次全挂；改用 11 项轻量定向验收（低请求数）全过 |
 | W-3 | 腾讯云域名通道 | 服务器 + nginx 反代 + pm2 全部就绪，**最新版（add20fd 构建）已部署并本地验证 200** | **待用户在 DNSPod 加 A 记录** `zhuxue.wppjkw.online` → 152.136.121.153；HTTPS 待签（需 DNSPod API key → acme.sh） |
 | W-4 | 云服务正式集成 | PoC 全链路通过（表/RLS/JWT/搜索/隔离） | 零产品代码接入：mock 登录 → 云 Auth（手机 OTP UI + auth gate）；课程历史 localStorage → 云 DB；分享码需另建 public-read 表 |
 | W-5 | 真实模型验收 | 11-04 记录 5/5；公网 AI 代理已带密钥发布 | 11-07 的可视化/画像/课程编译器/乱码修复改动**未做 live 复测**；需配真实环境跑 `test:e2e:live` + 黄金题库抽测 |
-| W-6 | 文档对齐 | `PROJECT-HANDOFF-2026-11-07.md` 写于 c58805e 之前 | 其"未提交 WIP"已提交（c58805e/38f519b/baf094b/add20fd）、交付 ZIP 已恢复、E2E 36→37；`Codex交接文档.md`/`AGENTS.md`/两个 README 均已过期（夜读皮肤、旧 key 风险、HyperKnow 待办等描述与现状不符） |
+| W-6 | 文档对齐 | 交接文档勘误横幅已同步至 22:40（main `c7e00a0` / Pages 已发布 `cb7a064`） | 交接文档正文仍写于 c58805e 之前（保留流程细节价值，状态以横幅 + 本日志为准）；`Codex交接文档.md`/`AGENTS.md`/两个 README 均已过期（夜读皮肤、旧 key 风险、HyperKnow 待办等描述与现状不符），需按 P1-3 归档/重写 |
 | W-7 | 乱码修复已知局限 | 放大字形（荞→p、株→q）已按上下文修复，23.7 万字符语料零误伤 | 模型把繁体 狀 简化出的"状"是极常用字（形状/状况），不做映射，"荞状"只能修成"p状"；已写入测试注释，属可接受残留 |
 
 ---
@@ -157,7 +159,7 @@
 | --- | --- | --- | --- |
 | P0-1 | **历史提交中的明文 API Key 轮换**（阶跃星辰/DeepSeek/StepFun，曾随公开仓库发布） | **项目负责人**（agent 无法代做） | 服务商后台轮换；src 已无明文（`grep -rn "apiKey: '" src` 为空串） |
 | P0-2 | **animation block 语音 + 下载出口**（W-1） | 开发 agent | boardNarration/boardDownload 增加 animation 分支；E2E 补下载/语音用例 |
-| P0-3 | **GitHub Pages 发布最新 main**（W-2） | 开发 agent | Pages status=built 且 commit = 新推送（现落后 36 提交）；8 项发布后验收（首页 200、#/app/course、#/m/course、材料生成、知识库、作业回信、论坛评论、#/app/competition?step=checkup） |
+| P0-3 | ~~**GitHub Pages 发布最新 main**（W-2）~~ ✅ **已完成 11-07 22:39** | 开发 agent | gh-pages = `cb7a064`，`status=built`（22:39）；线上服务 `index-DFHJxuu-.js`；**11 项定向验收全过**（首页 200 新构建、登录跳工作台、课程页/知识库/作业/论坛渲染 + 零横向溢出、数学主题生成大纲非管理学、赛事工作台官方数据、H5 移动视口、无页面错误）；登录直接复验返回 `{"url":".../#/app/course","role":"teacher"}`。工具：`tmp/verify-pages-acceptance.mjs` + `tmp/playwright.pages.config.mjs` |
 | P0-4 | **真实模型复测**（W-5） | 开发 agent | `test:e2e:live` 全绿；黄金题库抽 10 条记录到 EVIDENCE |
 | P0-5 | **交付物收口**：重建并校验 `智慧学伴任务成果包.zip` hash，更新 deliverables README / 根 README / Release 资产 | 开发 agent | SHA256 记录在案；ZIP 已存在于 deliverables/（11-07 14:34 恢复），需确认与 task-package/ 版本一致性 |
 
@@ -336,11 +338,11 @@
 2. 配真实 DeepSeek/StepAudio 环境跑 `npm run test:e2e:live` + 黄金题库抽 10 条，写 EVIDENCE（P0-4）；**乱码修复与课程编译器路径需纳入 live 复测范围**（用带乱码的主题生成一次，确认无荞/株残留）；
 3. 全量回归：`npm run build` / `test:e2e` / `test:competition` / `test:text-repair` / `test:course-compiler` / `test:visualization` / `test:course-script` / `npm audit --omit=dev`。
 
-### 第 2 步 · 发布三通道（仅剩 Pages，0.5 个工作日）
+### 第 2 步 · 发布三通道 ✅ 已完成（11-07 22:39，0.5 个工作日）
 
 1. ✅ 已完成（11-07 深夜）：`baf094b` + `add20fd` 已推送 mygithub；腾讯云已同步最新 dist + server.mjs + aiProxy.mjs（pm2 `zhuxue-agent`，4173 本地 200）；WorkBuddy 链接已重新发布（复用应用 `wbapp_VcMqXrvl668JPEwXlPHsxU`，sharecode 不变，`https://zhuxue-agent.app.workbuddy.host/?sharecode=Z7X276B67K`），两条通道均验证服务新构建 `index-D1trn0Ip.js`；
-2. **仅剩**：`npm run build:pages` → robocopy 镜像 pages-deploy-2 工作树 → `git push mygithub HEAD:gh-pages` → `gh api` 等 `status=built` → 8 项浏览器验收（P0-3）；
-3. 提醒用户：DNSPod A 记录（P1-2）；负责人：轮换 Key（P0-1）。
+2. ✅ **GitHub Pages 已完成（22:39）**：`npm run build:pages` → robocopy 镜像 `pages-deploy-2` 工作树 → `git push mygithub HEAD:gh-pages`（`cb7a064`）→ `gh api repos/Cloud-Mars-ai/zhuxue-agent/pages/builds/latest` = `status: built`（22:39）→ 浏览器验收：**11 项定向验收全过**（见 P0-3 与附录 A 命令），线上 `https://cloud-mars-ai.github.io/zhuxue-agent/` 服务 `index-DFHJxuu-.js`；
+3. 提醒用户：DNSPod A 记录（P1-2，腾讯云域名通道唯一欠项）；负责人：轮换 Key（P0-1）。
 
 ### 第 3 步 · 交付物与文档（0.5 个工作日）
 
@@ -380,7 +382,10 @@ npm run export:competition          # 成果包 ZIP
 
 # GitHub Pages（robocopy 镜像后）
 git push mygithub HEAD:gh-pages
-gh api repos/Cloud-Mars-ai/zhuxue-agent/pages/builds/latest
+gh api repos/Cloud-Mars-ai/zhuxue-agent/pages/builds/latest   # 等 status=built
+
+# GitHub Pages 线上验收（轻量定向，避开 37 连测的 CDN 慢/传播期 404）
+node tmp/verify-pages-acceptance.mjs
 
 # 腾讯云更新
 scp -i ~/.ssh/id_rsa frontend/dist/* server.mjs aiProxy.mjs wppjkw@152.136.121.153:/home/wppjkw/zhuxue-agent/
@@ -402,4 +407,4 @@ ssh wppjkw@152.136.121.153 "pm2 restart zhuxue-agent"
 
 ---
 
-*本日志由 WorkBuddy 依据 git `3ae081c`、逐日记忆日志与代码实勘生成（22:10 全量测试复跑复核；计数钉在 `3ae081c`，可 `git rev-list --count be009a3..3ae081c` 复验）；与旧文档冲突时，以本日志 + `PROJECT-HANDOFF-2026-11-07.md` + 代码为准。建议后续 agent 每次完成实质工作后，在本文档或对应记忆日志中追加台账条目（任务 / 日期 / 交付 / 验证 / 遗留），保持交接链不断。*
+*本日志由 WorkBuddy 依据 git `c7e00a0`（37 提交）、逐日记忆日志与代码实勘生成（22:10 全量测试复跑复核、22:39 GitHub Pages 发布 + 11 项定向验收复核；计数可 `git rev-list --count be009a3..main` 实时复验）；与旧文档冲突时，以本日志 + `PROJECT-HANDOFF-2026-11-07.md` + 代码为准。建议后续 agent 每次完成实质工作后，在本文档或对应记忆日志中追加台账条目（任务 / 日期 / 交付 / 验证 / 遗留），保持交接链不断。*
