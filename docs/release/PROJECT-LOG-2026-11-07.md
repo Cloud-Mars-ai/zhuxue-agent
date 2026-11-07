@@ -1,8 +1,8 @@
 # 项目日志 · 2026-11-07（Agent 协作与交接基线）
 
-> 编制：WorkBuddy ｜ 编制时间：2026-11-07 22:00（GMT+8）
-> 事实基准：`git main = add20fd`（20:30 基线 `38f519b` 之后新增 2 个提交：`baf094b` 课程编译器、`add20fd` 乱码放大字形修复），工作树 clean（0 未提交）；唯一远端 `mygithub`，两提交均已推送；tags：`v0.5-baseline` / `v0.6-hyperknow-core` / `v0.7-competition`
-> 编制依据：git 历史（32 提交）、`.workbuddy/memory/` 逐日日志（10-27 → 11-07）、`docs/release/PROJECT-HANDOFF-2026-11-07.md`、代码实勘（路由/开关/测试脚本/构建产物哈希）
+> 编制：WorkBuddy ｜ 编制时间：2026-11-07 22:00（GMT+8）／数字复核：22:10
+> 事实基准：`git main = eb0566c`（20:30 基线 `38f519b` 之后新增 3 个提交：`baf094b` 课程编译器、`add20fd` 乱码放大字形修复、`eb0566c` 本日志台账更新），**git 历史共 35 提交**，工作树 clean（0 未提交）；唯一远端 `mygithub`，三提交均已推送；tags：`v0.5-baseline` / `v0.6-hyperknow-core` / `v0.7-competition`
+> 编制依据：git 历史（35 提交）、`.workbuddy/memory/` 逐日日志（10-27 → 11-07）、`docs/release/PROJECT-HANDOFF-2026-11-07.md`、代码实勘（路由/开关/测试脚本/构建产物哈希）；**22:10 复核**：全量确定性测试实跑复验（E2E 37/37、text-repair 48/48、course-compiler 41/41、visualization 26/26、course-script 36/36、competition 通过），`frontend/src` 143 文件（51 vue + 75 js + 其他）/ 46,501 行，dist 构建 `index-D1trn0Ip.js`，与下文所有数字一致
 > **任务系统说明**：20:30 前的工作以逐日记忆日志 + git 提交为载体；20:30 后的深夜工作（课程编译器、乱码修复、双通道部署）已走任务清单管理，12 项任务全部完成并核验。本日志即按这些一手记录梳理而成，可作为后续 agent 协作的任务台账模板。
 
 ---
@@ -11,11 +11,11 @@
 
 | 读数 | 当前值 | 判断 |
 | --- | --- | --- |
-| 代码基线 | `main = add20fd`，工作树 clean，**WIP 已全部提交并推送** | 可安全接手，无未提交改动风险 |
+| 代码基线 | `main = eb0566c`，工作树 clean，**WIP 已全部提交并推送** | 可安全接手，无未提交改动风险 |
 | 源码规模 | `frontend/src` 143 文件（51 vue + 75 js + 其他），约 4.65 万行 | 主体功能完成 |
 | 确定性测试 | E2E **37/37**；text-repair **48/48**；course-compiler **41/41**；visualization 26/26；course-script 36/36；competition 校验通过 | 回归基线健康 |
 | 真实模型测试 | live E2E **5/5**（2026-11-04 记录）；**11-07 新改动（含编译器、乱码修复）未复测** | 见风险 R-4 |
-| 公网三通道 | ① WorkBuddy 链接已发**最新版**（add20fd 构建，verified）；② GitHub Pages 落后 main **34 个提交**；③ 腾讯云服务器已部署**最新版**但域名未解析 | 发布收尾中（仅剩 Pages） |
+| 公网三通道 | ① WorkBuddy 链接已发**最新版**（add20fd 构建，verified）；② GitHub Pages 落后 main **35 个提交**（gh-pages = `be009a3`@11-05，`git rev-list --count be009a3..main` 实勘）；③ 腾讯云服务器已部署**最新版**但域名未解析 | 发布收尾中（仅剩 Pages） |
 | 待用户操作 | API Key 轮换（历史提交含明文）；DNSPod 加 A 记录 | 阻塞项见 §4 |
 | 阶段判断 | **功能开发主体完成 → 收口 / 发布 / 验收阶段**；新增研究线「课程编译器」已落地。下一步不是大规模新开发，而是补缺口、发布、真实链路验收、文档对齐 | — |
 
@@ -25,7 +25,7 @@
 
 ### 1.1 项目定位
 
-「人机协同助学智能体」（对外名「智慧学伴」）：一门课的 AI 助教——知道课本讲到哪、学生卡在哪、下一步做什么；结论能回到教材；老师能看见全班盲区。定位裁决：**模仿 HyperKnow和openmaic**，做"有教材依据、有教师治理、可审计"的学习 Agent。
+「人机协同助学智能体」（对外名「智慧学伴」）：一门课的 AI 助教——知道课本讲到哪、学生卡在哪、下一步做什么；结论能回到教材；老师能看见全班盲区。定位裁决：**模仿 HyperKnow（形态与范式）+ OpenMAIC（生成机制）+ 乐乐课堂 41 视频（讲解内容与质量）**，做"有教材依据、有教师治理、可审计"的学习 Agent；三层对标的证据、落点与验证口径见 §5.4。
 
 当前产品同时承载两个场景：
 
@@ -55,7 +55,7 @@
 | 课程编译器（研究线） | ✅ 六层管线落地（IR/验证/证据账本/学科检查/修复循环/实验评测），41/41 质量门 |
 | 赛事模式 | ✅ 功能完成；等赛方正式数据包 |
 | 板书/白板学习形态 | ✅ 完成（原最大形态缺口，11-04 补齐） |
-| 部署（公网演示） | 🟡 三通道两通一欠（WorkBuddy/腾讯云已发最新版；Pages 落后 34 提交；域名未解析） |
+| 部署（公网演示） | 🟡 三通道两通一欠（WorkBuddy/腾讯云已发最新版；Pages 落后 35 提交；域名未解析） |
 | 安全 | 🟡 源码已无明文 key，但 git 历史需轮换 |
 | 后端 / 云服务 | 🟡 PoC 通过，正式集成未开始 |
 | 文档 | 🟡 部分过期（见 §6） |
@@ -139,7 +139,7 @@
 | # | 事项 | 当前状态 | 缺口 |
 | --- | --- | --- | --- |
 | W-1 | animation block（分步动画板书） | 渲染器已提交（c58805e 内含），E2E 已覆盖 3 帧动画 | `boardNarration.js` 不识别 animation → **语音教学跳过该 block**；`boardDownload.js` 不识别 → **下载 HTML 缺该 block**。发布前必须补两个分支 + 测试 |
-| W-2 | GitHub Pages 发布 | gh-pages = `be009a3`（11-05），**落后 main 34 个提交**（11-07 深夜两提交也未上网） | 官方数据接入、可视化、账号拆分、安全硬化、课程编译器、乱码修复均未上网；需 build:pages → 镜像 pages-deploy-2 工作树 → 推送 → 等 status=built → 浏览器验收 |
+| W-2 | GitHub Pages 发布 | gh-pages = `be009a3`（11-05 15:20），**落后 main 35 个提交**（实勘 `be009a3..main`；含 11-07 深夜三提交 baf094b/add20fd/eb0566c 均未上网） | 官方数据接入、可视化、账号拆分、安全硬化、课程编译器、乱码修复均未上网；需 build:pages → 镜像 pages-deploy-2 工作树 → 推送 → 等 status=built → 浏览器验收 |
 | W-3 | 腾讯云域名通道 | 服务器 + nginx 反代 + pm2 全部就绪，**最新版（add20fd 构建）已部署并本地验证 200** | **待用户在 DNSPod 加 A 记录** `zhuxue.wppjkw.online` → 152.136.121.153；HTTPS 待签（需 DNSPod API key → acme.sh） |
 | W-4 | 云服务正式集成 | PoC 全链路通过（表/RLS/JWT/搜索/隔离） | 零产品代码接入：mock 登录 → 云 Auth（手机 OTP UI + auth gate）；课程历史 localStorage → 云 DB；分享码需另建 public-read 表 |
 | W-5 | 真实模型验收 | 11-04 记录 5/5；公网 AI 代理已带密钥发布 | 11-07 的可视化/画像/课程编译器/乱码修复改动**未做 live 复测**；需配真实环境跑 `test:e2e:live` + 黄金题库抽测 |
@@ -156,7 +156,7 @@
 | --- | --- | --- | --- |
 | P0-1 | **历史提交中的明文 API Key 轮换**（阶跃星辰/DeepSeek/StepFun，曾随公开仓库发布） | **项目负责人**（agent 无法代做） | 服务商后台轮换；src 已无明文（`grep -rn "apiKey: '" src` 为空串） |
 | P0-2 | **animation block 语音 + 下载出口**（W-1） | 开发 agent | boardNarration/boardDownload 增加 animation 分支；E2E 补下载/语音用例 |
-| P0-3 | **GitHub Pages 发布最新 main**（W-2） | 开发 agent | Pages status=built 且 commit = 新推送（现落后 34 提交）；8 项发布后验收（首页 200、#/app/course、#/m/course、材料生成、知识库、作业回信、论坛评论、#/app/competition?step=checkup） |
+| P0-3 | **GitHub Pages 发布最新 main**（W-2） | 开发 agent | Pages status=built 且 commit = 新推送（现落后 35 提交）；8 项发布后验收（首页 200、#/app/course、#/m/course、材料生成、知识库、作业回信、论坛评论、#/app/competition?step=checkup） |
 | P0-4 | **真实模型复测**（W-5） | 开发 agent | `test:e2e:live` 全绿；黄金题库抽 10 条记录到 EVIDENCE |
 | P0-5 | **交付物收口**：重建并校验 `智慧学伴任务成果包.zip` hash，更新 deliverables README / 根 README / Release 资产 | 开发 agent | SHA256 记录在案；ZIP 已存在于 deliverables/（11-07 14:34 恢复），需确认与 task-package/ 版本一致性 |
 
@@ -216,6 +216,73 @@
 6. 模型只输出 `chunkId`，页码前端回填；
 7. 板书只做结构化 block 渲染，禁止自由画布/自由 HTML；
 8. 演示账号：`student`/`student2`/`ta`/`teacher`/`admin`/`math`，密码均 `123456`。
+
+### 5.4 生成内容与质量的三方对标（HyperKnow / OpenMAIC / 乐乐课堂）
+
+定位裁决的三个来源各自一手证据充分、对标层次不同，本项目分别落地并有验证口径（"仿形态与范式，不仿品牌层"）：
+
+| 对标来源 | 一手证据 | 对标层次 | 本项目落点 |
+| --- | --- | --- | --- |
+| HyperKnow | 453 张 1fps 帧逐帧复建，51 条带帧号观察（`docs/research/hyperknow-frame-review.md`，已验证锚点 s_045/s_120/s_200/s_300/s_430） | **形态与范式**：资料第一、单入口分流、板书生长、追问不打断 | 四段动线 + 结构化板书 + 右栏插问（§5.4.1） |
+| OpenMAIC | `THU-MAIC/OpenMAIC` 固定审阅版本 `10a92d65…`（MIT，署名见 `THIRD_PARTY_NOTICES.md`）：`docs/research/openmaic-project-review.md`（全方位调研 + 复用决策表）+ `docs/research/openmaic-course-generation-adaptation.md`（适配记录） | **生成机制**：需求→大纲→单场景两阶段、阶段级校验重试、按场景隔离失败 | courseStudio 两阶段 + 严格 JSON + schema 归一化 + 兜底（§5.4.2） |
+| 乐乐课堂 | 41 个微课视频（有理数 23 + 一元一次方程 18，117.8 分钟）328 帧逐帧审阅 + ASR 全文转写 41/41（`docs/research/teaching-video-advantages-and-ai-reuse.md`） | **讲解内容与质量**：五维 35 条优势 + 12 种转场参数 | courseStudio v3 + 五拍讲稿层 + 16 block + 转场参数化（§5.4.3） |
+
+#### 5.4.1 与 HyperKnow 的对齐（形态 / 范式）
+
+| HyperKnow 事实（帧号证据） | 本项目对应物 | 验证口径 |
+| --- | --- | --- |
+| 资料先于生成：三材料位先于中央输入（s_008/s_020） | 首页大输入 + 知识库材料优先注入（`stores/knowledge.js`），材料为高优先级独立证据源，先显示引用范围再生成 | E2E「教师可从首页材料输入直接生成课程大纲」 |
+| 单入口再分流：`+` 菜单分白板课堂/学习规划/问题求解（s_120） | 首页「+」接入板书讲解 / 直接提问 / 章节自测 / 学习体检 | E2E 覆盖 |
+| 讲解是一块块长出来的：路线图→定义→关系图→结论（s_036/s_332/s_453，板面平移不换页） | `outline` block 恒为首块；16 种结构化 block 逐块出现，`transition` 参数化（300–1500ms）+ `grow:"staged"`；禁整页翻页为提示词硬约束 | test:course-script 36/36（block 归一化与白名单完整性） |
+| 先问题后讲解：三问建立检索框架（s_320） | quiz-rapid 场景子类型 + question block（`expectedThinkingMs`）；本地兜底先写路线图再给概念 | E2E 覆盖 |
+| 追问不打断主线：右栏对话历史 + A/B 选项（s_372/s_437） | 板书右栏插问 + `question.options` 与自由文本双通道；回答后板书保留可继续生长 | E2E 覆盖 |
+| 骨架屏 / 掌握度五级（s_200/s_201） | Board 加载 skeleton；掌握度五级在学生画像与赛事工作台 | 页面目检 |
+| 明确不迁移：语音主流程、自由白板、课程集市、Canvas-LTI | 同左（AGENTS.md 硬规则 8 + §4 边界声明） | — |
+
+#### 5.4.2 与 OpenMAIC 的对齐（生成机制）
+
+| OpenMAIC 做法（上游证据） | 本项目对应物 | 验证口径 |
+| --- | --- | --- |
+| 两阶段生成：先 `SceneOutline[]`，`await-outline-confirmation` 确认前不运行昂贵内容生成 | `courseBlueprintPrompt` 蓝图 → 教师编辑确认 → 逐场景并发生成；首页输入直达大纲确认页，教师改大纲后可重编译 | E2E「教师可用两阶段编排生成课程并进入板书场景」 |
+| 用户需求是课程主题第一依据，资料不覆盖需求 | `api/courseStudio.js` 主题判定 + 材料高优先级独立证据源；新课程默认排除内置管理学纲要（修正原项目"什么都生成管理学"的偏差） | E2E 材料生成用例 |
+| 结构化输出 + 本地校验：JSON 能解析 ≠ 业务可用，schema 归一化才是安全边界 | `normalizeCourseBlueprint/normalizeCourseSceneContent` 业务归一化（3–10 场景、类型白名单 lecture/quiz/practice/review、order 连续、时长 3–45 分钟、sourceChunkIds 只引真实材料）；归一化失败 → 带原始输出与契约回炉一次 → 仍失败走确定性兜底 | 无模型全链路兜底用例 + 16 block 白名单测试 |
+| 每阶段独立解析、校验、重试；按场景隔离失败，单场景失败不丢已生成内容 | 蓝图/场景/讲稿分层独立失败；每场景完成即写 IndexedDB checkpoint，刷新后可继续生成；断网时单场景独立标「演示缓存」 | E2E 刷新持久化用例 |
+| 资料上下文限额：不把全部材料塞给每步；模型只回 chunkId，标题/章节前端回填 | `knowledge.js` `buildGenerationContext()`：默认至多 6 片段 / 6000 字符，每场景再按 `sourceChunkIds` 取 5 片段；**模型只输出 chunkId（= AGENTS.md 硬规则 7），不生成页码** | 提示词契约 + E2E |
+| 分层能力插槽：大纲/内容/动作/媒体/TTS 解耦可配置关闭 | `config/flags.js` 开关体系（courseCompiler/offlineFallback/citation/studyPlan…），语音不与课程生成耦合（不引入场景动作/多 Agent 演播） | flags 实勘 |
+| 质量门八道（输入/大纲/人工/内容/恢复/安全/降级/验收） | 大纲编辑门（`outlineErrors` 阻止空标题/空要点）、安全门（板书禁 HTML/CSS/SVG/坐标/脚本）、降级门（场景级演示缓存）、验收门（build + E2E + 各专项测试，见 §5.4.4） | §5.4.4 验证矩阵 |
+| 导出可交换课程包 | `.course.json` 导出（PPTX/媒体降级不做，与边界声明一致） | 页面功能 |
+
+上游未采纳项（多 Agent 课堂、PBL、互动 HTML/3D、图片/视频生成、PostgreSQL、React slide DSL）与本项目「明确不做」边界一致，理由记于该文档 §5/§7；MIT 许可与署名已入 `THIRD_PARTY_NOTICES.md`。
+
+#### 5.4.3 与乐乐课堂 41 视频的对齐（讲解内容与质量）
+
+五维 35 条优势全部有落点（P0/P1 已落地为代码，P2 三项按降级方案处理；落地明细见该文档 §8）：
+
+- **A 教学内容组织（A1–A7）**：微粒度切片（场景按时长反推 `sceneCount = clamp(round(duration/3.5), 3, 9)`，lecture 场景 2–6 分钟）；多视角覆盖（分类/双重性知识点 ≥2 视角场景）；开场三件套（review/warmup/motive 字段化，缺一判不合格）；三点式 takeaways（恰好 3 条、≤20 字）；题型矩阵（题型枚举 + 方法论汇总场景）；难度阶梯（difficultyTier 非降序，running max 抬平）；特殊值收束进 review；
+- **B 讲解逻辑（B1–B8）**：`wrong-first` 错解先行（错解先渲染可点击"我同意"再揭示，错因必须挂 12 条易错点库 `data/errorPatterns.js`，带 `emphasisCount`）；五拍讲稿（question/answer/confirm/recall/cta，question 拍停顿 ≥1500ms）；`induction` 观察→归纳→验证（3–5 例覆盖正负/零）；`multi-solution` 一题多解（2–3 法并列 + 选题风比较句）；definition.method（≤3 步）/verify（验证策略）方法论显性化；
+- **C 视觉呈现（C1–C8）**：纸感主题与视频原片同源（`tokens.css` 三套皮肤各 8 个语义令牌，AI 只选 tone 不选色值）；全部 16 种 block 挂 `transition` 渐进揭示（禁整页翻页）；图表族落地 8 种（classification-tree 四阶段生长 / number-line SVG / case-table / fill-blank / wrong-first / judge / induction / multi-solution；timeline/concept-map 列为下一迭代）；`persistent` 常驻面板（公式/目标形跨场景保留）；marks 7 样式（box/underline/circle/circle-char/cross/check/stop）；受控技法白名单（减变加/除变乘/凑整/分组/移项/去分母/整体思想/特值法/回带/因式分析）；
+- **D 互动设计（D1–D6）**：quiz-rapid 先问后讲（lecture 之间插入注意力锚点）；fill-blank 留白填空（结论步降级变体）；judge 判断对错（reason 必填）；错因挂库不允许无来源编造；persona 人设 + 末拍 cta 硬约束（语气白名单：可用"妥妥的/对喽/别忘了"，禁"综上所述"说明书腔）；
+- **E 节奏控制（E1–E6）**：讲稿字数预算 = 目标分钟 × 300–330 字/分（视频实测平均 327 字/分，区间 275–417）；exampleStrategy 三选一（deepen-one/parallel-two/ladder），禁止"一题一带过"；emphasisCount≥2 的 8 条易错点在 review 场景双次强调；≥4 拍强制插入 recall 回顾锚点；
+- **转场（T1–T12）**：12 种转场全部参数化（enter 四枚举 + exit 两枚举 + `grow:"staged"`），实测事件密度 4.7–7.3s/次、动画:停留 ≈ 1:4、硬切为 0（同画布增删）已转为提示词约束与 CSS 变量（`--block-duration/--block-delay`）；
+- **讲稿层（原最大架构缺口，已补齐）**：`utils/courseScript.js` 五拍 beats 与 blockId 1:1 挂载（仅 question/answer 拍可挂），一拍一 reveal，与板书视觉事件对齐播放。
+
+#### 5.4.4 质量对齐：不只是"像"，而是可验证
+
+生成质量由课程编译器（研究线，`flags.courseCompiler` 默认开）物化为可验证对象，与三份对标文档的"质量标准"一一对应：
+
+| 质量维度 | 机制 | 验证口径（本次实勘复跑） |
+| --- | --- | --- |
+| 结构正确性 | 课程 IR（知识点/先修/场景序列）+ 9 类硬约束码（覆盖率/先修/时长/难度非降序等） | test:course-compiler **41/41** |
+| 内容有据 | 五类证据账本（requirement/chunk/attempt/rule/derived）+ 伪造检测 | 同上 |
+| 学科正确 | `utils/subjectCheck/` 按学科分发：math7 全检（算式求解与文本一致性）/ management 数字溯源 + 算术断言 / 其他仅算术断言 | 同上（[5] subjectCheck/math7 分区） |
+| 失败可修复 | 修复循环 validate-and-accept（拓扑重排不增 error 才接受，否则摘越界依赖边），RepairRecord 留痕 | 同上 |
+| 讲解合规 | 16 block 白名单 + 讲稿 beats 契约 + 易错点库挂接 + 技法白名单 | test:course-script **36/36** |
+| 文字完整性 | textRepair 四层防御（导入/入库/输入/输出 + 放大字形 AMPLIFIED_MAP），23.7 万字符真实语料零误伤 | test:text-repair **48/48** |
+| 理科可视化 | 六组概念信号加权判定 + 5 个交互模型（圆周运动/三角形/一次函数/数轴/分数） | test:visualization **26/26** |
+| 端到端不回归 | E2E 37 条（含编译器离线实验、两交互模型、H5 路由映射、语音开关） | test:e2e **37/37**（22:10 实跑） |
+| 赛事数据可信 | 官方数据集校验（3 主题/9 指标/11 材料/54 题/40 学生/806 记录，793 有效） | test:competition 通过（qualityIssues=13, cases=3） |
+
+**对标边界（写死防止跑偏）**：只仿形态 + 范式 + 内容组织方法，不仿品牌层（HyperKnow logo/文案、乐乐课堂 IP 形象与水印、讲师口头禅具体用词）；不做课程集市、积分付费、Craft Course、语音主流程、Manim 视频管线、自由白板画布。
 
 ---
 
@@ -319,7 +386,7 @@ scp -i ~/.ssh/id_rsa frontend/dist/* server.mjs aiProxy.mjs wppjkw@152.136.121.1
 ssh wppjkw@152.136.121.153 "pm2 restart zhuxue-agent"
 ```
 
-**入口文件索引**：课程生成 `api/courseStudio.js` + `api/prompts/courseStudio.js` + `utils/courseStudio.js` + `stores/courseStudio.js`；板书 `api/board.js` + `utils/board.js` + `components/BoardCanvas.vue`；画像 `utils/learnerProfile.js`；可视化 `utils/knowledgeVisualization.js` + `components/simulations/`；赛事 `src/competition/` + `views/CompetitionWorkbench.vue` + `stores/competition.js`；修复 `utils/textRepair.js` + `utils/materialImport.js`；主题 `theme/tokens.css`；路由/守卫 `router/index.js`；开关 `config/flags.js`；课程编译器 `utils/courseIR.js` + `courseValidator.js` + `evidenceLedger.js` + `subjectCheck.js` + `courseRepair.js` + `courseExperiment.js` + `views/web/CourseCompilerView.vue` + `api/experiments.js`，设计文档 `docs/research/course-compiler-design.md`。
+**入口文件索引**：课程生成 `api/courseStudio.js` + `api/prompts/courseStudio.js` + `utils/courseStudio.js` + `stores/courseStudio.js`；板书 `api/board.js` + `utils/board.js` + `components/BoardCanvas.vue`；画像 `utils/learnerProfile.js`；可视化 `utils/knowledgeVisualization.js` + `components/simulations/`；赛事 `src/competition/` + `views/CompetitionWorkbench.vue` + `stores/competition.js`；修复 `utils/textRepair.js` + `utils/materialImport.js`；主题 `theme/tokens.css`；路由/守卫 `router/index.js`；开关 `config/flags.js`；课程编译器 `utils/courseIR.js` + `courseValidator.js` + `evidenceLedger.js` + `courseRepair.js` + `courseExperiment.js` + `utils/subjectCheck/`（index.js 学科分发 + math7.js 七年级全检 + mathExpr.js 算式解析）+ `views/web/CourseCompilerView.vue` + `api/experiments.js`，设计文档 `docs/research/course-compiler-design.md`；三方对标证据 `docs/research/hyperknow-frame-review.md` + `docs/research/openmaic-project-review.md`（固定版本 `10a92d65…`，含复用决策表）+ `docs/research/openmaic-course-generation-adaptation.md` + `docs/research/teaching-video-advantages-and-ai-reuse.md`（§8 含 35 条优势落地明细）。
 
 ## 附录 B：环境坑（本机沙箱，实测）
 
@@ -334,4 +401,4 @@ ssh wppjkw@152.136.121.153 "pm2 restart zhuxue-agent"
 
 ---
 
-*本日志由 WorkBuddy 依据 git `add20fd`、逐日记忆日志与代码实勘生成；与旧文档冲突时，以本日志 + `PROJECT-HANDOFF-2026-11-07.md` + 代码为准。建议后续 agent 每次完成实质工作后，在本文档或对应记忆日志中追加台账条目（任务 / 日期 / 交付 / 验证 / 遗留），保持交接链不断。*
+*本日志由 WorkBuddy 依据 git `eb0566c`、逐日记忆日志与代码实勘生成（22:10 全量测试复跑复核）；与旧文档冲突时，以本日志 + `PROJECT-HANDOFF-2026-11-07.md` + 代码为准。建议后续 agent 每次完成实质工作后，在本文档或对应记忆日志中追加台账条目（任务 / 日期 / 交付 / 验证 / 遗留），保持交接链不断。*

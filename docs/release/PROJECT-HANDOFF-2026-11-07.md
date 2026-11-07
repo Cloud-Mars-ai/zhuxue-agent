@@ -4,9 +4,20 @@
 
 适用范围：当前主工作区 `D:\黑客松\经管Agent` 及其 GitHub Pages 发布工作树。
 
-> 本文件是 2026-11-07 的当前交接基线。根目录旧的
-> `Codex交接文档.md`、`AGENTS.md` 和 `frontend/README.md` 含有已经过期的信息，
-> 例如“夜读皮肤仍存在”“作业/论坛刷新不保留”“固定管理学课程”等，不应单独作为现状依据。
+> **状态勘误（2026-11-07 22:10，以 `docs/release/PROJECT-LOG-2026-11-07.md` 为现状基准）**：本文写于 `b048828` 时点，其"状态类"陈述已被后续 5 个提交超越，接手时**不要以本文数字为准**，请以项目日志为准：
+>
+> | 本文记录（写成时） | 当前事实（22:10 实勘） |
+> | --- | --- |
+> | HEAD = `b048828`，工作树有未提交 WIP | `main = eb0566c`（共 35 提交），工作树 clean；WIP 已全部提交并推送（`c58805e` / `38f519b` / `baf094b` / `add20fd` / `eb0566c`） |
+> | E2E 31/31 | E2E **37/37**（22:10 实跑复验）；另 text-repair 48/48、course-compiler 41/41、visualization 26/26、course-script 36/36、competition 通过 |
+> | Pages = `be009a3` 未含官方数据 | Pages 仍 = `be009a3`，**落后 main 35 个提交**（唯一剩余发布动作，见日志 W-2 / P0-3） |
+> | 交付 ZIP 被删待重建 | `deliverables/智慧学伴任务成果包.zip` 已于 11-07 14:34 恢复（hash 校验见日志 P0-5） |
+> | 源码约 118 文件 / 3.9 万行 | `frontend/src` 143 文件（51 vue + 75 js）/ 46,501 行 |
+> | 真实模型 5/5（11-04） | 仍为 5/5；**11-07 新改动未 live 复测**（日志 W-5 / R-4） |
+>
+> 本文保留的价值：发布流程细节（§11）、文件索引（§16）、本地运行与模型配置（§8/§9）、接手检查清单（§15）。状态、进度、风险、下一步一律读 `PROJECT-LOG-2026-11-07.md`。
+>
+> 根目录旧的 `Codex交接文档.md`、`AGENTS.md` 和 `frontend/README.md` 亦含过期信息（如"夜读皮肤仍存在""作业/论坛刷新不保留""固定管理学课程"），不应单独作为现状依据。
 
 ---
 
@@ -140,13 +151,17 @@ GitHub Pages 使用 Hash 路由；旧无 Hash 路径由 `dist-pages/404.html` �
 | 文件/目录 | 用途 |
 | --- | --- |
 | `frontend/src/` | 产品唯一源码真源 |
-| `frontend/tests/e2e/critical-flows.spec.js` | 31 条确定性 E2E 主链路 |
+| `frontend/tests/e2e/critical-flows.spec.js` | 37 条确定性 E2E 主链路（11-07 深夜由 31 扩充） |
+| `docs/release/PROJECT-LOG-2026-11-07.md` | **当前状态/进度/风险/下一步的唯一基准**（git `eb0566c`，22:10 全量测试实勘） |
 | `docs/competition/data-contract.md` | 官方模拟数据契约 |
 | `frontend/src/competition/official/` | 官方 CSV 的 ASCII 固化副本 |
 | `frontend/src/competition/officialDataset.js` | 官方 CSV 到前端数据模型的转换 |
-| `docs/release/EVIDENCE-2026-11-04-competition.md` | 最近一次赛事发布证据，但提交号需按本文更新 |
+| `docs/release/EVIDENCE-2026-11-04-competition.md` | 最近一次赛事发布证据，但提交号需按项目日志更新 |
+| `docs/research/openmaic-project-review.md` | OpenMAIC 全方位调研（固定版本 `10a92d65…`）+ 复用决策表 |
 | `docs/research/openmaic-course-generation-adaptation.md` | OpenMAIC 生成流程适配说明 |
-| `docs/research/hyperknow-frame-review.md` | HyperKnow 帧级调研 |
+| `docs/research/hyperknow-frame-review.md` | HyperKnow 帧级调研（51 条帧观察） |
+| `docs/research/teaching-video-advantages-and-ai-reuse.md` | 乐乐课堂 41 视频优势提炼 + AI 复用映射（§8 落地明细） |
+| `docs/research/course-compiler-design.md` | 课程编译器研究线设计（RQ1–RQ4） |
 
 ### 3.2 已经过期的文档
 
@@ -424,6 +439,18 @@ H5：
 - 官方 PDF 课程标准与教材切片体积约 40 MB，未复制进前端构建；
 - 当前只保留课程要求中的文件索引、页码与来源字段；
 - `【赛题材料】智慧学伴/` 目前 untracked，不应在未确认赛事数据公开许可前直接提交。
+
+### 5.11 生成内容与质量的三方对标（摘要）
+
+课程生成的内容与质量按三个一手证据源分层对齐（完整对照表、帧号/视频号证据与验证口径见 `PROJECT-LOG-2026-11-07.md` §5.4）：
+
+| 来源 | 证据 | 对标层次 | 落点 |
+| --- | --- | --- | --- |
+| HyperKnow | 453 帧逐帧复建 + 51 条帧观察（`docs/research/hyperknow-frame-review.md`） | 形态与范式 | 资料先于生成、单入口分流、板书逐块生长（outline 恒首块 + 16 block + transition 参数化）、右栏追问不打断（A/B + 自由文本）、先问题后讲解（quiz-rapid）；明确不做语音主流程/自由白板/课程集市 |
+| OpenMAIC | 固定版本 `10a92d65…` 调研（`docs/research/openmaic-project-review.md` + `openmaic-course-generation-adaptation.md`，MIT 署名已入 `THIRD_PARTY_NOTICES.md`） | 生成机制 | 两阶段（大纲确认前不生成内容）、schema 归一化才是安全边界（JSON 能解析 ≠ 业务可用）、按场景隔离失败 + IndexedDB checkpoint 可恢复、材料 top-k 限额且模型只回 chunkId（硬规则 7）、八道质量门 |
+| 乐乐课堂 | 41 个微课视频 328 帧 + ASR 转写 41/41（`docs/research/teaching-video-advantages-and-ai-reuse.md` §8 落地明细） | 讲解内容与质量 | 五维 35 优势：微粒度切片（按时长反推场景数）、开场三件套、三点 takeaways、难度阶梯非降序、wrong-first 错解先行 + 12 条易错点库、五拍讲稿（question/answer/confirm/recall/cta）、marks 7 样式、常驻面板、字数预算 300–330 字/分、12 种转场参数化（禁整页翻页） |
+
+质量不只是"像"：课程编译器（`flags.courseCompiler`）把上述标准物化为可验证对象——课程 IR + 9 类硬约束 + 五类证据账本（含伪造检测）+ subjectCheck 学科分发 + validate-and-accept 修复循环，配 37/37 E2E 与五个专项测试套件（41/41、48/48、36/36、26/26）作为回归基线。
 
 ---
 
