@@ -87,7 +87,9 @@ const dirty = {
   questions: [{ stem: '４犳＋犵＝？', options: ['１５', '１６'] }],
 }
 const { value, fixed } = repairDeepWithReport(dirty)
-check('JSON 字符串深修复', value.lesson.title, '（3）荞状 ÷ p株')
+// 荞→p（左邻全角括号“）”命中题号后紧跟变量的上下文）、狆→p、株→q（左邻拉丁字母 p）。
+// 状 是模型把繁体 狀 简化的产物，本身是极常用字（形状/状况），不做映射，属已知局限。
+check('JSON 字符串深修复', value.lesson.title, '（3）p状 ÷ pq')
 check('JSON term 修复', value.lesson.blocks[0].term, 'pq')
 check('JSON definition 修复', value.lesson.blocks[0].definition, 'p，q 是整数，q ≠ ０')
 check('JSON table 修复', value.lesson.blocks[1].rows, [['√ a', 'x２＝a']])
@@ -97,6 +99,29 @@ check('修复计数 > 0', fixed > 0, true)
 console.log('\n[7] 用户输入净化')
 check('净化返回说明', sanitizeUserInput('第二章 有理数的运算 （2 ）荞 状 × 狆 株 =').notice.length > 0, true)
 check('净化保留原文结构', sanitizeUserInput('第二章 有理数的运算').notice, '')
+// 真实复现用例（用户从模型输出粘贴回来的主题）：荞/狆→p、株→q
+check('净化修复放大字形与乱码',
+  sanitizeUserInput('第二章 有理数的运算 （2 ）荞 状 × 狆 株').text,
+  '第二章 有理数的运算 （2 ）p 状 × p q')
+
+console.log('\n[7b] 模型放大字形（荞←狆、株←狇）上下文修复')
+check('题号后紧跟变量：荞→p', repairText('（3）荞状 ÷ 狆株').text, '（3）p状 ÷ pq')
+check('拉丁字母相邻：株→q', repairText('狆狇＝槡２').text, 'pq＝√２')
+check('数学符号触发：荞→p', repairText('荞×狆＝４').text, 'p×p＝４')
+check('成对出现互相触发', repairText('荞株').text, 'pq')
+check('空格不隔断触发', repairText('狆 荞 ＜ 狆').text, 'p p ＜ p')
+check('放大字形计入 fixed', repairText('p株').fixed, 1)
+check('合法用法零误伤：荞麦', repairText('荞麦粥的做法').text, '荞麦粥的做法')
+check('合法用法零误伤：甜荞', repairText('陕北甜荞面').text, '陕北甜荞面')
+check('合法用法零误伤：植株/一株', repairText('观察植株高度，量了第一株的高度').text,
+  '观察植株高度，量了第一株的高度')
+check('合法用法零误伤：全角数字＋株（语料原句）',
+  repairText('下面是从蔬菜大棚中收集的５０株番茄上的果实个数').text,
+  '下面是从蔬菜大棚中收集的５０株番茄上的果实个数')
+check('合法用法零误伤：半角数字＋株', repairText('共 50 株番茄').text, '共 50 株番茄')
+check('句首合法用法不触发', repairText('荞麦和株距').text, '荞麦和株距')
+check('幂等性（修复后再修不变）',
+  repairText(repairText('（3）荞状 ÷ 狆株').text).text, '（3）p状 ÷ pq')
 
 console.log('\n[8] 真实语料回归（B01–B08 提取文本，如存在）')
 const corpusPath = path.resolve(here, '../../tmp/all-pdfs-text.txt')

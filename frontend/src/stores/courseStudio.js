@@ -5,6 +5,7 @@ import { generateCourseScene, generateCourseScript, recompilePlan } from '@/api/
 import { courseSceneFingerprint } from '@/utils/courseStudio'
 import { createLedger } from '@/utils/evidenceLedger'
 import { auditLedger } from '@/utils/evidenceLedger'
+import { repairDeep } from '@/utils/textRepair'
 import { isEnabled } from '@/config/flags'
 import { normalizeLearnerProfile } from '@/utils/learnerProfile'
 
@@ -19,8 +20,13 @@ function clone(value) {
   }
 }
 
+/**
+ * 场景状态归一化。返回值统一过 repairDeep（乱码迁移兜底）：
+ * 2026-11-07 修复上线前写入 IndexedDB 的旧场景仍可能残留 PDF ToUnicode
+ * 乱码与模型放大字形（荞/株），任何读取/更新路径都在这里一并修复。
+ */
 function normalizeSceneState(scene) {
-  return {
+  return repairDeep({
     outlineId: scene?.outlineId || '',
     status: ['pending', 'generating', 'ready', 'fallback', 'error'].includes(scene?.status)
       ? scene.status
@@ -35,7 +41,7 @@ function normalizeSceneState(scene) {
     evidence: Array.isArray(scene?.evidence) ? scene.evidence : [],
     subjectIssues: Array.isArray(scene?.subjectIssues) ? scene.subjectIssues : [],
     repairs: Array.isArray(scene?.repairs) ? scene.repairs : [],
-  }
+  })
 }
 
 function normalizeLedger(ledger) {
@@ -50,7 +56,7 @@ function normalizeLedger(ledger) {
 
 function normalizeProject(project) {
   if (!project || typeof project !== 'object') return null
-  return {
+  const normalized = {
     id: project.id || `course-${Date.now().toString(36)}`,
     ownerId: project.ownerId || '',
     status: ['outline', 'generating', 'ready', 'failed'].includes(project.status)
@@ -88,6 +94,9 @@ function normalizeProject(project) {
     createdAt: project.createdAt || new Date().toISOString(),
     updatedAt: project.updatedAt || new Date().toISOString(),
   }
+  // 乱码迁移兜底（migration-on-read）：标题/摘要/大纲/IR/证据等整项目深修复，
+  // 兜住修复上线前生成的旧项目与任何绕过 API 层的写入路径。
+  return repairDeep(normalized)
 }
 
 export const useCourseStudioStore = defineStore('courseStudio', () => {
