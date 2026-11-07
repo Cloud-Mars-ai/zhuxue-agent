@@ -28,12 +28,16 @@ export const FEATURE_FLAGS = {
   knowledgeBase: true, // 课程资料库与材料注入（教师确认稿已内置）
   citation: false, // 引用标签渲染（S3 后续：chunkId 回填页码）
   courseStudio: true, // 两阶段智能课程编排（大纲确认 → 逐场景生成）
+  courseScript: true, // 第三层讲稿 beats（设问—停顿—确认链，与板书视觉事件对齐）
 
   // —— S4 学习形态 ——
   deepLearn: false, // 章节学习路径
   boardMode: true, // 结构化板书 + 板书内追问
   socratic: true, // 苏格拉底追问
   tutorEntry: true, // 首页统一助教入口
+
+  // —— 运维与审计 ——
+  accessLog: true, // 访问日志（登录记录 + 页面访问，仅本机留存）
 }
 
 const STORAGE_KEY = 'ai-tutor-flags'

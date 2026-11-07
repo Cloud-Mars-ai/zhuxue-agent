@@ -142,6 +142,7 @@ function toggleMock() {
           />
         </template>
       </van-cell>
+      <van-cell title="访问日志" label="登录记录与页面访问（仅本机留存）" is-link to="/m/logs" />
       <van-cell title="切换到 Web 端" is-link @click="router.push('/app/course')" />
       <van-cell title="关于系统" value="v0.1.0 竞赛演示版" />
     </van-cell-group>

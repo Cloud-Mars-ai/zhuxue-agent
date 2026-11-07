@@ -113,6 +113,16 @@ html[data-theme='yun'] {
   --board-line: #4d5067;
   --board-note: #f6f3ff;
 
+  /* —— 板书语义色（教学视频分析落地：红=错解/负数，绿=正解/正确，当前=高亮步） —— */
+  --board-negative: #c0483c;
+  --board-negative-soft: #fbeae7;
+  --board-positive: #2f8f5b;
+  --board-positive-soft: #e6f4ec;
+  --board-warn: #b7791f;
+  --board-warn-soft: #fbf3e2;
+  --board-current: #3d5bd9;
+  --board-current-soft: #e8ecfc;
+
   /* —— 兼容旧变量（历史页面引用） —— */
   --brand: #3d5bd9;
   --brand-light: #e8ecfc;
@@ -319,6 +329,16 @@ html[data-theme='mo'] {
   --board-accent-soft: #f6eff8;
   --board-line: #5b4a5f;
   --board-note: #f8f1f8;
+
+  /* —— 板书语义色（朱砂=错解/警示，黛绿=正解，当前步=朱砂高亮） —— */
+  --board-negative: #b4552d;
+  --board-negative-soft: #f6e4da;
+  --board-positive: #5f7f5a;
+  --board-positive-soft: #eaf0e6;
+  --board-warn: #b07a25;
+  --board-warn-soft: #f8eeda;
+  --board-current: #b4552d;
+  --board-current-soft: #f6e4da;
 
   /* —— 兼容旧变量 —— */
   --brand: #b4552d;
@@ -538,6 +558,16 @@ html[data-theme='blue'] {
   --board-accent-soft: #eef2ff;
   --board-line: #4a5871;
   --board-note: #f4f7ff;
+
+  /* —— 板书语义色（红=错解/负数，绿=正解/正确，蓝=当前步高亮） —— */
+  --board-negative: #c04b55;
+  --board-negative-soft: #fbecef;
+  --board-positive: #2f8f70;
+  --board-positive-soft: #e8f6f0;
+  --board-warn: #a97720;
+  --board-warn-soft: #fbf3e2;
+  --board-current: #4a73f2;
+  --board-current-soft: #e9f0ff;
 
   --brand: #4a73f2;
   --brand-light: #e9f0ff;

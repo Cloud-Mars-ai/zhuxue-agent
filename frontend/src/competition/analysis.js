@@ -1226,6 +1226,9 @@ export function buildCompetitionSceneContent(dataset, outline, mode = 'course') 
           title: '课程要求',
           term: requirement?.title || topic?.title || '学习目标',
           definition: requirement?.content || topic?.summary || '',
+          concreteAnchor:
+            requirement?.expectation ||
+            '先看一道能上手的例题，再回到这条要求本身。',
           analogy: requirement?.expectation || '先明确要求，再看表现和下一步。',
         },
         {

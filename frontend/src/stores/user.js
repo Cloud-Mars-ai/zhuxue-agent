@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { MOCK_USERS, MOCK_STUDENTS, DISCIPLINE_OPTIONS } from '@/mock/data'
+import { useAccessLogStore } from './accessLog'
 
 const STORAGE_KEY = 'ai-tutor-user'
 
@@ -82,6 +83,21 @@ export const useUserStore = defineStore('user', () => {
   function login(payload) {
     user.value = payload
     safeSetItem(STORAGE_KEY, JSON.stringify(payload))
+    // 访问日志：记录登录事件（只记账号与模式，不碰密码）
+    try {
+      const logStore = useAccessLogStore()
+      logStore.record('login', {
+        user: payload,
+        path: window.location.hash || window.location.pathname,
+        title: '登录',
+        detail: {
+          method: useMock.value ? '仿真数据模式' : '接口联调模式',
+          username: payload?.username || payload?.id || '',
+        },
+      })
+    } catch {
+      // 日志失败不影响登录主流程
+    }
   }
 
   /** 更新当前登录用户的学科背景（学生自助设置，立即持久化） */
@@ -115,6 +131,20 @@ export const useUserStore = defineStore('user', () => {
   }
 
   function logout() {
+    // 访问日志：先记录登出事件（需要用户快照），再清登录态
+    if (user.value) {
+      try {
+        const logStore = useAccessLogStore()
+        logStore.record('logout', {
+          user: user.value,
+          path: window.location.hash || window.location.pathname,
+          title: '登出',
+          detail: { username: user.value?.username || user.value?.id || '' },
+        })
+      } catch {
+        // 日志失败不影响登出主流程
+      }
+    }
     user.value = null
     safeRemoveItem(STORAGE_KEY)
     safeRemoveItem('ai-tutor-token')

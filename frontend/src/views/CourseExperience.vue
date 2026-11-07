@@ -5,6 +5,7 @@ import { ElMessage } from 'element-plus'
 import BoardCanvas from '@/components/BoardCanvas.vue'
 import { useCourseStudioStore } from '@/stores/courseStudio'
 import { COURSE_SCENE_LABELS, summarizeCourseProject } from '@/utils/courseStudio'
+import { SCRIPT_BEAT_LABELS } from '@/utils/courseScript'
 import { downloadBoardLesson } from '@/utils/boardDownload'
 
 const route = useRoute()
@@ -14,6 +15,7 @@ const studio = useCourseStudioStore()
 const loading = ref(true)
 const missing = ref(false)
 const selectedSceneId = ref('')
+const scriptOpen = ref(false)
 const projectId = computed(() => String(route.params.projectId || ''))
 const project = computed(() => studio.find(projectId.value))
 const stats = computed(() =>
@@ -239,8 +241,7 @@ function backToStudio() {
               landscape
               @answer="() => {}"
             />
-          </div>
-          <div v-else-if="selectedScene.content.kind === 'quiz'" class="experience-quiz">
+          </div>          <div v-else-if="selectedScene.content.kind === 'quiz'" class="experience-quiz">
             <article
               v-for="(question, index) in selectedScene.content.questions"
               :key="question.id"
@@ -272,6 +273,28 @@ function backToStudio() {
             </blockquote>
           </div>
         </template>
+
+        <!-- 讲稿层：beats 与板书视觉事件 1:1 对齐，问后有停顿标记 -->
+        <div v-if="selectedScene?.script?.beats?.length" class="scene-script">
+          <button
+            type="button"
+            class="script-toggle"
+            :aria-expanded="scriptOpen"
+            @click="scriptOpen = !scriptOpen"
+          >
+            <span class="script-icon" aria-hidden="true">◈</span>
+            讲稿（{{ selectedScene.script.beats.length }} 拍）
+            <span class="script-arrow" :class="{ open: scriptOpen }">▾</span>
+          </button>
+          <ol v-if="scriptOpen" class="script-beats">
+            <li v-for="(beat, beatIndex) in selectedScene.script.beats" :key="beatIndex" :class="`is-${beat.kind}`">
+              <span class="beat-kind">{{ SCRIPT_BEAT_LABELS[beat.kind] || beat.kind }}</span>
+              <p>{{ beat.text }}</p>
+              <span v-if="beat.kind === 'question'" class="beat-pause">停 {{ (beat.pauseMs / 1000).toFixed(1) }}s</span>
+              <span v-if="beat.blockId" class="beat-block">→ {{ beat.blockId }}</span>
+            </li>
+          </ol>
+        </div>
       </section>
     </main>
   </div>
@@ -739,4 +762,117 @@ function backToStudio() {
     padding: 4px;
   }
 }
+
+/* —— 讲稿面板（beats：设问—停顿—确认链） —— */
+  .scene-script {
+    margin-top: 18px;
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    background: var(--card-bg);
+    overflow: hidden;
+  }
+
+  .script-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 16px;
+    color: var(--text-sub);
+    background: transparent;
+    border: 0;
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  .script-toggle:hover {
+    color: var(--text-main);
+  }
+
+  .script-icon {
+    color: var(--accent);
+  }
+
+  .script-arrow {
+    margin-left: auto;
+    transition: transform 0.2s ease;
+  }
+
+  .script-arrow.open {
+    transform: rotate(180deg);
+  }
+
+  .script-beats {
+    display: grid;
+    gap: 10px;
+    margin: 0;
+    padding: 4px 16px 16px;
+    list-style: none;
+    counter-reset: beat;
+  }
+
+  .script-beats li {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: baseline;
+    gap: 10px;
+    padding: 9px 12px;
+    background: var(--surface-2);
+    border-left: 3px solid var(--divider);
+    border-radius: var(--radius-sm);
+  }
+
+  .script-beats li.is-question {
+    border-left-color: var(--accent);
+  }
+
+  .script-beats li.is-answer {
+    border-left-color: var(--ok);
+  }
+
+  .script-beats li.is-confirm {
+    border-left-color: var(--warn);
+  }
+
+  .script-beats li.is-recall {
+    border-left-color: var(--text-sub);
+  }
+
+  .script-beats li.is-cta {
+    border-left-color: var(--accent-deep);
+  }
+
+  .beat-kind {
+    padding: 1px 8px;
+    color: var(--text-sub);
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-pill);
+    font-size: 11px;
+  }
+
+  .script-beats li.is-question .beat-kind {
+    color: var(--accent);
+    border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  }
+
+  .script-beats p {
+    margin: 0;
+    color: var(--text-main);
+    font-size: 13.5px;
+    line-height: 1.7;
+  }
+
+  .beat-pause {
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 11px;
+  }
+
+  .beat-block {
+    color: var(--text-faint);
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+  }
 </style>

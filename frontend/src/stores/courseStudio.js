@@ -1,8 +1,9 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { idbGet, idbSet } from '@/repositories/db'
-import { generateCourseScene } from '@/api/courseStudio'
+import { generateCourseScene, generateCourseScript } from '@/api/courseStudio'
 import { courseSceneFingerprint } from '@/utils/courseStudio'
+import { isEnabled } from '@/config/flags'
 import { normalizeLearnerProfile } from '@/utils/learnerProfile'
 
 const STORAGE_KEY = 'course-studio-projects-v1'
@@ -23,6 +24,7 @@ function normalizeSceneState(scene) {
       ? scene.status
       : 'pending',
     content: scene?.content || null,
+    script: scene?.script || null,
     sources: Array.isArray(scene?.sources) ? scene.sources : [],
     error: scene?.error || '',
     repaired: !!scene?.repaired,
@@ -151,7 +153,7 @@ export const useCourseStudioStore = defineStore('courseStudio', () => {
       scenes: outlines.map((scene) => normalizeSceneState({ outlineId: scene.id })),
       fallback: !!result.fallback,
       outlineError: result.error?.message || '',
-      generatorVersion: 'openmaic-10a92d6-adapt-v2',
+      generatorVersion: 'openmaic-10a92d6-adapt-v3',
       createdAt: now,
       updatedAt: now,
     }
@@ -287,14 +289,27 @@ export const useCourseStudioStore = defineStore('courseStudio', () => {
             outline,
             previousScene: outlines[index - 1] || null,
           })
-          await updateScene(projectId, outline.id, {
-            status: result.fallback ? 'fallback' : 'ready',
-            content: result.content,
-            sources: result.sources,
-            repaired: !!result.repaired,
-            fingerprint: courseSceneFingerprint(outline),
-            error: '',
-          })
+        await updateScene(projectId, outline.id, {
+          status: result.fallback ? 'fallback' : 'ready',
+          content: result.content,
+          sources: result.sources,
+          repaired: !!result.repaired,
+          fingerprint: courseSceneFingerprint(outline),
+          error: '',
+        })
+        // 第三层：讲稿 beats。失败不影响场景本身（内部已有确定性兜底）
+        if (isEnabled('courseScript')) {
+          try {
+            const scriptResult = await generateCourseScript({
+              project: currentProject,
+              outline,
+              scene: result.content,
+            })
+            await updateScene(projectId, outline.id, { script: scriptResult.script })
+          } catch (error) {
+            console.warn('[course-studio] script generation skipped:', error)
+          }
+        }
         } catch (error) {
           failed = true
           await updateScene(projectId, outline.id, {

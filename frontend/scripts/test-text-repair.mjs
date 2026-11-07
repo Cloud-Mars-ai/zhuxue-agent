@@ -80,7 +80,7 @@ const dirty = {
   lesson: {
     title: '（3）荞状 ÷ 狆株',
     blocks: [
-      { type: 'definition', term: '狆狇', definition: '狆，狇 是整数，狇 ≠ ０' },
+      { type: 'definition', term: '狆狇', definition: '狆，狇 是整数，狇 ≠ ０', concreteAnchor: '２ 可以写成 ２╱１' },
       { type: 'table', rows: [['槡 犪', '狓２＝犪']] },
     ],
   },

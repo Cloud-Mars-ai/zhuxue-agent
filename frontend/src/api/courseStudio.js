@@ -1,5 +1,5 @@
 import { sendChatJSON } from './chat'
-import { courseBlueprintPrompt, courseScenePrompt } from './prompts/courseStudio'
+import { courseBlueprintPrompt, courseScenePrompt, courseScriptPrompt } from './prompts/courseStudio'
 import { PROMPT_VERSION } from './prompts/shared'
 import { isEnabled } from '@/config/flags'
 import { useKnowledgeStore } from '@/stores/knowledge'
@@ -13,14 +13,18 @@ import {
   normalizeCourseSceneContent,
 } from '@/utils/courseStudio'
 import {
+  buildLocalCourseScript,
+  normalizeCourseScript,
+} from '@/utils/courseScript'
+import {
   inferLearnerProfile,
   normalizeLearnerProfile,
 } from '@/utils/learnerProfile'
 import { repairText, sanitizeUserInput } from '@/utils/textRepair'
 import { buildCompetitionSceneContent } from '@/competition/analysis'
 
-export const COURSE_STUDIO_VERSION = 'openmaic-10a92d6-adapt-v2'
-export const COURSE_PROMPT_VERSION = `${PROMPT_VERSION}-course-studio-v2`
+export const COURSE_STUDIO_VERSION = 'openmaic-10a92d6-adapt-v3'
+export const COURSE_PROMPT_VERSION = `${PROMPT_VERSION}-course-studio-v3`
 
 function modelReady() {
   try {
@@ -340,5 +344,50 @@ export async function generateCourseScene({ project, outline, previousScene = nu
       fallback: true,
       error,
     }
+  }
+}
+
+/**
+ * 第三阶段：讲稿层。输入是已生成的场景内容（板书/题目），
+ * 输出与视觉事件 1:1 对齐的 beats；模型失败时用板书确定性推导兜底。
+ */
+export async function generateCourseScript({ project, outline, scene, signal }) {
+  const context = { project, outline, scene }
+  const local = buildLocalCourseScript(project, outline, scene)
+
+  if (!modelReady()) {
+    return { script: local, fallback: true, error: null }
+  }
+
+  const prompt = courseScriptPrompt({
+    project,
+    outline,
+    scene,
+    sourceChunkIds: outline.sourceChunkIds || project.sourceChunkIds || [],
+  })
+
+  try {
+    const result = await requestStructured({
+      prompt,
+      normalize: (data) => normalizeCourseScript(data, context),
+      task: 'course.script',
+      kind: 'course',
+      traceRefs: {
+        projectId: project.id,
+        outlineId: outline.id,
+        type: outline.type,
+      },
+      signal,
+    })
+    return {
+      script: { ...result.value, local: false },
+      fallback: false,
+      repaired: result.repaired,
+      error: null,
+    }
+  } catch (error) {
+    if (!isEnabled('offlineFallback')) throw error
+    console.warn(`[course-studio] ${outline.type} script fell back:`, error)
+    return { script: local, fallback: true, error }
   }
 }

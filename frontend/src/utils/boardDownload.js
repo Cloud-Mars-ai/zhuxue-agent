@@ -14,11 +14,19 @@ function renderBlock(block) {
       .join('')}</ul></section>`
   }
   if (block.type === 'definition') {
-    return `<section><h2>${escapeHtml(block.title)}：${escapeHtml(block.term)}</h2><p><strong>定义：</strong>${escapeHtml(block.definition)}</p>${
+    return `<section><h2>${escapeHtml(block.title)}：${escapeHtml(block.term)}</h2>${
+      block.concreteAnchor
+        ? `<p><strong>具体例子：</strong>${escapeHtml(block.concreteAnchor)}</p>`
+        : ''
+    }<p><strong>定义：</strong>${escapeHtml(block.definition)}</p>${
       block.analogy
         ? `<p><strong>形象比喻：</strong>${escapeHtml(block.analogy)}</p>`
         : ''
-    }</section>`
+    }${
+      block.method?.length
+        ? `<p><strong>方法：</strong>${block.method.map((step) => escapeHtml(step)).join('；')}</p>`
+        : ''
+    }${block.verify ? `<p><strong>验证：</strong>${escapeHtml(block.verify)}</p>` : ''}</section>`
   }
   if (block.type === 'table') {
     return `<section><h2>${escapeHtml(block.title)}</h2><table><thead><tr>${(block.columns || [])
@@ -41,7 +49,9 @@ function renderBlock(block) {
       .join('<i>→</i>')}</div>${block.caption ? `<p>${escapeHtml(block.caption)}</p>` : ''}</section>`
   }
   if (block.type === 'callout') {
-    return `<aside><strong>${escapeHtml(block.title)}</strong><p>${escapeHtml(block.text)}</p></aside>`
+    return `<aside><strong>${escapeHtml(block.title)}</strong><p>${escapeHtml(block.text)}</p>${
+      block.mnemonic ? `<p>口诀：${escapeHtml(block.mnemonic)}</p>` : ''
+    }</aside>`
   }
   if (block.type === 'question') {
     return `<section class="question"><h2>${escapeHtml(block.title)}</h2><p>${escapeHtml(
@@ -51,6 +61,86 @@ function renderBlock(block) {
         ? `<ul>${block.options.map((option) => `<li>${escapeHtml(option)}</li>`).join('')}</ul>`
         : ''
     }</section>`
+  }
+  if (block.type === 'classification-tree') {
+    return `<section><h2>${escapeHtml(block.title)}</h2><p><strong>${escapeHtml(
+      block.root?.label,
+    )}</strong>${block.root?.note ? `（${escapeHtml(block.root.note)}）` : ''}</p><ul>${(block.branches || [])
+      .map(
+        (branch) =>
+          `<li><strong>${escapeHtml(branch.label)}</strong>${
+            branch.note ? `：${escapeHtml(branch.note)}` : ''
+          }${
+            branch.children?.length
+              ? `<ul>${branch.children
+                  .map((child) => `<li>${escapeHtml(child.label)}</li>`)
+                  .join('')}</ul>`
+              : ''
+          }</li>`,
+      )
+      .join('')}</ul>${block.caption ? `<p>${escapeHtml(block.caption)}</p>` : ''}</section>`
+  }
+  if (block.type === 'number-line') {
+    return `<section><h2>${escapeHtml(block.title)}</h2><p>数轴范围 ${block.min} ～ ${block.max}</p><ul>${(block.ticks || [])
+      .map((tick) => `<li>${escapeHtml(tick.label)}（${tick.value}）</li>`)
+      .join('')}</ul><p>定位：${(block.points || [])
+      .map((point) => `${escapeHtml(point.label)}（${point.value}）`)
+      .join('、')}</p>${block.caption ? `<p>${escapeHtml(block.caption)}</p>` : ''}</section>`
+  }
+  if (block.type === 'fill-blank') {
+    return `<section><h2>${escapeHtml(block.title)}</h2><p>${escapeHtml(
+      block.prompt,
+    )}</p><p>答案：${(block.answers || []).map((answer) => escapeHtml(answer)).join('、')}</p>${
+      block.hint ? `<p>提示：${escapeHtml(block.hint)}</p>` : ''
+    }</section>`
+  }
+  if (block.type === 'wrong-first') {
+    return `<section><h2>${escapeHtml(block.title)}</h2><p>常见错解：</p><ol>${(block.wrongSteps || [])
+      .map(
+        (step, index) =>
+          `<li${index === block.errorIndex ? ' style="color:#c04b55"' : ''}>${escapeHtml(step)}</li>`,
+      )
+      .join('')}</ol><p>第 ${block.errorIndex + 1} 步错了：${escapeHtml(block.errorHint || '')}</p><p>正确做法：</p><ol>${(
+      block.correctSteps || []
+    )
+      .map((step) => `<li>${escapeHtml(step)}</li>`)
+      .join('')}</ol>${
+      block.takeaway ? `<p><strong>带走：</strong>${escapeHtml(block.takeaway)}</p>` : ''
+    }</section>`
+  }
+  if (block.type === 'judge') {
+    return `<section><h2>${escapeHtml(block.title)}</h2><p>${escapeHtml(
+      block.statement,
+    )}</p><p>答案：${block.answer ? '对' : '错'}。${escapeHtml(block.explanation || '')}</p></section>`
+  }
+  if (block.type === 'case-table') {
+    return `<section><h2>${escapeHtml(block.title)}</h2><table><thead><tr><th>${escapeHtml(
+      block.dimension,
+    )}</th><th>结论</th></tr></thead><tbody>${(block.cases || [])
+      .map(
+        (item) =>
+          `<tr><td>${escapeHtml(item.condition)}</td><td>${escapeHtml(item.conclusion)}</td></tr>`,
+      )
+      .join('')}</tbody></table>${block.caption ? `<p>${escapeHtml(block.caption)}</p>` : ''}</section>`
+  }
+  if (block.type === 'induction') {
+    return `<section><h2>${escapeHtml(block.title)}</h2><ul>${(block.examples || [])
+      .map((example) => `<li>${escapeHtml(example)}</li>`)
+      .join('')}</ul><p><strong>规律：</strong>${escapeHtml(block.rule)}</p>${
+      block.hint ? `<p>提示：${escapeHtml(block.hint)}</p>` : ''
+    }</section>`
+  }
+  if (block.type === 'multi-solution') {
+    return `<section><h2>${escapeHtml(block.title)}</h2><p>${escapeHtml(block.problem)}</p>${(
+      block.methods || []
+    )
+      .map(
+        (method) =>
+          `<h3>${escapeHtml(method.name)}${method.tag ? `（${escapeHtml(method.tag)}）` : ''}</h3><ol>${method.steps
+            .map((step) => `<li>${escapeHtml(step)}</li>`)
+            .join('')}</ol>`,
+      )
+      .join('')}${block.comparison ? `<p>${escapeHtml(block.comparison)}</p>` : ''}</section>`
   }
   return ''
 }

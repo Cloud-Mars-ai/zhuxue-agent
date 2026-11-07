@@ -47,6 +47,7 @@ const GROUP_OF = {
   forum: '讨论',
   homework: '作业',
   model: '设置',
+  logs: '设置',
 }
 
 const menus = computed(() => {

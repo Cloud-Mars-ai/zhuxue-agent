@@ -64,3 +64,9 @@ shot-*.png
 
 # 公网部署用的构建副本
 deploy/public/
+
+# 本地缓存
+.cache/
+
+# 研究帧图（本地留存，不入库）
+docs/research/transitions/

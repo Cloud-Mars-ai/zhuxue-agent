@@ -12,11 +12,29 @@
 import { createServer } from 'node:http'
 import { createReadStream, readFileSync } from 'node:fs'
 import { stat } from 'node:fs/promises'
-import { join, normalize, extname } from 'node:path'
+import { join, normalize, extname, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { handleAiProxy, isAiProxyPath } from './aiProxy.mjs'
 
 const serverDir = fileURLToPath(new URL('.', import.meta.url))
+
+/**
+ * 全站安全响应头：
+ * - nosniff：禁止浏览器猜测 MIME，防脚本伪装；
+ * - DENY：禁被 iframe 嵌入，防点击劫持；
+ * - referrer 策略：跨站不泄漏完整 URL（课程分享码等在 query 里）；
+ * - permissions-policy：关掉本用不到的硬件能力。
+ */
+const SECURITY_HEADERS = {
+  'X-Content-Type-Options': 'nosniff',
+  'X-Frame-Options': 'DENY',
+  'Referrer-Policy': 'strict-origin-when-cross-origin',
+  'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
+}
+
+function writeHead(res, status, headers = {}) {
+  res.writeHead(status, { ...SECURITY_HEADERS, ...headers })
+}
 
 function loadLocalEnv() {
   try {
@@ -82,9 +100,10 @@ const server = createServer(async (req, res) => {
     const fixed = urlPath.match(/^\/(?:[^/]+\/){1,2}(assets\/.+|favicon\.svg)$/)
     let filePath = normalize(join(distDir, fixed ? `/${fixed[1]}` : urlPath))
 
-    // 防目录穿越
-    if (!filePath.startsWith(distDir)) {
-      res.writeHead(403).end('Forbidden')
+    // 防目录穿越（含 ..%2f 解码后穿越与同级目录前缀误判）
+    if (filePath !== distDir && !filePath.startsWith(distDir + sep)) {
+      writeHead(res, 403, { 'Content-Type': 'text/plain; charset=utf-8' })
+      res.end('Forbidden')
       return
     }
 
@@ -112,12 +131,12 @@ const server = createServer(async (req, res) => {
         end < start ||
         start >= fileInfo.size
       ) {
-        res.writeHead(416, { 'Content-Range': `bytes */${fileInfo.size}` })
+        writeHead(res, 416, { 'Content-Range': `bytes */${fileInfo.size}` })
         res.end()
         return
       }
       const safeEnd = Math.min(end, fileInfo.size - 1)
-      res.writeHead(206, {
+      writeHead(res, 206, {
         'Content-Type': mime,
         'Content-Length': safeEnd - start + 1,
         'Content-Range': `bytes ${start}-${safeEnd}/${fileInfo.size}`,
@@ -128,7 +147,7 @@ const server = createServer(async (req, res) => {
       return
     }
 
-    res.writeHead(200, {
+    writeHead(res, 200, {
       'Content-Type': mime,
       'Content-Length': fileInfo.size,
       'Accept-Ranges': 'bytes',
@@ -136,8 +155,10 @@ const server = createServer(async (req, res) => {
     })
     createReadStream(filePath).pipe(res)
   } catch (err) {
-    res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' })
-    res.end('Server Error: ' + err.message)
+    // 不向前端暴露内部错误细节（可能含路径/堆栈），仅服务端日志记录
+    console.error('[zhuxue-agent] static serve error:', err)
+    writeHead(res, 500, { 'Content-Type': 'text/plain; charset=utf-8' })
+    res.end('Server Error')
   }
 })
 

@@ -195,7 +195,7 @@ test('normalizeBoardLesson 接受合法 simulation', () => {
     chapter: '物理',
     title: '向心力',
     blocks: [
-      { type: 'definition', term: '向心力', definition: '指向圆心的合力' },
+      { type: 'definition', term: '向心力', definition: '指向圆心的合力', concreteAnchor: '绳子系着小球转圈时，绳子拉住小球的力' },
       {
         type: 'simulation',
         model: 'circular-motion',
@@ -228,7 +228,7 @@ test('ensureSimulationBlock：recommend 时插入 definition 之后', () => {
     subtitle: '力指向圆心',
     blocks: [
       { type: 'outline', title: '路线', items: ['概念', '模型'] },
-      { type: 'definition', term: '向心力', definition: '指向圆心、改变速度方向的合力' },
+      { type: 'definition', term: '向心力', definition: '指向圆心、改变速度方向的合力', concreteAnchor: '月球绕地球转，地球对月球的引力' },
       { type: 'question', prompt: '速度增大时怎么变？' },
     ],
   }
@@ -247,7 +247,7 @@ test('ensureSimulationBlock：skip 时不插入', () => {
     chapter: '语文',
     title: '古诗意象',
     blocks: [
-      { type: 'definition', term: '意象', definition: '寄托情感的物象' },
+      { type: 'definition', term: '意象', definition: '寄托情感的物象', concreteAnchor: '“月亮”常寄托思乡之情' },
       { type: 'question', prompt: '意象的作用？' },
     ],
   }
@@ -271,7 +271,7 @@ test('boardToContext 序列化 simulation 供对话引用', () => {
     chapter: '物理',
     title: '向心力',
     blocks: [
-      { type: 'definition', term: '向心力', definition: '指向圆心的合力' },
+      { type: 'definition', term: '向心力', definition: '指向圆心的合力', concreteAnchor: '绳子系着小球转圈时，绳子拉住小球的力' },
       {
         type: 'simulation',
         model: 'circular-motion',

@@ -5,6 +5,11 @@ import {
   assessVisualizationNeed,
   ensureSimulationBlock,
 } from '@/utils/knowledgeVisualization'
+import {
+  enforceDifficultyTiers,
+  normalizeTakeaways,
+  rebalanceMinutes,
+} from './courseBlueprint'
 
 export const COURSE_SCENE_TYPES = ['lecture', 'quiz', 'practice', 'review']
 
@@ -127,9 +132,10 @@ function normalizeOutline(raw, index, context) {
     160,
   )
   if (!keyPoints.length) keyPoints.push(title)
+  const type = normalizeType(raw?.type)
   return {
     id: text(raw?.id, 80) || `scene_${index + 1}`,
-    type: normalizeType(raw?.type),
+    type,
     title,
     description:
       text(raw?.description ?? raw?.summary ?? raw?.purpose, 280) ||
@@ -142,6 +148,12 @@ function normalizeOutline(raw, index, context) {
       context.objective ||
       `能解释「${title}」。`,
     keyPoints,
+    takeaways: normalizeTakeaways(
+      raw?.takeaways ?? raw?.keyTakeaways,
+      keyPoints,
+      type === 'lecture' || type === 'review',
+    ),
+    difficultyTier: Math.min(3, Math.max(1, Math.round(Number(raw?.difficultyTier) || 1))),
     estimatedMinutes: normalizeMinutes(raw?.estimatedMinutes ?? raw?.durationMinutes),
     sourceChunkIds: normalizeSourceIds(
       raw?.sourceChunkIds ?? raw?.sourceIds,
@@ -151,6 +163,8 @@ function normalizeOutline(raw, index, context) {
     order: index + 1,
   }
 }
+
+/** 难度阶梯与时长再平衡已移至 ./courseBlueprint（A6/A1，node 可单测）。 */
 
 function ensureTeachingSequence(outlines, context) {
   const result = [...outlines]
@@ -241,6 +255,8 @@ export function normalizeCourseBlueprint(raw, context) {
 
   if (outlines.length < 3) return null
   outlines = ensureTeachingSequence(outlines, visualContext).slice(0, MAX_SCENES)
+  outlines = enforceDifficultyTiers(outlines)
+  outlines = rebalanceMinutes(outlines, context.durationMinutes)
   outlines = normalizeOrder(outlines)
 
   return {
@@ -456,6 +472,12 @@ export function buildLocalCourseBlueprint(context) {
   const outlines = scenes.slice(0, count).map((scene, index) => ({
     id: `scene_${index + 1}`,
     ...scene,
+    takeaways: normalizeTakeaways(
+      scene.keyPoints?.slice(0, 3),
+      scene.keyPoints || [],
+      scene.type === 'lecture' || scene.type === 'review',
+    ),
+    difficultyTier: scene.type === 'lecture' ? Math.min(3, index + 1) : 1,
     estimatedMinutes: durations[index],
     sourceChunkIds: sources,
     visualHint: visualHintFor(scene, {
@@ -509,6 +531,10 @@ function localBoardContent(project, outline) {
       title: '本节核心',
       term: text(primary, 30),
       definition: text(primary, 160),
+      concreteAnchor:
+        youngerLearner && processTopic
+          ? `先看“${text(outline.title, 18)}”里的一个具体情形，再对照这句话。`
+          : `先用“${text(primary, 24)}”解释一个具体情形，再回到概念边界。`,
       analogy:
         learnerProfile.stage === 'university' || learnerProfile.stage === 'adult'
           ? '先确认概念边界与适用条件，再连接材料中的证据。'

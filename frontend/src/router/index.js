@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { useDeviceStore } from '@/stores/device'
+import { useAccessLogStore } from '@/stores/accessLog'
 
 // 双击 dist/index.html 离线演示时是 file:// 协议，
 // 该协议下 history 模式无法工作，自动降级为 hash 模式（URL 带 #）
@@ -175,6 +176,12 @@ const routes = [
         component: () => import('@/views/web/ModelSettings.vue'),
         meta: { title: '模型接入', icon: 'Connection', roles: ['admin', 'teacher'] },
       },
+      {
+        path: 'logs',
+        name: 'AccessLog',
+        component: () => import('@/views/web/AccessLog.vue'),
+        meta: { title: '访问日志', icon: 'Tickets' },
+      },
     ],
   },
 
@@ -200,6 +207,7 @@ const routes = [
     'statistics',
     'library',
     'model',
+    'logs',
   ].map((p) => ({
     path: `/${p}`,
     redirect: (to) => ({ path: `/app/${p}`, query: to.query, hash: to.hash }),
@@ -324,6 +332,12 @@ const routes = [
         component: () => import('@/views/web/HomeworkDetail.vue'),
         meta: { title: '作业详情', mobile: true, nav: false },
       },
+      {
+        path: 'logs',
+        name: 'MAccessLog',
+        component: () => import('@/views/mobile/MAccessLog.vue'),
+        meta: { title: '访问日志', mobile: true, nav: false },
+      },
     ],
   },
 
@@ -364,6 +378,7 @@ const WEB_TO_MOBILE = {
   '/app/forum': '/m/forum',
   '/app/homework': '/m/homework',
   '/app/experience': '/m/experience',
+  '/app/logs': '/m/logs',
 }
 const MOBILE_TO_WEB = Object.fromEntries(
   Object.entries(WEB_TO_MOBILE).map(([web, mobile]) => [mobile, web]),
@@ -435,6 +450,22 @@ router.beforeEach((to) => {
 router.afterEach((to) => {
   const base = '人机协同助学智能体'
   document.title = to.meta.title ? `${to.meta.title} - ${base}` : base
+
+  // 访问日志：记录页面访问（仅本机留存；query 里的分享码等参数一并入 detail）
+  try {
+    const logStore = useAccessLogStore()
+    const userStore = useUserStore()
+    logStore.record('page_view', {
+      user: userStore.user || null,
+      path: to.fullPath,
+      title: to.meta.title || to.path,
+      detail: {
+        query: to.query && Object.keys(to.query).length ? { ...to.query } : null,
+      },
+    })
+  } catch {
+    // 日志失败不影响路由主流程
+  }
 })
 
 export default router
