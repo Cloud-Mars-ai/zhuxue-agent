@@ -17,6 +17,7 @@ import { useForumStore } from '@/stores/forum'
 import { diagnoseGaps } from '@/utils/diagnose'
 import { buildFeed } from '@/utils/feed'
 import { importMaterialFile } from '@/utils/materialImport'
+import { repairText } from '@/utils/textRepair'
 import { generateCourseBlueprint } from '@/api/courseStudio'
 import danceBuddySrc from '@/assets/nailong-dance.webp'
 
@@ -195,10 +196,10 @@ const heroPlaceholder = computed(() =>
 
 const heroHint = computed(() =>
   generatingCourse.value
-    ? '正在检索已上传材料并生成可编辑大纲，通常需要数秒…'
+    ? '正在识别学科、范围与可能学段，并检索已上传材料生成可编辑大纲…'
     : customMaterials.value.length
-      ? `将优先依据你上传的 ${customMaterials.value.length} 份材料生成；输入的主题会决定课程结构。`
-      : '输入你想学的主题即可生成课程；上传资料后，系统会优先按资料内容组织大纲。',
+      ? `将优先依据你上传的 ${customMaterials.value.length} 份材料判断学科与学段；输入的主题决定课程结构。`
+      : '输入想学的主题即可生成；系统会根据需求措辞与资料术语判断年级和讲法，不预设管理学。',
 )
 
 const heroActions = computed(() =>
@@ -293,7 +294,7 @@ function chooseStudyMode(mode) {
 }
 
 async function askHero() {
-  const q = heroInput.value.trim()
+  const q = repairText(heroInput.value.trim()).text
   if (!q || generatingCourse.value) return
   if (!modeChosen.value) {
     showModeMenu.value = true
@@ -314,6 +315,7 @@ async function askHero() {
       domain: 'general',
       materialIds,
     })
+    if (result.inputNotice) ElMessage.info(result.inputNotice)
     const saved = await courseStudioStore.createDraft({
       ownerId: userStore.user?.id || '',
       input: {
@@ -386,11 +388,12 @@ async function handleFilesSelected(event) {
   uploadingKind.value = kind
   await knowledgeStore.ensureLoaded()
   let imported = 0
+  let repairedCharsTotal = 0
   const failures = []
 
   for (const file of files) {
     try {
-      const text = await importMaterialFile(file)
+      const { text, repairedChars } = await importMaterialFile(file)
       await knowledgeStore.addMaterial({
         title: `${MATERIAL_LABELS[kind]} · ${file.name}`,
         chapter: '课程自定义资料',
@@ -407,6 +410,7 @@ async function handleFilesSelected(event) {
         },
         ...history,
       ].slice(0, 6)
+      repairedCharsTotal += repairedChars
       imported += 1
     } catch (err) {
       failures.push(`${file.name}：${err.message || '解析失败'}`)
@@ -415,6 +419,9 @@ async function handleFilesSelected(event) {
 
   saveUploadHistory()
   if (imported) ElMessage.success(`已导入 ${imported} 份材料，AI 将优先依据这些内容`)
+  if (repairedCharsTotal > 0) {
+    ElMessage.info(`已自动清理 ${repairedCharsTotal} 个乱码字符（从 PDF 复制文本时常见）`)
+  }
   if (failures.length) ElMessage.warning(failures.join('；'))
   uploadingKind.value = ''
 }

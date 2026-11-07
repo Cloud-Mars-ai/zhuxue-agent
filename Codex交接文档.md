@@ -29,7 +29,7 @@
 | 形态参照 | **HyperKnow（hyperknow.io）为第一参照系**；第四大学（The Fourth Institute）为第二参照系（组织范式） |
 | 课程载体 | 《管理学》，北京化工大学经管学院，2026 秋，3 学分 / 48 学时 / 86 名学生（演示数据） |
 | 技术栈 | Vue 3.5 + Vite 8.3 + Pinia 4 + Vue Router 5；Web 端 Element Plus 2.14，H5 端 Vant 4.10；图表 ECharts 6 |
-| 形态 | 纯前端 SPA（**无后端**），双端（桌面 `/app/*`、移动 `/m/*`）× 双皮肤（纸感 / 夜读） |
+| 形态 | 纯前端 SPA（**无后端**），双端（桌面 `/app/*`、移动 `/m/*`）× 双皮肤（澄蓝 / 纸感） |
 | 数据 | 全部仿真：`mock/data.js` + localStorage + IndexedDB，无服务端 |
 | 模型 | OpenAI 兼容协议，默认阶跃星辰 `https://api.stepfun.com/v1`，`step-3.5-flash` |
 | 代码规模 | `frontend/src` 75 个文件；15 个 Web 页面 + 9 个 H5 页面 + 1 落地页 + 登录/403 |
@@ -96,7 +96,7 @@ D:\黑客松\经管Agent\
 | `views/web/` | 14 页：CourseHome / Ask / Practice / SelfTest / Cheatsheet / Checkup / Materials / Cases / Assessment / TeacherConsole / Forum / Homework / Statistics / ModelSettings |
 | `views/mobile/` | 9 页：MCourse / MAsk / MPractice / MSelfTest / MCheatsheet / MCheckup / MCase / MAssessment / MMine |
 | `views/` 根 | `Landing.vue`（公开落地页，约 900 行）、`Login.vue`、`Forbidden.vue` |
-| `theme/` | `tokens.css`（约 60 个语义变量 + Vant/EP 组件变量覆写）、`skins.css`（夜读装饰层） |
+| `theme/` | `tokens.css`（澄蓝 / 纸感语义变量 + Vant/EP 组件变量覆写）、`skins.css`（两套皮肤装饰层） |
 | `layouts/` | `WebLayout.vue`（侧栏 + `GROUP_OF` 菜单分组 + 继续学习卡 + 最近活动）、`MobileLayout.vue` |
 | `config/flags.js` | 功能开关（15 个），`localStorage['ai-tutor-flags']` 可覆盖 |
 | `repositories/db.js` | IndexedDB 键值封装（`ai-tutor-db`），localStorage 降级 |
@@ -119,7 +119,7 @@ D:\黑客松\经管Agent\
 | --- | --- | --- |
 | `ai-tutor-user` | localStorage | 登录态、角色、学科背景、`useMock` |
 | `ai-tutor-model-config` | localStorage | 服务商/baseUrl/apiKey/model/temperature/人设 |
-| `ai-tutor-theme` | localStorage | `yun`（纸感，默认）/ `mo`（夜读） |
+| `ai-tutor-theme` | localStorage | `blue`（澄蓝，教师默认）/ `yun`（纸感，学生默认） |
 | `ai-tutor-device` | localStorage | 手动端覆盖 `web` / `mobile` |
 | `ai-tutor-flags` | localStorage | 功能开关覆盖 |
 | `ai-tutor-cases` / `-practice` / `-assessment` | localStorage | M2/M3/M4 业务数据 |
@@ -167,7 +167,7 @@ D:\黑客松\经管Agent\
 
 **UI 与工程**
 
-- 双皮肤（纸感 / 夜读），语义令牌驱动，切换不影响逻辑，三处入口；
+- 双皮肤（澄蓝 / 纸感），语义令牌驱动，切换不影响逻辑，三处入口；
 - 侧栏 13 项收敛为 5–7 组；侧栏含「继续学习」课程卡 + 「最近活动」（读 trace）；
 - 首页改版**对齐 HyperKnow 首屏结构**（页签 / 三材料卡 / 大输入框 / 继续学习 / 今天安排）；
 - 设备自适应（768/1200 断点，Web⇄H5 自动映射，`scripts/verify-device.mjs` 17 用例）；
@@ -180,7 +180,7 @@ D:\黑客松\经管Agent\
 2. 中期：用户反馈"UI 太差" → 全部迁入深色"运行台"；
 3. **最终（11-03 晚）**：用户明确"删掉黑色皮肤、恢复卡其色、参考 HyperKnow 形态" → 浅色纸感 + 浅色夜读，侧栏收敛，首页重排。
 
-> 结论：**当前基调 = 浅色纸感 + HyperKnow 式首屏 + 收敛侧栏**。深色方案已删除，代码里残留的深色注释/旧截图引用属历史遗留，不要"恢复"。
+> 结论：**当前基调 = 澄蓝 / 纸感双主题 + 居中留白首屏 + 收敛侧栏**。夜读已从选择器移除，教师默认澄蓝，学生默认纸感。
 
 ---
 
@@ -658,7 +658,7 @@ npm start
 
 已落地：
 
-- 固定种子开发样例：3 个主题、9 项要求、18 份材料、60 题、30 名学生、417 条原始记录；
+- 已接入赛方公开模拟学情数据：3 个主题、9 项观察指标、11 份材料、54 题、40 名学生、806 条原始记录（799 个作答事件，7 条早期修订版本）；
 - 原始记录与有效记录隔离，重复/未知引用/负分/缺字段/非法状态/缺失观察单独报告；
 - 个体、小组和群体分析，信息不足不判为未掌握；
 - 参考材料、题目、理由、完成标准、顺序和适用范围的可调整建议链；
@@ -671,3 +671,15 @@ npm start
 交付物位于 `docs/competition/deliverables/`；数据契约位于 `docs/competition/data-contract.md`；发布证据见 `docs/release/EVIDENCE-2026-11-04-competition.md`。
 
 当前阻塞：赛方正式数据包与最终典型 case 尚未提供；历史提交中的明文 Key 仍需负责人轮换；正式数据只能在本次比赛范围内使用并按赛方要求删除。
+
+---
+
+## 附录 G：澄蓝主题与教师班级知识点分析（2026-11-04）
+
+- 保留“纸感”，移除“夜读”入口，新增“澄蓝”皮肤；
+- 教师首次登录默认澄蓝，学生默认纸感，手动切换后持久化；
+- 首页主视觉、材料区与输入框重新居中，并增大标题与输入框间距；
+- Web/H5 主容器补充横向边界，修复右侧装饰导致的整页横向偏移；
+- 教师主控台新增“班级知识点掌握分析”：可按作业或考试生成知识点掌握矩阵、提交覆盖、分数分布、重点学生、小组差异、全员明细与教学建议；
+- 已发布考试任务可从考核页直接跳转到对应班级分析；
+- 分析支持 CSV 导出，未提交记录不按 0 分计入平均分。

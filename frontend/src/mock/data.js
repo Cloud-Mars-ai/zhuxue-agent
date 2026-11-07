@@ -24,10 +24,18 @@ export const COURSE = {
   ],
 }
 
+/**
+ * 演示账号。
+ * 学科方向拆分（2026-11-07）：每位教师只负责一个学科方向，数据归属不交叉——
+ * - 王教授（T001）负责《管理学》课程及其论坛、作业、案例等经管数据；
+ * - 李老师（T003）负责七年级数学，赛事学情数据（competition dataset）归其名下。
+ * 数学赛事数据经 dataset.meta.ownerTeacher 显式归属李老师，不再挂在唯一教师账号下。
+ */
 export const MOCK_USERS = [
   { username: 'admin', password: '123456', name: '系统管理员', role: 'admin', id: 'A001' },
-  { username: 'teacher', password: '123456', name: '王教授', role: 'teacher', id: 'T001' },
-  { username: 'ta', password: '123456', name: '李助教', role: 'ta', id: 'T002' },
+  { username: 'teacher', password: '123456', name: '王教授', role: 'teacher', id: 'T001', subject: '管理学' },
+  { username: 'ta', password: '123456', name: '李助教', role: 'ta', id: 'T002', subject: '管理学' },
+  { username: 'math', password: '123456', name: '李老师', role: 'teacher', id: 'T003', subject: '数学' },
   {
     username: 'student',
     password: '123456',

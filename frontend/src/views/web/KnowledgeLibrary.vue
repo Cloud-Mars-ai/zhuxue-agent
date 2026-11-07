@@ -59,16 +59,18 @@ async function handleFiles(event) {
   if (!files.length) return
   uploading.value = true
   let imported = 0
+  let repairedCharsTotal = 0
   const failures = []
   for (const file of files) {
     try {
-      const text = await importMaterialFile(file)
+      const { text, repairedChars } = await importMaterialFile(file)
       await knowledgeStore.addMaterial({
         title: file.name,
         chapter: '学生自主资料',
         text,
         size: file.size,
       })
+      repairedCharsTotal += repairedChars
       imported += 1
     } catch (error) {
       failures.push(`${file.name}：${error.message || '解析失败'}`)
@@ -76,6 +78,9 @@ async function handleFiles(event) {
   }
   uploading.value = false
   if (imported) ElMessage.success(`已将 ${imported} 份资料保存到知识库`)
+  if (repairedCharsTotal > 0) {
+    ElMessage.info(`已自动清理 ${repairedCharsTotal} 个乱码字符（从 PDF 复制文本时常见）`)
+  }
   if (failures.length) ElMessage.warning(failures.join('；'))
 }
 

@@ -1,9 +1,15 @@
 import {
   TUTOR_IDENTITY,
   LEARNING_ETHICS,
+  TEXT_INTEGRITY_RULE,
   disciplineHint,
   jsonOnly,
 } from './shared'
+import {
+  inferLearnerProfile,
+  learnerProfileGuide,
+  normalizeLearnerProfile,
+} from '@/utils/learnerProfile'
 
 const BOARD_SCHEMA = `{
   "chapter": "章节标题",
@@ -37,6 +43,16 @@ const BOARD_SCHEMA = `{
       "caption": "图示说明"
     },
     {
+      "type": "animation",
+      "title": "跟着变化看",
+      "caption": "点下一步观察条件改变后的结果",
+      "steps": [
+        { "label": "初始状态", "detail": "先看起点" },
+        { "label": "改变条件", "detail": "每次只改变一个条件" },
+        { "label": "观察结果", "detail": "说出变化和原因" }
+      ]
+    },
+    {
       "type": "callout",
       "title": "学习提示",
       "tone": "note|warn|idea",
@@ -52,6 +68,12 @@ const BOARD_SCHEMA = `{
 }`
 
 export function boardLessonPrompt({ chapter, materialText, discipline, focus, studyMode }) {
+  const learnerProfile = normalizeLearnerProfile(
+    inferLearnerProfile({ chapter, objective: focus, materialText }),
+  )
+  const youngerLearner = ['preschool', 'primary', 'junior'].includes(
+    learnerProfile.stage,
+  )
   return {
     system:
       `${TUTOR_IDENTITY}\n` +
@@ -59,8 +81,11 @@ export function boardLessonPrompt({ chapter, materialText, discipline, focus, st
       '板书服务于学生看清推理链：先给路线，再解释概念，再用表格或图示做对照，最后用问题逼学生表态。' +
       `${LEARNING_ETHICS}\n` +
       `${disciplineHint(discipline)}\n` +
+      `【本轮学习者画像】\n${learnerProfileGuide(learnerProfile)}\n` +
       '硬约束：只使用给定课程材料；模型只写内容与 chunk 之外的章级来源，绝对不要编造页码；' +
-      '不输出 HTML、Markdown、坐标、绘图指令或品牌文案；最多 6 个 block，至少包含 outline、definition 和一个 question。\n' +
+      '不输出 HTML、Markdown、坐标、绘图指令或品牌文案；最多 8 个 block，至少包含 outline、definition 和一个 question。' +
+      `${youngerLearner ? '当内容涉及流程、变化或运算过程时，加入 1 个 animation，用 2—4 帧表现“只改变一个条件后发生什么”。' : '仅在需要推演关系时使用 animation。'}\n` +
+      `${TEXT_INTEGRITY_RULE}\n` +
       jsonOnly(BOARD_SCHEMA),
     user:
       `章节：${chapter}\n` +
@@ -74,6 +99,13 @@ export function boardLessonPrompt({ chapter, materialText, discipline, focus, st
 }
 
 export function boardQuestionPrompt({ chapter, lessonText, question, discipline }) {
+  const learnerProfile = normalizeLearnerProfile(
+    inferLearnerProfile({
+      chapter,
+      objective: question,
+      materialText: lessonText,
+    }),
+  )
   return {
     system:
       `${TUTOR_IDENTITY}\n` +
@@ -81,7 +113,9 @@ export function boardQuestionPrompt({ chapter, lessonText, question, discipline 
       '回答要接上当前板书，使用苏格拉底式引导；学生求作业答案时只给判断框架和下一步，不直接代做。' +
       '控制在 80—180 个汉字，先正面回应，再抛回一个可执行的小问题。不要重复整页板书。\n' +
       `${LEARNING_ETHICS}\n` +
-      `${disciplineHint(discipline)}`,
+      `${TEXT_INTEGRITY_RULE}\n` +
+      `${disciplineHint(discipline)}\n` +
+      `【本轮学习者画像】\n${learnerProfileGuide(learnerProfile)}`,
     user:
       `章节：${chapter}\n` +
       `当前板书：\n${lessonText}\n\n` +

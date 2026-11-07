@@ -224,6 +224,15 @@ async function handleLogout() {
             切换 H5 移动端
           </el-link>
           <el-divider direction="vertical" class="header-divider" />
+          <!-- 学科方向拆分（2026-11-07）：教师账号带学科标签，数据归属一目了然 -->
+          <el-tag
+            v-if="userStore.user?.subject"
+            size="small"
+            effect="plain"
+            class="role-tag"
+          >
+            {{ userStore.user.subject }}
+          </el-tag>
           <el-tag size="small" type="success" effect="plain" class="role-tag">
             {{ userStore.roleLabel }}
           </el-tag>

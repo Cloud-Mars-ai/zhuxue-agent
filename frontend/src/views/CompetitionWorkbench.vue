@@ -12,6 +12,7 @@ import {
   buildValidRecordsCsv,
   toCsv,
 } from '@/competition/analysis'
+import { textbookExcerptById } from '@/competition/textbookExcerpts'
 
 const router = useRouter()
 const route = useRoute()
@@ -66,6 +67,21 @@ const datasetStatusDescription = computed(
     curriculum.value.meta?.disclaimer ||
     '正式数据到位后，可通过“导入数据”替换原始记录，分析与导出逻辑保持不变。',
 )
+/** 学科方向拆分（2026-11-07）：数据集显式归属某位教师，不再默认挂在唯一教师账号下 */
+const datasetOwnerLabel = computed(() => {
+  const meta = curriculum.value.meta || {}
+  const owner = meta.ownerTeacher || '待指定'
+  const subject = meta.subject ? ` · ${meta.subject}` : ''
+  const grade = meta.grade ? ` · ${meta.grade}` : ''
+  return `${owner}${subject}${grade}`
+})
+/** 当前教师/助教查看的是否为非本人负责的学科数据（管理员不限） */
+const datasetOwnerMismatch = computed(() => {
+  const meta = curriculum.value.meta || {}
+  if (!meta.ownerTeacherId || !isTeacher.value) return false
+  if (userStore.role === 'admin') return false
+  return userStore.user?.id !== meta.ownerTeacherId
+})
 const selectedStudentId = computed({
   get: () =>
     store.selectedStudentId ||
@@ -131,6 +147,57 @@ function requirementTitle(id) {
 function materialTitle(id) {
   return materialById.value.get(id)?.title || id
 }
+
+/**
+ * 教材摘录（2026-11-07 数据可用性改造）：
+ * 要求关联的教材中，优先返回已提取正文摘录的那本（B02/B05/B06）；
+ * 其余教材（B01/B03/B04/B07/B08）未提取正文，返回 null，
+ * 界面走“仅索引”态——chip 仍可点开看出处，但不提供摘录面板。
+ */
+function requirementExcerpt(requirement) {
+  for (const id of requirement.materialIds || []) {
+    const excerpt = textbookExcerptById(id)
+    if (excerpt) return excerpt
+  }
+  return null
+}
+const expandedExcerptId = ref('')
+function toggleExcerpt(id) {
+  expandedExcerptId.value = expandedExcerptId.value === id ? '' : id
+}
+/** 证据详情对话框：选中教材时展示其摘录正文 */
+const selectedRecordExcerpt = computed(() =>
+  selectedRecord.value ? textbookExcerptById(selectedRecord.value.id) : null,
+)
+
+/** 字段说明数据字典：按数据表分组（来自 fields.csv，共 42 条） */
+const fieldDictionary = computed(() => {
+  const groups = new Map()
+  for (const item of curriculum.value.fieldDefinitions || []) {
+    if (!groups.has(item.table)) groups.set(item.table, [])
+    groups.get(item.table).push(item)
+  }
+  return [...groups.entries()].map(([table, fields]) => ({ table, fields }))
+})
+const fieldFilterTable = ref('全部')
+const fieldTableOptions = computed(() => [
+  '全部',
+  ...fieldDictionary.value.map((item) => item.table),
+])
+const visibleFieldGroups = computed(() =>
+  fieldFilterTable.value === '全部'
+    ? fieldDictionary.value
+    : fieldDictionary.value.filter((item) => item.table === fieldFilterTable.value),
+)
+
+/** 数据边界与合规声明（与 docs/competition/DATA-AVAILABILITY-2026-11-07.md 第 5 节一致） */
+const dataBoundaries = [
+  '学生、班级、分数与作答过程均为模拟数据，仅限本次比赛开发、分析与展示，禁止引入真实学生个人信息；',
+  '教材切片“不涉及版权问题，仅供个人学习使用”（资料说明原文）；',
+  '教材正文为修复文本层乱码后的摘录，可能与纸质教材存在排版差异，核对请以原书为准；',
+  '课标仅呈现整理编号与页码索引，未做 OCR 全文；',
+  '独立评测数据由赛方在评审时另行提供，当前产品不包含、不预测。',
+]
 
 function questionTitle(id) {
   return questionById.value.get(id)?.stem || id
@@ -464,6 +531,10 @@ onMounted(async () => {
           一个工作台完成内容梳理、数据检查、个体与群体诊断、建议复核和成果导出。
           统计与排序由规则引擎完成，模型只负责解释和课程表达。
         </p>
+        <p class="cw-owner">
+          数据归属：<strong>{{ datasetOwnerLabel }}</strong>
+          <span v-if="datasetOwnerMismatch">· 非本人负责的学科数据，你的调整会记录操作账号</span>
+        </p>
       </div>
       <div class="cw-head-actions">
         <el-button v-if="isTeacher" plain :loading="importing" @click="openImport">
@@ -661,6 +732,7 @@ onMounted(async () => {
               <h2>课程要求与材料出处</h2>
               <p>主题 → 要求 → 前置关系 → 材料 / 题目。</p>
             </div>
+            <el-tag effect="plain">归属：{{ datasetOwnerLabel }}</el-tag>
             <el-tag effect="plain">{{ curriculum.meta?.version }}</el-tag>
           </div>
           <div class="cw-topic-list">
@@ -697,16 +769,98 @@ onMounted(async () => {
                       v-for="materialId in requirement.materialIds"
                       :key="materialId"
                       type="button"
+                      :class="{ 'cw-chip-has-excerpt': !!textbookExcerptById(materialId) }"
                       @click="selectedRecord = materialById.get(materialId)"
                     >
                       {{ materialTitle(materialId) }}
                     </button>
+                    <button
+                      v-if="requirementExcerpt(requirement)"
+                      type="button"
+                      class="cw-chip-action"
+                      @click="toggleExcerpt(requirement.id)"
+                    >
+                      {{ expandedExcerptId === requirement.id ? '收起教材摘录' : '展开教材摘录' }}
+                    </button>
                     <span>{{ requirement.questionIds.length }} 道题</span>
+                  </div>
+                  <div
+                    v-if="expandedExcerptId === requirement.id && requirementExcerpt(requirement)"
+                    class="cw-excerpt-panel"
+                  >
+                    <p class="cw-excerpt-note">
+                      以下为修复文本层乱码后的教材摘录，仅供出处核对与阅读参考；
+                      矢量线条符号可能缺失，与纸质教材或有排版差异，核对以原书为准。
+                    </p>
+                    <article
+                      v-for="section in requirementExcerpt(requirement).sections"
+                      :key="`${section.code}-${section.title}`"
+                      class="cw-excerpt-section"
+                    >
+                      <h4>
+                        <span v-if="section.code" class="cw-excerpt-code">{{ section.code }}</span>
+                        {{ section.title }}
+                        <small>教材第 {{ section.pages[0] }}—{{ section.pages[1] }} 页</small>
+                      </h4>
+                      <p v-for="(paragraph, index) in section.paragraphs" :key="index">
+                        {{ paragraph }}
+                      </p>
+                    </article>
                   </div>
                 </div>
               </div>
             </section>
           </div>
+        </article>
+      </div>
+
+      <div class="cw-two-col">
+        <article class="cw-card">
+          <div class="cw-card-head">
+            <div>
+              <h2>字段说明数据字典</h2>
+              <p>
+                赛方五张数据表（字段说明.csv 覆盖范围）的字段类型、含义、取值与为空规则，共
+                {{ (curriculum.fieldDefinitions || []).length }} 条。
+              </p>
+            </div>
+            <el-select v-model="fieldFilterTable" size="small" style="width: 132px">
+              <el-option
+                v-for="option in fieldTableOptions"
+                :key="option"
+                :label="option"
+                :value="option"
+              />
+            </el-select>
+          </div>
+          <div class="cw-dict">
+            <section v-for="group in visibleFieldGroups" :key="group.table" class="cw-dict-group">
+              <h3>
+                {{ group.table }}
+                <small>{{ group.fields.length }} 个字段</small>
+              </h3>
+              <el-table :data="group.fields" size="small" max-height="240">
+                <el-table-column prop="field" label="字段" width="128" show-overflow-tooltip />
+                <el-table-column prop="type" label="类型" width="56" />
+                <el-table-column prop="meaning" label="含义" min-width="130" show-overflow-tooltip />
+                <el-table-column prop="format" label="取值 / 格式" min-width="100" show-overflow-tooltip />
+                <el-table-column prop="example" label="示例" width="86" show-overflow-tooltip />
+                <el-table-column prop="whenEmpty" label="为空时" width="64" show-overflow-tooltip />
+              </el-table>
+            </section>
+          </div>
+        </article>
+
+        <article class="cw-card">
+          <div class="cw-card-head">
+            <div>
+              <h2>数据边界与合规声明</h2>
+              <p>哪些数据可用、用到什么程度、哪些不呈现，在此固定声明。</p>
+            </div>
+          </div>
+          <ol class="cw-boundary-list">
+            <li v-for="(item, index) in dataBoundaries" :key="index">{{ item }}</li>
+          </ol>
         </article>
       </div>
     </section>
@@ -986,6 +1140,9 @@ onMounted(async () => {
                   >
                     {{ item.teacherDecision === 'accepted' ? '已通过' : item.teacherDecision === 'edited' ? '已调整' : '已移除' }}
                   </el-tag>
+                  <small v-if="item.teacherDecision && item.operatorName" class="cw-action-operator">
+                    {{ item.operatorName }} 复核
+                  </small>
                   <span>{{ item.estimatedMinutes }} 分钟</span>
                 </div>
                 <h3>{{ item.title }}</h3>
@@ -1171,6 +1328,34 @@ onMounted(async () => {
             <span>作答</span><strong>{{ selectedRecord.status }} · {{ selectedRecord.score ?? '—' }}/{{ selectedRecord.maxScore }}</strong>
           </div>
           <div v-if="selectedRecord.reason"><span>依据</span><p>{{ selectedRecord.reason }}</p></div>
+          <div v-if="selectedRecordExcerpt">
+            <span>教材摘录</span>
+            <div class="cw-dialog-excerpt">
+              <p class="cw-excerpt-note">
+                修复文本层乱码后的摘录，仅供出处核对与阅读参考，核对以原书为准。
+              </p>
+              <article
+                v-for="section in selectedRecordExcerpt.sections"
+                :key="`${section.code}-${section.title}`"
+                class="cw-excerpt-section"
+              >
+                <h4>
+                  <span v-if="section.code" class="cw-excerpt-code">{{ section.code }}</span>
+                  {{ section.title }}
+                  <small>教材第 {{ section.pages[0] }}—{{ section.pages[1] }} 页</small>
+                </h4>
+                <p v-for="(paragraph, index) in section.paragraphs" :key="index">
+                  {{ paragraph }}
+                </p>
+              </article>
+            </div>
+          </div>
+          <div v-else-if="selectedRecord.type === 'textbook'">
+            <span>教材摘录</span>
+            <p class="cw-dialog-excerpt-empty">
+              该教材切片仅接入章级索引，未提取正文摘录（详见数据边界说明）。
+            </p>
+          </div>
         </div>
       </template>
     </el-dialog>
@@ -1212,6 +1397,26 @@ onMounted(async () => {
   font-size: 13px;
   line-height: 1.8;
   color: var(--text-sub);
+}
+
+/* 数据归属行：学科方向拆分后，赛事数据显式归属李老师（数学） */
+.cw-owner {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 8px !important;
+  font-size: 12px;
+  color: var(--text-sub);
+}
+
+.cw-owner strong {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.cw-owner span {
+  color: var(--text-faint);
 }
 
 .cw-head-actions,
@@ -1514,6 +1719,116 @@ onMounted(async () => {
   color: var(--text-faint);
 }
 
+/* 教材 chip：有正文摘录的加实线描边区分“仅索引”态 */
+.cw-resource-chips button.cw-chip-has-excerpt {
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+.cw-resource-chips button.cw-chip-action {
+  color: var(--text-main);
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--card-border);
+}
+
+.cw-excerpt-panel {
+  margin-top: 8px;
+  padding: 10px 12px;
+  background: var(--accent-soft);
+  border-radius: 8px;
+}
+
+.cw-excerpt-note {
+  margin: 0 0 8px;
+  font-size: 10.5px;
+  line-height: 1.6;
+  color: var(--text-faint);
+}
+
+.cw-excerpt-section + .cw-excerpt-section {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--card-border);
+}
+
+.cw-excerpt-section h4 {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin: 0 0 5px;
+  font-size: 12px;
+}
+
+.cw-excerpt-section h4 small {
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--text-faint);
+}
+
+.cw-excerpt-code {
+  padding: 1px 5px;
+  background: var(--card-bg);
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--accent);
+}
+
+.cw-excerpt-section p {
+  margin: 0 0 4px;
+  font-size: 11.5px;
+  line-height: 1.8;
+  text-align: justify;
+}
+
+.cw-dialog-excerpt {
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.cw-dialog-excerpt-empty {
+  margin: 0;
+  font-size: 11.5px;
+  line-height: 1.7;
+  color: var(--text-faint);
+}
+
+/* 字段说明数据字典 */
+.cw-dict {
+  display: grid;
+  gap: 14px;
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.cw-dict-group h3 {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0 0 6px;
+  font-size: 12.5px;
+}
+
+.cw-dict-group h3 small {
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--text-faint);
+}
+
+/* 数据边界声明 */
+.cw-boundary-list {
+  margin: 0;
+  padding-left: 20px;
+  display: grid;
+  gap: 8px;
+  font-size: 11.5px;
+  line-height: 1.8;
+}
+
+.cw-boundary-list li::marker {
+  color: var(--accent);
+  font-family: var(--font-mono);
+}
+
 .cw-group-bars,
 .cw-req-bars,
 .cw-issue-block {
@@ -1769,6 +2084,12 @@ onMounted(async () => {
 
 .cw-action-head > span {
   margin-left: auto;
+  font-size: 10px;
+  color: var(--text-faint);
+}
+
+/* 复核操作账号：跨教师调整时可追溯是谁改的 */
+.cw-action-operator {
   font-size: 10px;
   color: var(--text-faint);
 }

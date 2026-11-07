@@ -69,6 +69,12 @@ function normalizeDataset(raw, base) {
     lastImportAt: new Date().toISOString(),
     lastImportCount: records.length,
   }
+  // 学科方向拆分：导入数据未声明归属时继承当前数据集归属，
+  // 避免数学赛事数据在反复导入后漂回“无主”状态
+  if (!next.meta.ownerTeacher && base?.meta?.ownerTeacher) {
+    next.meta.ownerTeacher = base.meta.ownerTeacher
+    next.meta.ownerTeacherId = base.meta.ownerTeacherId
+  }
   if (!next.meta.disclaimer) {
     next.meta.disclaimer = next.meta.official
       ? '正式赛事数据仅限本次比赛使用。'
@@ -121,6 +127,7 @@ export const useCompetitionStore = defineStore('competition', () => {
             ...(override.patch || {}),
             teacherDecision: override.status || '',
             teacherReason: override.reason || '',
+            operatorName: override.operatorName || '',
             adjustedAt: override.updatedAt || '',
           }
         })
@@ -211,6 +218,10 @@ export const useCompetitionStore = defineStore('competition', () => {
       status: status || 'edited',
       patch: patch || {},
       reason: String(reason || '').trim(),
+      // 学科方向拆分后，数学赛事数据归李老师负责；其他教师账号的调整
+      // 记录操作账号，保证审计链完整（见 dataset.meta.ownerTeacher）
+      operatorId: userStore.user?.id || '',
+      operatorName: userStore.name || '',
       updatedAt: new Date().toISOString(),
     }
     adjustments.value = {

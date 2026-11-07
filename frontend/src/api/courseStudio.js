@@ -12,10 +12,15 @@ import {
   normalizeCourseBlueprint,
   normalizeCourseSceneContent,
 } from '@/utils/courseStudio'
+import {
+  inferLearnerProfile,
+  normalizeLearnerProfile,
+} from '@/utils/learnerProfile'
+import { repairText, sanitizeUserInput } from '@/utils/textRepair'
 import { buildCompetitionSceneContent } from '@/competition/analysis'
 
-export const COURSE_STUDIO_VERSION = 'openmaic-10a92d6-adapt-v1'
-export const COURSE_PROMPT_VERSION = `${PROMPT_VERSION}-course-studio-v1`
+export const COURSE_STUDIO_VERSION = 'openmaic-10a92d6-adapt-v2'
+export const COURSE_PROMPT_VERSION = `${PROMPT_VERSION}-course-studio-v2`
 
 function modelReady() {
   try {
@@ -50,7 +55,7 @@ async function collectSources({
 }) {
   try {
     const knowledge = useKnowledgeStore()
-    return await knowledge.buildGenerationContext({
+    const context = await knowledge.buildGenerationContext({
       chapter,
       query,
       materialIds,
@@ -59,6 +64,8 @@ async function collectSources({
       maxContextChars,
       topK,
     })
+    // 材料正文再过一遍修复：覆盖早期导入、种子数据等未经导入侧净化的路径
+    return { text: repairText(context.text).text, chunks: context.chunks }
   } catch {
     return { text: '', chunks: [] }
   }
@@ -125,26 +132,42 @@ export async function generateCourseBlueprint({
   domain = 'general',
   materialIds = [],
 }) {
+  // 输入侧净化：用户从损坏 PDF 复制的主题/章节名常带乱码
+  // （复现用例：“第二章 有理数的运算 （2 ）荞 状 × 狆 株”），
+  // 先修复再进入检索、学习者画像推断与提示词。
+  const cleanObjective = sanitizeUserInput(objective, { maxLength: 8000 })
+  const cleanChapter = sanitizeUserInput(chapter, { maxLength: 2000 })
+  const cleanAudience = sanitizeUserInput(audience, { maxLength: 2000 })
+  const inputNotice =
+    cleanObjective.notice || cleanChapter.notice || cleanAudience.notice || ''
+
   const sources = await collectSources({
-    chapter,
-    query: objective,
+    chapter: cleanChapter.text,
+    query: cleanObjective.text,
     materialIds,
     preferUploaded: true,
     excludeSeeded: domain === 'general',
     maxContextChars: 7000,
     topK: 7,
   })
-  const materialText = sources.text || chapterFallback(chapter, domain)
+  const materialText = sources.text || chapterFallback(cleanChapter.text, domain)
   const sourceChunkIds = sources.chunks.map((chunk) => chunk.id)
+  const learnerProfile = inferLearnerProfile({
+    objective: cleanObjective.text,
+    chapter: cleanChapter.text,
+    audience: cleanAudience.text,
+    materialText,
+  })
   const context = {
-    chapter,
-    objective,
-    audience,
+    chapter: cleanChapter.text,
+    objective: cleanObjective.text,
+    audience: cleanAudience.text,
     mode,
     durationMinutes,
     domain,
     materialText,
     sourceChunkIds,
+    learnerProfile,
   }
 
   if (!modelReady()) {
@@ -152,6 +175,7 @@ export async function generateCourseBlueprint({
       blueprint: buildLocalCourseBlueprint(context),
       sources: sourceSummary(sources.chunks),
       fallback: true,
+      inputNotice,
       error: null,
     }
   }
@@ -167,13 +191,14 @@ export async function generateCourseBlueprint({
       normalize: (data) => normalizeCourseBlueprint(data, context),
       task: 'course.outline',
       kind: 'course',
-      traceRefs: { chapter, mode, durationMinutes },
+      traceRefs: { chapter: cleanChapter.text, mode, durationMinutes },
     })
     return {
       blueprint: result.value,
       sources: sourceSummary(sources.chunks),
       fallback: false,
       repaired: result.repaired,
+      inputNotice,
       error: null,
     }
   } catch (error) {
@@ -183,6 +208,7 @@ export async function generateCourseBlueprint({
       blueprint: buildLocalCourseBlueprint(context),
       sources: sourceSummary(sources.chunks),
       fallback: true,
+      inputNotice,
       error,
     }
   }
@@ -196,17 +222,19 @@ async function sceneSources(project, outline) {
       const wanted = new Set(outline.sourceChunkIds || [])
       const materials = competition.dataset.materials.filter((item) => wanted.has(item.id))
       return {
-        text: materials
-          .map(
-            (material) =>
-              `[${material.id}｜${material.title}｜${material.locator}]\n${material.content}`,
-          )
-          .join('\n\n'),
+        text: repairText(
+          materials
+            .map(
+              (material) =>
+                `[${material.id}｜${material.title}｜${material.locator}]\n${material.content}`,
+            )
+            .join('\n\n'),
+        ).text,
         chunks: materials.map((material) => ({
           id: material.id,
           title: material.title,
           chapter: material.locator,
-          text: material.content,
+          text: repairText(material.content).text,
         })),
       }
     } catch {
@@ -219,12 +247,14 @@ async function sceneSources(project, outline) {
     const selected = await knowledge.chunksByIds(ids)
     if (selected.length) {
       return {
-        text: selected
-          .map(
-            (chunk, index) =>
-              `[${chunk.id}｜材料${index + 1}｜${chunk.title}｜${chunk.chapter}]\n${chunk.text}`,
-          )
-          .join('\n\n'),
+        text: repairText(
+          selected
+            .map(
+              (chunk, index) =>
+                `[${chunk.id}｜材料${index + 1}｜${chunk.title}｜${chunk.chapter}]\n${chunk.text}`,
+            )
+            .join('\n\n'),
+        ).text,
         chunks: selected,
       }
     }
@@ -246,7 +276,14 @@ export async function generateCourseScene({ project, outline, previousScene = nu
   const sources = await sceneSources(project, outline)
   const materialText = sources.text || chapterFallback(project.chapter, project.domain)
   const allowedSourceIds = sources.chunks.map((chunk) => chunk.id)
-  const context = { project, outline, allowedSourceIds }
+  const learnerProfile = normalizeLearnerProfile(project.learnerProfile, {
+    objective: project.objective,
+    chapter: project.chapter,
+    audience: project.audience,
+    materialText,
+  })
+  const profiledProject = { ...project, learnerProfile }
+  const context = { project: profiledProject, outline, allowedSourceIds }
 
   const localCompetitionContent =
     project.domain === 'math7'
@@ -259,7 +296,7 @@ export async function generateCourseScene({ project, outline, previousScene = nu
 
   if (!modelReady()) {
     return {
-      content: localCompetitionContent || buildLocalCourseSceneContent(project, outline),
+      content: localCompetitionContent || buildLocalCourseSceneContent(profiledProject, outline),
       sources: sourceSummary(sources.chunks),
       fallback: true,
       error: null,
@@ -267,7 +304,7 @@ export async function generateCourseScene({ project, outline, previousScene = nu
   }
 
   const prompt = courseScenePrompt({
-    project,
+    project: profiledProject,
     outline,
     materialText,
     sourceChunkIds: allowedSourceIds,
@@ -298,7 +335,7 @@ export async function generateCourseScene({ project, outline, previousScene = nu
     if (!isEnabled('offlineFallback')) throw error
     console.warn(`[course-studio] ${outline.type} scene fell back:`, error)
     return {
-      content: localCompetitionContent || buildLocalCourseSceneContent(project, outline),
+      content: localCompetitionContent || buildLocalCourseSceneContent(profiledProject, outline),
       sources: sourceSummary(sources.chunks),
       fallback: true,
       error,

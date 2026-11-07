@@ -205,6 +205,7 @@ function handleReset() {
       <template #title>
         配置大模型后，「AI协助 / AI 助教」等智能体功能将调用该模型生成回答。
         默认使用 DeepSeek 的 OpenAI 兼容接口，语音合成继续使用 StepAudio。
+        助教不会锁定某一门课程；学科、范围和学段会按本轮需求与上传资料判断。
         生产环境由同源 Node 代理读取服务端环境变量，密钥不会进入前端构建；开发环境可临时使用本机配置。
       </template>
     </el-alert>
@@ -289,13 +290,17 @@ function handleReset() {
           <div class="form-help">越低回答越稳定严谨，越高越发散灵活</div>
         </el-form-item>
 
-        <el-form-item label="助教人设">
+        <el-form-item label="助教身份与教学原则">
           <el-input
             v-model="form.systemPrompt"
             type="textarea"
-            :rows="8"
-            placeholder="系统提示词（System Prompt），定义 AI 助教的角色与回答风格"
+            :rows="12"
+            placeholder="跨学科系统提示词：定义助教如何识别学科、学段并调整讲解方式"
           />
+          <div class="form-help">
+            这里不绑定《管理学》或其他固定科目。系统会读取用户输入、对话记录和已上传材料，
+            推断可能学段；用户明确写出的年级会覆盖自动判断。
+          </div>
         </el-form-item>
 
         <el-divider content-position="left">语音合成 · StepAudio</el-divider>

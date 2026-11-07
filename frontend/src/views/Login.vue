@@ -44,6 +44,10 @@ async function handleSubmit() {
     const redirect = route.query.redirect
     if (redirect) {
       router.push(redirect)
+    } else if (userStore.user?.subject === '数学') {
+      // 学科方向拆分（2026-11-07）：数学教师的主场是赛事学情工作台，
+      // 不再落到《管理学》课程页，数据归属与落地页保持一致
+      router.push(target.value === 'mobile' ? '/m/competition' : '/app/competition')
     } else {
       router.push(target.value === 'mobile' ? '/m/course' : '/app/course')
     }

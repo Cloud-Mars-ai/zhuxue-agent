@@ -719,6 +719,9 @@ export function buildDevelopmentCompetitionDataset(seed = COMPETITION_DATASET_SE
       title: '七年级数学 · 智慧学伴开发样例',
       grade: '七年级',
       subject: '数学',
+      // 学科方向拆分（2026-11-07）：数学类数据统一归李老师负责
+      ownerTeacherId: 'T003',
+      ownerTeacher: '李老师',
       sourceType: 'development-sample',
       official: false,
       disclaimer:

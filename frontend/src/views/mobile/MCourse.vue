@@ -15,6 +15,7 @@ import { useCourseStudioStore } from '@/stores/courseStudio'
 import { useHomeworkStore } from '@/stores/homework'
 import { diagnoseGaps } from '@/utils/diagnose'
 import { buildFeed } from '@/utils/feed'
+import { repairText } from '@/utils/textRepair'
 import { generateCourseBlueprint } from '@/api/courseStudio'
 import danceBuddySrc from '@/assets/nailong-dance.webp'
 
@@ -128,7 +129,7 @@ const quickEntries = computed(() =>
         { ic: '库', color: '#2B8A3E', name: '知识库', sub: '资料 · 板书', to: '/m/library' },
         { ic: '例', color: '#0C8599', name: '课前案例', sub: '提交兴趣案例', to: '/m/case' },
         { ic: '考', color: '#2B8A3E', name: '课程考核', sub: '模拟面试', to: '/m/assessment' },
-        { ic: '问', color: '#F59F00', name: 'AI协助', sub: '小管同学', to: '/m/ask' },
+        { ic: '问', color: '#F59F00', name: 'AI协助', sub: '跨学科助教', to: '/m/ask' },
         { ic: '我', color: '#495057', name: '我的', sub: '背景与设置', to: '/m/mine' },
       ]
     : [
@@ -137,7 +138,7 @@ const quickEntries = computed(() =>
         { ic: '稿', color: '#3B5BDB', name: '案例选稿台', sub: '筛选 / 选用 / 驳回', to: '/m/case' },
         { ic: '卷', color: '#E8590C', name: '出题阅卷台', sub: '圈人出题 · 评分', to: '/m/assessment' },
         { ic: '库', color: '#2B8A3E', name: '知识库', sub: '材料 · 板书归档', to: '/m/library' },
-        { ic: '问', color: '#F59F00', name: 'AI协助', sub: '小管同学', to: '/m/ask' },
+        { ic: '问', color: '#F59F00', name: 'AI协助', sub: '跨学科助教', to: '/m/ask' },
       ],
 )
 
@@ -190,7 +191,7 @@ function chooseStudyMode(mode) {
 }
 
 async function askHero() {
-  const q = heroInput.value.trim()
+  const q = repairText(heroInput.value.trim()).text
   if (!q || generatingCourse.value) return
   if (!modeChosen.value) {
     showModeMenu.value = true
@@ -210,6 +211,7 @@ async function askHero() {
       domain: 'general',
       materialIds,
     })
+    if (result.inputNotice) showToast(result.inputNotice)
     const saved = await courseStudioStore.createDraft({
       ownerId: userStore.user?.id || '',
       input: {

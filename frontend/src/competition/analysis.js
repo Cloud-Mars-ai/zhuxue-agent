@@ -8,6 +8,8 @@ import {
   getTopic,
 } from './dataset.js'
 import { parseCsv } from './csv.js'
+import { normalizeBoardLesson } from '../utils/board.js'
+import { ensureSimulationBlock } from '../utils/knowledgeVisualization.js'
 
 const ANALYSIS_VERSION = 'math7-analysis-v1'
 const VALID_STATUSES = new Set(['correct', 'partial', 'incorrect', 'missing'])
@@ -1207,9 +1209,10 @@ export function buildCompetitionSceneContent(dataset, outline, mode = 'course') 
   }
 
   const explanation = materials.find((material) => material.type !== 'exercise_set') || materials[0]
-  return {
-    kind: 'board',
-    lesson: {
+  // 先过白名单归一化，再接可视化兜底：七年级数学的不等式/方程场景
+  // 若预判推荐交互（如数轴、一次函数），自动补一个受控 simulation 块
+  const lesson = normalizeBoardLesson(
+    {
       title: outline.title,
       subtitle: outline.description,
       blocks: [
@@ -1252,6 +1255,16 @@ export function buildCompetitionSceneContent(dataset, outline, mode = 'course') 
         },
       ],
     },
+    requirement?.title || topic?.title || '',
+  )
+  const withSimulation = ensureSimulationBlock(lesson, {
+    subject: '数学',
+    stage: 'junior',
+    keyPoints: outline.keyPoints,
+  })
+  return {
+    kind: 'board',
+    lesson: withSimulation,
     sourceChunkIds: materials.map((material) => material.id),
   }
 }

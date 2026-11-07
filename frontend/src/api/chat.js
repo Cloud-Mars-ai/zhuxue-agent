@@ -5,11 +5,32 @@ import { useKnowledgeStore } from '@/stores/knowledge'
 import { isEnabled } from '@/config/flags'
 import { parseJsonLoose } from '@/utils/json'
 import { assertContentSafe } from '@/utils/contentSafety'
+import { repairDeep, repairText } from '@/utils/textRepair'
+import { TEXT_INTEGRITY_RULE } from './prompts/shared'
+import {
+  inferLearnerProfile,
+  learnerProfileGuide,
+  normalizeLearnerProfile,
+} from '@/utils/learnerProfile'
 
 const TIMEOUT_MS = 60000
 // 模型无记忆，每次请求携带最近若干条历史作为上下文
 const MAX_HISTORY = 20
 const DEFAULT_MAX_TOKENS = 2048
+
+/**
+ * 输入侧净化：用户从损坏 PDF 复制来的乱码（狓→x、狀→n…）在进入模型前修复，
+ * 既避免模型复述乱码，也避免它把稀有字当合法上下文继续放大。
+ * 详见 utils/textRepair.js 背景说明；修复是确定性的，可重复执行。
+ */
+function repairMessages(messages) {
+  if (!Array.isArray(messages)) return messages
+  return messages.map((message) =>
+    message && typeof message.content === 'string'
+      ? { ...message, content: repairText(message.content).text }
+      : message,
+  )
+}
 
 function buildMessages(messages, systemPrompt) {
   const list = Array.isArray(messages) ? messages.slice(-MAX_HISTORY) : []
@@ -54,6 +75,26 @@ export function buildStudyModeSuffix(mode) {
     )
   }
   return ''
+}
+
+function buildLearnerSuffix(messages, chapter = '', materialText = '') {
+  const recentUserText = (Array.isArray(messages) ? messages : [])
+    .filter((message) => message.role === 'user')
+    .slice(-3)
+    .map((message) => message.content)
+    .join('\n')
+  const profile = normalizeLearnerProfile(
+    inferLearnerProfile({
+      objective: recentUserText,
+      chapter,
+      materialText,
+    }),
+  )
+  return (
+    '\n\n【本轮学习者自适应规则】\n' +
+    learnerProfileGuide(profile) +
+    '\n上述画像只是依据当前线索的临时判断；一旦对话出现新信息，必须更新语言和难度。'
+  )
 }
 
 function friendlyError(status, detail, model) {
@@ -119,9 +160,10 @@ export async function sendChatDetailed(messages, options = {}) {
   const store = useModelStore()
   const cfg = { ...store.config, ...(options.config || {}) }
   const useProxy = !!store.serverProxyActive && !options.forceDirect
+  const safeMessages = repairMessages(messages)
 
   assertContentSafe(
-    (Array.isArray(messages) ? messages : [])
+    (Array.isArray(safeMessages) ? safeMessages : [])
       .map((message) => `${message.role || ''}:${message.content || ''}`)
       .join('\n'),
     '模型请求',
@@ -156,11 +198,15 @@ export async function sendChatDetailed(messages, options = {}) {
       : `${cfg.systemPrompt || ''}${buildDisciplineSuffix()}`
 
   // 资料第一：命中知识库时把材料片段注入系统提示词（带来源标签）
-  let finalSystemPrompt = `${systemPrompt}${buildStudyModeSuffix(options.studyMode)}`
+  // 抗乱码规则对所有路径生效：材料 PDF 文本层损坏时，模型容易复述/放大稀有字
+  let finalSystemPrompt = `${systemPrompt}${buildStudyModeSuffix(
+    options.studyMode,
+  )}\n\n${TEXT_INTEGRITY_RULE}`
   let knowledgeChunks = []
+  let knowledgeText = ''
   if (options.useKnowledge && isEnabled('knowledgeBase')) {
     try {
-      const lastUser = [...(Array.isArray(messages) ? messages : [])]
+      const lastUser = [...(Array.isArray(safeMessages) ? safeMessages : [])]
         .reverse()
         .find((m) => m.role === 'user')?.content
       const ctx = await useKnowledgeStore().buildContext({
@@ -168,12 +214,22 @@ export async function sendChatDetailed(messages, options = {}) {
         query: lastUser || '',
       })
       if (ctx.text) {
-        finalSystemPrompt = `${systemPrompt}\n\n${ctx.text}`
+        knowledgeText = ctx.text
+        finalSystemPrompt = `${systemPrompt}${buildStudyModeSuffix(
+          options.studyMode,
+        )}\n\n${ctx.text}`
         knowledgeChunks = ctx.chunks.map((c) => c.id)
       }
     } catch {
       // 知识库不可用时退回通用回答，不阻塞主流程
     }
+  }
+  if (options.systemPrompt == null) {
+    finalSystemPrompt += buildLearnerSuffix(
+      safeMessages,
+      options.chapter || '',
+      knowledgeText,
+    )
   }
 
   const maxAttempts = Number.isFinite(Number(options.retry)) ? Number(options.retry) : 1
@@ -196,7 +252,7 @@ export async function sendChatDetailed(messages, options = {}) {
             },
         body: JSON.stringify({
           model: cfg.model,
-          messages: buildMessages(messages, finalSystemPrompt),
+          messages: buildMessages(safeMessages, finalSystemPrompt),
           temperature,
           max_tokens: maxTokens,
           ...(options.reasoningEffort &&
@@ -229,7 +285,9 @@ export async function sendChatDetailed(messages, options = {}) {
         throw new Error('模型未返回有效内容，请重试或更换模型')
       }
 
-      const text = content.trim()
+      // 输出侧修复：模型复述或放大乱码时在这里拦截（详见 utils/textRepair.js）
+      const repaired = repairText(content)
+      const text = (repaired.changed ? repaired.text : content).trim()
       assertContentSafe(text, '模型返回内容')
       const latencyMs = Math.round(
         (typeof performance !== 'undefined' ? performance.now() : Date.now()) - startedAt,
@@ -245,7 +303,7 @@ export async function sendChatDetailed(messages, options = {}) {
           model: cfg.model,
           latencyMs,
           ok: true,
-          inputHash: hashText(JSON.stringify(messages)),
+          inputHash: hashText(JSON.stringify(safeMessages)),
           outputHash: hashText(text),
         })
       }
@@ -283,7 +341,7 @@ export async function sendChatDetailed(messages, options = {}) {
           latencyMs,
           ok: false,
           error: message,
-          inputHash: hashText(JSON.stringify(messages)),
+          inputHash: hashText(JSON.stringify(safeMessages)),
         })
       }
       throw new Error(message)
@@ -307,8 +365,10 @@ export async function sendChat(messages, options = {}) {
 /**
  * 需要结构化结果的任务：返回解析后的 JSON 与原始文本
  * 解析失败时 data 为 null，由调用方决定是否降级。
+ * JSON 内所有字符串（含对象键）会再过一遍深修复，双保险且幂等。
  */
 export async function sendChatJSON(messages, options = {}) {
   const result = await sendChatDetailed(messages, options)
-  return { data: parseJsonLoose(result.text), text: result.text, meta: result }
+  const data = parseJsonLoose(result.text)
+  return { data: data == null ? data : repairDeep(data), text: result.text, meta: result }
 }

@@ -50,7 +50,7 @@ const tools = [
   { title: '研讨论坛', desc: '参与讨论 · 发表评论', path: '/m/forum', icon: 'comment-o' },
   { title: '课前案例', desc: '提交兴趣案例 · 老师选用', path: '/m/case', icon: 'description' },
   { title: '课程考核', desc: 'AI 模拟面试题', path: '/m/assessment', icon: 'aim' },
-  { title: 'AI协助', desc: '小管同学在线解答', path: '/m/ask', icon: 'chat' },
+  { title: 'AI协助', desc: '跨学科助教在线解答', path: '/m/ask', icon: 'chat' },
 ]
 
 async function handleLogout() {
@@ -75,7 +75,10 @@ function toggleMock() {
       <div class="avatar">{{ initial }}</div>
       <div class="profile-text">
         <h3>{{ userStore.name }}</h3>
-        <p>{{ userStore.roleLabel }} · {{ userStore.user?.id }}</p>
+        <p>
+          {{ userStore.roleLabel }}<span v-if="userStore.user?.subject"> · {{ userStore.user.subject }}</span> ·
+          {{ userStore.user?.id }}
+        </p>
       </div>
     </div>
 

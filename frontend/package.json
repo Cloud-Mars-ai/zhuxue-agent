@@ -13,6 +13,8 @@
     "test:e2e": "playwright test",
     "test:e2e:live": "playwright test --config=playwright.live.config.js",
     "test:competition": "node scripts/verify-competition.mjs",
+    "test:text-repair": "node scripts/test-text-repair.mjs",
+    "test:visualization": "node scripts/test-visualization.mjs",
     "sync:competition-data": "node scripts/sync-competition-data.mjs",
     "export:competition": "node scripts/export-competition-package.mjs"
   },

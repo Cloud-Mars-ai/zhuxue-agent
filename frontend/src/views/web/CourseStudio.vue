@@ -15,7 +15,9 @@ import {
   reorderCourseOutline,
   summarizeCourseProject,
 } from '@/utils/courseStudio'
+import { learnerProfileLabel } from '@/utils/learnerProfile'
 import { downloadBoardLesson } from '@/utils/boardDownload'
+import { repairText } from '@/utils/textRepair'
 
 const route = useRoute()
 const router = useRouter()
@@ -131,9 +133,13 @@ async function createOutline() {
 
   generatingOutline.value = true
   try {
+    // 输入先净化再生成与存档：PDF 复制来的主题常带乱码，原样入库会在
+    // 草稿回显、重新生成时反复出现（净化在 API 入口还有一道，这里双保险）
+    const cleanObjective = repairText(draft.objective.trim()).text
+    const cleanChapter = repairText(draft.chapter.trim()).text
     const result = await generateCourseBlueprint({
-      chapter: draft.chapter,
-      objective: draft.objective.trim(),
+      chapter: cleanChapter,
+      objective: cleanObjective,
       audience: draft.audience,
       mode: draft.mode,
       durationMinutes: Number(draft.durationMinutes),
@@ -142,9 +148,10 @@ async function createOutline() {
         .filter((item) => !item.seeded)
         .map((item) => item.id),
     })
+    if (result.inputNotice) ElMessage.info(result.inputNotice)
     const saved = await studio.createDraft({
       ownerId: userStore.user?.id || '',
-      input: { ...draft },
+      input: { ...draft, chapter: cleanChapter, objective: cleanObjective },
       result,
     })
     projectId.value = saved.id
@@ -379,7 +386,7 @@ function formatTime(value) {
         <span class="studio-kicker">COURSE STUDIO · 用户需求优先</span>
         <h1>先生成大纲，确认后再逐场景生成。</h1>
         <p>
-          课程主题来自你的输入，内容优先取你上传的材料。系统先做教学编排，再由你修改场景、顺序和要点，最后才生成板书、练习与复盘。
+          课程主题来自你的输入，学科、范围和学段也由内容与上传材料判断。系统先做教学编排，再由你修改场景、顺序和要点，最后才生成板书、练习与复盘。
         </p>
       </div>
       <div class="hero-actions">
@@ -444,8 +451,14 @@ function formatTime(value) {
               />
             </label>
             <label class="field">
-              <span>学习者</span>
-              <el-input v-model="draft.audience" placeholder="例如：本课程学生" />
+              <span>学习者（可选）</span>
+              <el-input
+                v-model="draft.audience"
+                placeholder="例如：初一学生；留空则由内容自动判断"
+              />
+              <small class="field-help">
+                学科、范围和年级不预设；明确填写年级会覆盖自动推断。
+              </small>
             </label>
             <div class="field">
               <span>学习模式</span>
@@ -515,6 +528,18 @@ function formatTime(value) {
               </el-tooltip>
               <el-tag type="info" effect="plain">{{ projectStats.sceneCount }} 个场景</el-tag>
               <el-tag type="info" effect="plain">{{ projectStats.totalMinutes }} 分钟</el-tag>
+              <el-tooltip
+                v-if="project.learnerProfile"
+                :content="
+                  project.learnerProfile.evidence ||
+                  '根据用户需求与材料难度自动判断'
+                "
+                placement="bottom"
+              >
+                <el-tag type="success" effect="plain">
+                  {{ learnerProfileLabel(project.learnerProfile) }}
+                </el-tag>
+              </el-tooltip>
             </div>
           </header>
 
@@ -1002,6 +1027,12 @@ function formatTime(value) {
   font-size: 10.5px;
   font-weight: 700;
   letter-spacing: 0.06em;
+}
+
+.field-help {
+  color: var(--text-faint);
+  font-size: 10px;
+  line-height: 1.55;
 }
 
 .mode-switch {

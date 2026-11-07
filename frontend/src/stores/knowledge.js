@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { COURSE_OUTLINE, outlineToText } from '@/mock/courseOutline'
 import { idbGet, idbSet } from '@/repositories/db'
+import { repairText } from '@/utils/textRepair'
 
 /**
  * 课程知识库（S3 轻量版）
@@ -173,11 +174,15 @@ export const useKnowledgeStore = defineStore('knowledge', () => {
   }
 
   async function addMaterial({ title, chapter, text, size = 0 }) {
+    // 入库前修复：用户手动粘贴的 PDF 文本同样可能带乱码，
+    // 不修的话会存进知识库并在材料列表、检索上下文中扩散。
+    const cleanTitle = repairText(title).text.trim()
+    const cleanText = repairText(text).text.trim()
     const item = {
       id: `m-${Date.now().toString(36)}`,
-      title: title.trim() || `${chapter} 补充材料`,
+      title: cleanTitle || `${chapter} 补充材料`,
       chapter,
-      text: text.trim(),
+      text: cleanText,
       size: Number(size) || 0,
       confirmedBy: 'teacher',
       seeded: false,

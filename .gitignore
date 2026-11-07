@@ -48,6 +48,10 @@ Thumbs.db
 output/
 .playwright-cli/
 
+# 第三方参考仓库快照与赛题原始材料（体积大/版权材料，不进公开仓库）
+tmp/
+【赛题材料】智慧学伴/
+
 # 公网部署工具生成的本地标记文件
 .wbapp_*.genie
 

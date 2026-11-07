@@ -106,6 +106,17 @@ export function buildOfficialCompetitionDataset() {
   const responseRows = parseCsv(responsesCsv)
   const fieldRows = parseCsv(fieldsCsv)
 
+  // 字段说明.csv → 数据字典（按数据表分组，供工作台“字段说明”面板使用）
+  const fieldDefinitions = fieldRows.map((row) => ({
+    table: text(row['数据表']),
+    field: text(row['字段名']),
+    type: text(row['类型']),
+    meaning: text(row['含义']),
+    format: text(row['取值或格式']),
+    example: text(row['示例']),
+    whenEmpty: text(row['为空时']),
+  }))
+
   const topics = topicFromCurriculum(curriculumRows)
   const requirements = curriculumRows.map((row) => {
     const topicId = text(row['主题编号'])
@@ -257,6 +268,9 @@ export function buildOfficialCompetitionDataset() {
       title: '智慧学伴 · 七年级数学赛方模拟学情数据',
       grade: '七年级',
       subject: '数学',
+      // 学科方向拆分（2026-11-07）：数学类数据统一归李老师负责
+      ownerTeacherId: 'T003',
+      ownerTeacher: '李老师',
       sourceType: 'official-competition-package',
       official: true,
       disclaimer:
@@ -314,6 +328,7 @@ export function buildOfficialCompetitionDataset() {
         constraints: ['对应具体学习卡与题目', '说明提示顺序、完成标准和调整条件'],
       },
     ],
+    fieldDefinitions,
     learningRecords,
   }
 }

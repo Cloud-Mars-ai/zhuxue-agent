@@ -1,5 +1,10 @@
 import { normalizeBoardLesson } from '@/utils/board'
 import { normalizeQuestions } from '@/utils/json'
+import { normalizeLearnerProfile } from '@/utils/learnerProfile'
+import {
+  assessVisualizationNeed,
+  ensureSimulationBlock,
+} from '@/utils/knowledgeVisualization'
 
 export const COURSE_SCENE_TYPES = ['lecture', 'quiz', 'practice', 'review']
 
@@ -93,6 +98,26 @@ function normalizeSourceIds(value, allowedIds) {
   return Array.from(new Set(ids)).slice(0, 8)
 }
 
+/**
+ * 大纲阶段的可视化预判：给每个场景算一个可解释的交互需求信号，
+ * 供场景提示词引用与工作台展示；normalizeOutline 幂等重算。
+ */
+function visualHintFor(raw, context) {
+  const assessment = assessVisualizationNeed({
+    text: `${raw?.title ?? ''} ${raw?.description ?? ''} ${raw?.teachingObjective ?? ''}`,
+    subject: context.subject,
+    stage: context.stage,
+    keyPoints: Array.isArray(raw?.keyPoints)
+      ? raw.keyPoints
+      : raw?.points ?? raw?.key_points ?? [],
+  })
+  return {
+    level: assessment.level,
+    score: assessment.score,
+    reasons: assessment.reasons.slice(0, 3),
+  }
+}
+
 function normalizeOutline(raw, index, context) {
   const title = text(raw?.title ?? raw?.heading ?? raw?.name, 80)
   if (!title) return null
@@ -122,6 +147,7 @@ function normalizeOutline(raw, index, context) {
       raw?.sourceChunkIds ?? raw?.sourceIds,
       context.sourceChunkIds,
     ),
+    visualHint: visualHintFor({ ...raw, keyPoints }, context),
     order: index + 1,
   }
 }
@@ -139,6 +165,10 @@ function ensureTeachingSequence(outlines, context) {
       keyPoints: points.length ? points : [context.objective],
       estimatedMinutes: Math.min(8, Math.max(5, Math.round(context.durationMinutes / 5))),
       sourceChunkIds: context.sourceChunkIds.slice(0, 3),
+      visualHint: visualHintFor(
+        { title: '检索练习', keyPoints: points.length ? points : [context.objective] },
+        context,
+      ),
       order: 0,
     })
   }
@@ -153,6 +183,10 @@ function ensureTeachingSequence(outlines, context) {
       keyPoints: points.length ? points : [context.objective],
       estimatedMinutes: 4,
       sourceChunkIds: context.sourceChunkIds.slice(0, 3),
+      visualHint: visualHintFor(
+        { title: '一页收束', keyPoints: points.length ? points : [context.objective] },
+        context,
+      ),
       order: 0,
     })
   }
@@ -185,13 +219,28 @@ export function normalizeCourseBlueprint(raw, context) {
     (source?.data && typeof source.data === 'object' ? source.data.outlines : null) ||
     []
   const rawOutlines = Array.isArray(foundOutlines) ? foundOutlines : []
+  // 先定学习者画像：大纲级可视化预判需要学科与学段
+  const learnerProfile = normalizeLearnerProfile(
+    source?.learnerProfile ?? course?.learnerProfile,
+    {
+      objective: context.objective,
+      chapter: context.chapter,
+      audience: context.audience,
+      materialText: context.materialText,
+    },
+  )
+  const visualContext = {
+    ...context,
+    subject: learnerProfile.subject,
+    stage: learnerProfile.stage,
+  }
   let outlines = rawOutlines
     .slice(0, MAX_SCENES)
-    .map((scene, index) => normalizeOutline(scene, index, context))
+    .map((scene, index) => normalizeOutline(scene, index, visualContext))
     .filter(Boolean)
 
   if (outlines.length < 3) return null
-  outlines = ensureTeachingSequence(outlines, context).slice(0, MAX_SCENES)
+  outlines = ensureTeachingSequence(outlines, visualContext).slice(0, MAX_SCENES)
   outlines = normalizeOrder(outlines)
 
   return {
@@ -204,6 +253,7 @@ export function normalizeCourseBlueprint(raw, context) {
     languageDirective:
       text(source?.languageDirective, 260) ||
       '使用用户需求所使用的语言授课；专业术语首次出现时给出清晰解释。',
+    learnerProfile,
     outlines,
   }
 }
@@ -237,6 +287,10 @@ function courseTopic(context) {
   const compact = raw
     .replace(/^(请|麻烦|帮我|我想|我要|需要|生成|制作|设计|创建|安排)/, '')
     .replace(/^(一节|一节关于|关于|一门|一门关于|一个|一次)/, '')
+    .replace(
+      /^给[^，。,.;；]{0,16}?(学生|同学|孩子|学员|人|者)(讲|解释|介绍|说明|梳理|讲讲)/,
+      '',
+    )
     .replace(/(课程|短课|微课|学习|讲解|复习|备考)[。！？!?]?$/g, '')
     .replace(/[。！？!?]+$/g, '')
     .trim()
@@ -270,11 +324,68 @@ function materialKnowledgePoints(context) {
   return [...new Set(ranked)].slice(0, 8)
 }
 
+function localLearnerCopy(profile) {
+  if (profile.stage === 'primary' || profile.stage === 'preschool') {
+    return {
+      frameworkTitle: '先建立图景',
+      coreTitle: '用看得见的例子理解',
+      materialTitle: '从图片和短材料找线索',
+      practiceTitle: '动手试一试',
+      language:
+        '用短句、具体名词和生活化问题讲解；先给直观例子，再引入正式名称。',
+    }
+  }
+  if (profile.stage === 'junior') {
+    return {
+      frameworkTitle: '先看懂问题',
+      coreTitle: '用模型讲清关键变化',
+      materialTitle: '跟着材料找条件',
+      practiceTitle: '换个条件再试一次',
+      language:
+        '用形象但准确的表达，先给直觉模型，再补定义、条件和符号；复杂变化用分步演示。',
+    }
+  }
+  if (profile.stage === 'senior') {
+    return {
+      frameworkTitle: '建立条件框架',
+      coreTitle: '推导核心关系',
+      materialTitle: '材料证据研读',
+      practiceTitle: '变式迁移',
+      language:
+        '语言简洁、逻辑完整；先说明适用条件，再展开推导、证据或论证链。',
+    }
+  }
+  if (profile.stage === 'adult') {
+    return {
+      frameworkTitle: '明确任务目标',
+      coreTitle: '掌握可迁移的方法',
+      materialTitle: '核验工作材料',
+      practiceTitle: '工作情境推演',
+      language:
+        '直接说明适用场景、判断依据和行动步骤，减少基础铺陈，允许按经验加速。',
+    }
+  }
+  return {
+    frameworkTitle: '课程全景',
+    coreTitle: '核心内容',
+    materialTitle: '材料研读',
+    practiceTitle: '迁移任务',
+    language: '使用规范术语、清晰的概念边界、材料证据和案例判断推进。',
+  }
+}
+
 /**
  * 模型不可用时的确定性兜底也必须遵守用户需求。
  * 规划顺序参考 OpenMAIC：需求定主题，材料提供内容证据，最后才套教学场景结构。
  */
 export function buildLocalCourseBlueprint(context) {
+  const learnerProfile = normalizeLearnerProfile(context.learnerProfile, {
+    objective: context.objective,
+    chapter: context.chapter,
+    audience: context.audience,
+    materialText: context.materialText,
+  })
+  const learnerCopy = localLearnerCopy(learnerProfile)
   const materialPoints = materialKnowledgePoints(context)
   let topic = courseTopic(context)
   if (/上传|这份|这些|资料|材料/.test(topic) && materialPoints.length) {
@@ -296,14 +407,14 @@ export function buildLocalCourseBlueprint(context) {
   const scenes = [
     {
       type: 'lecture',
-      title: `课程全景：${topic}`,
+      title: `${learnerCopy.frameworkTitle}：${topic}`,
       description: `围绕用户需求建立「${topic}」的问题地图，明确本课要解决什么。`,
       teachingObjective: `能说清「${topic}」的学习目标、内容边界和评价方式。`,
       keyPoints: points.slice(0, 3),
     },
     {
       type: 'lecture',
-      title: `核心内容：${text(points[0], 22)}`,
+      title: `${learnerCopy.coreTitle}：${text(points[0], 22)}`,
       description: `从材料或需求中最关键的内容切入，解释概念之间的关系。`,
       teachingObjective: `能用自己的话解释「${text(points[0], 24)}」并给出一个例子。`,
       keyPoints: points.slice(0, 4),
@@ -312,7 +423,7 @@ export function buildLocalCourseBlueprint(context) {
       ? [
           {
             type: 'lecture',
-            title: `材料研读：${text(points[1] || topic, 20)}`,
+            title: `${learnerCopy.materialTitle}：${text(points[1] || topic, 20)}`,
             description: '把材料中的证据、步骤或例子组织成可复述的知识结构。',
             teachingObjective: '能引用材料中的具体信息支持自己的理解。',
             keyPoints: points.slice(1, 5),
@@ -328,7 +439,7 @@ export function buildLocalCourseBlueprint(context) {
     },
     {
       type: 'practice',
-      title: `迁移任务：把「${text(topic, 18)}」用出来`,
+      title: `${learnerCopy.practiceTitle}：把「${text(topic, 18)}」用出来`,
       description: '把本课内容应用到一个新情境，完成“判断—依据—行动”的作答链。',
       teachingObjective: '能把本课知识迁移到新的问题和情境中。',
       keyPoints: points.slice(0, 3),
@@ -347,6 +458,11 @@ export function buildLocalCourseBlueprint(context) {
     ...scene,
     estimatedMinutes: durations[index],
     sourceChunkIds: sources,
+    visualHint: visualHintFor(scene, {
+      subject: learnerProfile.subject,
+      stage: learnerProfile.stage,
+      objective: context.objective,
+    }),
     order: index + 1,
   }))
 
@@ -354,9 +470,9 @@ export function buildLocalCourseBlueprint(context) {
     courseTitle: `${topic} · ${modeLabel}`,
     courseSummary: `围绕“${context.objective}”组织 ${context.durationMinutes} 分钟学习。${
       sources.length ? '内容优先依据已上传材料。' : '当前未上传匹配材料，具体事实需在学习中核对。'
-    }`,
-    languageDirective:
-      '使用用户需求所使用的语言授课；专业术语首次出现时给出清晰解释。',
+    }讲解方式：${learnerProfile.teaching}`,
+    languageDirective: `${learnerCopy.language} ${learnerProfile.board}`,
+    learnerProfile,
     outlines,
   }
 }
@@ -370,103 +486,187 @@ function localBoardContent(project, outline) {
   const points = (outline.keyPoints || []).filter(Boolean)
   const primary = points[0] || outline.title || courseTopic(project)
   const comparison = points.slice(0, 3)
+  const learnerProfile = normalizeLearnerProfile(project.learnerProfile, {
+    objective: project.objective,
+    chapter: project.chapter,
+    audience: project.audience,
+  })
+  const youngerLearner = ['preschool', 'primary', 'junior'].includes(
+    learnerProfile.stage,
+  )
+  const processTopic =
+    /过程|变化|步骤|流程|因果|机制|循环|方程|函数|实验|决策|计划|判断|推理/.test(
+      `${project.title || ''} ${project.objective || ''} ${outline.title || ''} ${points.join(' ')}`,
+    )
+  const blocks = [
+    {
+      type: 'outline',
+      title: '本节路线图',
+      items: outline.keyPoints.slice(0, 4),
+    },
+    {
+      type: 'definition',
+      title: '本节核心',
+      term: text(primary, 30),
+      definition: text(primary, 160),
+      analogy:
+        learnerProfile.stage === 'university' || learnerProfile.stage === 'adult'
+          ? '先确认概念边界与适用条件，再连接材料中的证据。'
+          : `可以先把它想成“${text(outline.title, 18)}”里的一个关键零件，再看它如何影响结果。`,
+    },
+    {
+      type: 'table',
+      title: '内容结构',
+      columns: ['要点', '一句话理解', '学习动作'],
+      rows: comparison.map((point) => [
+        shorten(point, 28),
+        shorten(point, 52),
+        youngerLearner ? '看例子 → 说变化 → 做一题' : '解释 → 举例 → 自测',
+      ]),
+    },
+    {
+      type: 'diagram',
+      title: '理解与应用链',
+      nodes: [
+        { label: '定位问题', note: outline.title },
+        { label: '解释内容', note: primary },
+        { label: '回看材料', note: '找到术语、例子或步骤' },
+        { label: '完成任务', note: '用新情境检验理解' },
+      ],
+      caption: '板书只呈现理解链，不替学生跳过推理。',
+    },
+  ]
+  if (youngerLearner && processTopic) {
+    blocks.push({
+      type: 'animation',
+      title: '跟着变化看',
+      caption: '每次只改变一个条件，先猜结果，再点下一步核对。',
+      steps: [
+        {
+          label: '先看起点',
+          detail: `找出「${text(primary, 24)}」中已经知道的条件。`,
+        },
+        {
+          label: '只改一处',
+          detail: '选择最关键的一个条件，把它换掉或放大。',
+        },
+        {
+          label: '看结果',
+          detail: '比较前后变化，用本节概念说出为什么会这样。',
+        },
+      ],
+    })
+  }
+  blocks.push(
+    {
+      type: 'callout',
+      title: '材料边界',
+      tone: 'note',
+      text: outline.sourceChunkIds?.length
+        ? '本页优先依据已上传材料生成；材料未覆盖的事实需要继续核对。'
+        : '当前没有匹配材料；本页提供学习框架，具体事实需要核对。',
+    },
+    {
+      type: 'question',
+      title: '停下来想一想',
+      prompt: youngerLearner
+        ? `如果换掉一个条件，「${text(primary, 24)}」的结果可能怎样变化？先猜，再说理由。`
+        : `如果要用自己的话讲清「${text(primary, 28)}」，你会先说明什么？`,
+      options: youngerLearner
+        ? ['先猜变化，再说理由', '先看答案，不用解释']
+        : ['先解释含义并连接材料', '只重复标题'],
+    },
+  )
   const lesson = normalizeBoardLesson(
     {
       chapter: project.chapter || courseTopic(project),
       title: outline.title,
       subtitle: outline.description,
-      blocks: [
-        {
-          type: 'outline',
-          title: '本节路线图',
-          items: outline.keyPoints.slice(0, 4),
-        },
-        {
-          type: 'definition',
-          title: '本节核心',
-          term: text(primary, 30),
-          definition: text(primary, 160),
-          analogy: '先判断它在解决什么问题，再连接材料中的证据。',
-        },
-        {
-          type: 'table',
-          title: '内容结构',
-          columns: ['要点', '一句话理解', '学习动作'],
-          rows: comparison.map((point) => [
-            shorten(point, 28),
-            shorten(point, 52),
-            '解释 → 举例 → 自测',
-          ]),
-        },
-        {
-          type: 'diagram',
-          title: '理解与应用链',
-          nodes: [
-            { label: '定位问题', note: outline.title },
-            { label: '解释内容', note: primary },
-            { label: '回看材料', note: '找到术语、例子或步骤' },
-            { label: '完成任务', note: '用新情境检验理解' },
-          ],
-          caption: '板书只呈现理解链，不替学生跳过推理。',
-        },
-        {
-          type: 'callout',
-          title: '材料边界',
-          tone: 'note',
-          text: outline.sourceChunkIds?.length
-            ? '本页优先依据已上传材料生成；材料未覆盖的事实需要继续核对。'
-            : '当前没有匹配材料；本页提供学习框架，具体事实需要核对。',
-        },
-        {
-          type: 'question',
-          title: '停下来想一想',
-          prompt: `如果要用自己的话讲清「${text(primary, 28)}」，你会先说明什么？`,
-          options: ['先解释含义并连接材料', '只重复标题'],
-        },
-      ],
+      blocks,
     },
     project.chapter || courseTopic(project),
   )
-  return { kind: 'board', lesson, sourceChunkIds: outline.sourceChunkIds }
+  // 衔接兜底：本地判定"推荐交互"且模型/模板未产出 simulation 时补一个受控模型块
+  const withSimulation = ensureSimulationBlock(lesson, {
+    subject: learnerProfile.subject,
+    stage: learnerProfile.stage,
+    keyPoints: outline.keyPoints,
+  })
+  return {
+    kind: 'board',
+    lesson: withSimulation,
+    sourceChunkIds: outline.sourceChunkIds,
+  }
 }
 
 function localPracticeContent(project, outline) {
   const topic = courseTopic(project)
   const points = (outline.keyPoints || []).filter(Boolean)
   const [first, second] = points
+  const learnerProfile = normalizeLearnerProfile(project.learnerProfile, {
+    objective: project.objective,
+    chapter: project.chapter,
+    audience: project.audience,
+  })
+  const youngerLearner = ['preschool', 'primary', 'junior'].includes(
+    learnerProfile.stage,
+  )
   return {
     kind: 'practice',
-    prompt:
-      `请设计一个能检验「${topic}」理解的新情境。` +
-      `先用「${text(first || topic, 32)}」说明你会如何判断，` +
-      `再用${second ? `「${text(second, 32)}」` : '另一个课程要点'}补充依据，最后给出一个可执行的结论或方案。`,
+    prompt: youngerLearner
+      ? `请自己想一个生活中的新例子，看看「${topic}」还能不能解释。` +
+        `先说发生了什么，再用「${text(first || topic, 32)}」说明原因；` +
+        `如果能改变一个条件，猜猜结果会怎样。`
+      : `请设计一个能检验「${topic}」理解的新情境。` +
+        `先用「${text(first || topic, 32)}」说明你会如何判断，` +
+        `再用${second ? `「${text(second, 32)}」` : '另一个课程要点'}补充依据，最后给出一个可执行的结论或方案。`,
     referencePoints: [
       '能准确使用本课关键术语，而不是只复述标题。',
-      '能引用材料中的信息或明确说明当前依据不足。',
-      '结论包含条件、步骤或可验证的行动。',
+      youngerLearner
+        ? '能举出一个具体例子，并说清条件和结果。'
+        : '能引用材料中的信息或明确说明当前依据不足。',
+      youngerLearner
+        ? '能解释“为什么”，而不是只说“就是这样”。'
+        : '结论包含条件、步骤或可验证的行动。',
     ],
     rubric: [
       { criterion: '概念判断', weight: 40 },
       { criterion: '理论依据', weight: 35 },
       { criterion: '行动建议', weight: 25 },
     ],
-    followUp: '换一个条件后，你的结论还成立吗？请指出最关键的边界。',
+    followUp: youngerLearner
+      ? '只换掉一个条件，你的解释还成立吗？先猜，再说理由。'
+      : '换一个条件后，你的结论还成立吗？请指出最关键的边界。',
     sourceChunkIds: outline.sourceChunkIds,
   }
 }
 
-function localQuestionsFromOutline(outline) {
+function localQuestionsFromOutline(outline, learnerProfile) {
+  const youngerLearner = ['preschool', 'primary', 'junior'].includes(
+    learnerProfile.stage,
+  )
   return (outline.keyPoints || []).slice(0, 3).map((point, index) => ({
     id: `course-q-${index + 1}`,
-    stem: `关于「${text(point, 48)}」，哪项最符合本课的学习要求？`,
-    options: [
-      '能够解释含义，并说明它与课程材料或具体情境的关系',
-      '只记住标题，不需要理解适用条件',
-      '把它和任意相近概念混用',
-      '跳过材料证据，直接给出结论',
-    ],
+    stem: youngerLearner
+      ? `学完「${text(point, 42)}」后，下面哪种做法说明你真的理解了？`
+      : `关于「${text(point, 48)}」，哪项最符合本课的学习要求？`,
+    options: youngerLearner
+      ? [
+          '能用自己的话解释，并举一个例子',
+          '只把这句话背下来',
+          '遇到新问题就凭感觉猜',
+          '不看条件，直接套结论',
+        ]
+      : [
+          '能够解释含义，并说明它与课程材料或具体情境的关系',
+          '只记住标题，不需要理解适用条件',
+          '把它和任意相近概念混用',
+          '跳过材料证据，直接给出结论',
+        ],
     answerIndex: 0,
-    explanation: `要点「${text(point, 54)}」需要被解释、联系材料并通过练习检验。`,
+    explanation: youngerLearner
+      ? `要点「${text(point, 54)}」不能只背，要能解释、举例，并在新问题里用出来。`
+      : `要点「${text(point, 54)}」需要被解释、联系材料并通过练习检验。`,
     concept: text(point, 30),
   }))
 }
@@ -474,7 +674,12 @@ function localQuestionsFromOutline(outline) {
 export function buildLocalCourseSceneContent(project, outline) {
   if (outline.type === 'practice') return localPracticeContent(project, outline)
   if (outline.type === 'quiz') {
-    const questions = localQuestionsFromOutline(outline)
+    const learnerProfile = normalizeLearnerProfile(project.learnerProfile, {
+      objective: project.objective,
+      chapter: project.chapter,
+      audience: project.audience,
+    })
+    const questions = localQuestionsFromOutline(outline, learnerProfile)
     return { kind: 'quiz', questions, sourceChunkIds: outline.sourceChunkIds }
   }
   return localBoardContent(project, outline)
@@ -562,7 +767,19 @@ export function normalizeCourseSceneContent(raw, { project, outline, allowedSour
   const lesson = normalizeBoardLesson(source?.lesson ?? source, project.chapter)
   if (!lesson) return null
   lesson.title = lesson.title || outline.title
-  return { kind: 'board', lesson, sourceChunkIds }
+  // 模型未产出 simulation 但本地判定推荐时，补一个受控交互模型块，
+  // 保证"理科概念 → 可操作模型"不依赖模型自觉
+  const profile = normalizeLearnerProfile(project.learnerProfile, {
+    objective: project.objective,
+    chapter: project.chapter,
+    audience: project.audience,
+  })
+  const withSimulation = ensureSimulationBlock(lesson, {
+    subject: profile.subject,
+    stage: profile.stage,
+    keyPoints: outline.keyPoints,
+  })
+  return { kind: 'board', lesson: withSimulation, sourceChunkIds }
 }
 
 export function reorderCourseOutline(outlines, fromIndex, toIndex) {

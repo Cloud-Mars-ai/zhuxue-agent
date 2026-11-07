@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 import { idbGet, idbSet } from '@/repositories/db'
 import { generateCourseScene } from '@/api/courseStudio'
 import { courseSceneFingerprint } from '@/utils/courseStudio'
+import { normalizeLearnerProfile } from '@/utils/learnerProfile'
 
 const STORAGE_KEY = 'course-studio-projects-v1'
 const MAX_PROJECTS = 12
@@ -39,7 +40,7 @@ function normalizeProject(project) {
       : 'outline',
     title: project.title || '未命名课程',
     chapter: project.chapter || '',
-    domain: project.domain || 'management',
+    domain: project.domain || 'general',
     competitionStudentId: project.competitionStudentId || '',
     recommendationId: project.recommendationId || '',
     objective: project.objective || '',
@@ -48,6 +49,11 @@ function normalizeProject(project) {
     durationMinutes: Number(project.durationMinutes) || 30,
     summary: project.summary || '',
     languageDirective: project.languageDirective || '',
+    learnerProfile: normalizeLearnerProfile(project.learnerProfile, {
+      objective: project.objective || '',
+      chapter: project.chapter || '',
+      audience: project.audience || '',
+    }),
     outlines: Array.isArray(project.outlines) ? clone(project.outlines) : [],
     sourceChunkIds: Array.isArray(project.sourceChunkIds) ? project.sourceChunkIds : [],
     sources: Array.isArray(project.sources) ? project.sources : [],
@@ -123,7 +129,7 @@ export const useCourseStudioStore = defineStore('courseStudio', () => {
       status: 'outline',
       title: result.blueprint.courseTitle,
       chapter: input.chapter,
-      domain: input.domain || 'management',
+      domain: input.domain || 'general',
       competitionStudentId: input.competitionStudentId || '',
       recommendationId: input.recommendationId || '',
       objective: input.objective,
@@ -132,6 +138,11 @@ export const useCourseStudioStore = defineStore('courseStudio', () => {
       durationMinutes: input.durationMinutes,
       summary: result.blueprint.courseSummary,
       languageDirective: result.blueprint.languageDirective,
+      learnerProfile: normalizeLearnerProfile(result.blueprint.learnerProfile, {
+        objective: input.objective,
+        chapter: input.chapter,
+        audience: input.audience,
+      }),
       outlines,
       sourceChunkIds: Array.from(
         new Set(outlines.flatMap((scene) => scene.sourceChunkIds || [])),
@@ -140,7 +151,7 @@ export const useCourseStudioStore = defineStore('courseStudio', () => {
       scenes: outlines.map((scene) => normalizeSceneState({ outlineId: scene.id })),
       fallback: !!result.fallback,
       outlineError: result.error?.message || '',
-      generatorVersion: 'openmaic-10a92d6-adapt-v1',
+      generatorVersion: 'openmaic-10a92d6-adapt-v2',
       createdAt: now,
       updatedAt: now,
     }

@@ -109,7 +109,7 @@ function backToStudio() {
     <header class="experience-topbar">
       <button type="button" class="back-button" @click="backToStudio">← 返回编排</button>
       <div class="experience-brand">
-        <span>经管智学</span>
+        <span>协同智学</span>
         <strong>{{ project?.title || '课程体验' }}</strong>
       </div>
       <div class="topbar-actions">

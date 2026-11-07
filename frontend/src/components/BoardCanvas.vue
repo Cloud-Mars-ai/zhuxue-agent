@@ -1,5 +1,6 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
+import SimulationStage from '@/components/simulations/SimulationStage.vue'
 
 const props = defineProps({
   lesson: { type: Object, default: null },
@@ -10,6 +11,7 @@ const props = defineProps({
 
 const emit = defineEmits(['answer'])
 const selectedAnswers = ref({})
+const animationSteps = ref({})
 
 const visibleBlocks = computed(() =>
   (props.lesson?.blocks || []).slice(0, Math.max(0, props.visibleCount)),
@@ -27,10 +29,32 @@ function chooseAnswer(question, option) {
   emit('answer', { question, option })
 }
 
+function blockKey(block, index) {
+  return `${block.type}-${block.title || ''}-${index}`
+}
+
+function animationIndex(block, index) {
+  const steps = block.steps || []
+  return Math.min(animationSteps.value[blockKey(block, index)] || 0, Math.max(0, steps.length - 1))
+}
+
+function animationFrame(block, index) {
+  return block.steps?.[animationIndex(block, index)] || null
+}
+
+function setAnimationStep(block, index, nextIndex) {
+  const steps = block.steps || []
+  animationSteps.value = {
+    ...animationSteps.value,
+    [blockKey(block, index)]: Math.min(Math.max(0, nextIndex), Math.max(0, steps.length - 1)),
+  }
+}
+
 watch(
   () => props.lesson,
   () => {
     selectedAnswers.value = {}
+    animationSteps.value = {}
   },
 )
 </script>
@@ -105,6 +129,69 @@ watch(
             </template>
           </div>
           <p v-if="block.caption" class="diagram-caption">{{ block.caption }}</p>
+        </template>
+
+        <template v-else-if="block.type === 'animation'">
+          <h2>{{ block.title }}</h2>
+          <div class="animation-demo">
+            <div class="animation-stage">
+              <Transition name="frame" mode="out-in">
+                <div
+                  v-if="animationFrame(block, index)"
+                  :key="animationIndex(block, index)"
+                  class="animation-frame"
+                >
+                  <span class="animation-count">
+                    {{ animationIndex(block, index) + 1 }} / {{ block.steps.length }}
+                  </span>
+                  <strong>{{ animationFrame(block, index).label }}</strong>
+                  <p>{{ animationFrame(block, index).detail }}</p>
+                </div>
+              </Transition>
+            </div>
+            <div class="animation-controls">
+              <button
+                type="button"
+                :disabled="!interactive || animationIndex(block, index) === 0"
+                @click="setAnimationStep(block, index, animationIndex(block, index) - 1)"
+              >
+                上一步
+              </button>
+              <button
+                type="button"
+                :disabled="
+                  !interactive || animationIndex(block, index) >= block.steps.length - 1
+                "
+                @click="setAnimationStep(block, index, animationIndex(block, index) + 1)"
+              >
+                下一步
+              </button>
+              <button
+                type="button"
+                :disabled="!interactive"
+                @click="setAnimationStep(block, index, 0)"
+              >
+                重播
+              </button>
+            </div>
+            <div class="animation-track" aria-hidden="true">
+              <button
+                v-for="(step, stepIndex) in block.steps"
+                :key="`${step.label}-${stepIndex}`"
+                type="button"
+                :class="{ active: stepIndex <= animationIndex(block, index) }"
+                :disabled="!interactive"
+                :aria-label="`跳到：${step.label}`"
+                @click="setAnimationStep(block, index, stepIndex)"
+              />
+            </div>
+          </div>
+          <p v-if="block.caption" class="diagram-caption">{{ block.caption }}</p>
+        </template>
+
+        <template v-else-if="block.type === 'simulation'">
+          <h2>{{ block.title }}</h2>
+          <SimulationStage :block="block" :interactive="interactive" />
         </template>
 
         <template v-else-if="block.type === 'callout'">
@@ -227,6 +314,11 @@ watch(
 }
 
 .board-block.is-question {
+  grid-column: 1 / -1;
+}
+
+.board-block.is-animation,
+.board-block.is-simulation {
   grid-column: 1 / -1;
 }
 
@@ -376,6 +468,111 @@ th {
   color: var(--board-faint);
   font-size: 11.5px;
   line-height: 1.65;
+}
+
+.animation-demo {
+  padding: 16px;
+  background: color-mix(in srgb, var(--board-accent-soft) 46%, var(--board-paper));
+  border: 1px solid var(--board-line);
+  border-radius: 4px;
+}
+
+.animation-stage {
+  min-height: 118px;
+  display: grid;
+  align-items: center;
+  padding: 16px 18px;
+  background: color-mix(in srgb, var(--board-paper) 88%, transparent);
+  border: 1px solid color-mix(in srgb, var(--board-line) 70%, transparent);
+  border-radius: 3px;
+}
+
+.animation-frame strong,
+.animation-frame p {
+  display: block;
+}
+
+.animation-frame strong {
+  margin: 9px 0 5px;
+  color: var(--board-heading-alt);
+  font-family: var(--board-display);
+  font-size: 18px;
+}
+
+.animation-frame p {
+  margin: 0;
+  color: var(--board-ink);
+  font-size: 13.5px;
+  line-height: 1.7;
+}
+
+.animation-count {
+  color: var(--board-faint);
+  font-family: var(--font-mono);
+  font-size: 10px;
+}
+
+.animation-controls {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.animation-controls button {
+  padding: 6px 12px;
+  color: var(--board-heading-alt);
+  background: var(--board-paper);
+  border: 1px solid var(--board-line);
+  border-radius: var(--radius-pill);
+  font: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.animation-controls button:hover:not(:disabled) {
+  border-color: var(--board-accent);
+}
+
+.animation-controls button:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+.animation-track {
+  display: flex;
+  gap: 5px;
+  margin-top: 10px;
+}
+
+.animation-track button {
+  flex: 1;
+  height: 4px;
+  padding: 0;
+  background: var(--board-line);
+  border: 0;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+}
+
+.animation-track button.active {
+  background: var(--board-accent);
+}
+
+.frame-enter-active,
+.frame-leave-active {
+  transition:
+    opacity 0.22s ease,
+    transform 0.22s ease;
+}
+
+.frame-enter-from {
+  opacity: 0;
+  transform: translateX(12px);
+}
+
+.frame-leave-to {
+  opacity: 0;
+  transform: translateX(-12px);
 }
 
 .callout {

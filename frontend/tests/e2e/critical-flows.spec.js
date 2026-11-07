@@ -453,6 +453,101 @@ test('教师可用两阶段编排生成课程并进入板书场景', async ({ pa
   await expect(page.locator('.outline-row')).toHaveCount(6)
 })
 
+test('课程生成会按内容推断年级并提供分步交互演示', async ({ page }) => {
+  await seedUser(page, 'teacher')
+  await page.goto('/app/studio')
+
+  await page
+    .locator('.field-wide textarea')
+    .fill('给七年级学生讲一元一次方程，用具体情境理解等式两边同时变化')
+  await page.getByTestId('studio-generate-outline').click()
+
+  await expect(page.getByText('数学 · 初中 · 七年级', { exact: true })).toBeVisible()
+  await expect(page.getByText('本地生成大纲')).toBeVisible()
+
+  await page.getByTestId('studio-generate-course').click()
+  await expect(page).toHaveURL(/\/learn\/course-/)
+  await expect(page.locator('.animation-demo')).toBeVisible()
+  await expect(page.locator('.animation-count')).toContainText('1 / 3')
+
+  await page.locator('.animation-controls').getByRole('button', { name: '下一步' }).click()
+  await expect(page.locator('.animation-count')).toContainText('2 / 3')
+  await expect(page.locator('.animation-frame')).toContainText('只改一处')
+  const overflow = await page.locator('.landscape-board').evaluate(
+    (element) => element.scrollWidth - element.clientWidth,
+  )
+  expect(overflow).toBeLessThanOrEqual(1)
+})
+
+test('理科概念课程自动配备可交互模型并可在板书中操作', async ({ page }) => {
+  await seedUser(page, 'teacher')
+  await page.goto('/app/studio')
+
+  await page
+    .locator('.field-wide textarea')
+    .fill('给八年级学生讲圆周运动与向心力，拖动参数看向心力怎么变')
+  await page.getByTestId('studio-generate-outline').click()
+
+  await expect(page.getByText('本地生成大纲')).toBeVisible()
+  await expect(page.locator('.outline-row').first()).toBeVisible()
+
+  await page.getByTestId('studio-generate-course').click()
+  await expect(page).toHaveURL(/\/learn\/course-/)
+
+  // 无模型降级路径也应配备受控交互模型（判定算法兜底）
+  const sim = page.locator('.sim-stage').first()
+  await expect(sim).toBeVisible()
+  await expect(sim).toHaveAttribute('data-model', 'circular-motion')
+  await expect(sim.locator('.sim-stage-link')).toContainText('对照概念')
+
+  // 参数滑块可操作：调大速度，向心力读数必须变大（F = m·v²/r）
+  const readout = sim.locator('.sim-readout').first().locator('strong')
+  const before = await readout.innerText()
+  const speed = sim.locator('input[type="range"]').nth(1)
+  await speed.fill('10')
+  await expect(readout).not.toHaveText(before)
+  const after = await readout.innerText()
+  expect(parseFloat(after)).toBeGreaterThan(parseFloat(before))
+
+  // 观察任务可勾选
+  const task = sim.locator('.sim-observe button').first()
+  await task.click()
+  await expect(task).toHaveClass(/done/)
+
+  // 松手演示按钮存在且可点
+  const releaseButton = page.locator('.sim-circular-side button').first()
+  await expect(releaseButton).toBeVisible()
+  await releaseButton.click()
+  await expect(releaseButton).toBeDisabled()
+
+  // 板书不产生横向溢出
+  const overflow = await page.locator('.landscape-board').evaluate(
+    (element) => element.scrollWidth - element.clientWidth,
+  )
+  expect(overflow).toBeLessThanOrEqual(1)
+})
+
+test('移动端课程板书中的交互模型可操作', async ({ page }) => {
+  await seedUser(page, 'teacher')
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/m/studio')
+
+  await page
+    .locator('.field-wide textarea')
+    .fill('给八年级学生讲圆周运动与向心力，拖动参数看向心力怎么变')
+  await page.getByTestId('studio-generate-outline').click()
+  await expect(page.getByText('本地生成大纲')).toBeVisible()
+
+  await page.getByTestId('studio-generate-course').click()
+  await expect(page).toHaveURL(/\/learn\/course-/)
+
+  const sim = page.locator('.sim-stage').first()
+  await expect(sim).toBeVisible()
+  const task = sim.locator('.sim-observe button').first()
+  await task.click()
+  await expect(task).toHaveClass(/done/)
+})
+
 test('H5 课程编排映射保留查询参数', async ({ page }) => {
   await seedUser(page, 'teacher')
   await page.setViewportSize({ width: 390, height: 844 })

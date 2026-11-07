@@ -1,10 +1,13 @@
-import { COURSE_OUTLINE, getOutlineByTitle } from '@/mock/courseOutline'
+import { COURSE_OUTLINE, getOutlineByTitle } from '../mock/courseOutline.js'
+import { simulationModel, clampParams } from './knowledgeVisualization.js'
 
 export const BOARD_BLOCK_TYPES = [
   'outline',
   'definition',
   'table',
   'diagram',
+  'animation',
+  'simulation',
   'callout',
   'question',
 ]
@@ -69,6 +72,48 @@ function normalizeBlock(raw) {
       type,
       title: text(raw.title, 60) || '关系图',
       nodes,
+      caption: text(raw.caption, 180),
+    }
+  }
+
+  if (type === 'animation') {
+    const steps = (Array.isArray(raw.steps) ? raw.steps : [])
+      .map((step, index) => {
+        if (typeof step === 'string') {
+          return { label: `第 ${index + 1} 步`, detail: text(step, 180) }
+        }
+        return {
+          label: text(step?.label, 48) || `第 ${index + 1} 步`,
+          detail: text(step?.detail ?? step?.text, 220),
+        }
+      })
+      .filter((step) => step.detail)
+      .slice(0, 5)
+    if (steps.length < 2) return null
+    return {
+      type,
+      title: text(raw.title, 60) || '分步演示',
+      caption: text(raw.caption, 180),
+      steps,
+    }
+  }
+
+  if (type === 'simulation') {
+    // 受控交互模型：只接受注册表内的 model id，参数收敛回模型声明范围
+    const registered = simulationModel(raw?.model)
+    if (!registered) return null
+    const params = clampParams(registered, raw?.params)
+    const observe = (Array.isArray(raw?.observe) ? raw.observe : [])
+      .map((task) => text(task, 180))
+      .filter(Boolean)
+      .slice(0, 4)
+    return {
+      type,
+      model: registered.id,
+      title: text(raw.title, 60) || `动手看：${registered.label}`,
+      params,
+      observe: observe.length ? observe : registered.observe.slice(0, 3),
+      linkConcept: text(raw.linkConcept, 60),
       caption: text(raw.caption, 180),
     }
   }
@@ -210,6 +255,18 @@ export function boardToContext(lesson) {
       }
       if (block.type === 'diagram') {
         return `判断链：${block.nodes.map((node) => node.label).join(' → ')}`
+      }
+      if (block.type === 'animation') {
+        return `分步演示：${block.steps
+          .map((step) => `${step.label}（${step.detail}）`)
+          .join(' → ')}`
+      }
+      if (block.type === 'simulation') {
+        const paramText = Object.entries(block.params || {})
+          .map(([key, value]) => `${key}=${value}`)
+          .join('，')
+        const observe = (block.observe || []).join('；')
+        return `交互模型（${block.title}${block.linkConcept ? `，回指概念：${block.linkConcept}` : ''}）：当前参数 ${paramText}。观察任务：${observe}`
       }
       if (block.type === 'callout') return `提示：${block.text}`
       if (block.type === 'question') return `追问：${block.prompt}`
