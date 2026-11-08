@@ -1,7 +1,7 @@
-# 项目日志 · 2026-11-08（材料上传四项需求 + 板书交互态修复）
+# 项目日志 · 2026-11-08（材料上传四项需求 + 板书交互态修复 + T-21 学习者闭环与自动课程生成）
 
-> 编制：WorkBuddy ｜ 编制时间：2026-11-09 00:20（GMT+8）
-> 事实基准：`git main = f652122`（T-20 已提交并推送 mygithub），**git 历史共 41 提交**（`git rev-list --count be009a3..main` 实勘）；本文档自身的提交会使总数 +1，以实时复验为准
+> 编制：WorkBuddy ｜ 编制时间：2026-11-09 00:40（GMT+8，T-21 追加）
+> 事实基准：`git main = c6d8876`（T-21 已提交并推送 mygithub），**git 历史共 43 提交**（`git rev-list --count HEAD` 实勘）；本文档自身的提交会使总数 +1，以实时复验为准
 > 上游日志：`docs/release/PROJECT-LOG-2026-11-07.md`（T-19 及以前）；冲突时以本日志 + 代码为准
 
 ---
@@ -10,12 +10,12 @@
 
 | 读数 | 当前值 | 判断 |
 | --- | --- | --- |
-| 代码基线 | `main = f652122`（T-20 已提交并推送 mygithub） | 可安全接手 |
-| 工作树 | **有并行会话未提交改动**（题目质量校验 QUIZ-*：courseValidator/courseRepair/courseStudio 片段/CourseExperience/package.json + 新目录 `src/components/course/`、`scripts/lib/`，其 course-compiler 测试 44/44 绿） | **提交前必须确认归属**；T-20 提交已刻意只含本方 10 文件，未吞并对方工作树 |
-| 确定性测试 | E2E **38/38**（T-20 实跑，含新增材料用例 + 505 修复）；text-repair 48/48；openmaic **36/36**（F7 新增）；course-script 36/36；course-compiler 44/44（含并行会话新增 3 项）；visualization 26/26；competition 通过 | 回归基线健康 |
+| 代码基线 | `main = c6d8876`（T-21 已提交并推送 mygithub，见 §4） | 可安全接手 |
+| 工作树 | T-21 已收口（19 文件入库）；**无并行会话未提交改动**（T-20 台账所述 QUIZ-* 工作已由 T-21 完成并提交） | 提交前无需再确认归属 |
+| 确定性测试 | E2E **39/39**（T-21 实跑，新增演示课程小测+播放+完课报告用例）；text-repair 48/48；openmaic 36/36；course-script 36/36；course-compiler 44/44；visualization 26/26；competition 通过 | 回归基线健康 |
 | 本机 .env | `frontend/.env` 已配 DeepSeek key（用户侧接入，gitignore） | **E2E 必须显式置空 key 跑**（见 §3），否则模型真答题、断言漂移 |
-| 公网三通道 | 均停留在 T-19 之前构建（add20fd/cb7a064）；**T-20 新构建待部署（需用户授权）** | 机制全通，版本待推送 |
-| 阶段判断 | 功能开发主体完成 → 收口 / 发布 / 验收；T-20 补齐材料上传核心体验 | 下一步：部署授权 + 真实链路验收 |
+| 公网三通道 | T-21 已全部同步：GitHub `c6d8876`；workbuddy 分享链接 `https://zhuxue-agent.app.workbuddy.host/?sharecode=Z7X276B67K`（verified）；腾讯云 4173 新 bundle（Ca65O6_p）验证 200 | 三通道一致，无落后构建 |
+| 阶段判断 | T-21（P0/P1 + 自动课程 + 报告 + 发布）完成 → 遗留项（交互数轴 P1-1 / 问题气泡 P2 / Step Key 轮换） | 下一步：按 §4 遗留表推进 |
 
 ---
 
@@ -49,4 +49,24 @@
 
 ---
 
-*本日志由 WorkBuddy 依据 git `f652122`（41 提交，日志提交自身 +1 以实时复验为准）与代码实勘生成；与旧文档冲突时，以本日志 + `PROJECT-LOG-2026-11-07.md` + 代码为准。建议后续 agent 每次完成实质工作后追加台账条目（任务 / 日期 / 交付 / 验证 / 遗留），保持交接链不断。*
+## 4. T-21 台账：P0 学习者闭环 + P1 编译器质量门 + 真实模型自动课程生成（2026-11-09 追加）
+
+| 项 | 内容 |
+| --- | --- |
+| 输入 | `docs/research/` 四份报告（OpenMAIC 产品调研 / 双视频逐帧分析 / 优化策略④）+ 用户指令「完善项目 → 自动生成系统性课程 → 完整项目报告 → 按执行结果迭代 → 上传 GitHub 并发布 → 更新日志」 |
+| P0-1 完课闭环 | 新组件 `src/components/course/CourseCompleteCard.vue`（统计 / 分场景正确率 / 再学一次·返回编排·留在本页）；`CourseExperience.vue` 会话级进度（visitedSceneIds / quizResults / boardAnswerCounts）+ `completionStats`；footer「完成课程」入口 |
+| P0-2 小测作答 | 逐题舞台：进度点 / 计分 / 选择→提交→判定→解析→下一题；判定后选项锁定（correct/wrong 着色）；板书内嵌问题按场景去重计数（onBoardAnswer） |
+| P0-3 播放控制 | playback-bar：播放/暂停 / 上一拍 / 下一拍 / 1·1.5·2 倍速；beats 与板书视觉事件 1:1，`syncReveal` 按 beat.blockId 逐块揭示（只增不减）；播放自动展开讲稿层 |
+| P1-4 题目质量码 | `validateQuizContent`：QUIZ_DUP_OPTION / QUIZ_SINGLE_ANSWER（error）+ QUIZ_OPTION_COUNT（warning）；重复选项确定性修复（去重 + 答案下标重映射，`repairSceneContent` 分支）；判断题成对词豁免 `isJudgePair()`（对/错/是/否/true/false…）——首轮生成曾把合法判断题误伤，豁免后重生成 |
+| P1-3 结构下限 | `STRUCT_MIN_SCENES`：类型下限 lecture 2 / quiz 1 / practice 1 / review 1 + 总数 ≥ 8，warning 不阻断（场景创造属模型侧，与 COVERAGE 铁律同理） |
+| 自动生成 | `scripts/generate-demo-course.mjs`（`npm run gen:demo-course`）：DeepSeek 真实模型两阶段管线，无 pinia；ESM 别名钩子 `scripts/lib/`（`@/` + 扩展名）让 node 直跑 src 模块；产物 `src/mock/demoCourse.js`：9 场景（4 板书/2 小测/2 应用/1 复盘）、IR 0 error 0 warning、6 题、127 拍、53 条证据（支持率 34%）、19 次模型调用 0 修复 0 兜底 |
+| 开箱体验 | `stores/courseStudio.js` `load()` 首注入演示课程（ownerId='demo' 不参与最近课程自动选中）；`CourseStudio.vue` 演示徽标；深链接 `/learn/course-demo-mw815lqq` |
+| 执行结果问题（3 个，均闭环） | ① 判断题被 QUIZ_OPTION_COUNT 误伤 → isJudgePair 豁免 + 单测；② E2E strict mode 冲突（el-select teleport 浮层拷贝演示课程标题）→ `.first()`；③ 场景数非确定性（首轮 7<8）→ 生成器阶段 1 两级重试（归一化失败 / 复检残留违规各重试一次，验收按 (errorCount, 违规数) 字典序严格更优，不用 error 换 warning） |
+| 报告 | `docs/release/PROJECT-REPORT-2026-11-08.md`（完整项目报告 v2，含 §10 迭代记录） |
+| 验证 | node 6 套件全绿（compiler 44 / script 36 / openmaic 36 / text-repair 48 / visualization 26 / competition）；**E2E 39/39**（新增「演示课程支持小测作答、讲稿播放与完课报告」）；build 通过；本地 + 服务器深链接 200 |
+| 发布 | 提交 `c6d8876`（19 文件，+7012）推送 mygithub；workbuddy 发布复用 wbapp_VcMqXrvl668JPEwXlPHsxU（`https://zhuxue-agent.app.workbuddy.host/?sharecode=Z7X276B67K`，verified）；腾讯云服务器已同步（dist 替换 + pm2 restart，新 bundle 哈希 Ca65O6_p 验证 200） |
+| 遗留 | 交互数轴（P1-1）、问题气泡/TTS（P2）；demo 课程 id 硬编码于 E2E（重生成需同步测试）；src/stores/model.js 硬编码 Step API Key 需负责人轮换 |
+
+---
+
+*本日志由 WorkBuddy 依据 git `c6d8876`（43 提交，日志提交自身 +1 以实时复验为准）与代码实勘生成；与旧文档冲突时，以本日志 + `PROJECT-LOG-2026-11-07.md` + 代码为准。建议后续 agent 每次完成实质工作后追加台账条目（任务 / 日期 / 交付 / 验证 / 遗留），保持交接链不断。*
