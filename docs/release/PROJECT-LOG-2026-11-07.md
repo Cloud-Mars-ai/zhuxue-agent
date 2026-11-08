@@ -12,13 +12,13 @@
 
 | 读数 | 当前值 | 判断 |
 | --- | --- | --- |
-| 代码基线 | `main = c7e00a0`，工作树 clean，**WIP 已全部提交并推送** | 可安全接手，无未提交改动风险 |
-| 源码规模 | `frontend/src` 143 文件（51 vue + 75 js + 其他），约 4.65 万行 | 主体功能完成 |
-| 确定性测试 | E2E **37/37**；text-repair **48/48**；course-compiler **41/41**；visualization 26/26；course-script 36/36；competition 校验通过 | 回归基线健康 |
-| 真实模型测试 | live E2E **5/5**（2026-11-04 记录）；**11-07 新改动（含编译器、乱码修复）未复测** | 见风险 R-4 |
-| 公网三通道 | ① WorkBuddy 链接已发**最新版**（add20fd 构建，verified）；② GitHub Pages **已发布最新版**（gh-pages = `cb7a064`，22:39 status=built，线上服务 `index-DFHJxuu-.js`，11 项定向验收全过）；③ 腾讯云服务器已部署**最新版**但域名未解析 | 三通道全通，仅剩 DNSPod 解析 |
+| 代码基线 | `main = c7e00a0` + T-19 OpenMAIC 接入工作树（11-08 提交后更新本行） | 可安全接手；提交前见 §4 P0-1 |
+| 源码规模 | `frontend/src` 143 文件 + `src/api/openmaic/` 11 模块（T-19 新增），约 4.65 万行 + 新增约 2 千行 | 主体功能完成 |
+| 确定性测试 | E2E **30/30**（11-08 实跑）；text-repair **48/48**；course-compiler **41/41**；visualization 26/26；course-script 36/36；openmaic **35/35**（T-19 新增套件）；competition 校验通过 | 回归基线健康 |
+| 真实模型测试 | live E2E **5/5**（11-07/08，DeepSeek 新 key，覆盖 OpenMAIC 大纲→slide→quiz→interactive 全阶段） | 见 EVIDENCE-2026-11-07-openmaic-integration.md |
+| 公网三通道 | ① WorkBuddy 链接（add20fd 构建）；② GitHub Pages `cb7a064`；③ 腾讯云服务器（add20fd）；**T-19 新构建待部署** | 三通道机制全通，T-19 版本待推送 |
 | 待用户操作 | API Key 轮换（历史提交含明文）；DNSPod 加 A 记录 | 阻塞项见 §4 |
-| 阶段判断 | **功能开发主体完成 → 收口 / 发布 / 验收阶段**；新增研究线「课程编译器」已落地。下一步不是大规模新开发，而是补缺口、发布、真实链路验收、文档对齐 | — |
+| 阶段判断 | **功能开发主体完成 → 收口 / 发布 / 验收阶段**；生成机制已完全接入 OpenMAIC（T-19）。下一步不是大规模新开发，而是补缺口、发布、真实链路验收、文档对齐 | — |
 
 ---
 
@@ -70,6 +70,7 @@
 
 | # | 任务 | 完成日期 | 核心交付 | 验证 |
 | --- | --- | --- | --- | --- |
+| T-19 | **课程生成完全接入 OpenMAIC**（上游 v0.3.29，commit `5bd8cc8`，MIT） | 11-07 深夜→11-08 | `frontend/src/api/openmaic/` 11 模块：提示词资产（4 模板 + 11 snippets 原样同步，`assets/` 唯一事实源 + `promptAssets.js` 生成物）/ 模板引擎（上游处理顺序）/ jsonRepair（4 策略 + 上游 2 处 latent bug 修复）/ 生成重试（指数退避）/ 大纲三键契约 / 场景四类型 + widget 六型 / quiz 契约适配 / PPTElement→受控板书适配器 / ScientificModel 四字段检查；`flags.openmaicPipeline=true`（失败静默回退自研管线）；生产通道 interactive maxTokens 3000→8000；`.gitignore` 增加 `.env` 与 `vendor/` | 单测 **35/35**；真实模型 live **5/5**（大纲/slide/quiz/interactive 全过）；全量回归 6 套件不破（48+41+36+26+35+competition）；E2E **30/30**；build 通过；自行检查报告 `docs/release/EVIDENCE-2026-11-07-openmaic-integration.md`；设计文档 `docs/research/openmaic-integration-design.md` |
 | T-18 | GitHub Pages 发布最新版（三通道全通） | 11-07 深夜 | `cb7a064`（deploy 提交）：`build:pages` → 镜像 `pages-deploy-2` 工作树 → push `mygithub HEAD:gh-pages`；SPA 404 回退保留 `location.search + location.hash`；定向验收脚本 `tmp/verify-pages-acceptance.mjs`（11 项） | `gh api pages/builds/latest` = `status: built`（22:39）；线上服务 `index-DFHJxuu-.js`；**11/11 定向验收通过**（含登录直接复验 `/#/app/course`）；排障：传播期 GitHub 自家 404 + CDN 慢导致 37 连测两次全挂，改轻量定向验收 |
 | T-17 | 生成课程乱码（放大字形）修复 + 双通道部署 | 11-07 深夜 | `add20fd`：textRepair 第四层（AMPLIFIED_MAP 荞→p、株→q + 上下文感知，数字/句首不触发）；提示词禁令 v2.3；store `repairDeep` migration-on-read；部署腾讯云（pm2 4173 → 200）+ WorkBuddy 公网（200），均验证服务新构建 `index-D1trn0Ip.js` | test:text-repair **48/48**（新增 13 项含零误伤组）；E2E 37/37；build 通过；推送 mygithub |
 | T-16 | 课程编译器六层管线（研究线） | 11-07 深夜 | `baf094b`：六层管线（IR → 生成 → 验证 → 修复 → 渲染 + 实验层）；utils 六件套（courseIR/courseValidator 9 约束码/evidenceLedger 五类证据+伪造检测/subjectCheck/courseRepair validate-and-accept/courseExperiment 四组对照）；`CourseCompilerView.vue` 研究面板（5 tab，实验台不依赖已有项目）；`/app/compiler` + `/m/compiler` 双端路由；设计文档 `docs/research/course-compiler-design.md`（RQ1–RQ4） | test:course-compiler **41/41**；E2E 37/37（新增编译器实验用例）；build 通过 |
@@ -255,7 +256,9 @@
 | 质量门八道（输入/大纲/人工/内容/恢复/安全/降级/验收） | 大纲编辑门（`outlineErrors` 阻止空标题/空要点）、安全门（板书禁 HTML/CSS/SVG/坐标/脚本）、降级门（场景级演示缓存）、验收门（build + E2E + 各专项测试，见 §5.4.4） | §5.4.4 验证矩阵 |
 | 导出可交换课程包 | `.course.json` 导出（PPTX/媒体降级不做，与边界声明一致） | 页面功能 |
 
-上游未采纳项（多 Agent 课堂、PBL、互动 HTML/3D、图片/视频生成、PostgreSQL、React slide DSL）与本项目「明确不做」边界一致，理由记于该文档 §5/§7；MIT 许可与署名已入 `THIRD_PARTY_NOTICES.md`。
+**T-19 完全接入（11-08）**：上表「本项目对应物」已从「对齐」升级为「直接复用上游机制」——提示词资产（4 模板 + 11 snippets 字节级同步）、模板引擎、JSON 修复、生成重试、大纲三键契约、场景四类型与 widget 六型、quiz 字段契约全部移植自上游（快照 commit `5bd8cc8`，v0.3.29 之后主线）；renderer/PBL planner 刻意不移植（受控渲染安全模型）。入口 `frontend/src/api/openmaic/`，开关 `flags.openmaicPipeline`，失败静默回退自研管线。实测 5/5（`test-openmaic-live.mjs`），详见 `docs/release/EVIDENCE-2026-11-07-openmaic-integration.md` 与 `docs/research/openmaic-integration-design.md`。
+
+上游未采纳项（多 Agent 课堂、PBL planner、互动 HTML/3D、图片/视频生成、PostgreSQL、React slide DSL）与本项目「明确不做」边界一致，理由记于该文档 §5/§7；MIT 许可与署名已入 `THIRD_PARTY_NOTICES.md`。
 
 #### 5.4.3 与乐乐课堂 41 视频的对齐（讲解内容与质量）
 

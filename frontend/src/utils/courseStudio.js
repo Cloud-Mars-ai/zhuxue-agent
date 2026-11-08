@@ -161,6 +161,11 @@ function normalizeOutline(raw, index, context) {
     ),
     visualHint: visualHintFor({ ...raw, keyPoints }, context),
     order: index + 1,
+    // OpenMAIC 管线元数据透传（quizConfig/widget/pbl）：大纲契约的题型矩阵、
+    // 交互 widget 选型与 PBL 项目信息需要到达场景生成阶段，不能被归一化丢弃
+    ...(raw?.quizConfig && typeof raw.quizConfig === 'object' ? { quizConfig: raw.quizConfig } : {}),
+    ...(raw?.widget && typeof raw.widget === 'object' ? { widget: raw.widget } : {}),
+    ...(raw?.pbl && typeof raw.pbl === 'object' ? { pbl: raw.pbl } : {}),
   }
 }
 

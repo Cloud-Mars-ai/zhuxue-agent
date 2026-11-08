@@ -1,12 +1,18 @@
-import { sendChatJSON } from './chat'
+import { sendChatJSON, sendChatDetailed } from './chat'
 import {
   courseBlueprintPrompt,
   courseScenePrompt,
   courseSceneRepairPrompt,
   courseScriptPrompt,
 } from './prompts/courseStudio'
-import { PROMPT_VERSION } from './prompts/shared'
+import { PROMPT_VERSION, TEXT_INTEGRITY_RULE } from './prompts/shared'
 import { isEnabled } from '@/config/flags'
+import {
+  checkScientificModel,
+  generateOpenmaicScene,
+  generateSceneOutlines,
+  normalizeSceneOutlines,
+} from '@/api/openmaic'
 import { useKnowledgeStore } from '@/stores/knowledge'
 import { useModelStore } from '@/stores/model'
 import { useCompetitionStore } from '@/stores/competition'
@@ -39,8 +45,8 @@ import {
 import { repairText, sanitizeUserInput } from '@/utils/textRepair'
 import { buildCompetitionSceneContent } from '@/competition/analysis'
 
-export const COURSE_STUDIO_VERSION = 'openmaic-10a92d6-adapt-v3'
-export const COURSE_PROMPT_VERSION = `${PROMPT_VERSION}-course-studio-v3`
+export const COURSE_STUDIO_VERSION = 'openmaic-0.3.29-full-v1'
+export const COURSE_PROMPT_VERSION = `${PROMPT_VERSION}-course-studio-v1`
 
 function modelReady() {
   try {
@@ -99,6 +105,96 @@ function repairUserPrompt({ rawText, reason }) {
 
 上一次输出：
 ${String(rawText || '').slice(0, 14_000)}`
+}
+
+// ============================================================
+// OpenMAIC 管线接入（THU-MAIC/OpenMAIC @openmaic/generation@0.3.29）
+// 大纲/场景提示词与契约走上游资产；产出适配回本项目受控渲染契约。
+// 设计文档：docs/research/openmaic-integration-design.md
+// ============================================================
+
+/**
+ * 把 OpenMAIC 管线的 aiCall(system, user) 接到本项目的模型通道。
+ * 与上游一致：不用 response_format，纯提示词工程 + 4 策略 JSON 修复。
+ */
+function openmaicAiCall({ task, kind = 'course', traceRefs, signal, maxTokens, temperature }) {
+  return async (system, user) => {
+    const result = await sendChatDetailed([{ role: 'user', content: user }], {
+      systemPrompt: system,
+      temperature,
+      maxTokens,
+      kind,
+      task,
+      promptVersion: COURSE_PROMPT_VERSION,
+      traceRefs,
+      signal,
+      retry: 1,
+    })
+    return result.text
+  }
+}
+
+/** OpenMAIC 模板的 teacherContext 注入位：放本项目规则（抗乱码 + 中文 + 结构约束）。 */
+function openmaicTeacherContext(context = {}) {
+  const rules = [
+    '## Host project rules',
+    '- 所有内容使用简体中文；术语首次出现时给一句白话解释。',
+    '- 不得输出乱码字形（例如把 p/q 写成"荞/株"）；数学表达式用纯文本（如 a/b、x^2），不要用 LaTeX 命令。',
+    '- 面向管理类学习者时，优先用企业管理、生产调度、项目协作等情境举例。',
+  ]
+  if (context.materialText) {
+    rules.push('- 优先依据上方参考材料中的事实；材料未覆盖的内容不要编造具体数据。')
+  }
+  return `${TEXT_INTEGRITY_RULE}\n\n${rules.join('\n')}`
+}
+
+/**
+ * OpenMAIC 大纲阶段：需求 → 上游 requirements-to-outlines 提示词 →
+ * 三键 JSON 契约 → normalizeSceneOutlines 适配 → normalizeCourseBlueprint
+ * （沿用本项目的教学序列保障、难度阶梯、时长再平衡）。
+ * 任何一步失败返回 null，由调用方回退自研管线。
+ */
+async function openmaicBlueprint(context) {
+  const requirement = [
+    context.objective ? `学习目标：${context.objective}` : '',
+    context.chapter ? `章节：${context.chapter}` : '',
+    context.audience ? `受众：${context.audience}` : '',
+    `时长：约 ${context.durationMinutes} 分钟`,
+    context.materialText ? `参考材料：\n${String(context.materialText).slice(0, 6000)}` : '',
+  ]
+    .filter(Boolean)
+    .join('\n')
+
+  const result = await generateSceneOutlines(
+    {
+      requirement,
+      userNickname: context.audience || '',
+      userBio: context.learnerProfile?.teaching || '',
+    },
+    openmaicAiCall({
+      task: 'course.outline.openmaic',
+      traceRefs: { chapter: context.chapter, mode: context.mode, durationMinutes: context.durationMinutes },
+      maxTokens: 3000,
+    }),
+    {
+      pdfText: context.materialText,
+      teacherContext: openmaicTeacherContext(context),
+      maxScenes: Math.min(8, Math.max(4, Math.round(context.durationMinutes / 6))),
+    },
+  )
+  if (!result.success) return null
+  const adapted = normalizeSceneOutlines(result.data)
+  if (!adapted?.outlines?.length) return null
+  const blueprint = normalizeCourseBlueprint(
+    {
+      courseTitle: adapted.courseTitle,
+      languageDirective: adapted.languageDirective,
+      learnerProfile: context.learnerProfile,
+      outlines: adapted.outlines,
+    },
+    context,
+  )
+  return blueprint ? { blueprint, fallbacks: adapted.fallbacks } : null
 }
 
 /**
@@ -197,6 +293,27 @@ export async function generateCourseBlueprint({
       fallback: true,
       inputNotice,
       error: null,
+    }
+  }
+
+  // OpenMAIC 大纲管线（flags.openmaicPipeline）：失败静默回退下方自研管线
+  if (isEnabled('openmaicPipeline')) {
+    try {
+      const openmaic = await openmaicBlueprint(context)
+      if (openmaic?.blueprint) {
+        return {
+          blueprint: openmaic.blueprint,
+          sources: sourceSummary(sources.chunks),
+          fallback: false,
+          pipeline: 'openmaic',
+          outlineFallbacks: openmaic.fallbacks || [],
+          inputNotice,
+          error: null,
+        }
+      }
+      console.warn('[course-studio] openmaic outline 未产出可用蓝图，回退自研管线')
+    } catch (error) {
+      console.warn('[course-studio] openmaic outline 管线异常，回退自研管线:', error)
     }
   }
 
@@ -339,6 +456,85 @@ export async function generateCourseScene({
       subjectIssues: compiled?.subjectIssues || [],
       repairs: compiled?.repairs || [],
       error: null,
+    }
+  }
+
+  // OpenMAIC 场景管线（flags.openmaicPipeline）：上游场景提示词 + 契约适配，
+  // 产出仍过编译器（学科检查/证据账本/修复）；失败静默回退下方自研管线
+  if (isEnabled('openmaicPipeline')) {
+    try {
+      const scene = await generateOpenmaicScene(
+        outline,
+        openmaicAiCall({
+          task: `course.scene.openmaic.${outline.type}`,
+          traceRefs: { projectId: project.id, outlineId: outline.id, type: outline.type },
+          signal,
+          // interactive 场景要求完整 HTML（含 widget-config <script>），
+          // 3000 token 实测被截断 → widget-config 解析失败整场景回退；
+          // 8000 为实测安全线（live 实测捕获后上调）
+          maxTokens: outline.type === 'practice' && outline.widget ? 8000 : 3000,
+        }),
+        {
+          languageDirective: project.languageDirective,
+          teacherContext: openmaicTeacherContext({ materialText }),
+          chapter: project.chapter,
+          signal,
+        },
+      )
+      if (!scene.fallbackReason) {
+        let content =
+          scene.kind === 'quiz'
+            ? { kind: 'quiz', questions: scene.questions, sourceChunkIds: allowedSourceIds }
+            : { kind: 'board', lesson: scene.lesson, sourceChunkIds: allowedSourceIds }
+        let compiled = null
+        if (isEnabled('courseCompiler')) {
+          compiled = compileSceneContent({
+            project: profiledProject,
+            outline,
+            content,
+            plan,
+            ledger,
+            scientificModel: scene.scientificModel,
+          })
+          content = compiled.content
+          const blocking = (compiled.unresolved || []).filter((item) => item.severity === 'error')
+          if (blocking.length) {
+            const repaired = await repairCourseSceneWithModel({
+              project: profiledProject,
+              outline,
+              content,
+              issues: blocking,
+              signal,
+            })
+            if (repaired?.content) {
+              compiled = compileSceneContent({
+                project: profiledProject,
+                outline,
+                content: repaired.content,
+                plan,
+                ledger,
+                scientificModel: scene.scientificModel,
+              })
+              content = compiled.content
+            }
+          }
+        }
+        return {
+          content,
+          sources: sourceSummary(sources.chunks),
+          fallback: false,
+          pipeline: 'openmaic',
+          dropped: scene.dropped || null,
+          evidence: compiled?.evidence || [],
+          subjectIssues: compiled?.subjectIssues || [],
+          repairs: compiled?.repairs || [],
+          error: null,
+        }
+      }
+      console.warn(`[course-studio] openmaic ${outline.type} 场景不可用（${scene.fallbackReason}），回退自研管线`)
+    } catch (error) {
+      if (error?.name === 'AbortError') throw error
+      console.warn(`[course-studio] openmaic ${outline.type} 场景管线异常，回退自研管线:`, error)
     }
   }
 
@@ -503,9 +699,11 @@ export async function compileCourseBlueprint(input = {}) {
 
 /**
  * 场景内容编译：学科一致性检查 → 证据账本抽取 → 确定性修复。
- * 不替换 generateCourseScene 的生成结果，只在其后挂审计信息。
+ * 不替换生成结果，只在其后挂审计信息。
+ * scientificModel：OpenMAIC 交互场景的科学模型契约（四字段），
+ * 经 checkScientificModel 产出 SCI-* 检查码并入学科问题。
  */
-function compileSceneContent({ project, outline, content, plan, ledger }) {
+function compileSceneContent({ project, outline, content, plan, ledger, scientificModel = null }) {
   const scene =
     plan?.scenes?.find((item) => item.id === outline.id) ||
     plan?.scenes?.[plan.scenes.length - 1] ||
@@ -516,14 +714,10 @@ function compileSceneContent({ project, outline, content, plan, ledger }) {
     scene,
     content,
   })
+  const sci = checkScientificModel({ model: scientificModel, content })
+  const issues = [...subject.issues, ...sci.issues]
   const evidence = ledger ? extractSceneClaims(ledger, { plan, scene, content }) : []
-  const { content: fixed, repairs, unresolved } = repairSceneContent(scene, content, subject.issues)
-  const recheck = checkSubjectConsistency({
-    domain: project.domain,
-    subject: project.learnerProfile?.subject || '',
-    scene,
-    content: fixed,
-  })
+  const { content: fixed, repairs, unresolved } = repairSceneContent(scene, content, issues)
   // 修复后重新抽取证据，保证账本与最终内容一致
   if (ledger && fixed !== content) {
     for (const claim of evidence) {
@@ -533,10 +727,17 @@ function compileSceneContent({ project, outline, content, plan, ledger }) {
     evidence.length = 0
     evidence.push(...extractSceneClaims(ledger, { plan, scene, content: fixed }))
   }
+  const recheckSubject = checkSubjectConsistency({
+    domain: project.domain,
+    subject: project.learnerProfile?.subject || '',
+    scene,
+    content: fixed,
+  })
+  const recheckSci = checkScientificModel({ model: scientificModel, content: fixed })
   return {
     content: fixed,
     evidence,
-    subjectIssues: recheck.issues,
+    subjectIssues: [...recheckSubject.issues, ...recheckSci.issues],
     subjectChecker: subject.checker,
     repairs,
     unresolved,

@@ -70,3 +70,12 @@ deploy/public/
 
 # 研究帧图（本地留存，不入库）
 docs/research/transitions/
+
+# 环境变量与密钥（严禁提交）
+frontend/.env
+.env
+
+# OpenMAIC 上游快照克隆（231M，非项目代码；提示词资产已同步至
+# frontend/src/api/openmaic/assets/ 并生成 promptAssets.js，可复现性以
+# 上游 commit 5bd8cc8 + assets/ 为准）
+vendor/

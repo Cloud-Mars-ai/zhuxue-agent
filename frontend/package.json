@@ -14,6 +14,7 @@
     "test:e2e:live": "playwright test --config=playwright.live.config.js",
     "test:competition": "node scripts/verify-competition.mjs",
     "test:text-repair": "node scripts/test-text-repair.mjs",
+    "test:openmaic": "node scripts/test-openmaic-pipeline.mjs",
     "test:visualization": "node scripts/test-visualization.mjs",
     "test:course-script": "node scripts/test-course-script.mjs",
     "test:course-compiler": "node scripts/test-course-compiler.mjs",

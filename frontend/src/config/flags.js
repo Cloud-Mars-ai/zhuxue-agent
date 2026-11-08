@@ -30,6 +30,7 @@ export const FEATURE_FLAGS = {
   courseStudio: true, // 两阶段智能课程编排（大纲确认 → 逐场景生成）
   courseScript: true, // 第三层讲稿 beats（设问—停顿—确认链，与板书视觉事件对齐）
   courseCompiler: true, // 课程编译器：规划 IR + 硬约束验证 + 证据账本 + 学科一致性 + 自动修复
+  openmaicPipeline: true, // OpenMAIC 管线接入：大纲/场景提示词与契约走 THU-MAIC/OpenMAIC（失败自动回退自研管线）
 
   // —— S4 学习形态 ——
   deepLearn: false, // 章节学习路径
