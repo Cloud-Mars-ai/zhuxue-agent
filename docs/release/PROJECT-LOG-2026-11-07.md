@@ -12,7 +12,7 @@
 
 | 读数 | 当前值 | 判断 |
 | --- | --- | --- |
-| 代码基线 | `main = c7e00a0` + T-19 OpenMAIC 接入工作树（11-08 提交后更新本行） | 可安全接手；提交前见 §4 P0-1 |
+| 代码基线 | `main = 6cd6421`（T-19 已提交并推送 mygithub），工作树 clean | 可安全接手；提交前见 §4 P0-1 |
 | 源码规模 | `frontend/src` 143 文件 + `src/api/openmaic/` 11 模块（T-19 新增），约 4.65 万行 + 新增约 2 千行 | 主体功能完成 |
 | 确定性测试 | E2E **30/30**（11-08 实跑）；text-repair **48/48**；course-compiler **41/41**；visualization 26/26；course-script 36/36；openmaic **35/35**（T-19 新增套件）；competition 校验通过 | 回归基线健康 |
 | 真实模型测试 | live E2E **5/5**（11-07/08，DeepSeek 新 key，覆盖 OpenMAIC 大纲→slide→quiz→interactive 全阶段） | 见 EVIDENCE-2026-11-07-openmaic-integration.md |
@@ -410,4 +410,4 @@ ssh wppjkw@152.136.121.153 "pm2 restart zhuxue-agent"
 
 ---
 
-*本日志由 WorkBuddy 依据 git `c7e00a0`（37 提交）、逐日记忆日志与代码实勘生成（22:10 全量测试复跑复核、22:39 GitHub Pages 发布 + 11 项定向验收复核；计数可 `git rev-list --count be009a3..main` 实时复验）；与旧文档冲突时，以本日志 + `PROJECT-HANDOFF-2026-11-07.md` + 代码为准。建议后续 agent 每次完成实质工作后，在本文档或对应记忆日志中追加台账条目（任务 / 日期 / 交付 / 验证 / 遗留），保持交接链不断。*
+*本日志由 WorkBuddy 依据 git `6cd6421`（38 提交）与代码实勘生成（11-08 增补 T-19：OpenMAIC 完全接入，单测 35/35 + live 5/5 + E2E 30/30 + 全量回归；计数可 `git rev-list --count be009a3..main` 实时复验）；与旧文档冲突时，以本日志 + `PROJECT-HANDOFF-2026-11-07.md` + 代码为准。建议后续 agent 每次完成实质工作后，在本文档或对应记忆日志中追加台账条目（任务 / 日期 / 交付 / 验证 / 遗留），保持交接链不断。*
