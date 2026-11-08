@@ -493,109 +493,114 @@ onBeforeUnmount(() => {
           <button type="button" @click="continueGeneration">继续生成</button>
         </div>
         <template v-else-if="selectedScene.content">
-          <div v-if="selectedScene.content.kind === 'board'" class="landscape-board">
-            <BoardCanvas
-              :lesson="selectedScene.content.lesson"
-              :visible-count="revealedCount"
-              :interactive="true"
-              landscape
-              @answer="onBoardAnswer"
-            />
-          </div>
-          <div v-else-if="selectedScene.content.kind === 'quiz'" class="experience-quiz">
-            <article v-if="currentQuestion" class="quiz-stage">
-              <header class="quiz-progress">
-                <span class="quiz-counter">第 {{ quizCursor + 1 }} / {{ quizQuestions.length }} 题</span>
-                <div class="quiz-dots" aria-hidden="true">
-                  <i
-                    v-for="(question, dotIndex) in quizQuestions"
-                    :key="question.id"
-                    :class="{
-                      done: quizJudged[question.id],
-                      active: dotIndex === quizCursor,
-                      correct:
-                        quizJudged[question.id] &&
-                        quizAnswers[question.id] === question.answerIndex,
-                    }"
-                  />
-                </div>
-                <span class="quiz-score">已答对 {{ sceneQuizCorrect }}</span>
-              </header>
-              <h3 class="quiz-stem">{{ currentQuestion.stem }}</h3>
-              <div class="quiz-options" role="radiogroup" :aria-label="currentQuestion.stem">
-                <button
-                  v-for="(option, optionIndex) in currentQuestion.options"
-                  :key="option"
-                  type="button"
-                  role="radio"
-                  :aria-checked="currentChoice === optionIndex"
-                  :class="{
-                    selected: currentChoice === optionIndex,
-                    correct: currentJudged && optionIndex === currentQuestion.answerIndex,
-                    wrong:
-                      currentJudged &&
-                      currentChoice === optionIndex &&
-                      optionIndex !== currentQuestion.answerIndex,
-                  }"
-                  :disabled="currentJudged"
-                  @click="chooseQuizOption(currentQuestion.id, optionIndex)"
-                >
-                  <span>{{ String.fromCharCode(65 + optionIndex) }}</span>
-                  {{ option }}
-                </button>
+          <!-- 诊断三 F3.4：场景切换过渡（此前 v-if 瞬时替换，视觉断裂） -->
+          <Transition name="scene" mode="out-in">
+            <div :key="`${selectedScene.id}-${selectedScene.content.kind}`" class="scene-switch">
+              <div v-if="selectedScene.content.kind === 'board'" class="landscape-board">
+                <BoardCanvas
+                  :lesson="selectedScene.content.lesson"
+                  :visible-count="revealedCount"
+                  :interactive="true"
+                  landscape
+                  @answer="onBoardAnswer"
+                />
               </div>
-              <footer class="quiz-footer">
-                <template v-if="!currentJudged">
-                  <button
-                    type="button"
-                    class="quiz-submit"
-                    :disabled="currentChoice == null"
-                    @click="submitQuizAnswer(currentQuestion)"
-                  >
-                    提交答案
-                  </button>
-                  <span class="quiz-hint">选择选项后提交，立即判定并给出解析</span>
-                </template>
-                <template v-else>
-                  <p class="quiz-verdict" :class="{ wrong: currentChoice !== currentQuestion.answerIndex }">
-                    {{
-                      currentChoice === currentQuestion.answerIndex
-                        ? '回答正确'
-                        : `再想想：正确答案是 ${String.fromCharCode(65 + currentQuestion.answerIndex)}`
-                    }}
-                  </p>
-                  <p v-if="currentQuestion.explanation" class="quiz-explanation">
-                    {{ currentQuestion.explanation }}
-                  </p>
-                  <button type="button" class="quiz-submit" @click="nextQuizQuestion">
-                    {{
-                      quizCursor >= quizQuestions.length - 1
-                        ? isLastScene
-                          ? '完成课程'
-                          : '完成小测'
-                        : '下一题'
-                    }}
-                  </button>
-                </template>
-              </footer>
-            </article>
-            <div v-else class="scene-state">
-              <h2>这个小测还没有可用题目</h2>
-              <p>可以返回编排页重新生成该场景。</p>
+              <div v-else-if="selectedScene.content.kind === 'quiz'" class="experience-quiz">
+                <article v-if="currentQuestion" class="quiz-stage">
+                  <header class="quiz-progress">
+                    <span class="quiz-counter">第 {{ quizCursor + 1 }} / {{ quizQuestions.length }} 题</span>
+                    <div class="quiz-dots" aria-hidden="true">
+                      <i
+                        v-for="(question, dotIndex) in quizQuestions"
+                        :key="question.id"
+                        :class="{
+                          done: quizJudged[question.id],
+                          active: dotIndex === quizCursor,
+                          correct:
+                            quizJudged[question.id] &&
+                            quizAnswers[question.id] === question.answerIndex,
+                        }"
+                      />
+                    </div>
+                    <span class="quiz-score">已答对 {{ sceneQuizCorrect }}</span>
+                  </header>
+                  <h3 class="quiz-stem">{{ currentQuestion.stem }}</h3>
+                  <div class="quiz-options" role="radiogroup" :aria-label="currentQuestion.stem">
+                    <button
+                      v-for="(option, optionIndex) in currentQuestion.options"
+                      :key="option"
+                      type="button"
+                      role="radio"
+                      :aria-checked="currentChoice === optionIndex"
+                      :class="{
+                        selected: currentChoice === optionIndex,
+                        correct: currentJudged && optionIndex === currentQuestion.answerIndex,
+                        wrong:
+                          currentJudged &&
+                          currentChoice === optionIndex &&
+                          optionIndex !== currentQuestion.answerIndex,
+                      }"
+                      :disabled="currentJudged"
+                      @click="chooseQuizOption(currentQuestion.id, optionIndex)"
+                    >
+                      <span>{{ String.fromCharCode(65 + optionIndex) }}</span>
+                      {{ option }}
+                    </button>
+                  </div>
+                  <footer class="quiz-footer">
+                    <template v-if="!currentJudged">
+                      <button
+                        type="button"
+                        class="quiz-submit"
+                        :disabled="currentChoice == null"
+                        @click="submitQuizAnswer(currentQuestion)"
+                      >
+                        提交答案
+                      </button>
+                      <span class="quiz-hint">选择选项后提交，立即判定并给出解析</span>
+                    </template>
+                    <template v-else>
+                      <p class="quiz-verdict" :class="{ wrong: currentChoice !== currentQuestion.answerIndex }">
+                        {{
+                          currentChoice === currentQuestion.answerIndex
+                            ? '回答正确'
+                            : `再想想：正确答案是 ${String.fromCharCode(65 + currentQuestion.answerIndex)}`
+                        }}
+                      </p>
+                      <p v-if="currentQuestion.explanation" class="quiz-explanation">
+                        {{ currentQuestion.explanation }}
+                      </p>
+                      <button type="button" class="quiz-submit" @click="nextQuizQuestion">
+                        {{
+                          quizCursor >= quizQuestions.length - 1
+                            ? isLastScene
+                              ? '完成课程'
+                              : '完成小测'
+                            : '下一题'
+                        }}
+                      </button>
+                    </template>
+                  </footer>
+                </article>
+                <div v-else class="scene-state">
+                  <h2>这个小测还没有可用题目</h2>
+                  <p>可以返回编排页重新生成该场景。</p>
+                </div>
+              </div>
+              <div v-else-if="selectedScene.content.kind === 'practice'" class="experience-practice">
+                <span>案例应用</span>
+                <h2>{{ selectedScene.content.prompt }}</h2>
+                <ol>
+                  <li v-for="point in selectedScene.content.referencePoints" :key="point">
+                    {{ point }}
+                  </li>
+                </ol>
+                <blockquote v-if="selectedScene.content.followUp">
+                  {{ selectedScene.content.followUp }}
+                </blockquote>
+              </div>
             </div>
-          </div>
-          <div v-else-if="selectedScene.content.kind === 'practice'" class="experience-practice">
-            <span>案例应用</span>
-            <h2>{{ selectedScene.content.prompt }}</h2>
-            <ol>
-              <li v-for="point in selectedScene.content.referencePoints" :key="point">
-                {{ point }}
-              </li>
-            </ol>
-            <blockquote v-if="selectedScene.content.followUp">
-              {{ selectedScene.content.followUp }}
-            </blockquote>
-          </div>
+          </Transition>
         </template>
 
         <!-- 讲稿层：beats 与板书视觉事件 1:1 对齐，问后有停顿标记 -->
@@ -1391,6 +1396,104 @@ onBeforeUnmount(() => {
     color: #fff;
     background: var(--danger);
     border-color: var(--danger);
+  }
+
+  /* 诊断三 F3.4：判定反馈动效——正确弹一下、错误轻摇头，替代瞬时换色 */
+  @keyframes verdict-pop {
+    0% {
+      transform: scale(1);
+    }
+    45% {
+      transform: scale(1.025);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes verdict-shake {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    25% {
+      transform: translateX(-5px);
+    }
+    55% {
+      transform: translateX(4px);
+    }
+    80% {
+      transform: translateX(-2px);
+    }
+  }
+
+  .quiz-options button.correct {
+    animation: verdict-pop 0.36s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .quiz-options button.wrong {
+    animation: verdict-shake 0.4s ease;
+  }
+
+  .quiz-verdict {
+    margin: 0;
+    color: var(--ok);
+    font-size: 13px;
+    font-weight: 600;
+    animation: verdict-rise 0.32s ease both;
+  }
+
+  .quiz-verdict.wrong {
+    color: var(--danger);
+  }
+
+  @keyframes verdict-rise {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* 场景切换过渡（诊断三 F3.4）：旧场景淡出下移、新场景淡入上移 */
+  .scene-switch {
+    height: 100%;
+  }
+
+  .scene-enter-active {
+    transition:
+      opacity 0.28s ease,
+      transform 0.28s cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+
+  .scene-leave-active {
+    transition:
+      opacity 0.18s ease,
+      transform 0.18s ease;
+  }
+
+  .scene-enter-from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  .scene-leave-to {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scene-enter-active,
+    .scene-leave-active,
+    .quiz-options button.correct,
+    .quiz-options button.wrong,
+    .quiz-verdict {
+      animation: none;
+      transition: none;
+    }
   }
 
   .quiz-footer {

@@ -80,6 +80,23 @@ export function boardBlockNarration(block) {
       .map((method) => method.name)
       .join('、')}等方法分别解决。`
   }
+  if (block.type === 'chart') {
+    const series = (block.series || [])
+      .map((item) => `${item.name}：${(item.values || []).join('、')}`)
+      .join('；')
+    return `${block.title}（${block.kind === 'pie' ? '占比图' : block.kind === 'line' ? '折线图' : '柱状图'}）。横轴是：${(
+      block.labels || []
+    ).join('、')}。${series}。`
+  }
+  if (block.type === 'columns') {
+    const columns = (block.columns || [])
+      .map((column) => `${column.heading ? `${column.heading}：` : ''}${(column.items || []).join('，')}`)
+      .join('；')
+    return `${block.title}。分三栏看：${columns}。`
+  }
+  if (block.type === 'illustration') {
+    return `${block.title}。${block.caption || '结合图示理解这一页的关系。'}`
+  }
   return ''
 }
 

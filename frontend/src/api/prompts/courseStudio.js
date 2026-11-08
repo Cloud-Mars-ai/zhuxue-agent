@@ -4,6 +4,7 @@ import {
   normalizeLearnerProfile,
 } from '@/utils/learnerProfile'
 import { SIMULATION_MODELS } from '@/utils/knowledgeVisualization'
+import { ILLUSTRATION_SCENES } from '@/utils/illustrationScenes'
 import { errorPatternsFor, highEmphasisPatterns } from '@/data/errorPatterns'
 import { buildSceneRepairPrompt } from '@/utils/courseRepair'
 
@@ -213,6 +214,10 @@ function previousSceneLine(previousScene) {
 }
 
 /** lecture 板书的 block 契约说明（含 2026-11 新增图表族与通用字段）。 */
+function illustrationSceneMenu() {
+  return ILLUSTRATION_SCENES.map((scene) => `${scene.id}（${scene.label}：${scene.hint}）`).join('；')
+}
+
 function blockContractGuide() {
   return `block.type 白名单（只能选这些）：
 - outline：本节路线图 {title, items[]}；作常驻面板时加 persistent:true
@@ -231,6 +236,9 @@ function blockContractGuide() {
 - case-table：情形讨论 {title, dimension, cases:[{condition, conclusion, tone}]}
 - induction：观察归纳 {title, examples[], rule, hint?}
 - multi-solution：一题多解 {title, problem, methods:[{name, tag, steps[]}], comparison?}
+- chart：数据图表 {title, kind: bar|line|pie, labels[], series:[{name, values[]}], caption?}；有结构化数值对比/趋势时用，不要为凑版面编造数据
+- columns：多栏卡片 {title, columns:[{heading?, items[]}]}（2–3 栏）；一页要并列呈现 multiple 对等要点时用
+- illustration：场景图示 {title, scene, caption?}；scene 只能从内置场景选：${illustrationSceneMenu()}；每页最多 1 个，只在场景能帮助理解主题时用（导入/环境/经济图形/管理闭环/数学模型），不适配时省略
 
 通用可选字段（按需添加，不适用的省略）：
 - transition：{enter: pop|fade|slide-left|slide-right, exit: fade, durationMs:300–1500, delayMs:0–800} 入场动效；单元素入场 ≤500ms，成块渐隐 1000–1500ms
@@ -418,6 +426,7 @@ ${
 ${errorPatternGuide(project.domain, learnerProfile.subject)}
 - 字数预算（E1）：本页口播总字数 ${common.budget}（场景 ${common.minutes} 分钟）；block 内文字精简，长解释留给讲稿层，不要堆段落。
 - 图表族推荐（C4）：分类知识点→classification-tree；数轴/对称/动点→number-line；多情形讨论→case-table；观察多个例子找规律→induction；同一题两种解法→multi-solution。
+- 版面与图示（2026-11-08 对齐 OpenMAIC）：有结构化数值对比/趋势→chart（bar/line/pie）；一页并列多个对等要点→columns（2–3 栏）；场景能帮助理解主题→illustration（内置 SVG 场景，scene 见 block 契约，每页最多 1 个）。三者都只填 JSON，禁止图片 URL/坐标/脚本。
 - 例题组织三选一（E2）：一题多变（改一个条件重做）/ 一题多解（用 multi-solution block 并列两种方法）/ 一题多用（同一例子串多个概念）。
 - 渐进揭示（C2）：block 数组顺序即揭示顺序；可给 block 加 transition；常驻参考面板加 persistent:true；关键词高亮加 marks；分类树阶段生长用 grow:"staged"+stages。
 - 禁止整页翻页：不得输出“翻到下一页/切换页面”类效果；所有变化都是同一板面上的增删，换内容用渐隐 + 逐条出现。
@@ -444,6 +453,9 @@ ${jsonOnly(`{
       { "type": "definition", "title": "核心概念", "term": "概念名", "concreteAnchor": "学生能指认的具体例子", "definition": "定义", "analogy": "理解抓手", "method": ["步骤1", "步骤2"], "verify": "回带检查", "evidenceRefs": ["材料片段ID"] },
       { "type": "simulation", "title": "动手看：圆周运动与向心力", "model": "circular-motion", "params": { "radius": 90, "speed": 4, "mass": 2 }, "observe": ["保持半径不变，把速度调到最大，看向心力怎么变", "保持速度不变，把半径拉到最大"], "linkConcept": "向心力", "caption": "先读定义，再拖参数验证它" },
       { "type": "table", "title": "概念对照", "columns": ["概念", "一句话解释", "案例用法"], "rows": [["A", "解释A", "用法A"], ["B", "解释B", "用法B"]] },
+      { "type": "chart", "title": "三个方案的季度完成率", "kind": "bar", "labels": ["一季度", "二季度", "三季度"], "series": [{ "name": "方案A", "values": [62, 71, 80] }, { "name": "方案B", "values": [55, 66, 74] }], "caption": "先比趋势，再比差距" },
+      { "type": "columns", "title": "三种计划对着一张看", "columns": [{ "heading": "战略计划", "items": ["管三到五年", "由高层定方向"] }, { "heading": "战术计划", "items": ["管一年", "部门级分解"] }, { "heading": "作业计划", "items": ["管到班组", "落实到人"] }] },
+      { "type": "illustration", "title": "把组织放回环境里看", "scene": "city-skyline", "caption": "任何组织决策都受外部环境约束" },
       { "type": "classification-tree", "title": "有理数怎么分", "root": { "label": "有理数", "note": "可写成两个整数之比" }, "branches": [{ "label": "整数", "note": "正整数、0、负整数", "children": [{ "label": "正整数", "note": "1,2,3…" }, { "label": "负整数", "note": "-1,-2…" }] }, { "label": "分数", "note": "含有限小数和循环小数" }], "grow": "staged", "stages": [{ "label": "第一层：先分整数和分数", "branches": [0, 1] }, { "label": "第二层：展开整数", "branches": [0, 1], "expand": [0] }], "caption": "分类看边界，别漏负数" },
       { "type": "number-line", "title": "在数轴上定位", "min": -4, "max": 4, "ticks": [{ "value": -4, "label": "-4" }, { "value": 0, "label": "0" }, { "value": 4, "label": "4" }], "points": [{ "value": -2, "label": "-2", "tone": "negative" }, { "value": 3, "label": "3", "tone": "positive" }], "caption": "原点左边是负数" },
       { "type": "fill-blank", "title": "口诀留白", "prompt": "两数相乘，同号得___，异号得___。", "answers": ["正", "负"], "hint": "先想 (-2)×3 和 (-2)×(-3)" },

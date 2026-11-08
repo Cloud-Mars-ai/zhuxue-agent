@@ -691,3 +691,18 @@ html[data-theme='blue'] {
   --el-box-shadow: 0 18px 50px rgba(48, 78, 133, 0.12);
   --el-font-family: 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
 }
+
+
+/* —— 内置 SVG 场景图示（诊断二：媒体通道修复，components/illustrations/）——
+   共享基样式：跟随纸感主题变量，禁止在场景组件里写死色值。 */
+.ill-scene {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.ill-text {
+  fill: var(--board-heading-alt);
+  font-family: var(--font-body, inherit);
+  font-size: 11px;
+}

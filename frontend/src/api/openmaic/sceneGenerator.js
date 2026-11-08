@@ -22,6 +22,8 @@
  */
 
 import { normalizeBoardLesson } from '../../utils/board.js'
+import { matchSimulation, buildSimulationBlock } from '../../utils/knowledgeVisualization.js'
+import { ILLUSTRATION_SCENES } from '../../utils/illustrationScenes.js'
 import {
   buildPrompt,
   buildSlideContentPrompt,
@@ -105,8 +107,25 @@ function slideUserVariables(outline, context) {
     keyPoints: keyPointsText(outline.keyPoints),
     languageDirective: context.languageDirective || '使用用户需求所使用的语言授课。',
     teacherContext: context.teacherContext || '',
-    assignedImages: 'None',
+    // 诊断二 F2.5 轻量媒体契约：上游 slide 模板的 {{#if mediaElementEnabled}}
+    // 条件块依赖 assignedImages——填 'None' 等于告诉模型"没有图片素材"，
+    // 幻灯片退化成纯文字墙（与 OpenMAIC 演示视频的最大视觉差距之一）。
+    // 这里给出内置 SVG 场景目录（src 填场景 id，适配器按 id 直映射），
+    // 模型恢复"画布上可以有一张图"的版面能力，但图片仍是确定性矢量场景，
+    // 不引入文生图 provider / 外链 URL / 占位符。
+    assignedImages: illustrationCatalog(),
   }
+}
+
+/** 场景目录文本（供 slide 模板 Available Media 注入；每页最多 1 个场景插图）。 */
+function illustrationCatalog() {
+  const lines = ILLUSTRATION_SCENES.map(
+    (scene) => `- ${scene.id}｜${scene.label}：${scene.hint}`,
+  )
+  return [
+    '可用场景插图（image 元素，src 填下面的场景 id；每页最多 1 个，只在能帮助理解本页主题时使用，不要每页都放）：',
+    ...lines,
+  ].join('\n')
 }
 
 /** interactive：simulation 模板 + 追加 scientificModel 契约（经 teacherContext 注入）。 */
@@ -146,7 +165,8 @@ export function extractWidgetConfig(response) {
   return null
 }
 
-/** widget-config → 受控板书块（definition + table + diagram/callout）。 */
+/** widget-config → 受控板书块（definition + table + diagram/callout + simulation）。
+ *  2026-11-08 诊断一：补 simulation 映射——交互场景不再静态化（见下方注释）。 */
 export function widgetConfigToLesson(config, outline, context = {}) {
   if (!config || typeof config !== 'object') return null
   const concept = text(config.concept || outline.title, 60)
@@ -203,6 +223,46 @@ export function widgetConfigToLesson(config, outline, context = {}) {
     })
   }
   const scientificModel = extractScientificModel(config)
+
+  // 诊断一 F1.2：widget-config → 受控 simulation 块。
+  // OpenMAIC interactive 场景本是"可调参数看结果"的交互模拟器（视频 s_098
+  // 平方根探索页），此前只转成静态参数表+预设图，交互性全部丢失。
+  // 这里用同一套注册表模型（utils/knowledgeVisualization.js）做语义匹配：
+  // 命中则补一个可交互 block；widget 变量名与模型参数名重合时，
+  // 把 widget 默认值映射过去（clampParams 保证收敛在模型声明范围内）。
+  // requireKeywords 严格模式：只认 widget 自身词汇命中模型关键词，
+  // 杜绝「抛体运动」经"速度"点亮 motion 概念信号而误配圆周运动。
+  const matched = matchSimulation({
+    text: [
+      concept,
+      description,
+      ...variables.map((variable) => text(variable?.label ?? variable?.name, 40)),
+      ...presetNodes.map((node) => node.label),
+    ].join(' '),
+    subject: context.subject,
+    stage: context.stage,
+    keyPoints: outline.keyPoints,
+    requireKeywords: true,
+  })
+  if (matched) {
+    const widgetParams = {}
+    for (const variable of variables) {
+      const key = text(variable?.name, 24)
+      if (key && matched.model.params.some((param) => param.key === key)) {
+        widgetParams[key] = Number(variable?.default)
+      }
+    }
+    const simulation = buildSimulationBlock({
+      model: matched.model,
+      title: `动手看：${concept}`,
+      params: widgetParams,
+      observe: (Array.isArray(outline.keyPoints) ? outline.keyPoints : []).slice(0, 3),
+      linkConcept: concept,
+      caption: '对照上方参数表调节变量，观察读数随条件的变化。',
+    })
+    if (simulation) blocks.push(simulation)
+  }
+
   return {
     lesson: { title: concept, subtitle: '', blocks },
     scientificModel,
@@ -334,7 +394,9 @@ export async function generateOpenmaicScene(outline, aiCall, context = {}) {
     }
 
     // lecture / review / 无元数据的 practice：slide-content 提示词
-    const prompt = buildSlideContentPrompt({}, slideUserVariables(outline, context))
+    // 诊断二 F2.5：开启 image 元素通道（目录见 slideUserVariables.assignedImages），
+    // 让模型恢复画布插图版面；适配器把 src 场景 id 直映射为 illustration 块
+    const prompt = buildSlideContentPrompt({ imageElementEnabled: true }, slideUserVariables(outline, context))
     if (!prompt) return { kind: 'board', fallbackReason: 'prompt-unavailable' }
     const response = await withGenerationRetry(
       () => aiCall(prompt.system, prompt.user),

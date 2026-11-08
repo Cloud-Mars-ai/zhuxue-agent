@@ -142,6 +142,42 @@ function renderBlock(block) {
       )
       .join('')}${block.comparison ? `<p>${escapeHtml(block.comparison)}</p>` : ''}</section>`
   }
+  if (block.type === 'chart') {
+    const head = `<tr><th>${escapeHtml(block.title)}</th>${(block.labels || [])
+      .map((label) => `<th>${escapeHtml(label)}</th>`)
+      .join('')}</tr>`
+    const body = (block.series || [])
+      .map(
+        (item) =>
+          `<tr><td>${escapeHtml(item.name)}</td>${(item.values || [])
+            .map((value) => `<td>${escapeHtml(value)}</td>`)
+            .join('')}</tr>`,
+      )
+      .join('')
+    const kindLabel = block.kind === 'pie' ? '占比图' : block.kind === 'line' ? '折线图' : '柱状图'
+    return `<section><h2>${escapeHtml(block.title)}（${kindLabel}）</h2><table><thead>${head}</thead><tbody>${body}</tbody></table>${
+      block.caption ? `<p>${escapeHtml(block.caption)}</p>` : ''
+    }</section>`
+  }
+  if (block.type === 'columns') {
+    return `<section><h2>${escapeHtml(block.title)}</h2><div class="columns">${(block.columns || [])
+      .map(
+        (column) =>
+          `<div class="column">${column.heading ? `<strong>${escapeHtml(column.heading)}</strong>` : ''}<ul>${(
+            column.items || []
+          )
+            .map((item) => `<li>${escapeHtml(item)}</li>`)
+            .join('')}</ul></div>`,
+      )
+      .join('')}</div>${block.caption ? `<p>${escapeHtml(block.caption)}</p>` : ''}</section>`
+  }
+  if (block.type === 'illustration') {
+    return `<section class="illustration"><h2>${escapeHtml(block.title)}</h2><p class="ill-note">［场景图示：${escapeHtml(
+      block.scene,
+    )} —— 在课程页面中查看内置矢量插图］</p>${
+      block.caption ? `<p>${escapeHtml(block.caption)}</p>` : ''
+    }</section>`
+  }
   return ''
 }
 

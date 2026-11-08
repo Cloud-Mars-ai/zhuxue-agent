@@ -18,6 +18,7 @@
     "test:visualization": "node scripts/test-visualization.mjs",
     "test:course-script": "node scripts/test-course-script.mjs",
     "test:course-compiler": "node scripts/test-course-compiler.mjs",
+    "test:alignment": "node scripts/test-alignment.mjs",
     "sync:competition-data": "node scripts/sync-competition-data.mjs",
     "export:competition": "node scripts/export-competition-package.mjs",
     "gen:demo-course": "node --import ./scripts/lib/register-alias.mjs scripts/generate-demo-course.mjs"

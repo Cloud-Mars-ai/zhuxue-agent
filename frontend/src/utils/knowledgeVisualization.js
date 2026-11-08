@@ -177,6 +177,26 @@ export const SIMULATION_MODELS = [
       '1/2 和 2/4 涂色面积一样多，怎么说它们相等？',
     ],
   },
+  {
+    // 2026-11-08 诊断一新增：对齐 OpenMAIC 视频 s_098「平方根探索」交互页
+    // （滑块 a → a×a 面积方格 → 数轴标记），把上游交互场景映射到注册表模型
+    id: 'square-root',
+    label: '平方根面积模型',
+    subjects: ['数学', '综合主题'],
+    keywords: /平方根|开平方|开方|算术平方根|正方形面积|边长|面积等于|完全平方数/gi,
+    concepts: ['quantity'],
+    stages: ['primary', 'junior', 'adaptive'],
+    params: [{ key: 'a', label: '边长 a', min: 1, max: 12, step: 1, value: 5 }],
+    readouts: [
+      { key: 'area', label: '面积 a²' },
+      { key: 'root', label: '√(面积)' },
+    ],
+    observe: [
+      '把边长调到 5：方格总数是多少？√25 等于几？',
+      '边长调到 9：数轴上 9 和面积 81 相差多大？',
+      '哪些边长能开出整数根？把它们圈出来，规律是什么？',
+    ],
+  },
 ]
 
 const MODELS_BY_ID = new Map(SIMULATION_MODELS.map((model) => [model.id, model]))
@@ -264,12 +284,18 @@ export function assessVisualizationNeed({
 /**
  * 信号二：学科 × 概念 → 可视化形式。
  * 优先级：关键词直接命中 > 概念信号命中 > 学科命中；再按学段过滤。
+ *
+ * requireKeywords: true 时只接受关键词直接命中的模型（2026-11-08 诊断一：
+ * widget-config → simulation 映射要求"widget 自己的词汇命中模型关键词"，
+ * 概念信号+学科命中不足以证明模型与概念对应——例如"抛体运动"含"速度"
+ * 会点亮 motion 信号，但圆周运动模型并不能讲解抛体运动）。
  */
 export function matchSimulation({
   text = '',
   subject = '',
   stage = 'adaptive',
   keyPoints = [],
+  requireKeywords = false,
 } = {}) {
   const corpus = [
     String(text || ''),
@@ -290,7 +316,12 @@ export function matchSimulation({
     const subjectHit = model.subjects.includes(normalizedSubject) ? 10 : 0
     return { model, keywordHits, score: keywordHits * 30 + signalScore + subjectHit }
   })
-    .filter((item) => item && item.score > 0 && (item.keywordHits > 0 || item.score - 10 > 0))
+    .filter((item) => {
+      if (!item || item.score <= 0) return false
+      // 严格模式：必须关键词直接命中（widget-config 映射用）
+      if (requireKeywords && item.keywordHits <= 0) return false
+      return item.keywordHits > 0 || item.score - 10 > 0
+    })
     .sort((a, b) => b.score - a.score)
 
   const best = candidates[0]

@@ -513,7 +513,7 @@ test('每条种子字段完整', () => {
 })
 
 console.log('\n[8] 白名单完整性')
-test('16 种 block 全部有归一化分支', () => {
+test('19 种 block 全部有归一化分支', () => {
   const sample = {
     outline: { type: 'outline', items: ['a'] },
     definition: { type: 'definition', term: 't', definition: 'd', concreteAnchor: 'c' },
@@ -531,6 +531,9 @@ test('16 种 block 全部有归一化分支', () => {
     'case-table': { type: 'case-table', dimension: 'd', cases: [{ condition: 'c', conclusion: 'x' }, { condition: 'd', conclusion: 'y' }] },
     induction: { type: 'induction', examples: ['a', 'b'], rule: 'r' },
     'multi-solution': { type: 'multi-solution', problem: 'p', methods: [{ name: 'm', steps: ['s'] }, { name: 'n', steps: ['t'] }] },
+    chart: { type: 'chart', kind: 'bar', labels: ['a', 'b'], series: [{ name: 's', values: [1, 2] }] },
+    columns: { type: 'columns', columns: [{ heading: 'h', items: ['x'] }, { items: ['y'] }] },
+    illustration: { type: 'illustration', scene: 'rocket-launch' },
   }
   BOARD_BLOCK_TYPES.forEach((type) => {
     const lesson = normalizeBoardLesson({ blocks: [sample[type], { type: 'question', prompt: 'q' }] })

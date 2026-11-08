@@ -13,6 +13,7 @@ import GeometryTriangleSim from './GeometryTriangleSim.vue'
 import LinearFunctionSim from './LinearFunctionSim.vue'
 import NumberLineSim from './NumberLineSim.vue'
 import FractionPartsSim from './FractionPartsSim.vue'
+import SquareRootSim from './SquareRootSim.vue'
 
 const props = defineProps({
   block: { type: Object, required: true },
@@ -27,6 +28,7 @@ const MODEL_COMPONENTS = {
   'linear-function': LinearFunctionSim,
   'number-line': NumberLineSim,
   'fraction-parts': FractionPartsSim,
+  'square-root': SquareRootSim,
 }
 
 const model = computed(() => simulationModel(props.block.model))
@@ -45,6 +47,13 @@ watch(
 
 function updateParam(key, value) {
   params.value = { ...params.value, [key]: value }
+}
+
+/** 滑块填充比例 → CSS 变量（驱动轨道渐变，见样式 .sim-range）。 */
+function rangeFillStyle(param, value) {
+  const span = param.max - param.min
+  const ratio = span > 0 ? (Number(value) - param.min) / span : 0
+  return { '--fill': `${Math.round(Math.min(1, Math.max(0, ratio)) * 100)}%` }
 }
 
 function toggleTask(task, index) {
@@ -83,16 +92,23 @@ function toggleTask(task, index) {
         <span class="sim-slider-label">{{ param.label }}</span>
         <input
           type="range"
+          class="sim-range"
           :min="param.min"
           :max="param.max"
           :step="param.step"
           :value="params[param.key]"
           :disabled="!interactive"
           :aria-label="param.label"
+          :style="rangeFillStyle(param, params[param.key])"
           @input="updateParam(param.key, Number($event.target.value))"
         />
         <output class="sim-slider-value">
-          {{ params[param.key] }}{{ param.unit ? ` ${param.unit}` : '' }}
+          <!-- 诊断三 F3.5：数值翻牌——参数变化时读数弹一下，不是静默替换 -->
+          <Transition name="slider-value" mode="out-in">
+            <span :key="`${param.key}-${params[param.key]}`">
+              {{ params[param.key] }}{{ param.unit ? ` ${param.unit}` : '' }}
+            </span>
+          </Transition>
         </output>
       </label>
     </div>
@@ -181,6 +197,88 @@ function toggleTask(task, index) {
   accent-color: var(--board-accent);
 }
 
+/* 诊断三 F3.5：自定义轨道 + 滑块（填充随进度渐变，拖动有缩放反馈） */
+.sim-slider .sim-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 110px;
+  height: 4px;
+  border-radius: var(--radius-pill, 999px);
+  background: linear-gradient(
+    to right,
+    var(--board-accent) var(--fill, 50%),
+    color-mix(in srgb, var(--board-line) 26%, transparent) var(--fill, 50%)
+  );
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.sim-slider .sim-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--board-paper);
+  border: 2px solid var(--board-accent);
+  box-shadow: 0 1px 4px color-mix(in srgb, var(--board-line) 35%, transparent);
+  cursor: grab;
+  transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.sim-slider .sim-range::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+
+.sim-slider .sim-range:active::-webkit-slider-thumb {
+  transform: scale(1.28);
+  cursor: grabbing;
+}
+
+.sim-slider .sim-range::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--board-paper);
+  border: 2px solid var(--board-accent);
+  cursor: grab;
+}
+
+.sim-slider .sim-range:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+.sim-slider-value {
+  display: inline-block;
+  min-width: 52px;
+  color: var(--board-ink);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+/* 数值翻牌（诊断三 F3.5） */
+.slider-value-enter-active {
+  transition:
+    opacity 0.16s ease,
+    transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.slider-value-enter-from {
+  opacity: 0;
+  transform: translateY(-5px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slider-value-enter-active {
+    transition: none;
+  }
+
+  .sim-slider .sim-range::-webkit-slider-thumb {
+    transition: none;
+  }
+}
+
 .sim-slider input[type='range']:disabled {
   opacity: 0.45;
 }
@@ -257,7 +355,8 @@ function toggleTask(task, index) {
 }
 
 @media (max-width: 880px) {
-  .sim-slider input[type='range'] {
+  .sim-slider input[type='range'],
+  .sim-slider .sim-range {
     width: 84px;
   }
 }

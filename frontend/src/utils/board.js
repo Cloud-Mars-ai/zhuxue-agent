@@ -1,5 +1,6 @@
 import { COURSE_OUTLINE, getOutlineByTitle } from '../mock/courseOutline.js'
 import { simulationModel, clampParams } from './knowledgeVisualization.js'
+import { ILLUSTRATION_SCENE_IDS } from './illustrationScenes.js'
 
 /**
  * 板书 block 白名单（2026-11-07 依据 41 个教学视频分析扩容）。
@@ -14,6 +15,9 @@ import { simulationModel, clampParams } from './knowledgeVisualization.js'
  * - case-table：情形讨论表，按 tone 着色（C4）
  * - induction：观察归纳，例题→结论填空→揭晓规则（B6）
  * - multi-solution：一题多解并列（B7）
+ * - chart：数据图表（2026-11-08 对齐 OpenMAIC 画布图表元素，bar/line/pie）
+ * - columns：多栏卡片（保留 OpenMAIC 画布的横向分栏版面，防版面信息坍缩）
+ * - illustration：场景图示（2026-11-08 补媒体通道：内置 SVG 场景库，AI 只选场景 id）
  *
  * 所有 block 共用可选字段（C2/C5/C6/T1-T12）：
  * - transition: { enter, exit, durationMs, delayMs } 受控枚举 + 毫秒值域
@@ -41,6 +45,9 @@ export const BOARD_BLOCK_TYPES = [
   'case-table',
   'induction',
   'multi-solution',
+  'chart',
+  'columns',
+  'illustration',
 ]
 
 /** transition.enter 受控枚举（对应 T1 逐条弹入 / T2 渐隐 / T3 定向滑入）。 */
@@ -425,6 +432,65 @@ function normalizeBlock(raw) {
       examples,
       rule,
       hint: text(raw.hint, 140),
+    })
+  }
+
+  if (type === 'chart') {
+    // 数据图表（对齐 OpenMAIC chart 画布元素）：labels + series 结构化数值，
+    // 渲染层按 kind 画 SVG；无数值的序列丢弃，防止空图表占位
+    const kind = ['bar', 'line', 'pie'].includes(raw.kind) ? raw.kind : 'bar'
+    const labels = strings(raw.labels, 8)
+    const series = (Array.isArray(raw.series) ? raw.series : [])
+      .map((item) => ({
+        name: text(item?.name ?? item?.label, 24),
+        values: (Array.isArray(item?.values) ? item.values : [])
+          .map((value) => number(value))
+          .filter((value) => value !== null)
+          .slice(0, 8),
+      }))
+      .filter((item) => item.name && item.values.length >= 2)
+      .slice(0, 3)
+    if (labels.length < 2 || !series.length) return null
+    return applyCommon(raw, {
+      type,
+      kind,
+      title: text(raw.title, 60) || '数据图表',
+      labels,
+      series,
+      caption: text(raw.caption, 180),
+    })
+  }
+
+  if (type === 'columns') {
+    // 多栏卡片（保留 OpenMAIC 横向分栏版面）：heading 可缺省，
+    // items 至少 1 条；2–3 栏，超出按渲染层网格折叠
+    const columns = (Array.isArray(raw.columns) ? raw.columns : [])
+      .map((column) => ({
+        heading: text(column?.heading ?? column?.title, 20),
+        items: strings(column?.items, 6),
+      }))
+      .filter((column) => column.items.length)
+      .slice(0, 3)
+    if (columns.length < 2) return null
+    return applyCommon(raw, {
+      type,
+      title: text(raw.title, 60) || '要点速览',
+      columns,
+      caption: text(raw.caption, 180),
+    })
+  }
+
+  if (type === 'illustration') {
+    // 场景图示：scene 必须是内置 SVG 场景库注册 id（纯数据注册表，
+    // 见 utils/illustrationScenes.js）——AI 只选场景，不产生图片 URL，
+    // 从契约上杜绝占位符/叉号/外链图片
+    const scene = text(raw.scene, 40)
+    if (!ILLUSTRATION_SCENE_IDS.includes(scene)) return null
+    return applyCommon(raw, {
+      type,
+      scene,
+      title: text(raw.title, 60) || '场景图示',
+      caption: text(raw.caption, 180),
     })
   }
 

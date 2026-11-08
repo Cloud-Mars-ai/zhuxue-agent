@@ -1,6 +1,8 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import SimulationStage from '@/components/simulations/SimulationStage.vue'
+import IllustrationStage from '@/components/illustrations/IllustrationStage.vue'
+import ChartBlock from '@/components/ChartBlock.vue'
 
 const props = defineProps({
   lesson: { type: Object, default: null },
@@ -47,21 +49,33 @@ function blockKey(block, index) {
   return `${block.type}-${index}`
 }
 
-/** 进场动效类名：pop/fade/slide-left/slide-right（默认 pop 由 CSS 兜底）。 */
+/**
+ * 进场动效类名：pop/fade/slide-left/slide-right（默认 pop 由 CSS 兜底）。
+ */
 function enterClass(block) {
   if (!block.transition?.enter) return ''
   return `enter-${block.transition.enter}`
 }
 
+/**
+ * 级联延迟（诊断三 F3.3）：同一屏多个 block 依次入场，替代"整屏同时弹出"。
+ * 步进 70ms、总延迟封顶 360ms——保证 8 块满屏时最后一块仍在 0.5s 内到位，
+ * 不拖慢讲稿节奏；block.transition.delayMs 作为附加偏移（模型显式编排优先）。
+ */
+const STAGGER_STEP_MS = 70
+const STAGGER_MAX_MS = 360
+
 /** transition 字段 → CSS 变量，供 TransitionGroup 的 enter-active 过渡消费。 */
-function blockStyle(block) {
+function blockStyle(block, index = 0) {
   const transition = block.transition
-  if (!transition) return undefined
+  const stagger = Math.min(STAGGER_MAX_MS, Math.max(0, index) * STAGGER_STEP_MS)
+  const duration = transition?.durationMs ?? 420
+  const delay = (transition?.delayMs ?? 0) + stagger
   return {
-    '--block-duration': `${transition.durationMs ?? 420}ms`,
-    '--block-delay': `${transition.delayMs ?? 0}ms`,
+    '--block-duration': `${duration}ms`,
+    '--block-delay': `${delay}ms`,
     '--block-easing':
-      transition.enter === 'fade' ? 'ease' : 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+      transition?.enter === 'fade' ? 'ease' : 'cubic-bezier(0.34, 1.56, 0.64, 1)',
   }
 }
 
@@ -250,7 +264,7 @@ watch(
         class="board-block"
         :class="[`is-${block.type}`, enterClass(block)]"
         :data-block-index="index"
-        :style="blockStyle(block)"
+        :style="blockStyle(block, index)"
       >
         <template v-if="block.type === 'outline'">
           <h2>{{ block.title }}</h2>
@@ -677,6 +691,34 @@ watch(
             </article>
           </div>
           <p v-if="block.comparison" class="diagram-caption">{{ block.comparison }}</p>
+        </template>
+
+        <!-- 诊断一：数据图表（OpenMAIC chart 画布元素，不再降级为表格） -->
+        <template v-else-if="block.type === 'chart'">
+          <h2>{{ block.title }}</h2>
+          <ChartBlock :block="block" />
+          <p v-if="block.caption" class="diagram-caption">{{ block.caption }}</p>
+        </template>
+
+        <!-- 诊断一：多栏卡片（保留 OpenMAIC 横向分栏版面） -->
+        <template v-else-if="block.type === 'columns'">
+          <h2>{{ block.title }}</h2>
+          <div class="columns-grid" :class="`cols-${block.columns.length}`">
+            <article v-for="(column, columnIndex) in block.columns" :key="columnIndex" class="columns-card">
+              <strong v-if="column.heading">{{ column.heading }}</strong>
+              <ul>
+                <li v-for="item in column.items" :key="item">{{ item }}</li>
+              </ul>
+            </article>
+          </div>
+          <p v-if="block.caption" class="diagram-caption">{{ block.caption }}</p>
+        </template>
+
+        <!-- 诊断二：场景图示（内置 SVG 场景库，替代文生图照片） -->
+        <template v-else-if="block.type === 'illustration'">
+          <h2>{{ block.title }}</h2>
+          <IllustrationStage :scene="block.scene" />
+          <p v-if="block.caption" class="diagram-caption">{{ block.caption }}</p>
         </template>
       </section>
     </TransitionGroup>
@@ -1615,6 +1657,45 @@ th {
   line-height: 1.7;
 }
 
+/* —— 诊断一：多栏卡片（保留 OpenMAIC 横向分栏版面） —— */
+.columns-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.columns-grid.cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.columns-grid.cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.columns-card {
+  padding: 12px 14px;
+  background: color-mix(in srgb, var(--board-paper) 86%, transparent);
+  border: 1px solid var(--board-line);
+  border-top: 3px solid var(--board-accent);
+  border-radius: 3px;
+}
+
+.columns-card strong {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--board-heading-alt);
+  font-family: var(--board-display);
+  font-size: 13.5px;
+}
+
+.columns-card ul {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--board-ink);
+  font-size: 12.5px;
+  line-height: 1.75;
+}
+
 /* —— 进场动效（C2/T1-T12）：duration/delay/easing 由 block.transition 驱动 —— */
 .block-enter-active {
   transition:
@@ -1664,6 +1745,11 @@ th {
   }
 
   .board-canvas.is-landscape .board-blocks {
+    grid-template-columns: 1fr;
+  }
+
+  .columns-grid.cols-2,
+  .columns-grid.cols-3 {
     grid-template-columns: 1fr;
   }
 }

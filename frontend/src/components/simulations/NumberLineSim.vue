@@ -4,14 +4,23 @@
  *
  * 交互：拖动 A / B 两点；实时读数：位置、相反数、两点距离。
  * 教学点：左边的数更小；相反数关于 0 对称；距离用绝对值。
+ *
+ * 诊断三 F3.2（2026-11-08）：此前 Math.round + 直接赋 ref——拖动跳变、
+ * 控制条滑块与模拟器状态完全脱节（拖滑块没反应）。现在：
+ * - 拖动连续取值（不再取整跳变），松手补间吸附到整数刻度；
+ * - watch props.params：控制条/讲稿驱动的参数变化用 tween 补间滑入；
+ * - 松手时 emit('param') 回传，控制条与图形双向同步。
  */
-import { computed, ref } from 'vue'
+import { computed, onBeforeUnmount, ref, watch } from 'vue'
+import { tween } from '@/utils/tween.js'
 
 const props = defineProps({
   params: { type: Object, required: true },
   interactive: { type: Boolean, default: true },
   model: { type: Object, default: null },
 })
+
+const emit = defineEmits(['param'])
 
 const W = 320
 const H = 150
@@ -31,12 +40,68 @@ for (let value = MIN; value <= MAX; value += 1) ticks.push(value)
 const distance = computed(() => Math.abs(a.value - b.value))
 const oppositeA = computed(() => -a.value)
 
+/** 读数格式：整数原样，小数保留一位（连续拖拽的中间态）。 */
+function fmt(value) {
+  return Number.isInteger(value) ? String(value) : value.toFixed(1)
+}
+
 const readouts = computed(() => [
-  { label: '点 A', value: `${a.value}（相反数 ${oppositeA.value}）` },
-  { label: '点 B', value: `${b.value}` },
-  { label: '距离 |A − B|', value: `${distance.value}` },
-  { label: '大小关系', value: a.value < b.value ? 'A < B' : a.value > b.value ? 'A > B' : 'A = B' },
+  { label: '点 A', value: `${fmt(a.value)}（相反数 ${fmt(oppositeA.value)}）` },
+  { label: '点 B', value: fmt(b.value) },
+  { label: '距离 |A − B|', value: fmt(distance.value) },
+  {
+    label: '大小关系',
+    value: a.value < b.value ? 'A < B' : a.value > b.value ? 'A > B' : 'A = B',
+  },
 ])
+
+// ── 补间滑入（诊断三 F3.2）：参数变化不再瞬移 ──
+const glides = { a: null, b: null }
+const glideTargets = { a: null, b: null }
+
+function valueOf(key) {
+  return key === 'a' ? a.value : b.value
+}
+
+function glideTo(key, target, duration = 280) {
+  if (!Number.isFinite(target)) return
+  const clamped = Math.min(MAX, Math.max(MIN, target))
+  const current = valueOf(key)
+  if (clamped === current) return
+  glides[key]?.cancel()
+  glideTargets[key] = clamped
+  glides[key] = tween({
+    from: current,
+    to: clamped,
+    duration,
+    easing: 'easeOutCubic',
+    onUpdate: (value) => {
+      if (key === 'a') a.value = value
+      else b.value = value
+    },
+    onComplete: () => {
+      glideTargets[key] = null
+    },
+  })
+}
+
+watch(
+  () => [props.params.a, props.params.b],
+  (next) => {
+    const keys = ['a', 'b']
+    keys.forEach((key, index) => {
+      const target = Number(next[index])
+      if (!Number.isFinite(target)) return
+      if (glideTargets[key] === target) return // 已在滑向该目标，避免双补间
+      glideTo(key, target, 280)
+    })
+  },
+)
+
+onBeforeUnmount(() => {
+  glides.a?.cancel()
+  glides.b?.cancel()
+})
 
 function svgX(event) {
   const svg = svgRef.value
@@ -44,7 +109,8 @@ function svgX(event) {
   const rect = svg.getBoundingClientRect()
   const ratio = (event.clientX - rect.left) / rect.width
   const raw = MIN + ratio * (MAX - MIN)
-  return Math.min(MAX, Math.max(MIN, Math.round(raw)))
+  // 连续取值：拖动过程不取整，跟手不跳变
+  return Math.min(MAX, Math.max(MIN, raw))
 }
 
 function onPointDown(which, event) {
@@ -63,9 +129,21 @@ function onPointMove(event) {
 }
 
 function onPointUp() {
+  const released = dragging.value
   dragging.value = ''
   window.removeEventListener('pointermove', onPointMove)
   window.removeEventListener('pointerup', onPointUp)
+  if (!released) return
+  // 松手吸附到整数刻度（与控制条 step=1 一致）：补间滑入，不是瞬移
+  const snapped = {
+    a: Math.round(a.value),
+    b: Math.round(b.value),
+  }
+  glideTo('a', snapped.a, 180)
+  glideTo('b', snapped.b, 180)
+  // 回传控制条（此时 glideTargets 已占位，watch 不会重复起补间）
+  emit('param', 'a', snapped.a)
+  emit('param', 'b', snapped.b)
 }
 </script>
 
@@ -135,7 +213,7 @@ function onPointUp() {
         class="sim-distance-label"
         text-anchor="middle"
       >
-        |{{ a }} − {{ b }}| = {{ distance }}
+        |{{ fmt(a) }} − {{ fmt(b) }}| = {{ fmt(distance) }}
       </text>
     </svg>
 
