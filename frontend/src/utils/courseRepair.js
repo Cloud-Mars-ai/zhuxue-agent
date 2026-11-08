@@ -302,6 +302,30 @@ export function repairSceneContent(scene, content, issues = []) {
       }
       continue
     }
+    if (item.code === 'QUIZ_DUP_OPTION' && next.kind === 'quiz') {
+      const question = (next.questions || []).find((q) => q.id === item.target)
+      if (question && Array.isArray(fix.options) && fix.options.length >= 2) {
+        const before = { options: question.options, answerIndex: question.answerIndex }
+        question.options = [...fix.options]
+        if (
+          Number.isInteger(fix.answerIndex) &&
+          fix.answerIndex >= 0 &&
+          fix.answerIndex < fix.options.length
+        ) {
+          question.answerIndex = fix.answerIndex
+        }
+        repairs.push(
+          record(
+            'QUIZ_DUP_OPTION',
+            { type: 'scene', id: scene.id, blockId: item.target },
+            '删除重复选项并把答案重指到保留项',
+            before,
+            { options: question.options, answerIndex: question.answerIndex },
+          ),
+        )
+        continue
+      }
+    }
     if (item.code === 'MATH_ANSWER_MISMATCH' && next.kind === 'board') {
       const block = (next.lesson?.blocks || []).find((b) => b.id === item.target)
       if (block?.type === 'fill-blank' && Array.isArray(block.answers) && fix.answer != null) {

@@ -13,7 +13,7 @@ import {
   planFingerprint,
   coverageTable,
 } from '../src/utils/courseIR.js'
-import { validateCoursePlan, violationsByCode } from '../src/utils/courseValidator.js'
+import { validateCoursePlan, violationsByCode, validateQuizContent } from '../src/utils/courseValidator.js'
 import {
   createLedger,
   addClaim,
@@ -522,6 +522,107 @@ test('修复提示词只针对问题场景且带材料边界', () => {
 test('topologicalSceneOrder 保持稳定顺序', () => {
   const ordered = topologicalSceneOrder(plan)
   assert.deepEqual(ordered.map((scene) => scene.title), plan.scenes.map((scene) => scene.title))
+})
+
+// ---------------------------------------------------------------- [6.5] 结构下限与题目质量
+console.log('\n[6.5] 结构下限 / 题目质量校验')
+test('场景结构不足时报 STRUCT_MIN_SCENES（warning 不阻断）', () => {
+  const validation = validateCoursePlan(plan)
+  assert.equal(validation.passed, true, 'warning 不影响 passed')
+  const struct = violationsByCode(validation, 'STRUCT_MIN_SCENES')
+  assert.ok(struct.length >= 1, '夹具仅 5 场景应触发下限提示')
+  assert.ok(struct.every((item) => item.severity === 'warning'))
+  assert.ok(struct.some((item) => /8 个/.test(item.message)))
+  const noReview = JSON.parse(JSON.stringify(plan))
+  noReview.scenes = noReview.scenes.filter((scene) => scene.type !== 'review')
+  const noReviewValidation = validateCoursePlan(noReview)
+  assert.ok(
+    violationsByCode(noReviewValidation, 'STRUCT_MIN_SCENES').some((item) =>
+      /review 类场景/.test(item.message),
+    ),
+  )
+})
+test('validateQuizContent：重复选项 / 答案越界 / 选项不足', () => {
+  const dup = validateQuizContent([
+    {
+      outlineId: 's_quiz',
+      content: {
+        kind: 'quiz',
+        questions: [
+          { id: 'q1', stem: '解方程 3x+2=5', options: ['x=1', 'x=2', 'x=1'], answerIndex: 0 },
+        ],
+      },
+    },
+  ])
+  const dupIssue = dup.find((item) => item.code === 'QUIZ_DUP_OPTION')
+  assert.ok(dupIssue, 'A=D 型重复选项必须报 error')
+  assert.equal(dupIssue.severity, 'error')
+  assert.deepEqual(dupIssue.fix.options, ['x=1', 'x=2'])
+  assert.equal(dupIssue.fix.answerIndex, 0)
+  assert.equal(
+    dup.filter((item) => item.code === 'QUIZ_SINGLE_ANSWER').length,
+    0,
+    '去重修复已解决答案唯一性，不应重复报',
+  )
+
+  const noAnswer = validateQuizContent([
+    {
+      outlineId: 's_quiz',
+      content: {
+        kind: 'quiz',
+        questions: [{ id: 'q2', stem: '下列说法正确的是', options: ['都对', '都不对'], answerIndex: 5 }],
+      },
+    },
+  ])
+  assert.ok(noAnswer.some((item) => item.code === 'QUIZ_SINGLE_ANSWER' && item.severity === 'error'))
+  assert.ok(noAnswer.some((item) => item.code === 'QUIZ_OPTION_COUNT' && item.severity === 'warning'))
+
+  const ok = validateQuizContent([
+    {
+      outlineId: 's_quiz',
+      content: {
+        kind: 'quiz',
+        questions: [{ id: 'q3', stem: '解方程 2x=6', options: ['x=2', 'x=3', 'x=4'], answerIndex: 1 }],
+      },
+    },
+  ])
+  assert.equal(ok.length, 0, '合规题目零问题')
+
+  const judge = validateQuizContent([
+    {
+      outlineId: 's_quiz',
+      content: {
+        kind: 'quiz',
+        questions: [{ id: 'q4', stem: '指导性计划适用于高不确定环境', options: ['对', '错'], answerIndex: 0 }],
+      },
+    },
+  ])
+  assert.equal(judge.length, 0, '判断题二选项合法，不报选项不足')
+})
+test('内容层修复：QUIZ_DUP_OPTION 去重并重指答案', () => {
+  const scene = { id: 'scene_quiz', title: '检索练习' }
+  const content = {
+    kind: 'quiz',
+    questions: [
+      { id: 'q1', stem: '解方程 3x+2=5', options: ['x=1', 'x=2', 'x=1'], answerIndex: 2, explanation: 'x=1' },
+    ],
+  }
+  const issues = validateQuizContent([{ outlineId: scene.id, content }])
+  const { content: fixed, repairs, unresolved } = repairSceneContent(scene, content, issues)
+  assert.deepEqual(fixed.questions[0].options, ['x=1', 'x=2'])
+  assert.equal(fixed.questions[0].answerIndex, 0, '答案随去重重指到保留项')
+  assert.ok(repairs.some((item) => item.code === 'QUIZ_DUP_OPTION'))
+  assert.equal(unresolved.length, 0, '去重后可确定性解决，不留给模型')
+  const recheck = validateQuizContent([{ outlineId: scene.id, content: fixed }])
+  assert.equal(
+    recheck.filter((item) => item.severity === 'error').length,
+    0,
+    '去重后无 error 级问题',
+  )
+  assert.ok(
+    recheck.some((item) => item.code === 'QUIZ_OPTION_COUNT'),
+    '去重后仅剩选项数量 warning，交模型补全',
+  )
 })
 
 // ---------------------------------------------------------------- [7] 实验工具

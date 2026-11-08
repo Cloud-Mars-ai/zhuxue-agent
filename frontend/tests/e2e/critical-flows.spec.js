@@ -728,8 +728,12 @@ test('课程编译器可在无项目时运行离线实验并给出组间指标',
   await page.goto('/app/compiler')
 
   await expect(page.getByRole('heading', { name: /把课程生成过程变成可验证的对象/ })).toBeVisible()
-  // 没有已编译课程时给出提示，但实验与评测仍可用
-  await expect(page.getByText(/还没有已编译的课程/)).toBeVisible()
+  // 首次进入会注入自动生成的演示课程（已编译，带 IR 与校验报告）；
+  // 没有任何已编译课程时会显示「还没有已编译的课程」提示，实验与评测始终可用。
+  // 课程下拉的浮层里也有一份拷贝（teleport 到 body），取第一个可见的已选项。
+  await expect(
+    page.getByText('计划职能：类型、过程与组织控制衔接').first(),
+  ).toBeVisible()
 
   await page.getByRole('tab', { name: '实验与评测' }).click()
   await expect(page.getByTestId('compiler-run-experiment')).toBeVisible()
@@ -748,4 +752,58 @@ test('课程编译器可在无项目时运行离线实验并给出组间指标',
   // 导出按钮可用
   await expect(page.getByRole('button', { name: '导出 Markdown 报告' })).toBeEnabled()
   await expect(page.getByRole('button', { name: '导出教师评分表' })).toBeEnabled()
+})
+
+test('演示课程支持小测作答、讲稿播放与完课报告', async ({ page }) => {
+  await seedUser(page, 'student')
+  // 首次进入自动注入已编译的演示课程（id 见 src/mock/demoCourse.js），深链直达
+  await page.goto('/learn/course-demo-mw815lqq')
+  await expect(page.getByTestId('board-canvas')).toBeVisible()
+
+  // 讲稿播放条：播放 → 自动展开讲稿层 → 暂停
+  const playButton = page.locator('.playback-bar .play-button')
+  await expect(playButton).toHaveAttribute('aria-label', '播放讲解')
+  await expect(page.locator('.beat-counter')).toHaveText(/^1\/\d+$/)
+  await playButton.click()
+  await expect(playButton).toHaveAttribute('aria-label', '暂停讲解')
+  await expect(page.locator('.script-live')).toBeVisible()
+  await playButton.click()
+  await expect(playButton).toHaveAttribute('aria-label', '播放讲解')
+
+  // 分拍步进：下一拍使 beat 计数 +1（播放中自动推进不阻塞本断言）
+  const counter = page.locator('.beat-counter')
+  const before = Number((await counter.textContent()).split('/')[0])
+  await page.getByRole('button', { name: '下一拍' }).click()
+  const after = Number((await counter.textContent()).split('/')[0])
+  expect(after).toBe(before + 1)
+
+  // 切换到小测场景（第 4 场：检索练习：类型与过程辨析）
+  await page.locator('.scene-rail button', { hasText: '检索练习：类型与过程辨析' }).click()
+  const quizStage = page.locator('.quiz-stage')
+  await expect(quizStage).toBeVisible()
+  await expect(page.locator('.quiz-counter')).toHaveText('第 1 / 3 题')
+
+  // 选择选项 → 提交 → 立即判定并给出解析，选项锁定
+  await quizStage.locator('.quiz-options button').first().click()
+  await quizStage.getByRole('button', { name: '提交答案' }).click()
+  await expect(page.locator('.quiz-verdict')).toBeVisible()
+  await expect(page.locator('.quiz-explanation')).toBeVisible()
+  await expect(quizStage.locator('.quiz-options button').first()).toBeDisabled()
+
+  // 下一题推进题目进度
+  await quizStage.getByRole('button', { name: '下一题' }).click()
+  await expect(page.locator('.quiz-counter')).toHaveText('第 2 / 3 题')
+
+  // 完课报告：footer 按钮打开总结弹层，统计项齐全
+  await page.locator('.lesson-footer .finish-button').click()
+  const dialog = page.getByRole('dialog', { name: '完课总结' })
+  await expect(dialog).toBeVisible()
+  await expect(dialog.locator('.complete-stats')).toBeVisible()
+  await expect(dialog.getByText('学习场景')).toBeVisible()
+  await expect(dialog.getByText('完成答题')).toBeVisible()
+  await expect(dialog.getByText('答题正确率')).toBeVisible()
+
+  // 「留在本页」关闭弹层，回到课程页
+  await dialog.getByRole('button', { name: '留在本页' }).click()
+  await expect(dialog).toBeHidden()
 })

@@ -88,6 +88,7 @@ function normalizeProject(project) {
     repairs: Array.isArray(project.repairs) ? project.repairs : [],
     ledger: normalizeLedger(project.ledger),
     fallback: !!project.fallback,
+    demo: !!project.demo,
     outlineError: project.outlineError || '',
     generatorVersion: project.generatorVersion || '',
     error: project.error || '',
@@ -113,7 +114,26 @@ export const useCourseStudioStore = defineStore('courseStudio', () => {
     if (loadingPromise) return loadingPromise
     loadingPromise = (async () => {
       const saved = await idbGet(STORAGE_KEY)
-      projects.value = (Array.isArray(saved) ? saved : []).map(normalizeProject).filter(Boolean)
+      let list = (Array.isArray(saved) ? saved : []).map(normalizeProject).filter(Boolean)
+      // 首次进入（本机没有任何课程）时注入「自动生成的系统性演示课程」，
+      // 保证发布链接开箱即有完整体验；ownerId='demo' 不参与「最近课程」
+      // 自动选中，只在列表展示，用户可点开体验或直接生成自己的课程。
+      if (!list.length) {
+        try {
+          const { DEMO_COURSE_PROJECT } = await import('@/mock/demoCourse')
+          const seeded = DEMO_COURSE_PROJECT
+            ? normalizeProject({ ...DEMO_COURSE_PROJECT, ownerId: 'demo' })
+            : null
+          if (seeded) {
+            projects.value = [seeded]
+            await persist()
+            list = projects.value
+          }
+        } catch (error) {
+          console.warn('[course-studio] demo course seed skipped:', error)
+        }
+      }
+      projects.value = list
       loaded.value = true
       return projects.value
     })()

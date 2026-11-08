@@ -28,7 +28,7 @@ import {
   normalizeCoursePlan,
   planFromBlueprint,
 } from '@/utils/courseIR'
-import { validateCoursePlan } from '@/utils/courseValidator'
+import { validateCoursePlan, validateQuizContent } from '@/utils/courseValidator'
 import { repairCoursePlan, repairSceneContent } from '@/utils/courseRepair'
 import {
   auditLedger,
@@ -722,8 +722,10 @@ function compileSceneContent({ project, outline, content, plan, ledger, scientif
     scene,
     content,
   })
+  // 题目质量（QUIZ-*）：选项重复/答案唯一性/选项数量，全学科生效
+  const quizIssues = validateQuizContent([{ outlineId: outline.id, title: outline.title, content }])
   const sci = checkScientificModel({ model: scientificModel, content })
-  const issues = [...subject.issues, ...sci.issues]
+  const issues = [...subject.issues, ...quizIssues, ...sci.issues]
   const evidence = ledger ? extractSceneClaims(ledger, { plan, scene, content }) : []
   const { content: fixed, repairs, unresolved } = repairSceneContent(scene, content, issues)
   // 修复后重新抽取证据，保证账本与最终内容一致
@@ -741,11 +743,12 @@ function compileSceneContent({ project, outline, content, plan, ledger, scientif
     scene,
     content: fixed,
   })
+  const recheckQuiz = validateQuizContent([{ outlineId: outline.id, title: outline.title, content: fixed }])
   const recheckSci = checkScientificModel({ model: scientificModel, content: fixed })
   return {
     content: fixed,
     evidence,
-    subjectIssues: [...recheckSubject.issues, ...recheckSci.issues],
+    subjectIssues: [...recheckSubject.issues, ...recheckQuiz, ...recheckSci.issues],
     subjectChecker: subject.checker,
     repairs,
     unresolved,

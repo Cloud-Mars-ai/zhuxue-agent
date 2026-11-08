@@ -696,7 +696,8 @@ function formatTime(value) {
               <strong>{{ item.title }}</strong>
               <small>{{ item.chapter }} · {{ item.outlines.length }} 场 · {{ formatTime(item.updatedAt) }}</small>
             </span>
-            <em>{{ item.status === 'ready' ? '完成' : item.status === 'generating' ? '生成中' : '大纲' }}</em>
+            <em v-if="item.demo" class="demo-badge">演示</em>
+            <em v-else>{{ item.status === 'ready' ? '完成' : item.status === 'generating' ? '生成中' : '大纲' }}</em>
           </button>
           <p v-if="!studio.projects.length" class="empty-note">还没有课程，先生成第一份大纲。</p>
         </section>
@@ -1382,6 +1383,14 @@ function formatTime(value) {
   color: var(--text-faint);
   font-size: 9px;
   font-style: normal;
+}
+
+.project-link em.demo-badge {
+  padding: 1px 7px;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-radius: var(--radius-pill);
+  font-weight: 700;
 }
 
 .empty-note {

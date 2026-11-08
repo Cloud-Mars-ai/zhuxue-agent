@@ -14,6 +14,12 @@
  * - MATERIAL_EXISTENCE 材料存在：sourceChunkIds 必须来自 allowedChunkIds（error）
  * - COMPLETION_CRITERIA 完成标准：每个场景至少 1 条（warning）
  * - KP_RANGE        知识点难度取值 1–3（warning）
+ * - STRUCT_MIN_SCENES 结构下限：导入/讲解/示例/小测/收束各类齐备且合计 ≥8（warning）
+ *
+ * 内容层（validateQuizContent，不在本计划级入口）：
+ * - QUIZ_DUP_OPTION  题目选项重复：渲染后会出现多个「正确」答案（error，可确定性修复）
+ * - QUIZ_SINGLE_ANSWER 答案缺失或越界：没有恰一个正确选项（error，多数交模型）
+ * - QUIZ_OPTION_COUNT 选项数量不足：去重后少于 3 个（warning，交模型补全）
  *
  * 本文件不导入 '@/...'，保证 node 测试可直接运行。
  */
@@ -30,7 +36,33 @@ export const CONSTRAINT_CODES = [
   'MATERIAL_EXISTENCE',
   'COMPLETION_CRITERIA',
   'KP_RANGE',
+  'STRUCT_MIN_SCENES',
+  'QUIZ_DUP_OPTION',
+  'QUIZ_SINGLE_ANSWER',
+  'QUIZ_OPTION_COUNT',
 ]
+
+export const QUIZ_QUALITY_CODES = ['QUIZ_DUP_OPTION', 'QUIZ_SINGLE_ANSWER', 'QUIZ_OPTION_COUNT']
+
+/** 系统性课程的结构下限（报告④ P1-3）：各类场景至少数量。 */
+const SCENE_TYPE_MINIMUMS = {
+  lecture: 2, // 讲解（第一节兼导入）
+  quiz: 1, // 小测
+  practice: 1, // 示例/应用
+  review: 1, // 收束
+}
+const SCENE_TOTAL_MINIMUM = 8
+const QUIZ_OPTION_MINIMUM = 3
+
+/** 判断题的合法二选项集合（大小写不敏感）：这类题目按设计就只有两个选项。 */
+const JUDGE_OPTION_PAIRS = new Set([
+  '对', '错', '正确', '错误', '是', '否', 'true', 'false', 't', 'f', 'yes', 'no',
+])
+
+function isJudgePair(options) {
+  if (options.length !== 2) return false
+  return options.every((option) => JUDGE_OPTION_PAIRS.has(String(option).trim().toLowerCase()))
+}
 
 const MINUTE_RANGES = {
   lecture: [2, 6],
@@ -319,6 +351,41 @@ function checkKnowledgePointRange(plan) {
 }
 
 /**
+ * 结构下限（STRUCT_MIN_SCENES，warning）：系统性课程应各类齐备。
+ * 只报告不阻断——场景创造属于模型侧职责，确定性修复不造内容。
+ */
+function checkSceneStructure(plan) {
+  const issues = []
+  const counts = {}
+  for (const scene of plan.scenes) counts[scene.type] = (counts[scene.type] || 0) + 1
+  for (const [type, minimum] of Object.entries(SCENE_TYPE_MINIMUMS)) {
+    if ((counts[type] || 0) < minimum) {
+      issues.push(
+        violation(
+          'STRUCT_MIN_SCENES',
+          'warning',
+          { type: 'plan', id: plan.courseId },
+          `课程缺少 ${type} 类场景（至少 ${minimum} 个，现有 ${counts[type] || 0} 个）`,
+          `补充 ${type} 场景，保证课程结构完整`,
+        ),
+      )
+    }
+  }
+  if (plan.scenes.length < SCENE_TOTAL_MINIMUM) {
+    issues.push(
+      violation(
+        'STRUCT_MIN_SCENES',
+        'warning',
+        { type: 'plan', id: plan.courseId },
+        `课程共 ${plan.scenes.length} 个场景，低于系统性课程建议下限 ${SCENE_TOTAL_MINIMUM} 个`,
+        '按导入—讲解—示例—小测—收束补足场景',
+      ),
+    )
+  }
+  return issues
+}
+
+/**
  * 全量验证。返回 { passed, violations, metrics }。
  * passed = 没有任何 error 级违规（warning 不阻断编译）。
  */
@@ -341,6 +408,7 @@ export function validateCoursePlan(plan) {
     ...checkMaterials(plan),
     ...checkCriteria(plan),
     ...checkKnowledgePointRange(plan),
+    ...checkSceneStructure(plan),
   ]
   const errorCount = violations.filter((item) => item.severity === 'error').length
   return {
@@ -366,4 +434,85 @@ export function countBySeverity(validation) {
     error: list.filter((item) => item.severity === 'error').length,
     warning: list.filter((item) => item.severity === 'warning').length,
   }
+}
+
+/**
+ * 内容层题目质量校验（QUIZ-*，报告④ P1-4）。
+ *
+ * scenes：项目 scenes（含生成后的 content），形如 [{ outlineId, title, content }]。
+ * 返回 issue 数组，形状与 subjectCheck 一致：{ code, severity, target, message, fix }。
+ *
+ * - QUIZ_DUP_OPTION（error）：选项重复。修复载荷 fix 携带去重后的 options 与
+ *   重算的 answerIndex，repairSceneContent 可确定性应用；
+ * - QUIZ_SINGLE_ANSWER（error）：答案缺失/越界，没有恰一个正确选项，交模型；
+ * - QUIZ_OPTION_COUNT（warning）：去重后选项少于 3 个，交模型补全。
+ */
+export function validateQuizContent(scenes = []) {
+  const issues = []
+  for (const scene of Array.isArray(scenes) ? scenes : []) {
+    const questions = scene?.content?.kind === 'quiz' ? scene.content.questions || [] : []
+    for (const question of questions) {
+      const options = (Array.isArray(question?.options) ? question.options : [])
+        .map((option) => String(option ?? '').trim())
+        .filter(Boolean)
+      if (options.length < 2 || !question?.stem) continue
+      const stem = String(question.stem).trim().slice(0, 24)
+
+      // 1. 重复选项（保留首次出现；答案若指向被删项则重指到保留项）
+      const seen = new Set()
+      const deduped = []
+      const removed = []
+      options.forEach((option) => {
+        if (seen.has(option)) {
+          removed.push(option)
+          return
+        }
+        seen.add(option)
+        deduped.push(option)
+      })
+      let resolvedAnswer = null
+      if (removed.length) {
+        const rawAnswer = Number(question.answerIndex)
+        const answerOption = Number.isInteger(rawAnswer) ? options[rawAnswer] : undefined
+        const remapped = answerOption != null ? deduped.indexOf(answerOption) : -1
+        resolvedAnswer = remapped >= 0 ? remapped : null
+        issues.push({
+          code: 'QUIZ_DUP_OPTION',
+          severity: 'error',
+          target: question.id,
+          message: `题目「${stem}」存在重复选项（${[...new Set(removed)].join('、')}），会出现多个「正确」答案`,
+          fix: { options: deduped, answerIndex: resolvedAnswer },
+          hint: '删除重复选项并把答案重指到保留项',
+        })
+      }
+
+      // 2. 答案缺失/越界（去重修复已解决的不再重复报）
+      const answerIndex = Number(question.answerIndex)
+      const answerValid =
+        Number.isInteger(answerIndex) && answerIndex >= 0 && answerIndex < options.length
+      if (resolvedAnswer == null && !answerValid) {
+        issues.push({
+          code: 'QUIZ_SINGLE_ANSWER',
+          severity: 'error',
+          target: question.id,
+          message: `题目「${stem}」的答案缺失或越界（answerIndex=${question.answerIndex}），没有恰一个正确选项`,
+          fix: null,
+          hint: '重新指定正确选项，保证恰有一个正确答案',
+        })
+      }
+
+      // 3. 选项数量不足（去重后 < 3 个即失去选择题意义；判断题二选项合法）
+      if (deduped.length < QUIZ_OPTION_MINIMUM && !isJudgePair(deduped)) {
+        issues.push({
+          code: 'QUIZ_OPTION_COUNT',
+          severity: 'warning',
+          target: question.id,
+          message: `题目「${stem}」去重后仅 ${deduped.length} 个选项，少于 ${QUIZ_OPTION_MINIMUM} 个`,
+          fix: null,
+          hint: '补足干扰项，保证选择题有足够区分度',
+        })
+      }
+    }
+  }
+  return issues
 }
