@@ -1,7 +1,7 @@
-# 项目日志 · 2026-11-08（材料上传四项需求 + 板书交互态修复 + T-21 学习者闭环与自动课程生成）
+# 项目日志 · 2026-11-08（材料上传四项需求 + 板书交互态修复 + T-21 学习者闭环与自动课程生成 + T-22 OpenMAIC 对齐三诊断修复）
 
-> 编制：WorkBuddy ｜ 编制时间：2026-11-09 00:40（GMT+8，T-21 追加）
-> 事实基准：`git main = c6d8876`（T-21 已提交并推送 mygithub），**git 历史共 43 提交**（`git rev-list --count HEAD` 实勘）；本文档自身的提交会使总数 +1，以实时复验为准
+> 编制：WorkBuddy ｜ 编制时间：2026-11-09（T-22 追加）
+> 事实基准：`git main = dd08aed`（T-22 已提交并推送 mygithub），**git 历史共 44 提交**（`git rev-list --count HEAD` 实勘）；本文档自身的提交会使总数 +1，以实时复验为准
 > 上游日志：`docs/release/PROJECT-LOG-2026-11-07.md`（T-19 及以前）；冲突时以本日志 + 代码为准
 
 ---
@@ -10,12 +10,12 @@
 
 | 读数 | 当前值 | 判断 |
 | --- | --- | --- |
-| 代码基线 | `main = c6d8876`（T-21 已提交并推送 mygithub，见 §4） | 可安全接手 |
-| 工作树 | T-21 已收口（19 文件入库）；**无并行会话未提交改动**（T-20 台账所述 QUIZ-* 工作已由 T-21 完成并提交） | 提交前无需再确认归属 |
-| 确定性测试 | E2E **39/39**（T-21 实跑，新增演示课程小测+播放+完课报告用例）；text-repair 48/48；openmaic 36/36；course-script 36/36；course-compiler 44/44；visualization 26/26；competition 通过 | 回归基线健康 |
+| 代码基线 | `main = dd08aed`（T-22 已提交并推送 mygithub，见 §5） | 可安全接手 |
+| 工作树 | T-22 已收口（31 文件入库）；**无并行会话未提交改动** | 提交前无需再确认归属 |
+| 确定性测试 | E2E **31/31**（T-22 实跑）；node 7 套件全绿：compiler 44 / script 36 / openmaic 36 / text-repair 48 / visualization 26 / competition / **alignment 16（T-22 新套件）** | 回归基线健康 |
 | 本机 .env | `frontend/.env` 已配 DeepSeek key（用户侧接入，gitignore） | **E2E 必须显式置空 key 跑**（见 §3），否则模型真答题、断言漂移 |
-| 公网三通道 | T-21 已全部同步：GitHub `c6d8876`；workbuddy 分享链接 `https://zhuxue-agent.app.workbuddy.host/?sharecode=Z7X276B67K`（verified）；腾讯云 4173 新 bundle（Ca65O6_p）验证 200 | 三通道一致，无落后构建 |
-| 阶段判断 | T-21（P0/P1 + 自动课程 + 报告 + 发布）完成 → 遗留项（交互数轴 P1-1 / 问题气泡 P2 / Step Key 轮换） | 下一步：按 §4 遗留表推进 |
+| 公网三通道 | T-21 已全部同步：GitHub `c6d8876`；workbuddy 分享链接 `https://zhuxue-agent.app.workbuddy.host/?sharecode=Z7X276B67K`（verified）；腾讯云 4173 新 bundle（Ca65O6_p）验证 200。**T-22（dd08aed）尚未同步到 workbuddy/腾讯云两通道**（未获发布授权，见 §5 遗留） | 代码通道领先两个发布通道一个提交 |
+| 阶段判断 | T-22（OpenMAIC 对齐三诊断修复 + 视频报告四维度重构）完成 → 遗留项：P1 播放控制条 / P2 小测后校验 / P3 完课闭环增强 / P5 场景03产品内验证 / Step Key 轮换（最高优先级） | 下一步：按 §5 遗留表推进 |
 
 ---
 
@@ -69,4 +69,21 @@
 
 ---
 
-*本日志由 WorkBuddy 依据 git `c6d8876`（43 提交，日志提交自身 +1 以实时复验为准）与代码实勘生成；与旧文档冲突时，以本日志 + `PROJECT-LOG-2026-11-07.md` + 代码为准。建议后续 agent 每次完成实质工作后追加台账条目（任务 / 日期 / 交付 / 验证 / 遗留），保持交接链不断。*
+## 5. T-22 台账：OpenMAIC 输出对齐三诊断修复 + 视频报告四维度重构（2026-11-09 追加）
+
+| 项 | 内容 |
+| --- | --- |
+| 输入 | 用户指令「再次查看视频，重新修改两份视频的深度研究报告，从语言风格、界面排版、美学设计和逻辑条理四个维度进行系统性对比与重构」+ 三大核心差异排查（模型输出对齐 / 真实图片缺失 / 交互动画） |
+| 视频复核 | 对两份视频新增 23 帧全分辨率复核（OpenMAIC 17 帧 + native 6 帧），**修正 12 处场景归属误记**：报告② s_029–s_032 实为火箭三栏页（非城市天际线）、s_049–s_064 场景 1→2、s_065–s_076 场景 3、s_077–s_080 小测开始页（非切换卡）、s_081 答题中 0/3（非 3/3）、s_117 场景 8、s_125–s_132 场景 9（右侧图片位带叉空框）、s_133 起场景 10 深色数轴交互、s_149–s_166 场景 11→13、s_167 起完课；报告③ s_033–s_041 场景 04→05、s_073–s_080 场景 04 回看、s_081–s_084 场景 05 小测 Q6、s_042 非三栏（实为路线图+关系图模板） |
+| 新证据 | 报告③新增：小测 Q6 选项 B/C/D 文字完全相同（E1，与报告② B1 同类）+ Q2 解析「无理不循环小数」/Q1 解析数字游走（E2）；用户场景 chips 跳看序列 01→02→04→05→06→01→02→04→05（导航真实可用） |
+| 诊断一修复 | board.js 白名单 16→19 种（chart/columns/illustration）+ ChartBlock.vue（bar/line/pie，chartType 映射）；slideAdapter detectColumns 多栏保留 + 四级图片映射 + illustration 前置保视觉锚点；sceneGenerator widget-config → simulation 映射（**requireKeywords 严格模式**防「抛体运动」误配圆周运动）；knowledgeVisualization 新增 square-root 模型 + SquareRootSim.vue（对齐视频 s_098）；提示词轻量媒体契约（assignedImages 目录 + imageElementEnabled） |
+| 诊断二修复 | 新增 illustrationScenes.js（8 场景注册表，关键词打分）+ 9 个 illustration SFC（viewBox 320×180，--board-* 主题变量）+ IllustrationStage 分派；**illustration block 白名单强校验**（注册表外 id 拒收）——不追文生图，从契约上杜绝占位符/叉号/外链图（结构性规避报告② B2 事故） |
+| 诊断三修复 | 新增 tween.js 补间基元（rAF + 五曲线 + 可注入 scheduler/now，node 可确定性测试）；NumberLineSim 连续拖拽 + 松手吸附整数 + emit 双向同步 + watch props.params 280ms 补间（修复「拖了没反应」——ref 只初始化一次）；BoardCanvas 级联 stagger（70ms/360ms 封顶）；CourseExperience 场景过渡 + verdict-pop/shake/rise 判定动效；SimulationStage 滑块填充轨道 + 数值翻牌；全部支持 prefers-reduced-motion |
+| 文档 | 报告②/③ v2 四维度重构（各新增 §3 四维度评估：语言风格/界面排版/美学设计/逻辑条理，含评级表）；新增 `docs/release/IMPROVEMENT-REPORT-2026-11-08.md`（三诊断 + 根因 + F1.1–F3.5 落实清单 + T1–T9 验证 + §8 遗留 P1–P5） |
+| 验证 | **新套件 test-alignment.mjs 16/16**（A 场景注册表/B 新块归一化/C 适配器映射/D widget→simulation/E tween）；7 套件全绿（compiler 44 / script 36 / openmaic 36 / text-repair 48 / visualization 26 / competition / alignment 16）；build 通过；**E2E 31/31** |
+| 发布 | 提交 `dd08aed`（31 文件，+2800/-283）推送 mygithub；workbuddy/腾讯云两通道**尚未同步**（本次未获发布授权，见遗留） |
+| 遗留 | P1 播放控制条（报告③ D5，超出对齐范围）；P2 小测后校验（选项去重+解析一致性+术语校对，报告② B1/报告③ E1E2，可在 courseValidator QUIZ-* 框架扩展）；P3 完课闭环增强（奖杯/数据卡/反馈）；P4 讲稿长列表分组折叠；P5 场景 03「数轴上的加法模拟」产品内验证（录制被跳看绕过）；**src/stores/model.js 硬编码 Step API Key 需负责人轮换（最高优先级，多轮遗留）** |
+
+---
+
+*本日志由 WorkBuddy 依据 git `dd08aed`（44 提交，日志提交自身 +1 以实时复验为准）与代码实勘生成；与旧文档冲突时，以本日志 + `PROJECT-LOG-2026-11-07.md` + 代码为准。建议后续 agent 每次完成实质工作后追加台账条目（任务 / 日期 / 交付 / 验证 / 遗留），保持交接链不断。*
