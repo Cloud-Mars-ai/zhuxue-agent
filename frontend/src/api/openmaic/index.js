@@ -47,6 +47,7 @@ export {
   generateOpenmaicScene,
   pblToLesson,
   widgetConfigToLesson,
+  withReferenceMaterial,
 } from './sceneGenerator.js'
 
 export { slideElementsToLesson } from './slideAdapter.js'

@@ -210,6 +210,30 @@ export function widgetConfigToLesson(config, outline, context = {}) {
   }
 }
 
+/**
+ * 场景级 aiCall 包装：把检索到的参考材料正文附加到 user 消息末尾。
+ *
+ * 为什么需要：上游 slide/quiz/simulation 模板的插值位（title/description/
+ * keyPoints/teacherContext…）都不含材料正文字段——teacherContext 只承载规则。
+ * 不在场景消息里注入材料正文，模型就看不到资料，"依据材料生成"沦为空话
+ * （2026-11-08 本项目实测 gap：蓝图阶段有材料，场景阶段没有）。
+ * 大纲阶段材料走 requirement 的「参考材料」段，不受此影响。
+ *
+ * @param {(system:string, user:string) => Promise<string>} aiCall
+ * @param {string} materialText 检索上下文正文（已过乱码修复）
+ * @param {{maxChars?: number}} [options] 材料正文截断上限（默认 4000）
+ * @returns {typeof aiCall} 材料为空时原样返回（零开销）
+ */
+export function withReferenceMaterial(aiCall, materialText, { maxChars = 4000 } = {}) {
+  const excerpt = String(materialText || '').trim()
+  if (!excerpt) return aiCall
+  const bounded = excerpt.length > maxChars ? `${excerpt.slice(0, maxChars - 1)}…` : excerpt
+  const block =
+    `\n\n【参考材料 · 必须依据】\n${bounded}\n\n` +
+    '（以上是本场景的指定资料：事实、数据、案例与术语以它为准；材料未覆盖的内容不要编造具体数据，可依据通用知识讲解但需标注。）'
+  return async (system, user) => aiCall(system, `${user}${block}`)
+}
+
 /** pbl：大纲级项目信息 → 受控板书块（上游 planner 不移植）。 */
 export function pblToLesson(outline) {
   const pbl = outline.pbl || {}

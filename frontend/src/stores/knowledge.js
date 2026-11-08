@@ -173,7 +173,12 @@ export const useKnowledgeStore = defineStore('knowledge', () => {
     await persistBoards()
   }
 
-  async function addMaterial({ title, chapter, text, size = 0 }) {
+  /**
+   * 新增材料。kind/sourceName/repairedChars 为课程主页三卡上传的溯源字段
+   * （2026-11-08 新增）：卡片列表以知识库为唯一事实源，删除即真删除，
+   * 不再读可能过期的 localStorage 元数据。其他入口不传即为空串。
+   */
+  async function addMaterial({ title, chapter, text, size = 0, kind = '', sourceName = '', repairedChars = 0 }) {
     // 入库前修复：用户手动粘贴的 PDF 文本同样可能带乱码，
     // 不修的话会存进知识库并在材料列表、检索上下文中扩散。
     const cleanTitle = repairText(title).text.trim()
@@ -184,6 +189,9 @@ export const useKnowledgeStore = defineStore('knowledge', () => {
       chapter,
       text: cleanText,
       size: Number(size) || 0,
+      kind: String(kind || ''),
+      sourceName: String(sourceName || ''),
+      repairedChars: Number(repairedChars) || 0,
       confirmedBy: 'teacher',
       seeded: false,
       updatedAt: new Date().toISOString(),

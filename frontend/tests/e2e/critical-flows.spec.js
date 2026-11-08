@@ -163,6 +163,55 @@ test('PDF 课程课件可在浏览器内提取并导入', async ({ page }) => {
   await expect(page.locator('.material-card').nth(1)).toContainText('✓')
 })
 
+test('课程课件卡支持多文件上传、解析状态展示与删除', async ({ page }) => {
+  await seedUser(page)
+  await page.goto('/app/course')
+
+  // 一次多选两份文件
+  const chooserPromise = page.waitForEvent('filechooser')
+  await page.locator('.material-card').nth(1).click()
+  const chooser = await chooserPromise
+  await chooser.setFiles([
+    {
+      name: '讲义A.txt',
+      mimeType: 'text/plain',
+      buffer: Buffer.from('第一章 计划职能\n计划是对未来行动的事先安排，是管理的首要职能。'),
+    },
+    {
+      name: '讲义B.txt',
+      mimeType: 'text/plain',
+      buffer: Buffer.from('第二章 组织职能\n组织是通过分工协作形成的结构框架。'),
+    },
+  ])
+
+  // 卡片显示多文件计数与完成态
+  await expect(page.locator('.material-card').nth(1)).toContainText('等 2 份', { timeout: 15_000 })
+  await expect(page.locator('.material-card').nth(1)).toContainText('✓')
+
+  // 点击卡片展开列表：每份材料都有"已解析 N 字"的解析证据
+  await page.locator('.material-card').nth(1).click()
+  const popover = page.locator('.material-files')
+  await expect(popover).toBeVisible()
+  await expect(popover.locator('li')).toHaveCount(2)
+  await expect(popover.locator('li').first()).toContainText('已解析')
+  await expect(popover.getByText('讲义A.txt')).toBeVisible()
+  await expect(popover.getByText('讲义B.txt')).toBeVisible()
+  await expect(popover.getByText('解析成功才会用于生成课程')).toBeVisible()
+
+  // 删除其中一份：确认弹窗 → 真删除（知识库 + 卡片同步）
+  await popover.locator('li').first().locator('.material-file-del').click()
+  const dialog = page.locator('.el-message-box')
+  await expect(dialog).toBeVisible()
+  await dialog.getByRole('button', { name: '删除' }).click()
+  await expect(popover.locator('li')).toHaveCount(1)
+  await expect(popover.getByText('讲义A.txt')).toHaveCount(0)
+
+  // 点击遮罩空白处关闭浮层（点左上角避开浮层本体），卡片回到单文件显示
+  await page.locator('.material-popover-mask').click({ position: { x: 6, y: 6 } })
+  await expect(page.locator('.material-files')).toHaveCount(0)
+  await expect(page.locator('.material-card').nth(1)).toContainText('讲义B.txt')
+})
+
 test('课程生成优先使用用户上传材料而不是固定管理学大纲', async ({ page }) => {
   await seedUser(page)
   await page.goto('/app/course')

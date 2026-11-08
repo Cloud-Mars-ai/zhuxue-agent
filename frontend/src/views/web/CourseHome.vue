@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { COURSE } from '@/mock/data'
 import { useUserStore } from '@/stores/user'
 import { useModelStore } from '@/stores/model'
@@ -164,8 +164,10 @@ const generatingCourse = ref(false)
 const uploadInput = ref()
 const activeUploadKind = ref('')
 const uploadingKind = ref('')
-const UPLOAD_STORAGE_KEY = 'ai-tutor-home-uploads'
-const uploadHistory = ref(loadUploadHistory())
+const openFilesKind = ref('')
+// 旧版上传元数据的 localStorage 键（2026-11-08 前）：与知识库双轨存放，
+// 已改为一次性迁移 + 知识库唯一事实源，见 migrateLegacyUploads
+const LEGACY_UPLOAD_KEY = 'ai-tutor-home-uploads'
 
 const MATERIAL_LABELS = {
   syllabus: '教学大纲',
@@ -173,13 +175,46 @@ const MATERIAL_LABELS = {
   more: '更多材料',
 }
 
-function loadUploadHistory() {
+/** 某入口已上传的材料：以知识库为唯一事实源（删除即真删除，不读 localStorage）。
+ *  按上传顺序排列（updatedAt 升序，稳定排序保同刻先后），先传的在前。 */
+function cardFiles(kind) {
+  return knowledgeStore.materials
+    .filter((item) => !item.seeded && item.kind === kind)
+    .slice()
+    .sort((a, b) => String(a.updatedAt || '').localeCompare(String(b.updatedAt || '')))
+}
+
+/**
+ * 旧版上传记录一次性迁移：按「入口名 · 文件名」标题把 kind 回填到知识库材料，
+ * 匹配不到（已被用户删过）的旧记录直接丢弃，然后清掉 localStorage 键。
+ * 保证升级后老用户已上传的课件仍显示在卡片里且可删除。
+ */
+function migrateLegacyUploads() {
+  let legacy = {}
   try {
-    const raw = window.localStorage.getItem(UPLOAD_STORAGE_KEY)
-    const parsed = raw ? JSON.parse(raw) : null
-    return parsed && typeof parsed === 'object' ? parsed : {}
+    const raw = window.localStorage.getItem(LEGACY_UPLOAD_KEY)
+    legacy = raw ? JSON.parse(raw) : {}
   } catch {
-    return {}
+    legacy = {}
+  }
+  const entries = Object.entries(legacy || {})
+  if (!entries.length) return
+  for (const [kind, files] of entries) {
+    if (!MATERIAL_LABELS[kind] || !Array.isArray(files)) continue
+    for (const file of files) {
+      const target = knowledgeStore.materials.find(
+        (item) =>
+          !item.seeded &&
+          !item.kind &&
+          item.title === `${MATERIAL_LABELS[kind]} · ${file?.name}`,
+      )
+      if (target) knowledgeStore.updateMaterial(target.id, { kind })
+    }
+  }
+  try {
+    window.localStorage.removeItem(LEGACY_UPLOAD_KEY)
+  } catch {
+    // 本地存储不可用时忽略
   }
 }
 const showToolMenu = ref(false)
@@ -276,12 +311,29 @@ const heroMaterials = computed(() =>
     { kind: 'syllabus', no: '1', title: '教学大纲', desc: '课程大纲与安排' },
     { kind: 'courseware', no: '2', title: '课程课件', desc: '讲义与笔记' },
     { kind: 'more', no: '3', title: '更多材料', desc: '作业、模拟考试等' },
-  ].map((item) => ({
-    ...item,
-    files: uploadHistory.value[item.kind] || [],
-    action: () => openFilePicker(item.kind),
-  })),
+  ].map((item) => {
+    const files = cardFiles(item.kind)
+    return {
+      ...item,
+      files,
+      fileLabel: files.length
+        ? files.length === 1
+          ? files[0].sourceName || files[0].title
+          : `${files[0].sourceName || files[0].title} 等 ${files.length} 份`
+        : '',
+      // 有空位的卡片点击=选择文件；已有材料的卡片点击=展开列表（看解析结果/删除/追加）
+      action: () => (files.length ? toggleFiles(item.kind) : openFilePicker(item.kind)),
+    }
+  }),
 )
+
+function toggleFiles(kind) {
+  openFilesKind.value = openFilesKind.value === kind ? '' : kind
+}
+
+function closeFilesPopover() {
+  openFilesKind.value = ''
+}
 
 const chapterDesc = computed(
   () => `本周进度 ${heroProgress.value}%，先把这一章的概念框架立起来，再做题。`,
@@ -299,6 +351,12 @@ async function askHero() {
   if (!modeChosen.value) {
     showModeMenu.value = true
     ElMessage.info('请先选择正常上课或考前冲刺模式')
+    return
+  }
+  // 先解析再生成：还有材料在解析时不允许进入下一步，
+  // 否则这份材料不会出现在本次生成的上下文里
+  if (uploadingKind.value) {
+    ElMessage.warning('正在解析上传的材料，请等解析完成再生成课程')
     return
   }
   generatingCourse.value = true
@@ -366,17 +424,10 @@ function openHeroAction(action) {
 
 function openFilePicker(kind) {
   activeUploadKind.value = kind
+  openFilesKind.value = ''
   if (uploadInput.value) {
     uploadInput.value.value = ''
     uploadInput.value.click()
-  }
-}
-
-function saveUploadHistory() {
-  try {
-    window.localStorage.setItem(UPLOAD_STORAGE_KEY, JSON.stringify(uploadHistory.value))
-  } catch {
-    // 本地存储不可用时只保留当前会话
   }
 }
 
@@ -386,6 +437,9 @@ async function handleFilesSelected(event) {
   if (!files.length || !MATERIAL_LABELS[kind]) return
 
   uploadingKind.value = kind
+  // 解析期间只更新卡片态（解析中…/✓），不展开浮层：
+  // 浮层自带全屏遮罩，会挡住「正常上课 / 输入主题」等下一步操作，
+  // 与「先解析再继续」的流畅性相悖；解析证据在点击卡片后的浮层里查看
   await knowledgeStore.ensureLoaded()
   let imported = 0
   let repairedCharsTotal = 0
@@ -393,23 +447,18 @@ async function handleFilesSelected(event) {
 
   for (const file of files) {
     try {
+      // 上传即解析：先提取正文并修乱码，成功才入库；
+      // 解析失败的文件不进知识库，也不会进入后续生成
       const { text, repairedChars } = await importMaterialFile(file)
       await knowledgeStore.addMaterial({
         title: `${MATERIAL_LABELS[kind]} · ${file.name}`,
         chapter: '课程自定义资料',
         text,
         size: file.size,
+        kind,
+        sourceName: file.name,
+        repairedChars,
       })
-      const history = uploadHistory.value[kind] || []
-      uploadHistory.value[kind] = [
-        {
-          name: file.name,
-          size: file.size,
-          chars: text.length,
-          at: new Date().toISOString(),
-        },
-        ...history,
-      ].slice(0, 6)
       repairedCharsTotal += repairedChars
       imported += 1
     } catch (err) {
@@ -417,13 +466,32 @@ async function handleFilesSelected(event) {
     }
   }
 
-  saveUploadHistory()
-  if (imported) ElMessage.success(`已导入 ${imported} 份材料，AI 将优先依据这些内容`)
+  if (imported) {
+    ElMessage.success(`已解析并导入 ${imported} 份材料，生成课程时将优先依据这些内容`)
+  }
   if (repairedCharsTotal > 0) {
     ElMessage.info(`已自动清理 ${repairedCharsTotal} 个乱码字符（从 PDF 复制文本时常见）`)
   }
-  if (failures.length) ElMessage.warning(failures.join('；'))
+  if (failures.length) {
+    ElMessage.warning(`${failures.length} 份材料解析失败：${failures.join('；')}`)
+  }
   uploadingKind.value = ''
+}
+
+/** 删除某入口下的一份材料（知识库真删除 + 卡片即时刷新）。 */
+async function removeUpload(material) {
+  const name = material.sourceName || material.title
+  try {
+    await ElMessageBox.confirm(
+      `删除「${name}」？删除后生成课程将不再使用这份材料。`,
+      '删除材料',
+      { type: 'warning', confirmButtonText: '删除', cancelButtonText: '取消' },
+    )
+  } catch {
+    return // 用户取消
+  }
+  await knowledgeStore.removeMaterial(material.id)
+  ElMessage.success(`已删除「${name}」`)
 }
 
 // 夜读三栏目录：TODO / CASE / PROGRESS
@@ -453,8 +521,9 @@ function startSelfTest(chapter) {
   router.push({ path: '/app/selftest', query: { chapters: chapter, count: 5 } })
 }
 
-onMounted(() => {
-  knowledgeStore.load()
+onMounted(async () => {
+  await knowledgeStore.ensureLoaded()
+  migrateLegacyUploads()
   homeworkStore.load()
 })
 </script>
@@ -589,26 +658,69 @@ onMounted(() => {
 
         <div class="learning-composer">
           <div class="material-row">
-            <button
-              v-for="m in heroMaterials"
-              :key="m.title"
-              class="material-card"
-              type="button"
-              :disabled="uploadingKind === m.kind"
-              @click="m.action()"
-            >
-              <span class="material-no">{{ m.no }}</span>
-              <span class="material-main">
-                <span class="material-title">{{ m.title }}</span>
-                <span class="material-desc">
-                  {{ m.files[0]?.name || m.desc }}
+            <div v-for="m in heroMaterials" :key="m.title" class="material-card-wrap">
+              <button
+                class="material-card"
+                type="button"
+                :disabled="uploadingKind === m.kind"
+                :data-testid="`material-card-${m.kind}`"
+                @click="m.action()"
+              >
+                <span class="material-no">{{ m.no }}</span>
+                <span class="material-main">
+                  <span class="material-title">{{ m.title }}</span>
+                  <span class="material-desc">
+                    {{ uploadingKind === m.kind ? '解析中…' : m.fileLabel || m.desc }}
+                  </span>
                 </span>
-              </span>
-              <span class="material-plus">
-                {{ uploadingKind === m.kind ? '…' : m.files.length ? '✓' : '+' }}
-              </span>
-            </button>
+                <span class="material-plus">
+                  {{ uploadingKind === m.kind ? '…' : m.files.length ? '✓' : '+' }}
+                </span>
+              </button>
+
+              <!-- 已上传材料列表：解析结果可见、可逐份删除、可继续追加 -->
+              <div v-if="openFilesKind === m.kind" class="material-files">
+                <div class="material-files-head">
+                  <span>{{ m.title }} · {{ m.files.length }} 份</span>
+                  <button
+                    type="button"
+                    class="material-files-close"
+                    aria-label="关闭列表"
+                    @click.stop="closeFilesPopover"
+                  >
+                    ×
+                  </button>
+                </div>
+                <ul class="material-files-list">
+                  <li v-for="file in m.files" :key="file.id">
+                    <span class="material-file-name" :title="file.title">
+                      {{ file.sourceName || file.title }}
+                    </span>
+                    <span class="material-file-status">
+                      已解析 {{ file.text?.length || 0 }} 字<template v-if="file.repairedChars"> · 清理乱码 {{ file.repairedChars }} 处</template>
+                    </span>
+                    <button
+                      type="button"
+                      class="material-file-del"
+                      :aria-label="`删除 ${file.sourceName || file.title}`"
+                      @click.stop="removeUpload(file)"
+                    >
+                      ×
+                    </button>
+                  </li>
+                </ul>
+                <button type="button" class="material-files-add" @click.stop="openFilePicker(m.kind)">
+                  + 继续上传（可多选）
+                </button>
+                <p class="material-files-tip">上传后先在浏览器内解析，解析成功才会用于生成课程。</p>
+              </div>
+            </div>
           </div>
+          <div
+            v-if="openFilesKind"
+            class="material-popover-mask"
+            @click="closeFilesPopover"
+          ></div>
 
           <div class="ask-box">
             <div class="composer-input-wrap">
@@ -1103,6 +1215,140 @@ onMounted(() => {
   font-size: 18px;
   line-height: 1;
   color: var(--text-faint);
+}
+
+.material-card-wrap {
+  position: relative;
+  min-width: 0;
+}
+
+.material-popover-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+}
+
+.material-files {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 50;
+  width: min(320px, 78vw);
+  padding: 10px 12px 8px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  box-shadow: 0 14px 36px rgba(15, 23, 42, 0.16);
+  text-align: left;
+}
+
+/* 第三张卡贴右沿，浮层改向右对齐，避免溢出 */
+.material-card-wrap:last-child .material-files {
+  left: auto;
+  right: 0;
+}
+
+.material-files-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-sub);
+}
+
+.material-files-close {
+  padding: 0 4px;
+  background: transparent;
+  border: 0;
+  color: var(--text-faint);
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.material-files-close:hover {
+  color: var(--text-main);
+}
+
+.material-files-list {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.material-files-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 0;
+  border-top: 1px solid var(--divider);
+  font-size: 12px;
+}
+
+.material-files-list li:first-child {
+  border-top: 0;
+}
+
+.material-file-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text-main);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.material-file-status {
+  flex: none;
+  color: var(--text-faint);
+  font-size: 11px;
+}
+
+.material-file-del {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  color: var(--text-faint);
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.material-file-del:hover {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.material-files-add {
+  width: 100%;
+  margin-top: 8px;
+  padding: 6px 0;
+  background: var(--surface-2);
+  border: 1px dashed var(--divider);
+  border-radius: 8px;
+  color: var(--text-sub);
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.material-files-add:hover {
+  color: var(--text-main);
+  border-color: var(--text-faint);
+}
+
+.material-files-tip {
+  margin: 6px 0 2px;
+  color: var(--text-faint);
+  font-size: 11px;
+  line-height: 1.5;
 }
 
 .ask-box {

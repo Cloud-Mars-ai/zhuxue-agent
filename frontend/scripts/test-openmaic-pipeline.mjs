@@ -46,6 +46,7 @@ import {
   extractWidgetConfig,
   generateOpenmaicScene,
   widgetConfigToLesson,
+  withReferenceMaterial,
 } from '../src/api/openmaic/sceneGenerator.js'
 import { slideElementsToLesson } from '../src/api/openmaic/slideAdapter.js'
 import {
@@ -572,6 +573,37 @@ test('F6 widget-config 提取容忍 maxTokens 截断（无闭合 script）', () 
   assert.equal(config.concept, '抛体运动')
   const built = widgetConfigToLesson(config, { title: '抛体运动', keyPoints: ['射程'] })
   assert.ok(built, '截断 config 经修复后仍应产出受控块')
+})
+
+test('F7 withReferenceMaterial：场景级材料注入', async () => {
+  const calls = []
+  const base = async (system, user) => {
+    calls.push({ system, user })
+    return 'ok'
+  }
+
+  // 空材料：零开销，原样返回同一个函数
+  assert.equal(withReferenceMaterial(base, ''), base, '空材料不应包装')
+  assert.equal(withReferenceMaterial(base, '   '), base, '空白材料不应包装')
+
+  // 有材料：system 不动，user 末尾附上带边界的材料块
+  const wrapped = withReferenceMaterial(base, '[m-1｜课件｜第一章]\n计划是对未来行动的事先安排。')
+  const result = await wrapped('SYS', 'USER')
+  assert.equal(result, 'ok')
+  assert.equal(calls.length, 1)
+  assert.equal(calls[0].system, 'SYS', '系统提示不得被改写')
+  assert.ok(calls[0].user.startsWith('USER'), '原 user 内容必须保留在前')
+  assert.ok(calls[0].user.includes('【参考材料 · 必须依据】'))
+  assert.ok(calls[0].user.includes('计划是对未来行动的事先安排。'), '材料正文必须注入')
+  assert.ok(calls[0].user.includes('材料未覆盖的内容不要编造具体数据'))
+
+  // 超长材料按 maxChars 截断（默认 4000）
+  const long = 'x'.repeat(9000)
+  const wrappedLong = withReferenceMaterial(base, long, { maxChars: 500 })
+  await wrappedLong('S', 'U')
+  assert.ok(calls[1].user.length < 9000, '超长材料必须被截断')
+  assert.ok(calls[1].user.includes('…'), '截断处应有省略号')
+  assert.ok(calls[1].user.includes('x'.repeat(499)), '截断应保留上限内的正文')
 })
 
 // ─────────────────────────── G. scientificModel ───────────────────────────

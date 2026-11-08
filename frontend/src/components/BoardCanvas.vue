@@ -197,8 +197,27 @@ function numberLineX(block, value) {
   return LINE_LEFT + ratio * (LINE_RIGHT - LINE_LEFT)
 }
 
+/**
+ * 板书稳定签名：章节/标题/副标题/block 结构一致即视为同一板书。
+ * 不能直接 watch props.lesson 的对象标识——课程管线里的 updateScene
+ * （讲稿、证据账本、修复记录等补写）会经 repairDeep 深拷贝 content，
+ * 同一板书被反复替换出新对象；按标识监听会把用户已进行的
+ * 答题选择、动画步进、揭示进度误清（E2E「下一步后计数回弹」即此）。
+ */
+function lessonSignature(lesson) {
+  if (!lesson) return ''
+  const blocks = Array.isArray(lesson.blocks) ? lesson.blocks : []
+  return [
+    lesson.chapter || '',
+    lesson.title || '',
+    lesson.subtitle || '',
+    String(blocks.length),
+    blocks.map((block) => `${block.type}:${block.title || ''}`).join(','),
+  ].join('|')
+}
+
 watch(
-  () => props.lesson,
+  () => lessonSignature(props.lesson),
   () => {
     selectedAnswers.value = {}
     animationSteps.value = {}

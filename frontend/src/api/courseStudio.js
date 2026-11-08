@@ -12,6 +12,7 @@ import {
   generateOpenmaicScene,
   generateSceneOutlines,
   normalizeSceneOutlines,
+  withReferenceMaterial,
 } from '@/api/openmaic'
 import { useKnowledgeStore } from '@/stores/knowledge'
 import { useModelStore } from '@/stores/model'
@@ -143,7 +144,8 @@ function openmaicTeacherContext(context = {}) {
     '- 面向管理类学习者时，优先用企业管理、生产调度、项目协作等情境举例。',
   ]
   if (context.materialText) {
-    rules.push('- 优先依据上方参考材料中的事实；材料未覆盖的内容不要编造具体数据。')
+    // 场景消息末尾由 withReferenceMaterial 附上材料正文，此处只锚定规则
+    rules.push('- 优先依据本消息末尾【参考材料 · 必须依据】中的事实；材料未覆盖的内容不要编造具体数据。')
   }
   return `${TEXT_INTEGRITY_RULE}\n\n${rules.join('\n')}`
 }
@@ -465,15 +467,21 @@ export async function generateCourseScene({
     try {
       const scene = await generateOpenmaicScene(
         outline,
-        openmaicAiCall({
-          task: `course.scene.openmaic.${outline.type}`,
-          traceRefs: { projectId: project.id, outlineId: outline.id, type: outline.type },
-          signal,
-          // interactive 场景要求完整 HTML（含 widget-config <script>），
-          // 3000 token 实测被截断 → widget-config 解析失败整场景回退；
-          // 8000 为实测安全线（live 实测捕获后上调）
-          maxTokens: outline.type === 'practice' && outline.widget ? 8000 : 3000,
-        }),
+        // 场景级材料注入：上游模板无材料正文插值位，包一层 aiCall 把
+        // materialText 附到 user 消息末尾——否则场景阶段模型看不到资料
+        // （2026-11-08 修复：slide/quiz/interactive 三路统一注入）
+        withReferenceMaterial(
+          openmaicAiCall({
+            task: `course.scene.openmaic.${outline.type}`,
+            traceRefs: { projectId: project.id, outlineId: outline.id, type: outline.type },
+            signal,
+            // interactive 场景要求完整 HTML（含 widget-config <script>），
+            // 3000 token 实测被截断 → widget-config 解析失败整场景回退；
+            // 8000 为实测安全线（live 实测捕获后上调）
+            maxTokens: outline.type === 'practice' && outline.widget ? 8000 : 3000,
+          }),
+          materialText,
+        ),
         {
           languageDirective: project.languageDirective,
           teacherContext: openmaicTeacherContext({ materialText }),

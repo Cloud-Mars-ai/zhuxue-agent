@@ -1,6 +1,6 @@
 # OpenMAIC 接入设计（Course Generation × OpenMAIC Pipeline）
 
-> 版本：v1（2026-11-07）· 上游：THU-MAIC/OpenMAIC `@openmaic/generation@0.3.29`（MIT）
+> 版本：v1.1（2026-11-08 增补：场景级材料注入）· v1（2026-11-07）· 上游：THU-MAIC/OpenMAIC `@openmaic/generation@0.3.29`（MIT）
 > 浅克隆快照：`vendor/openmaic/`（depth 1，仅研究用，不提交）
 
 ## 1. 目标与边界
@@ -65,6 +65,7 @@ generateOpenmaicScene ── 按 outline.type 分派：
   │   quiz        → quiz-content 模板 → value/label/answer → normalizeCourseQuestions（既有）
   │   interactive → simulation/scientificModel 提示词 → 四字段契约 → 受控块
   │   pbl         → 大纲级 projectTopic/targetSkills → practice 受控块
+  │   （slide/quiz/interactive 三路 aiCall 统一经 withReferenceMaterial 包装，材料正文附在 user 消息末尾，见 §4.5）
   ▼
 compileSceneContent（既有）── subjectCheck(+ScientificModel) → evidenceLedger → repairSceneContent
   ▼
@@ -109,6 +110,31 @@ OpenMAIC 交互场景契约 `ScientificModel{core_formulas[],mechanism[],constra
 - SCI-CONSTRAINT-UNCHECKED：constraints 未在内容中出现对应表述 → warn
 - SCI-FORBIDDEN-HIT：内容命中 forbidden_errors 条目 → error（触发修复循环）
 
+### 4.5 场景级材料注入（withReferenceMaterial）
+
+**问题（「真正利用资料」的根因）**：OpenMAIC 四类场景模板的占位符只有
+title/description/keyPoints/teacherContext/languageDirective，**没有任何材料插值位**；
+teacherContext 只承载规则文本。若只把材料写进 teacherContext，模型看到的是
+「有资料」的规则而非资料正文——上传的材料不会进入生成上下文。
+
+**方案**：不改上游模板（字节级同步铁律），在调用层包一层 aiCall 装饰器
+（`frontend/src/api/openmaic/sceneGenerator.js`）：
+
+```js
+withReferenceMaterial(aiCall, materialText, { maxChars = 4000 })
+```
+
+- 在 user 消息末尾追加「【参考材料 · 必须依据」块：事实、数据、案例与术语以材料为准；
+  材料未覆盖的内容不编造具体数据，可依据通用知识讲解但需标注
+- 空材料零开销原样返回（恒等函数）；超长按 maxChars 截断并加省略号
+- 模板无关：slide/quiz/interactive 三路场景生成统一生效，上游提示词资产零改动
+- 材料来源：courseStudio 收集所选材料正文（过 repairText，多份以分隔线拼接）
+
+配套的教师侧四项体验（`views/web/CourseHome.vue`）：上传即解析（`importMaterialFile`
+提取 + 乱码修复，失败不入库）；卡片支持多文件与逐份删除（删除走知识库真删除）；
+解析期间卡片显示「解析中…」且 `askHero` 门控拒绝生成；卡片列表从知识库按 `kind`
+派生（单一事实源，废弃 localStorage 双轨存储）。
+
 ## 5. 开关与回退
 
 - `flags.openmaicPipeline`（默认 true）：关则完全回退既有自研管线（courseBlueprintPrompt/courseScenePrompt）
@@ -124,9 +150,10 @@ OpenMAIC 交互场景契约 `ScientificModel{core_formulas[],mechanism[],constra
 5. 模型行为不可完全约束（live 实测观察，均有兜底或计数，不阻塞）：① 答案位置随机化仅部分遵守（两次实测 0/3、1/3）；② interactive 场景偶有省略 scientificModel 字段——不做兜底伪造，检查器无对象可查即放过；③ slide 内容丰富度随模型波动——文本稀薄时用大纲 keyPoints 兜底 outline（计入 `dropped.outlineFallback`）
 6. interactive 场景 maxTokens 需 8000（3000 实测截断）；其余场景 3000 够用——这是实测标定值，换模型需重标
 7. live 实测的 token 预算与重试参数按 DeepSeek 标定；上游 OpenMAIC 针对 Claude/GPT 的更长输出场景，本项目侧 token 预算偏保守
+8. 材料注入按 4000 字截断（多份合计），超长材料只取前段——token 预算与「必须依据」强度的折中；后续可按场景类型分别标定
 
 ## 7. 验证口径
 
-- `npm run test:openmaic`（新增）：promptEngine/jsonRepair/retry/outline/adapter/scientificModel 单测（35 项）
+- `npm run test:openmaic`（新增）：promptEngine/jsonRepair/retry/outline/adapter/scientificModel 单测（36 项，F7 覆盖 withReferenceMaterial：空材料恒等 / system 不动 / user 附块 / maxChars 截断）
 - `npm run test:course-compiler`、`test:text-repair`、`test:e2e` 全量回归不破
 - 真实链路实测：DeepSeek + 新 key 跑 大纲→slide→quiz→interactive，记录每阶段原始输出与适配结果（test-openmaic-live.mjs，2026-11-07 实测 5/5 通过）
