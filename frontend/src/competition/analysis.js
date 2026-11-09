@@ -1264,6 +1264,8 @@ export function buildCompetitionSceneContent(dataset, outline, mode = 'course') 
     subject: '数学',
     stage: 'junior',
     keyPoints: outline.keyPoints,
+    // 竞赛Workbench 内容恒为数学（math7）：交互模型按数理域过滤
+    pedagogyDomain: 'math-science',
   })
   return {
     kind: 'board',

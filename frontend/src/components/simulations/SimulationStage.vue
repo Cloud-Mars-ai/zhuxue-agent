@@ -14,6 +14,8 @@ import LinearFunctionSim from './LinearFunctionSim.vue'
 import NumberLineSim from './NumberLineSim.vue'
 import FractionPartsSim from './FractionPartsSim.vue'
 import SquareRootSim from './SquareRootSim.vue'
+import TimelineOrderSim from './TimelineOrderSim.vue'
+import PipelineFlowSim from './PipelineFlowSim.vue'
 
 const props = defineProps({
   block: { type: Object, required: true },
@@ -29,6 +31,8 @@ const MODEL_COMPONENTS = {
   'number-line': NumberLineSim,
   'fraction-parts': FractionPartsSim,
   'square-root': SquareRootSim,
+  'timeline-order': TimelineOrderSim,
+  'pipeline-flow': PipelineFlowSim,
 }
 
 const model = computed(() => simulationModel(props.block.model))

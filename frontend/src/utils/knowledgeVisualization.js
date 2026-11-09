@@ -12,6 +12,8 @@
  * - 不允许自由 HTML / 坐标 / 脚本，渲染层由确定性 Vue 组件完成。
  */
 
+import { filterByPedagogy } from './pedagogyProfiles.js'
+
 /** 概念特征信号：命中即说明"可被看见"。权重越高越值得交互。 */
 const CONCEPT_SIGNALS = [
   {
@@ -84,6 +86,7 @@ export const SIMULATION_MODELS = [
     keywords: /圆周运动|向心力|离心|线速度|角速度|匀速圆周|转台|绳拉|过山车|汽车转弯/gi,
     concepts: ['motion'],
     stages: ['primary', 'junior', 'senior', 'adaptive'],
+    domains: ['math-science'],
     params: [
       { key: 'radius', label: '半径 r', min: 40, max: 160, step: 5, value: 90, unit: 'px' },
       { key: 'speed', label: '速度 v', min: 0.5, max: 10, step: 0.5, value: 4, unit: 'm/s' },
@@ -106,6 +109,7 @@ export const SIMULATION_MODELS = [
     keywords: /三角形|内角和|外角|三角|多边形内角|几何图形|稳定性/gi,
     concepts: ['geometry'],
     stages: ['primary', 'junior', 'senior', 'adaptive'],
+    domains: ['math-science'],
     params: [],
     readouts: [{ key: 'angleSum', label: '内角和', unit: '°' }],
     observe: [
@@ -121,6 +125,7 @@ export const SIMULATION_MODELS = [
     keywords: /一次函数|正比例|斜率|截距|直线|y\s*=\s*kx|k\s*[,，]\s*b/gi,
     concepts: ['function'],
     stages: ['junior', 'senior', 'adaptive'],
+    domains: ['math-science'],
     params: [
       { key: 'k', label: '斜率 k', min: -4, max: 4, step: 0.5, value: 1 },
       { key: 'b', label: '截距 b', min: -5, max: 5, step: 0.5, value: 0 },
@@ -142,6 +147,7 @@ export const SIMULATION_MODELS = [
     keywords: /有理数|数轴|相反数|绝对值|正数|负数|零/gi,
     concepts: ['quantity'],
     stages: ['primary', 'junior', 'adaptive'],
+    domains: ['math-science'],
     params: [
       { key: 'a', label: '点 A', min: -8, max: 8, step: 1, value: 3 },
       { key: 'b', label: '点 B', min: -8, max: 8, step: 1, value: -2 },
@@ -163,6 +169,7 @@ export const SIMULATION_MODELS = [
     keywords: /分数|几分之几|通分|约分|比例|百分比|占比/gi,
     concepts: ['quantity'],
     stages: ['primary', 'junior', 'adaptive'],
+    domains: ['math-science'],
     params: [
       { key: 'numerator', label: '分子', min: 1, max: 8, step: 1, value: 1 },
       { key: 'denominator', label: '分母', min: 2, max: 8, step: 1, value: 4 },
@@ -186,6 +193,7 @@ export const SIMULATION_MODELS = [
     keywords: /平方根|开平方|开方|算术平方根|正方形面积|边长|面积等于|完全平方数/gi,
     concepts: ['quantity'],
     stages: ['primary', 'junior', 'adaptive'],
+    domains: ['math-science'],
     params: [{ key: 'a', label: '边长 a', min: 1, max: 12, step: 1, value: 5 }],
     readouts: [
       { key: 'area', label: '面积 a²' },
@@ -195,6 +203,63 @@ export const SIMULATION_MODELS = [
       '把边长调到 5：方格总数是多少？√25 等于几？',
       '边长调到 9：数轴上 9 和面积 81 相差多大？',
       '哪些边长能开出整数根？把它们圈出来，规律是什么？',
+    ],
+  },
+  {
+    // 2026-11-09 学科画像新增：人文历史的时序推理交互（对齐报告③时间轴母题）。
+    // 交互形态是「点选事件按时间排序」而非数值参数，故 params 为空数组，
+    // 事件数据放注册表 data 字段（block 契约不变，组件从注册表读取）。
+    id: 'timeline-order',
+    label: '历史事件时序推理',
+    subjects: ['历史', '人文', '综合主题'],
+    keywords: /时间轴|先后|顺序|时序|朝代|世纪|事件|大事记|因果|沿革|排序/gi,
+    concepts: [],
+    stages: ['primary', 'junior', 'senior', 'adaptive'],
+    domains: ['humanities', 'language-arts'],
+    params: [],
+    data: {
+      events: [
+        { label: '鸦片战争', year: 1840 },
+        { label: '洋务运动', year: 1861 },
+        { label: '甲午战争', year: 1894 },
+        { label: '辛亥革命', year: 1911 },
+      ],
+    },
+    readouts: [{ key: 'progress', label: '已排对' }],
+    observe: [
+      '四个事件里最早发生的是哪一个？先点它。',
+      '排完后回头看：因果链和年份顺序一致吗？',
+      '如果两个事件只差几年，哪个更可能是另一个的原因？',
+    ],
+  },
+  {
+    // 2026-11-09 学科画像新增：工程技术的流程控制交互（对齐报告③ pipeline 母题）。
+    id: 'pipeline-flow',
+    label: '流水线流程控制',
+    subjects: ['工程', '管理', '综合主题'],
+    keywords: /流程|工序|流水线|产能|吞吐|瓶颈|缓冲区|节拍|生产线|流转/gi,
+    concepts: [],
+    stages: ['junior', 'senior', 'adaptive'],
+    domains: ['engineering', 'social-science'],
+    params: [
+      { key: 'rate', label: '来料速率', min: 0, max: 100, step: 5, value: 60, unit: '件/分' },
+      { key: 'buffer', label: '缓冲容量', min: 0, max: 50, step: 5, value: 20, unit: '件' },
+    ],
+    data: {
+      stages: [
+        { key: 'receive', label: '接收', capacity: 80 },
+        { key: 'process', label: '加工', capacity: 60 },
+        { key: 'inspect', label: '检验', capacity: 70 },
+      ],
+    },
+    readouts: [
+      { key: 'throughput', label: '实际产能', unit: '件/分' },
+      { key: 'bottleneck', label: '瓶颈工序' },
+    ],
+    observe: [
+      '把来料速率拉到 100：哪个工序先堆积？缓冲区怎么变？',
+      '来料降到 40：产能跟着降吗？为什么？',
+      '想提高产能，加缓冲和提速瓶颈工序，哪个更根本？',
     ],
   },
 ]
@@ -296,6 +361,7 @@ export function matchSimulation({
   stage = 'adaptive',
   keyPoints = [],
   requireKeywords = false,
+  domainId = '',
 } = {}) {
   const corpus = [
     String(text || ''),
@@ -305,17 +371,20 @@ export function matchSimulation({
     .slice(0, 4000)
   const normalizedSubject = String(subject || '综合主题')
 
-  const candidates = SIMULATION_MODELS.map((model) => {
-    const keywordHits = matchCount(corpus, model.keywords)
-    const conceptIds = new Set(model.concepts)
-    const signalScore = CONCEPT_SIGNALS.filter(
-      (signal) => conceptIds.has(signal.id) && matchCount(corpus, signal.pattern),
-    ).reduce((total, signal) => total + signal.weight, 0)
-    // 阶段是硬约束：不适配该学段的模型直接排除，不用负分软惩罚
-    if (!model.stages.includes(stage)) return null
-    const subjectHit = model.subjects.includes(normalizedSubject) ? 10 : 0
-    return { model, keywordHits, score: keywordHits * 30 + signalScore + subjectHit }
-  })
+  // 学科域过滤（2026-11-09 学科画像）：域为空/general 时不过滤；
+  // 有域时只保留该域可用模型——防止文科课配数学向交互模型
+  const candidates = filterByPedagogy(SIMULATION_MODELS, domainId)
+    .map((model) => {
+      const keywordHits = matchCount(corpus, model.keywords)
+      const conceptIds = new Set(model.concepts)
+      const signalScore = CONCEPT_SIGNALS.filter(
+        (signal) => conceptIds.has(signal.id) && matchCount(corpus, signal.pattern),
+      ).reduce((total, signal) => total + signal.weight, 0)
+      // 阶段是硬约束：不适配该学段的模型直接排除，不用负分软惩罚
+      if (!model.stages.includes(stage)) return null
+      const subjectHit = model.subjects.includes(normalizedSubject) ? 10 : 0
+      return { model, keywordHits, score: keywordHits * 30 + signalScore + subjectHit }
+    })
     .filter((item) => {
       if (!item || item.score <= 0) return false
       // 严格模式：必须关键词直接命中（widget-config 映射用）
@@ -387,6 +456,7 @@ export function buildSimulationBlock({
 /**
  * 衔接兜底：模型没有输出 simulation，但本地判定"推荐"时，
  * 在 definition 之后插入一个匹配到的模型块，保证降级路径也有交互。
+ * T-23 学科画像：context.pedagogyDomain 过滤模型候选（general/空=不过滤）。
  */
 export function ensureSimulationBlock(lesson, context = {}) {
   if (!lesson?.blocks?.length) return lesson
@@ -422,6 +492,7 @@ export function ensureSimulationBlock(lesson, context = {}) {
     subject: context.subject,
     stage: context.stage,
     keyPoints: context.keyPoints,
+    domainId: context.pedagogyDomain || '',
   })
   if (!matched) return lesson
 

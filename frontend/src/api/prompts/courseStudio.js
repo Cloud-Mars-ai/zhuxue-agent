@@ -5,6 +5,12 @@ import {
 } from '@/utils/learnerProfile'
 import { SIMULATION_MODELS } from '@/utils/knowledgeVisualization'
 import { ILLUSTRATION_SCENES } from '@/utils/illustrationScenes'
+import {
+  inferPedagogyDomain,
+  pedagogyDomain,
+  pedagogyGuide,
+  pedagogyIdentity,
+} from '@/utils/pedagogyProfiles'
 import { errorPatternsFor, highEmphasisPatterns } from '@/data/errorPatterns'
 import { buildSceneRepairPrompt } from '@/utils/courseRepair'
 
@@ -81,12 +87,22 @@ export function courseBlueprintPrompt({
   domain = 'general',
   learnerProfile,
 }) {
+  // 学科画像（2026-11-09）：先推断学科域，再决定 identity 与教学策略注入
+  const pedagogy = inferPedagogyDomain({
+    subject: learnerProfile?.subject || '',
+    domain,
+    objective,
+    materialText,
+  })
+  const pedagogyText = pedagogyGuide(pedagogy.id)
   const identity =
     domain === 'math7'
       ? '你是七年级数学课程设计助手，熟悉有理数、整式和一元一次方程的规则、常见错误与例题组织。'
       : domain === 'management'
         ? `${TUTOR_IDENTITY} 本轮材料明确属于管理主题，但课程范围仍以用户需求和材料为准。`
-        : '你是跨学科课程设计助手。你的首要任务是准确理解用户想学的主题和上传材料，再设计对应课程，不把用户需求改写成其他学科。'
+        : pedagogyText
+          ? pedagogyIdentity(pedagogy.id)
+          : '你是跨学科课程设计助手。你的首要任务是准确理解用户想学的主题和上传材料，再设计对应课程，不把用户需求改写成其他学科。'
   const safeLearner = normalizeLearnerProfile(learnerProfile, {
     objective,
     chapter,
@@ -134,7 +150,7 @@ export function courseBlueprintPrompt({
 19. 知识点声明（课程编译 IR）：在 knowledgePoints 中列出本课全部知识点，name 必须与场景 keyPoints 用词一致（跨场景复用时写同一个名称）；每个知识点给 difficulty（1=识记、单一条件；2=应用、两个条件；3=综合、含易错点）和 prerequisites（先修知识点名称，没有就留空数组）。先修关系必须真实：后面的知识点依赖前面的，不允许把先修写在后面。
 20. 每个场景用 knowledgePoints 声明讲授/练习的知识点名称，用 prerequisites 声明"开始本场景前必须已掌握"的知识点；prerequisites 指向的知识点必须由更早的场景引入。
 21. 每个 quiz/practice 场景给出 exerciseSpec（题型从 choice/fill/judge 选，至少 2 类、共 2 题以上）；每个场景给出 completionCriteria（1–2 条可观察的完成标准，学生能做到什么算过关）。
-
+${pedagogyText ? `\n${pedagogyText}\n` : ''}
 ${TEXT_INTEGRITY_RULE}
 
 【系统初判 · 供校正】
@@ -251,12 +267,25 @@ function blockContractGuide() {
 }
 
 export function courseScenePrompt({ project, outline, materialText, sourceChunkIds = [], previousScene }) {
+  // 学科画像（2026-11-09）：场景内容也按学科域调整积木偏好与话术
+  const pedagogy = inferPedagogyDomain({
+    subject: project.learnerProfile?.subject || '',
+    domain: project.domain,
+    objective: project.objective,
+    materialText,
+  })
+  const pedagogyProfile = pedagogyDomain(pedagogy.id)
+  const pedagogyHint = pedagogyProfile
+    ? `本课属于${pedagogyProfile.label}（${pedagogyProfile.paradigm}）：板书积木优先用 ${pedagogyProfile.blockBias.join('、')} 类组织内容；讲授侧重：${pedagogyProfile.pedagogy}`
+    : ''
   const identity =
     project.domain === 'math7'
       ? '你是七年级数学课程助手，必须把符号规则、步骤和等量关系讲清楚，并用材料中的题目证据检查理解。'
       : project.domain === 'management'
         ? `${TUTOR_IDENTITY} 本轮材料明确属于管理主题，但仍须服从当前主题、场景目标和学习者画像。`
-        : '你是跨学科课程助教。严格按照用户主题、当前场景目标和材料证据讲解，不切换到其他课程内容。'
+        : pedagogyProfile
+          ? pedagogyIdentity(pedagogy.id)
+          : '你是跨学科课程助教。严格按照用户主题、当前场景目标和材料证据讲解，不切换到其他课程内容。'
   const learnerProfile = normalizeLearnerProfile(project.learnerProfile, {
     objective: project.objective,
     chapter: project.chapter,
@@ -281,6 +310,7 @@ export function courseScenePrompt({ project, outline, materialText, sourceChunkI
     previous: previousSceneLine(previousScene),
     learnerProfile: learnerProfileGuide(learnerProfile),
     learnerStage: learnerProfile.stage,
+    pedagogyHint,
     visualHint:
       outline.visualHint?.level === 'recommend'
         ? `本场景预判需要可交互模型（${(outline.visualHint.reasons || []).join('；')}）`
@@ -405,6 +435,7 @@ ${common.materialText}
 你是课程板书设计师。为课程「${common.projectTitle}」中的场景「${common.sceneTitle}」生成一页结构化板书。
 
 板书只负责讲清楚，不负责堆信息。按“路线 → 定义 → 对照/图示 → 提示 → 追问”组织，并根据学习者画像选择比喻、模型或推导的深度。
+${common.pedagogyHint}
 
 开场三件套（讲解顺序，不占 block）：
 1. 回顾锚点：一句话回顾上一场景结论（第一个场景改为锚定课程目标）；

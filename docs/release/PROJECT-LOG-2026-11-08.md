@@ -1,7 +1,7 @@
-# 项目日志 · 2026-11-08（材料上传四项需求 + 板书交互态修复 + T-21 学习者闭环与自动课程生成 + T-22 OpenMAIC 对齐三诊断修复）
+# 项目日志 · 2026-11-08（材料上传四项需求 + 板书交互态修复 + T-21 学习者闭环与自动课程生成 + T-22 OpenMAIC 对齐三诊断修复 + T-23 学科教学画像）
 
-> 编制：WorkBuddy ｜ 编制时间：2026-11-09（T-22 追加）
-> 事实基准：`git main = dd08aed`（T-22 已提交并推送 mygithub），**git 历史共 44 提交**（`git rev-list --count HEAD` 实勘）；本文档自身的提交会使总数 +1，以实时复验为准
+> 编制：WorkBuddy ｜ 编制时间：2026-11-09（T-23 追加）
+> 事实基准：`git main = 7df7fa4`（T-22 已提交并推送 mygithub），**T-23 工作树待提交**（见 §6）；git 历史共 44 提交（`git rev-list --count HEAD` 实勘）；本文档自身的提交会使总数 +1，以实时复验为准
 > 上游日志：`docs/release/PROJECT-LOG-2026-11-07.md`（T-19 及以前）；冲突时以本日志 + 代码为准
 
 ---
@@ -10,12 +10,12 @@
 
 | 读数 | 当前值 | 判断 |
 | --- | --- | --- |
-| 代码基线 | `main = dd08aed`（T-22 已提交并推送 mygithub，见 §5） | 可安全接手 |
-| 工作树 | T-22 已收口（31 文件入库）；**无并行会话未提交改动** | 提交前无需再确认归属 |
-| 确定性测试 | E2E **31/31**（T-22 实跑）；node 7 套件全绿：compiler 44 / script 36 / openmaic 36 / text-repair 48 / visualization 26 / competition / **alignment 16（T-22 新套件）** | 回归基线健康 |
-| 本机 .env | `frontend/.env` 已配 DeepSeek key（用户侧接入，gitignore） | **E2E 必须显式置空 key 跑**（见 §3），否则模型真答题、断言漂移 |
-| 公网三通道 | T-21 已全部同步：GitHub `c6d8876`；workbuddy 分享链接 `https://zhuxue-agent.app.workbuddy.host/?sharecode=Z7X276B67K`（verified）；腾讯云 4173 新 bundle（Ca65O6_p）验证 200。**T-22（dd08aed）尚未同步到 workbuddy/腾讯云两通道**（未获发布授权，见 §5 遗留） | 代码通道领先两个发布通道一个提交 |
-| 阶段判断 | T-22（OpenMAIC 对齐三诊断修复 + 视频报告四维度重构）完成 → 遗留项：P1 播放控制条 / P2 小测后校验 / P3 完课闭环增强 / P5 场景03产品内验证 / Step Key 轮换（最高优先级） | 下一步：按 §5 遗留表推进 |
+| 代码基线 | `main = 7df7fa4`（T-22 已提交并推送 mygithub，见 §5）；**T-23 学科画像已在工作树完成（19/19 新套件 + E2E 39/39），待提交** | 接手先看 §6 |
+| 工作树 | T-23 改动（16 改 + 8 新）；无并行会话未提交改动 | 提交前无需再确认归属 |
+| 确定性测试 | E2E **39/39**（T-23 实跑）；node 8 套件全绿：compiler 44 / script 36 / openmaic 36 / text-repair 48 / visualization 26 / competition / alignment 17 / **pedagogy 19（T-23 新套件）** | 回归基线健康 |
+| 本机 .env | `frontend/.env` 已配 DeepSeek key（用户侧接入，gitignore） | **E2E 必须显式置空 key 跑**（见 §3），且**跑前确认 4173 无遗留服务**（§6 E2E 排故） |
+| 公网三通道 | T-21 已全部同步：GitHub `c6d8876`；workbuddy 分享链接 `https://zhuxue-agent.app.workbuddy.host/?sharecode=Z7X276B67K`（verified）；腾讯云 4173 新 bundle（Ca65O6_p）验证 200。**T-22/T-23 尚未同步到 workbuddy/腾讯云两通道**（未获发布授权，见遗留） | 代码通道领先两个发布通道两个提交 |
+| 阶段判断 | T-23（学科教学画像：三层自适应 + 五域 + 6 新资源）完成 → 遗留项：资源库偏科补齐 / timeline 数据注入 / 策略 A/B 实验 / Step Key 轮换（最高优先级） | 下一步：按 §6 遗留表推进 |
 
 ---
 
@@ -86,4 +86,20 @@
 
 ---
 
-*本日志由 WorkBuddy 依据 git `dd08aed`（44 提交，日志提交自身 +1 以实时复验为准）与代码实勘生成；与旧文档冲突时，以本日志 + `PROJECT-LOG-2026-11-07.md` + 代码为准。建议后续 agent 每次完成实质工作后追加台账条目（任务 / 日期 / 交付 / 验证 / 遗留），保持交接链不断。*
+## 6. T-23 台账：学科教学画像——从数学单点增强到全学科通用教授流程（2026-11-09 追加）
+
+| 项 | 内容 |
+| --- | --- |
+| 输入 | 用户指令「不仅仅只是对这个有理数知识点，增加特定的功能（图片、交互动画、模型等等）……他生成教授的科目不仅仅是这一门课，还有可能是文科、各种理科、工科等等。你需要针对不同的课程设计不同的一种教授方式流程，请你思考一个可行通用的方案」 |
+| 方案 | **三层学科自适应**（设计文档 `docs/research/pedagogy-profile-design.md`）：话术层（提示词注入学科策略）+ 资源层（视觉/交互资源域标签过滤）+ 搭建图纸层（场景流程模板随域变化）；**不动 IR、不动场景四类型、不动 block 白名单**——契约面零增长，铁律（AI 只填 JSON/白名单强校验/本地兜底）全部延续 |
+| 五大学科域 | `math-science` 演绎探究 / `engineering` 设计迭代 / `humanities` 叙事论辩 / `social-science` 案例决策 / `language-arts` 积累运用；每域携带 sceneFlow/pedagogy/visualHint/blockBias 四份策略文案；推断失败回落 `general`（不过滤资源、不注入策略，保证未知学科永不出错） |
+| 域推断 | `inferPedagogyDomain({subject,domain,objective,materialText})` 三级确定性信号：domain 别名（math7→math-science 等，high）> subject 精确命中 > 关键词打分（subject×3，阈值≥2）；纯函数无模型调用 |
+| 资源扩展 | 12 视觉场景（8 既有 + 新 timeline/map-region/pipeline/blueprint）+ 8 交互模型（6 既有 + 新 timeline-order/pipeline-flow），全部带 `domains` 域标签；空数组=通用资源；`timeline-order` 示范非参数型交互（params 空数组，数据走注册表 `data.events`，组件内部管理排序状态）；`pipeline-flow` 产能=min(来料,瓶颈容量)+堆积/溢出可视化 |
+| 管线接入 | sceneGenerator 入口一次推断写 `sceneContext.pedagogyDomain`，三处共用（场景目录/交互模型/slide 插图）；slideAdapter image case 域过滤 + **src 直映射域校验**（防历史课渲染出平方根图示）；本地兜底 `ensureSimulationBlock` 与竞赛路径同步透传；`matchIllustrationSceneForDomain`/`matchSimulation(domainId)` 均为可选参数（默认 ''=不过滤，旧调用方行为不变） |
+| 验证 | **新套件 test-pedagogy.mjs 19/19**（A 域推断/B 资源过滤/C 提示词注入/D 新资源白名单/E 管线接入含打桩 aiCall 断言目录过滤）；test-alignment 更新 8→12 场景计数 + 新增 A2b 学科场景断言（17/17）；8 套件全绿（pedagogy 19 / alignment 17 / openmaic 36 / visualization 26 / script 36 / compiler 44 / text-repair 48 / competition 3 cases）；build 通过；**E2E 39/39** |
+| E2E 排故 | 首跑 8 败（课程生成类用例）——`git stash` 干净树复现同败 → 非本次回归；根因：**4173 端口有遗留 node 服务（带真实 DeepSeek key），`reuseExistingServer:true` 复用导致「本地生成大纲」离线契约断言漂移**；终止进程后全绿。留档：起过带 key 的服务后，E2E 前先确认端口 |
+| 遗留 | 资源库覆盖仍偏科（语言艺术域仅通用场景、经管无专属交互模型）；`timeline-order` 数据为内置样例（换课文需注册表补数据）；五域策略文案未做 A/B 实验验证（实验台已具备四组对照能力，待排期）；workbuddy/腾讯云两通道仍未同步 T-22/T-23（未获发布授权）；Step API Key 轮换（最高优先级，多轮遗留） |
+
+---
+
+*本日志由 WorkBuddy 依据 git `7df7fa4`（44 提交，T-23 提交自身 +1 以实时复验为准）与代码实勘生成；与旧文档冲突时，以本日志 + `PROJECT-LOG-2026-11-07.md` + 代码为准。建议后续 agent 每次完成实质工作后追加台账条目（任务 / 日期 / 交付 / 验证 / 遗留），保持交接链不断。*

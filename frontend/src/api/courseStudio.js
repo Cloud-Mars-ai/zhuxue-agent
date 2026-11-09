@@ -486,6 +486,11 @@ export async function generateCourseScene({
           languageDirective: project.languageDirective,
           teacherContext: openmaicTeacherContext({ materialText }),
           chapter: project.chapter,
+          // 学科画像（T-23）：场景级资源过滤（插图目录/交互模型按域过滤）
+          // 与域推断信号；缺省时推断回落 general（不过滤）
+          subject: profiledProject.learnerProfile?.subject || '',
+          domain: project.domain,
+          materialText,
           signal,
         },
       )

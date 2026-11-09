@@ -26,7 +26,13 @@
  * 硬规则：只用相对导入或不导入，node 测试脚本可直接 import。
  */
 
-import { matchIllustrationScene, ILLUSTRATION_SCENE_IDS, illustrationScene } from '../../utils/illustrationScenes.js'
+import {
+  matchIllustrationScene,
+  matchIllustrationSceneForDomain,
+  ILLUSTRATION_SCENE_IDS,
+  illustrationScene,
+} from '../../utils/illustrationScenes.js'
+import { resourceAllowedForDomain } from '../../utils/pedagogyProfiles.js'
 
 const CANVAS = { width: 1000, height: 562.5 }
 const BULLET = /^\s*(?:[•·●○◆■▶→*-]|\d+[.、)]|\[?\d+\]?)\s*/
@@ -174,6 +180,8 @@ function cellText(cell) {
 /**
  * PPTElement[] → { title, subtitle, blocks, dropped }
  * 失败（块不足）返回 null。
+ * T-23 学科画像：context.pedagogyDomain（如 'humanities'）过滤 image 元素的
+ * 插图匹配（general/空 = 不过滤，保持原行为）。
  */
 export function slideElementsToLesson(elements, context = {}) {
   if (!Array.isArray(elements) || !elements.length) return null
@@ -274,8 +282,15 @@ export function slideElementsToLesson(elements, context = {}) {
         // 2. mediaGenerations prompt（按 elementId 找，未来开启大纲媒体契约时生效）
         // 3. 元素自带 prompt/alt
         // 4. 本页标题与要点（图片通常在图解本页主题）
+        // T-23 学科画像：匹配按域过滤（context.pedagogyDomain，general/空=不过滤）；
+        // src 直映射也要过域校验——模型可能引用其他域的场景 id（目录外的幻觉），
+        // 域不符时退化为关键词匹配，避免历史课渲染出「平方根模型」插图。
+        const domainId = context.pedagogyDomain || ''
         const src = text(element.src, 60)
-        const sceneFromSrc = ILLUSTRATION_SCENE_IDS.includes(src) ? src : ''
+        const sceneFromSrc = ILLUSTRATION_SCENE_IDS.includes(src)
+          && resourceAllowedForDomain(illustrationScene(src), domainId)
+          ? src
+          : ''
         const mediaRequest = (Array.isArray(context.mediaGenerations) ? context.mediaGenerations : [])
           .find((item) => item && item.elementId === element.id)
         const prompt = text(
@@ -284,7 +299,7 @@ export function slideElementsToLesson(elements, context = {}) {
         )
         const matched = sceneFromSrc
           ? { id: sceneFromSrc, label: illustrationScene(sceneFromSrc)?.label || sceneFromSrc }
-          : matchIllustrationScene(prompt, context.title, keyPoints)
+          : matchIllustrationSceneForDomain(domainId, prompt, context.title, keyPoints)
         if (matched) {
           illustrations.push({
             type: 'illustration',

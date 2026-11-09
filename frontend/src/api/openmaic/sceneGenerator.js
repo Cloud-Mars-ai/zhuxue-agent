@@ -24,6 +24,7 @@
 import { normalizeBoardLesson } from '../../utils/board.js'
 import { matchSimulation, buildSimulationBlock } from '../../utils/knowledgeVisualization.js'
 import { ILLUSTRATION_SCENES } from '../../utils/illustrationScenes.js'
+import { inferPedagogyDomain, filterByPedagogy } from '../../utils/pedagogyProfiles.js'
 import {
   buildPrompt,
   buildSlideContentPrompt,
@@ -113,13 +114,17 @@ function slideUserVariables(outline, context) {
     // 这里给出内置 SVG 场景目录（src 填场景 id，适配器按 id 直映射），
     // 模型恢复"画布上可以有一张图"的版面能力，但图片仍是确定性矢量场景，
     // 不引入文生图 provider / 外链 URL / 占位符。
-    assignedImages: illustrationCatalog(),
+    assignedImages: illustrationCatalog(context.pedagogyDomain),
   }
 }
 
-/** 场景目录文本（供 slide 模板 Available Media 注入；每页最多 1 个场景插图）。 */
-function illustrationCatalog() {
-  const lines = ILLUSTRATION_SCENES.map(
+/** 场景目录文本（供 slide 模板 Available Media 注入；每页最多 1 个场景插图）。
+ *  T-23 学科画像：按学科域过滤——模型只能看到本域可用的场景（历史课
+ *  不会拿到「平方根模型」目录），通用场景（domains 为空）任何域可见；
+ *  general 域不过滤，保证未知学科目录不全空。 */
+function illustrationCatalog(domainId = '') {
+  const scenes = filterByPedagogy(ILLUSTRATION_SCENES, domainId)
+  const lines = scenes.map(
     (scene) => `- ${scene.id}｜${scene.label}：${scene.hint}`,
   )
   return [
@@ -242,6 +247,9 @@ export function widgetConfigToLesson(config, outline, context = {}) {
     subject: context.subject,
     stage: context.stage,
     keyPoints: outline.keyPoints,
+    // T-23 学科画像：interactive 模型也按域过滤（人文课不会点亮圆周运动），
+    // general 域（''）不过滤，保持原行为
+    domainId: context.pedagogyDomain || '',
     requireKeywords: true,
   })
   if (matched) {
@@ -324,13 +332,28 @@ export function pblToLesson(outline) {
  * @param {Object} outline 本项目大纲场景（type: lecture/quiz/practice/review，
  *   practice 场景带 widget / pbl 元数据）
  * @param {(system:string, user:string) => Promise<string>} aiCall
- * @param {Object} [context] { languageDirective, teacherContext, chapter, subject, stage }
+ * @param {Object} [context] { languageDirective, teacherContext, chapter, subject, stage,
+ *   domain, materialText }——subject/domain/materialText 供学科域推断（T-23），
+ *   推断结果写入内部 sceneContext.pedagogyDomain，下游资源过滤共用
  * @returns {Promise<{kind, lesson?, questions?, scientificModel?, dropped?, fallbackReason?}>}
  *   失败返回 { kind, fallbackReason }，由调用方走本地兜底。
  */
 export async function generateOpenmaicScene(outline, aiCall, context = {}) {
   const type = outline?.type
   const logger = context.logger || { warn() {}, error() {}, info() {}, debug() {} }
+  // T-23 学科画像：一个场景只推断一次学科域，下游（场景目录/交互模型/
+  // 插图匹配）共用同一域 id，避免各处推断不一致。general 域 = 不过滤。
+  const pedagogy = inferPedagogyDomain({
+    subject: context.subject,
+    domain: context.domain,
+    objective: [
+      outline?.title,
+      outline?.description,
+      ...(Array.isArray(outline?.keyPoints) ? outline.keyPoints : []),
+    ].join(' '),
+    materialText: context.materialText,
+  })
+  const sceneContext = { ...context, pedagogyDomain: pedagogy.id, pedagogy }
 
   try {
     if (type === 'quiz') {
@@ -367,7 +390,7 @@ export async function generateOpenmaicScene(outline, aiCall, context = {}) {
     }
 
     if (type === 'practice' && outline.widget) {
-      const prompt = buildPrompt(PROMPT_IDS.SIMULATION_CONTENT, simulationUserVariables(outline, context))
+      const prompt = buildPrompt(PROMPT_IDS.SIMULATION_CONTENT, simulationUserVariables(outline, sceneContext))
       if (!prompt) return { kind: 'board', fallbackReason: 'prompt-unavailable' }
       const response = await withGenerationRetry(
         () => aiCall(prompt.system, prompt.user),
@@ -379,7 +402,7 @@ export async function generateOpenmaicScene(outline, aiCall, context = {}) {
         },
       )
       const config = extractWidgetConfig(response)
-      const built = widgetConfigToLesson(config, outline, context)
+      const built = widgetConfigToLesson(config, outline, sceneContext)
       if (!built) return { kind: 'board', fallbackReason: 'invalid-model-output' }
       const lesson = normalizeBoardLesson(built.lesson, context.chapter || '')
       if (!lesson) return { kind: 'board', fallbackReason: 'invalid-model-output' }
@@ -396,7 +419,7 @@ export async function generateOpenmaicScene(outline, aiCall, context = {}) {
     // lecture / review / 无元数据的 practice：slide-content 提示词
     // 诊断二 F2.5：开启 image 元素通道（目录见 slideUserVariables.assignedImages），
     // 让模型恢复画布插图版面；适配器把 src 场景 id 直映射为 illustration 块
-    const prompt = buildSlideContentPrompt({ imageElementEnabled: true }, slideUserVariables(outline, context))
+    const prompt = buildSlideContentPrompt({ imageElementEnabled: true }, slideUserVariables(outline, sceneContext))
     if (!prompt) return { kind: 'board', fallbackReason: 'prompt-unavailable' }
     const response = await withGenerationRetry(
       () => aiCall(prompt.system, prompt.user),
@@ -413,6 +436,8 @@ export async function generateOpenmaicScene(outline, aiCall, context = {}) {
       keyPoints: outline.keyPoints,
       title: outline.title,
       subtitle: outline.description,
+      // T-23 学科画像：image 元素的插图匹配按域过滤
+      pedagogyDomain: pedagogy.id,
     })
     if (!adapted) return { kind: 'board', fallbackReason: 'invalid-model-output' }
     const lesson = normalizeBoardLesson(

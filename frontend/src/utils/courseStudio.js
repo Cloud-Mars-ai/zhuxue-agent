@@ -1,6 +1,7 @@
 import { normalizeBoardLesson } from '@/utils/board'
 import { normalizeQuestions } from '@/utils/json'
 import { normalizeLearnerProfile } from '@/utils/learnerProfile'
+import { inferPedagogyDomain } from '@/utils/pedagogyProfiles'
 import {
   assessVisualizationNeed,
   ensureSimulationBlock,
@@ -509,6 +510,18 @@ function shorten(value, max = 52) {
   return normalized.length > max ? `${normalized.slice(0, max)}…` : normalized
 }
 
+/** 学科域推断（T-23 学科画像）：本地兜底路径的交互模型也按域过滤，
+ *  与 OpenMAIC 管线（sceneGenerator）保持同一域 id 语义；general=不过滤。 */
+function scenePedagogyDomain(project, outline = {}) {
+  return inferPedagogyDomain({
+    subject: project?.learnerProfile?.subject || '',
+    domain: project?.domain || '',
+    objective: [outline?.title, outline?.description, project?.objective]
+      .filter(Boolean)
+      .join(' '),
+  }).id
+}
+
 function localBoardContent(project, outline) {
   const points = (outline.keyPoints || []).filter(Boolean)
   const primary = points[0] || outline.title || courseTopic(project)
@@ -622,6 +635,7 @@ function localBoardContent(project, outline) {
     subject: learnerProfile.subject,
     stage: learnerProfile.stage,
     keyPoints: outline.keyPoints,
+    pedagogyDomain: scenePedagogyDomain(project, outline),
   })
   return {
     kind: 'board',
@@ -809,6 +823,7 @@ export function normalizeCourseSceneContent(raw, { project, outline, allowedSour
     subject: profile.subject,
     stage: profile.stage,
     keyPoints: outline.keyPoints,
+    pedagogyDomain: scenePedagogyDomain(project, outline),
   })
   return { kind: 'board', lesson: withSimulation, sourceChunkIds }
 }

@@ -40,9 +40,9 @@ function test(name, fn) {
 
 // ─────────────────────────── A. 场景注册表 ───────────────────────────
 
-test('A1 注册表 8 个场景，id 唯一且字段完整', () => {
-  assert.equal(ILLUSTRATION_SCENES.length, 8)
-  assert.equal(new Set(ILLUSTRATION_SCENE_IDS).size, 8)
+test('A1 注册表 12 个场景，id 唯一且字段完整', () => {
+  assert.equal(ILLUSTRATION_SCENES.length, 12)
+  assert.equal(new Set(ILLUSTRATION_SCENE_IDS).size, 12)
   for (const scene of ILLUSTRATION_SCENES) {
     assert.ok(scene.id && scene.label && scene.hint, `${scene.id} 字段缺失`)
     assert.ok(scene.keywords instanceof RegExp, `${scene.id} 缺关键词`)
@@ -57,6 +57,13 @@ test('A2 关键词对齐：火箭/供需/PDCA/平方根各就各位', () => {
   assert.equal(matchIllustrationScene('PDCA 循环：计划执行检查改进')?.id, 'pdca-cycle')
   assert.equal(matchIllustrationScene('边长 a 的正方形，面积等于 a 的平方，开平方')?.id, 'square-root')
   assert.equal(matchIllustrationScene('城市天际线下的组织')?.id, 'city-skyline')
+})
+
+test('A2b 学科场景对齐（T-23）：时间轴/区域/流程/图纸', () => {
+  assert.equal(matchIllustrationScene('中国近代史大事年表：从鸦片战争到辛亥革命')?.id, 'timeline')
+  assert.equal(matchIllustrationScene('长江流域的地形与气候分布')?.id, 'map-region')
+  assert.equal(matchIllustrationScene('生产线各工序的流转与上下游衔接')?.id, 'pipeline')
+  assert.equal(matchIllustrationScene('查看装配图的结构尺寸与公差标注')?.id, 'blueprint')
 })
 
 test('A3 无命中返回 null；数组信号拍平；空文本安全', () => {
