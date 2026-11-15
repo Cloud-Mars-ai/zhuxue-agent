@@ -91,6 +91,17 @@ test('落地页的智慧学伴入口未登录时保留目标地址', async ({ pa
   )
 })
 
+test('落地页准确说明课程演示数据边界', async ({ page }) => {
+  await page.goto('/')
+  await page.locator('.welcome-skip').click()
+  await expect(page.locator('.hero-proof')).toContainText('模拟数据')
+  await expect(page.getByRole('heading', { name: '围绕真实课程场景设计' })).toBeVisible()
+  await expect(page.locator('.sec-lead').filter({ hasText: '不代表真实学生使用或教学成效' })).toBeVisible()
+  const description = await page.locator('meta[name="description"]').getAttribute('content')
+  expect(description).toContain('模拟课程场景')
+  expect(description).not.toContain('真实运行中')
+})
+
 test('本地意图规则直接跳转作业页', async ({ page }) => {
   await seedUser(page)
   await page.goto('/app/ask')
@@ -859,6 +870,8 @@ test('赛事工作台的真实字号、窄屏动线和底栏避让通过浏览�
       body: read('.cw-page'),
       fieldLabel: read('.cw-stat-grid span'),
       stepDescription: read('.cw-steps small'),
+      topicIndex: read('.cw-topic-head > span'),
+      requirementIndex: read('.cw-requirement b'),
     }
   })
   expect(teacherMetrics.documentWidth).toBeLessThanOrEqual(teacherMetrics.viewportWidth)
@@ -866,6 +879,8 @@ test('赛事工作台的真实字号、窄屏动线和底栏避让通过浏览�
   expect(teacherMetrics.body.fontSize).toBeGreaterThanOrEqual(14)
   expect(teacherMetrics.fieldLabel.fontSize).toBeGreaterThanOrEqual(12)
   expect(teacherMetrics.stepDescription.fontSize).toBeGreaterThanOrEqual(12)
+  expect(teacherMetrics.topicIndex.fontSize).toBeGreaterThanOrEqual(12)
+  expect(teacherMetrics.requirementIndex.fontSize).toBeGreaterThanOrEqual(12)
 
   await page.getByRole('button', { name: /建议与核验/ }).click()
   await expect(page.locator('.cw-action-card').first()).toBeVisible()

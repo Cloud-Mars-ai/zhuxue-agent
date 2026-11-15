@@ -110,7 +110,7 @@
               <button class="btn btn-ghost btn-lg" type="button" @click="scrollToId('how')">看看怎么运作</button>
             </div>
             <p class="hero-proof" data-reveal>
-              <span class="proof-dot" aria-hidden="true"></span>《管理学》2026 秋季学期 · 86 名学生真实运行中 ｜ 无需注册，演示账号一键体验
+              <span class="proof-dot" aria-hidden="true"></span>《管理学》课程演示 · 86 人规模的模拟数据 ｜ 无需注册，演示账号一键体验
             </p>
           </div>
 
@@ -140,7 +140,7 @@
               <div class="cp-queue">
                 <span>待练习 <b>12</b></span>
                 <span>进行中 <b>3</b></span>
-                <span>今日已完成 <b>86</b></span>
+                <span>示例完成 <b>86</b></span>
               </div>
             </div>
           </div>
@@ -226,9 +226,9 @@
       <section class="section" id="proof">
         <div class="container">
           <header class="sec-head" data-reveal>
-            <p class="kicker"><span class="sec-no">03</span>运行实况</p>
-            <h2>在一门真实的课上跑着</h2>
-            <p class="sec-lead">这不是概念验证：《管理学》2026 秋季学期的 86 名学生，正在这些功能里完成预习、练习与考核。</p>
+            <p class="kicker"><span class="sec-no">03</span>课程场景示例</p>
+            <h2>围绕真实课程场景设计</h2>
+            <p class="sec-lead">以下为《管理学》课程场景演示，页面中的学习活动与人数均为模拟数据，不代表真实学生使用或教学成效。</p>
           </header>
 
           <div class="stat-band" data-reveal>
@@ -473,7 +473,7 @@ const taglineTokens = ['你练过的', '每一道题，', '都在决定', '考�
 const faqs = [
   {
     q: '这个产品目前用在哪门课上？',
-    a: '以北京化工大学经济管理学院《管理学》为载体落地，3 学分、48 学时、86 名在课学生。框架与流程可复用到其他经管课程。',
+    a: '演示以北京化工大学经济管理学院《管理学》课程场景为载体，按 3 学分、48 学时的课程设置展示流程；页面中的学生人数和学习活动均为模拟数据，不代表真实使用或教学成效。框架与流程可复用到其他经管课程。',
   },
   {
     q: '谁能用，怎么开始？',
@@ -585,10 +585,10 @@ const steps = [
 ]
 
 const stats = [
-  { num: '86', unit: '名', label: '在课学生' },
-  { num: '48', unit: '学时', label: '教学周期覆盖' },
+  { num: '86', unit: '人', label: '模拟演示人数' },
+  { num: '48', unit: '学时', label: '课程设置' },
   { num: '5', unit: '个', label: '教学模块闭环' },
-  { num: '39', unit: '项', label: '自动化断言' },
+  { num: '6', unit: '章', label: '课程知识结构' },
 ]
 
 const facts = [

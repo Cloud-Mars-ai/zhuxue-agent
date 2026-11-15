@@ -1663,7 +1663,7 @@ onMounted(async () => {
 .cw-topic-head > span {
   padding: 4px 7px;
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 12px;
   color: var(--accent);
   background: var(--accent-soft);
   border-radius: 5px;
@@ -1701,7 +1701,7 @@ onMounted(async () => {
 
 .cw-requirement b {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 12px;
   color: var(--accent);
 }
 
