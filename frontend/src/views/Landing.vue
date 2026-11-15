@@ -101,7 +101,12 @@
               一款嵌入经管课程全教学周期的人机协同助学智能体。课前案例征集、一人一题练习、过程性评价、模拟面试考核，AI 引导学生思考，而不直接给答案。
             </p>
             <div class="cta-row" data-reveal>
-              <button class="btn btn-primary btn-lg" type="button" @click="enterApp">{{ ctaLabel }}</button>
+              <button class="btn btn-primary btn-lg" type="button" @click="enterApp">
+                {{ userStore.isLogin ? '进入经管助学' : '经管助学演示' }}
+              </button>
+              <button class="btn btn-ghost btn-lg" type="button" @click="enterCompetition">
+                智慧学伴 · 七年级数学
+              </button>
               <button class="btn btn-ghost btn-lg" type="button" @click="scrollToId('how')">看看怎么运作</button>
             </div>
             <p class="hero-proof" data-reveal>
@@ -391,6 +396,14 @@ const ctaLabel = computed(() => (userStore.isLogin ? '回到课程' : '进入在
 
 function enterApp() {
   router.push(userStore.isLogin ? '/app/course' : '/login')
+}
+
+function enterCompetition() {
+  router.push(
+    userStore.isLogin
+      ? '/app/competition'
+      : { path: '/login', query: { redirect: '/app/competition' } },
+  )
 }
 
 /* ---------- 导航：滚动态与移动端面板 ---------- */

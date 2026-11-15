@@ -163,8 +163,9 @@ const server = createServer(async (req, res) => {
 })
 
 server.listen(port, '0.0.0.0', () => {
+  const textModelConfigured = !!(process.env.AI_API_KEY || process.env.DEEPSEEK_API_KEY)
   console.log(`[zhuxue-agent] serving ${distDir} on http://0.0.0.0:${port}`)
   console.log(
-    `[zhuxue-agent] AI proxy: text=${process.env.DEEPSEEK_API_KEY ? 'configured' : 'offline-fallback'}, tts=${process.env.STEPFUN_API_KEY ? 'configured' : 'off'}`,
+    `[zhuxue-agent] AI proxy: text=${textModelConfigured ? 'configured' : 'offline-fallback'}, tts=${process.env.STEPFUN_API_KEY ? 'configured' : 'off'}`,
   )
 })

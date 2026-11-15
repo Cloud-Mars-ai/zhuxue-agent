@@ -256,7 +256,10 @@ export async function sendChatDetailed(messages, options = {}) {
           temperature,
           max_tokens: maxTokens,
           ...(options.reasoningEffort &&
-          (cfg.provider === 'stepfun' || String(cfg.model || '').startsWith('step-'))
+          (cfg.provider === 'stepfun' ||
+            cfg.provider === 'openai-next' ||
+            String(cfg.model || '').startsWith('step-') ||
+            String(cfg.model || '').startsWith('gpt-5'))
             ? { reasoning_effort: options.reasoningEffort }
             : {}),
           ...(options.responseFormat

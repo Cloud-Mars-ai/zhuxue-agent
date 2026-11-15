@@ -5,6 +5,7 @@ import {
   useModelStore,
   DEFAULT_MODEL_CONFIG,
   DEEPSEEK_MODELS,
+  OPENAI_NEXT_MODELS,
   STEPFUN_MODELS,
   STEPFUN_TTS_MODELS,
 } from '@/stores/model'
@@ -16,7 +17,7 @@ const modelStore = useModelStore()
 const voiceStore = useVoiceStore()
 
 const form = reactive({
-  provider: 'deepseek',
+  provider: 'openai-next',
   baseUrl: '',
   apiKey: '',
   model: '',
@@ -32,7 +33,7 @@ const form = reactive({
 
 function loadForm() {
   const c = modelStore.config
-  form.provider = c.provider || 'deepseek'
+  form.provider = c.provider || 'openai-next'
   form.baseUrl = c.baseUrl
   form.apiKey = c.apiKey
   form.model = c.model
@@ -48,12 +49,14 @@ function loadForm() {
 loadForm()
 
 const providerOptions = [
-  { value: 'deepseek', label: 'DeepSeek（默认）' },
+  { value: 'openai-next', label: 'gpt-5.6-sol（默认，OpenAI 兼容）' },
+  { value: 'deepseek', label: 'DeepSeek' },
   { value: 'stepfun', label: '阶跃星辰 StepFun' },
   { value: 'custom', label: '自定义 / 其他 OpenAI 兼容服务' },
 ]
 
 const providerLabels = {
+  'openai-next': 'gpt-5.6-sol',
   deepseek: 'DeepSeek',
   stepfun: '阶跃星辰 StepFun',
   custom: '自定义服务',
@@ -61,7 +64,9 @@ const providerLabels = {
 
 // 阶跃星辰给出下拉候选，自定义服务时改为手动输入
 const modelOptions = computed(() =>
-  form.provider === 'deepseek'
+  form.provider === 'openai-next'
+    ? OPENAI_NEXT_MODELS.map((m) => ({ value: m, label: m }))
+    : form.provider === 'deepseek'
     ? DEEPSEEK_MODELS.map((m) => ({ value: m, label: m }))
     : form.provider === 'stepfun'
       ? STEPFUN_MODELS.map((m) => ({ value: m, label: m }))
@@ -94,7 +99,10 @@ const testResult = ref('')
 const testingTts = ref(false)
 
 function handleProviderChange(val) {
-  if (val === 'deepseek') {
+  if (val === 'openai-next') {
+    form.baseUrl = 'https://api.openai-next.com/v1'
+    form.model = 'gpt-5.6-sol'
+  } else if (val === 'deepseek') {
     form.baseUrl = 'https://api.deepseek.com/v1'
     if (!DEEPSEEK_MODELS.includes(form.model)) form.model = 'deepseek-chat'
   } else if (val === 'stepfun') {

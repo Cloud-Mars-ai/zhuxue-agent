@@ -81,6 +81,16 @@ test('落地页欢迎视频播放后循环招手并在点击后进入主页', as
   await expect(page.locator('#main')).toBeVisible()
 })
 
+test('落地页的智慧学伴入口未登录时保留目标地址', async ({ page }) => {
+  await page.goto('/')
+  await page.locator('.welcome-gate').click({ position: { x: 18, y: 80 } }).catch(() => {})
+  await page.getByRole('button', { name: '智慧学伴 · 七年级数学' }).click()
+
+  await expect(page).toHaveURL(
+    /\/login\?redirect=(?:%2Fapp%2Fcompetition|\/app\/competition)$/,
+  )
+})
+
 test('本地意图规则直接跳转作业页', async ({ page }) => {
   await seedUser(page)
   await page.goto('/app/ask')
@@ -654,7 +664,10 @@ test('赛事工作台合并展示数据质量、个体分析与可审计建议',
 
   await expect(page.getByTestId('competition-workbench')).toBeVisible()
   await expect(page.getByRole('heading', { name: '智慧学伴工作台' })).toBeVisible()
-  await expect(page.getByText('已接入赛方正式模拟学情数据')).toBeVisible()
+  await expect(page.getByRole('button', { name: '导入数据', exact: true })).toBeVisible()
+  await expect(page.getByRole('button', { name: '导出任务成果包' })).toBeVisible()
+  await expect(page.locator('.cw-owner')).toContainText('李老师')
+  await expect(page.getByText('已载入赛方公开模拟学情数据（非独立评测集）')).toBeVisible()
   await expect(
     page.locator('.cw-stat-grid').first().getByText('9', { exact: true }),
   ).toBeVisible()
@@ -690,7 +703,21 @@ test('学生从赛事建议生成个性化课程并使用数学内容', async ({
   await page.goto('/m/competition')
 
   await expect(page.getByTestId('competition-workbench')).toBeVisible()
+  await expect(page.getByRole('heading', { name: '我的数学学习路径' })).toBeVisible()
+  await expect(page.getByText('七年级数学 · 智慧学伴赛事')).toBeVisible()
+  await expect(page.getByRole('button', { name: '导入数据' })).toHaveCount(0)
+  await expect(page.getByRole('button', { name: '导出任务成果包' })).toHaveCount(0)
+  await expect(page.locator('.cw-owner')).toHaveCount(0)
+  await expect(page.getByRole('button', { name: '返回经管助学' })).toBeVisible()
   await expect(page.getByText('先看已有表现，再看信息不足', { exact: false })).toBeVisible()
+  await expect(
+    page.getByText(/不得引入真实学生个人信息/),
+  ).toBeVisible()
+  await expect(page.getByText(/导入数据/)).toHaveCount(0)
+  const stepOverflow = await page.locator('.cw-steps').evaluate(
+    (element) => element.scrollWidth > element.clientWidth,
+  )
+  expect(stepOverflow).toBe(true)
   await page.getByRole('button', { name: /学习路径/ }).click()
   await expect(page.getByRole('button', { name: '生成个性化课程' })).toBeVisible()
 
@@ -806,4 +833,137 @@ test('演示课程支持小测作答、讲稿播放与完课报告', async ({ pa
   // 「留在本页」关闭弹层，回到课程页
   await dialog.getByRole('button', { name: '留在本页' }).click()
   await expect(dialog).toBeHidden()
+})
+
+test('赛事工作台的真实字号、窄屏动线和底栏避让通过浏览器验收', async ({ page }) => {
+  await seedUser(page, 'teacher')
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto('/app/competition')
+  await expect(page.getByTestId('competition-workbench')).toBeVisible()
+
+  const teacherMetrics = await page.evaluate(() => {
+    const read = (selector) => {
+      const element = document.querySelector(selector)
+      if (!element) return null
+      const style = getComputedStyle(element)
+      return {
+        fontSize: Number.parseFloat(style.fontSize),
+        lineHeight: style.lineHeight,
+        fontFamily: style.fontFamily,
+      }
+    }
+    return {
+      viewportWidth: innerWidth,
+      documentWidth: document.documentElement.scrollWidth,
+      heading: read('.cw-head h1'),
+      body: read('.cw-page'),
+      fieldLabel: read('.cw-stat-grid span'),
+      stepDescription: read('.cw-steps small'),
+    }
+  })
+  expect(teacherMetrics.documentWidth).toBeLessThanOrEqual(teacherMetrics.viewportWidth)
+  expect(teacherMetrics.heading.fontSize).toBeGreaterThanOrEqual(30)
+  expect(teacherMetrics.body.fontSize).toBeGreaterThanOrEqual(14)
+  expect(teacherMetrics.fieldLabel.fontSize).toBeGreaterThanOrEqual(12)
+  expect(teacherMetrics.stepDescription.fontSize).toBeGreaterThanOrEqual(12)
+
+  await page.getByRole('button', { name: /建议与核验/ }).click()
+  await expect(page.locator('.cw-action-card').first()).toBeVisible()
+  const teacherActionTextSize = await page
+    .locator('.cw-action-main > p')
+    .first()
+    .evaluate((element) => Number.parseFloat(getComputedStyle(element).fontSize))
+  expect(teacherActionTextSize).toBeGreaterThanOrEqual(14)
+  await page.screenshot({
+    path: 'test-results/competition-review-final-teacher.png',
+  })
+
+  await page.evaluate((student) => {
+    localStorage.setItem('ai-tutor-user', JSON.stringify(student))
+  }, USERS.student)
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/m/competition')
+  await expect(page.getByRole('heading', { name: '我的数学学习路径' })).toBeVisible()
+
+  const studentMetrics = await page.evaluate(() => {
+    const workbench = document.querySelector('.cw-page')
+    const heading = document.querySelector('.cw-head h1')
+    const intro = document.querySelector('.cw-head p')
+    return {
+      viewportWidth: innerWidth,
+      documentWidth: document.documentElement.scrollWidth,
+      workbenchWidth: workbench.getBoundingClientRect().width,
+      headingFontSize: Number.parseFloat(getComputedStyle(heading).fontSize),
+      introFontSize: Number.parseFloat(getComputedStyle(intro).fontSize),
+      fontFamily: getComputedStyle(workbench).fontFamily,
+    }
+  })
+  expect(studentMetrics.documentWidth).toBeLessThanOrEqual(studentMetrics.viewportWidth)
+  expect(studentMetrics.workbenchWidth).toBeLessThanOrEqual(studentMetrics.viewportWidth)
+  expect(studentMetrics.headingFontSize).toBeGreaterThanOrEqual(23)
+  expect(studentMetrics.introFontSize).toBeGreaterThanOrEqual(14)
+  expect(studentMetrics.fontFamily).toContain('PingFang SC')
+
+  const learningPath = page.getByRole('button', { name: /学习路径/ })
+  await learningPath.focus()
+  await page.keyboard.press('Enter')
+  await expect(page.getByRole('button', { name: '生成个性化课程' })).toBeVisible()
+  const primaryActionHeight = await page
+    .getByRole('button', { name: '生成个性化课程' })
+    .evaluate((element) => element.getBoundingClientRect().height)
+  expect(primaryActionHeight).toBeGreaterThanOrEqual(40)
+  await expect(page.locator('.cw-action-card').first()).toBeVisible()
+  await expect(page.getByRole('heading', { name: '为你安排的学习路径' })).toBeVisible()
+  await expect(page.getByText('典型案例核验', { exact: true })).toHaveCount(0)
+  await expect(page.getByText('成果导出', { exact: true })).toHaveCount(0)
+  const studentEvidenceText = (await page.locator('.cw-evidence-mini').allTextContents()).join(' ')
+  expect(studentEvidenceText).not.toMatch(/DR\d+/)
+  await expect(page.locator('.cw-evidence-mini').first()).toContainText('依据你的')
+
+  const studentActionTextSize = await page
+    .locator('.cw-action-main > p')
+    .first()
+    .evaluate((element) => Number.parseFloat(getComputedStyle(element).fontSize))
+  const reasonTextSize = await page
+    .locator('.cw-reason')
+    .first()
+    .evaluate((element) => Number.parseFloat(getComputedStyle(element).fontSize))
+  expect(studentActionTextSize).toBeGreaterThanOrEqual(14)
+  expect(reasonTextSize).toBeGreaterThanOrEqual(13)
+
+  await page.screenshot({
+    path: 'test-results/competition-review-final-student.png',
+  })
+
+  await page.setViewportSize({ width: 1280, height: 800 })
+  await page.goto('/app/competition')
+  await page.getByRole('button', { name: /学习路径/ }).focus()
+  await page.keyboard.press('Enter')
+  const desktopStudentColumns = await page
+    .locator('.cw-plan-layout')
+    .evaluate((element) => {
+      const layoutWidth = element.getBoundingClientRect().width
+      const actionListWidth = element.querySelector('.cw-action-list').getBoundingClientRect().width
+      return Math.abs(layoutWidth - actionListWidth)
+    })
+  expect(desktopStudentColumns).toBeLessThanOrEqual(1)
+
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/m/competition')
+  await page.getByRole('button', { name: /学习路径/ }).click()
+  await page.setViewportSize({ width: 320, height: 720 })
+  const narrowWidth = await page.evaluate(() => document.documentElement.scrollWidth)
+  expect(narrowWidth).toBeLessThanOrEqual(320)
+  await page.screenshot({
+    path: 'test-results/competition-review-final-student-320.png',
+  })
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight))
+
+  const bottomClearance = await page.evaluate(() => {
+    const action = document.querySelector('.cw-plan-actions .el-button')
+    const tabbar = document.querySelector('.van-tabbar')
+    return tabbar.getBoundingClientRect().top - action.getBoundingClientRect().bottom
+  })
+  expect(bottomClearance).toBeGreaterThanOrEqual(8)
 })

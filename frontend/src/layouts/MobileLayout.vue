@@ -33,10 +33,10 @@ function switchToWeb() {
   <div class="mobile-layout">
     <van-nav-bar :title="route.meta.title || '人机协同助学'" fixed placeholder>
       <template #right>
-        <span class="web-switch" data-testid="web-switch" @click="switchToWeb">电脑端</span>
-        <span class="theme-toggle" data-testid="theme-toggle" @click="themeStore.toggle()">
+        <button class="web-switch" type="button" data-testid="web-switch" @click="switchToWeb">电脑端</button>
+        <button class="theme-toggle" type="button" data-testid="theme-toggle" @click="themeStore.toggle()">
           {{ switchLabel }}
-        </span>
+        </button>
       </template>
     </van-nav-bar>
 
@@ -70,18 +70,23 @@ function switchToWeb() {
 }
 
 .mobile-body {
-  padding-bottom: 8px;
+  padding-bottom: calc(76px + env(safe-area-inset-bottom));
 }
 
 /* 导航栏皮肤切换：小号描边胶囊，跟随主题色 */
 .theme-toggle {
-  display: inline-block;
-  padding: 3px 10px;
-  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;
+  min-height: 40px;
+  padding: 0 10px;
+  font-size: 12px;
   font-weight: 600;
   font-family: var(--font-ui);
-  letter-spacing: 1px;
+  letter-spacing: 0;
   color: var(--accent);
+  background: transparent;
   border: 1px solid var(--accent);
   border-radius: var(--radius-pill);
   cursor: pointer;
@@ -89,10 +94,16 @@ function switchToWeb() {
 
 /* 导航栏「电脑端」入口：弱化文字按钮，不抢主题切换的视觉权重 */
 .web-switch {
-  display: inline-block;
-  margin-right: 10px;
-  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  margin-right: 6px;
+  padding: 0 6px;
+  font-size: 12px;
   color: var(--text-sub);
+  background: transparent;
+  border: 0;
   cursor: pointer;
 }
 

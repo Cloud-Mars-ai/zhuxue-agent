@@ -51,6 +51,11 @@ const studentSteps = [
   { key: 'checkup', no: '04', title: '学习体检', desc: '我的盲区与下一步行动' },
 ]
 const steps = computed(() => (isTeacher.value ? teacherSteps : studentSteps))
+const workbenchIntro = computed(() =>
+  isTeacher.value
+    ? '依次完成内容梳理、群体与个体诊断、建议复核和成果导出。关键结论均可回到学习记录、题目与材料核验。'
+    : '先看已经掌握的内容，再按顺序完成下一步。没有足够记录的内容会标为信息不足，不会直接当成错误。',
+)
 
 const overview = computed(() => store.overview)
 const quality = computed(() => store.analysis.quality)
@@ -59,13 +64,13 @@ const curriculum = computed(() => store.dataset)
 const datasetOfficial = computed(() => !!curriculum.value.meta?.official)
 const datasetStatusTitle = computed(() =>
   datasetOfficial.value
-    ? '已接入赛方正式模拟学情数据，仅限本次比赛使用。'
+    ? '已载入赛方公开模拟学情数据（非独立评测集）。'
     : '当前为固定种子开发样例，不是赛方正式数据。',
 )
 const datasetStatusDescription = computed(
   () =>
     curriculum.value.meta?.disclaimer ||
-    '正式数据到位后，可通过“导入数据”替换原始记录，分析与导出逻辑保持不变。',
+    '当前公开模拟记录仅用于本次比赛开发、分析与展示；评审时的独立评测数据由赛方另行提供。',
 )
 /** 学科方向拆分（2026-11-07）：数据集显式归属某位教师，不再默认挂在唯一教师账号下 */
 const datasetOwnerLabel = computed(() => {
@@ -522,21 +527,23 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="cw-page" data-testid="competition-workbench">
+  <div
+    class="cw-page"
+    :class="{ 'cw-student': !isTeacher }"
+    data-testid="competition-workbench"
+  >
     <header class="cw-head">
       <div>
-        <div class="cw-kicker">SMART LEARNING COMPANION · 赛事模式</div>
-        <h1>智慧学伴工作台</h1>
-        <p>
-          一个工作台完成内容梳理、数据检查、个体与群体诊断、建议复核和成果导出。
-          统计与排序由规则引擎完成，模型只负责解释和课程表达。
-        </p>
-        <p class="cw-owner">
+        <div class="cw-kicker">七年级数学 · 智慧学伴赛事</div>
+        <h1>{{ isTeacher ? '智慧学伴工作台' : '我的数学学习路径' }}</h1>
+        <p>{{ workbenchIntro }}</p>
+        <p v-if="isTeacher" class="cw-owner">
           数据归属：<strong>{{ datasetOwnerLabel }}</strong>
           <span v-if="datasetOwnerMismatch">· 非本人负责的学科数据，你的调整会记录操作账号</span>
         </p>
       </div>
       <div class="cw-head-actions">
+        <el-button plain @click="router.push('/app/course')">返回经管助学</el-button>
         <el-button v-if="isTeacher" plain :loading="importing" @click="openImport">
           导入数据
         </el-button>
@@ -547,7 +554,9 @@ onMounted(async () => {
           accept=".json,.csv,application/json,text/csv"
           @change="handleImport"
         />
-        <el-button type="primary" @click="downloadPackage">导出任务成果包</el-button>
+        <el-button v-if="isTeacher" type="primary" @click="downloadPackage">
+          导出任务成果包
+        </el-button>
       </div>
     </header>
 
@@ -721,7 +730,7 @@ onMounted(async () => {
             <el-table-column prop="action" label="处理方式" min-width="180" show-overflow-tooltip />
           </el-table>
           <div v-if="isTeacher" class="cw-sub-actions">
-            <el-button plain @click="openImport">导入正式数据包</el-button>
+            <el-button plain @click="openImport">导入数据包</el-button>
             <el-button text @click="resetSample">重新载入赛方数据</el-button>
           </div>
         </article>
@@ -1091,8 +1100,10 @@ onMounted(async () => {
       <template v-if="selectedRecommendation">
         <article class="cw-card cw-plan-head">
           <div>
-            <div class="cw-kicker">EVIDENCE-BASED PATH</div>
-            <h2>{{ selectedRecommendation.studentName }} 的学习路径</h2>
+            <div class="cw-kicker">基于学习记录的下一步建议</div>
+            <h2>
+              {{ isTeacher ? `${selectedRecommendation.studentName} 的学习路径` : '为你安排的学习路径' }}
+            </h2>
             <p>{{ selectedRecommendation.summary }}</p>
             <small>{{ selectedRecommendation.uncertainty }}</small>
           </div>
@@ -1182,7 +1193,16 @@ onMounted(async () => {
                   </div>
                 </div>
                 <div class="cw-evidence-mini">
-                  <span>证据：{{ item.evidenceRefs.join('、') || '无可用记录' }}</span>
+                  <span v-if="isTeacher">
+                    依据记录：{{ item.evidenceRefs.join('、') || '无可用记录' }}
+                  </span>
+                  <span v-else>
+                    {{
+                      item.evidenceRefs.length
+                        ? `依据你的 ${item.evidenceRefs.length} 条作答记录`
+                        : '暂时没有可用的作答记录'
+                    }}
+                  </span>
                 </div>
                 <div v-if="isTeacher" class="cw-action-tools">
                   <el-button size="small" type="success" plain @click="acceptAction(item)">
@@ -1195,7 +1215,7 @@ onMounted(async () => {
             </article>
           </div>
 
-          <aside class="cw-plan-side">
+          <aside v-if="isTeacher" class="cw-plan-side">
             <article class="cw-card">
               <div class="cw-card-head">
                 <div>
@@ -1367,6 +1387,9 @@ onMounted(async () => {
   max-width: 1480px;
   margin: 0 auto;
   color: var(--text-main);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.65;
 }
 
 .cw-head {
@@ -1378,24 +1401,26 @@ onMounted(async () => {
 }
 
 .cw-kicker {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 1.8px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0;
   color: var(--accent);
 }
 
 .cw-head h1 {
-  margin: 6px 0 8px;
-  font-family: var(--font-calligraphy);
-  font-size: clamp(28px, 4vw, 44px);
-  font-weight: 400;
+  margin: 8px 0 10px;
+  font-family: var(--font-title);
+  font-size: 32px;
+  font-weight: 650;
+  line-height: 1.3;
 }
 
 .cw-head p {
   max-width: 760px;
   margin: 0;
-  font-size: 13px;
-  line-height: 1.8;
+  font-size: 14px;
+  line-height: 1.7;
   color: var(--text-sub);
 }
 
@@ -1428,6 +1453,13 @@ onMounted(async () => {
   flex-wrap: wrap;
 }
 
+.cw-head-actions :deep(.el-button),
+.cw-plan-actions :deep(.el-button),
+.cw-sub-actions :deep(.el-button),
+.cw-action-tools :deep(.el-button) {
+  min-height: 40px;
+}
+
 .cw-hidden-input {
   display: none;
 }
@@ -1438,7 +1470,7 @@ onMounted(async () => {
 
 .cw-steps {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
   gap: 10px;
   margin-bottom: 16px;
 }
@@ -1476,16 +1508,14 @@ onMounted(async () => {
 }
 
 .cw-step-copy strong {
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .cw-step-copy small {
   margin-top: 2px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 10.5px;
-  color: var(--text-faint);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-sub);
 }
 
 .cw-section {
@@ -1511,7 +1541,7 @@ onMounted(async () => {
 
 .cw-stat-grid span,
 .cw-stat-grid small {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-sub);
 }
 
@@ -1551,14 +1581,14 @@ onMounted(async () => {
 
 .cw-card-head h2 {
   margin: 0;
-  font-size: 16px;
+  font-size: 18px;
 }
 
 .cw-card-head p {
   margin: 4px 0 0;
-  font-size: 11.5px;
+  font-size: 13px;
   line-height: 1.6;
-  color: var(--text-faint);
+  color: var(--text-sub);
 }
 
 .cw-quality-grid,
@@ -1579,7 +1609,7 @@ onMounted(async () => {
 
 .cw-quality-grid span,
 .cw-student-numbers span {
-  font-size: 10.5px;
+  font-size: 12px;
   color: var(--text-faint);
 }
 
@@ -1598,7 +1628,7 @@ onMounted(async () => {
 
 .cw-policy-list p {
   margin: 0;
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.6;
   color: var(--text-sub);
 }
@@ -1649,7 +1679,7 @@ onMounted(async () => {
 }
 
 .cw-topic-head small {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-sub);
 }
 
@@ -1681,16 +1711,16 @@ onMounted(async () => {
 
 .cw-requirement p {
   margin: 4px 0;
-  font-size: 11.5px;
-  line-height: 1.65;
+  font-size: 13px;
+  line-height: 1.7;
   color: var(--text-sub);
 }
 
 .cw-link-line {
   display: grid;
   gap: 2px;
-  font-size: 10.5px;
-  line-height: 1.55;
+  font-size: 12px;
+  line-height: 1.6;
   color: var(--text-faint);
 }
 
@@ -1703,19 +1733,20 @@ onMounted(async () => {
 
 .cw-resource-chips button,
 .cw-resource-list button {
-  padding: 3px 7px;
+  min-height: 32px;
+  padding: 5px 9px;
   color: var(--accent);
   background: var(--accent-soft);
   border: 0;
   border-radius: 999px;
   font: inherit;
-  font-size: 10px;
+  font-size: 12px;
   cursor: pointer;
 }
 
 .cw-resource-chips span {
-  padding: 3px 0;
-  font-size: 10px;
+  padding: 5px 0;
+  font-size: 12px;
   color: var(--text-faint);
 }
 
@@ -1739,7 +1770,7 @@ onMounted(async () => {
 
 .cw-excerpt-note {
   margin: 0 0 8px;
-  font-size: 10.5px;
+  font-size: 12px;
   line-height: 1.6;
   color: var(--text-faint);
 }
@@ -1759,7 +1790,7 @@ onMounted(async () => {
 }
 
 .cw-excerpt-section h4 small {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 400;
   color: var(--text-faint);
 }
@@ -1769,15 +1800,15 @@ onMounted(async () => {
   background: var(--card-bg);
   border-radius: 4px;
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 11px;
   color: var(--accent);
 }
 
 .cw-excerpt-section p {
   margin: 0 0 4px;
-  font-size: 11.5px;
+  font-size: 14px;
   line-height: 1.8;
-  text-align: justify;
+  overflow-wrap: anywhere;
 }
 
 .cw-dialog-excerpt {
@@ -1787,7 +1818,7 @@ onMounted(async () => {
 
 .cw-dialog-excerpt-empty {
   margin: 0;
-  font-size: 11.5px;
+  font-size: 13px;
   line-height: 1.7;
   color: var(--text-faint);
 }
@@ -1809,7 +1840,7 @@ onMounted(async () => {
 }
 
 .cw-dict-group h3 small {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 400;
   color: var(--text-faint);
 }
@@ -1820,7 +1851,7 @@ onMounted(async () => {
   padding-left: 20px;
   display: grid;
   gap: 8px;
-  font-size: 11.5px;
+  font-size: 13px;
   line-height: 1.8;
 }
 
@@ -1844,7 +1875,7 @@ onMounted(async () => {
 .cw-group-label {
   display: flex;
   justify-content: space-between;
-  font-size: 11.5px;
+  font-size: 12px;
 }
 
 .cw-group-label b {
@@ -1854,7 +1885,7 @@ onMounted(async () => {
 
 .cw-group-bars small,
 .cw-muted {
-  font-size: 10.5px;
+  font-size: 12px;
   line-height: 1.6;
   color: var(--text-faint);
 }
@@ -1885,11 +1916,11 @@ onMounted(async () => {
 }
 
 .cw-gap-list strong {
-  font-size: 11.5px;
+  font-size: 13px;
 }
 
 .cw-gap-list span {
-  font-size: 10.5px;
+  font-size: 12px;
   color: var(--text-sub);
 }
 
@@ -1911,7 +1942,7 @@ onMounted(async () => {
 }
 
 .cw-student-summary span {
-  font-size: 10.5px;
+  font-size: 12px;
   color: var(--text-faint);
 }
 
@@ -1924,7 +1955,7 @@ onMounted(async () => {
   justify-content: space-between;
   gap: 10px;
   margin-bottom: 4px;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .cw-req-bar b {
@@ -1946,9 +1977,10 @@ onMounted(async () => {
 
 .cw-evidence-list button {
   display: grid;
-  grid-template-columns: 72px minmax(0, 1fr) auto;
+  grid-template-columns: minmax(72px, auto) minmax(0, 1fr) auto;
   gap: 8px;
   align-items: center;
+  min-height: 44px;
   padding: 8px;
   text-align: left;
   color: var(--text-sub);
@@ -1965,16 +1997,16 @@ onMounted(async () => {
 .cw-evidence-list span,
 .cw-evidence-list em {
   font-family: var(--font-mono);
-  font-size: 9.5px;
+  font-size: 12px;
   font-style: normal;
   color: var(--text-faint);
 }
 
 .cw-evidence-list strong {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 10.5px;
+  min-width: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
   font-weight: 500;
 }
 
@@ -1989,25 +2021,26 @@ onMounted(async () => {
 .cw-student-hero h2,
 .cw-plan-head h2 {
   margin: 5px 0 8px;
-  font-size: clamp(21px, 3vw, 31px);
-  font-family: var(--font-calligraphy);
-  font-weight: 400;
+  font-size: 26px;
+  line-height: 1.35;
+  font-family: var(--font-title);
+  font-weight: 650;
 }
 
 .cw-student-hero p,
 .cw-plan-head p {
   max-width: 780px;
   margin: 0;
-  font-size: 12.5px;
-  line-height: 1.8;
+  font-size: 14px;
+  line-height: 1.7;
   color: var(--text-sub);
 }
 
 .cw-plan-head small {
   display: block;
   margin-top: 8px;
-  font-size: 10.5px;
-  color: var(--text-faint);
+  font-size: 12px;
+  color: var(--text-sub);
 }
 
 .cw-requirement-analysis {
@@ -2043,7 +2076,7 @@ onMounted(async () => {
 
 .cw-requirement-analysis-row span,
 .cw-requirement-analysis-row p {
-  font-size: 10.5px;
+  font-size: 12px;
   color: var(--text-faint);
 }
 
@@ -2057,6 +2090,11 @@ onMounted(async () => {
   grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.65fr);
   gap: 14px;
   align-items: start;
+}
+
+.cw-student .cw-plan-layout {
+  grid-template-columns: minmax(0, 1fr);
+  max-width: 980px;
 }
 
 .cw-action-card {
@@ -2084,13 +2122,13 @@ onMounted(async () => {
 
 .cw-action-head > span {
   margin-left: auto;
-  font-size: 10px;
+  font-size: 12px;
   color: var(--text-faint);
 }
 
 /* 复核操作账号：跨教师调整时可追溯是谁改的 */
 .cw-action-operator {
-  font-size: 10px;
+  font-size: 12px;
   color: var(--text-faint);
 }
 
@@ -2101,7 +2139,7 @@ onMounted(async () => {
 
 .cw-action-main > p {
   margin: 0;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.7;
   color: var(--text-sub);
 }
@@ -2113,8 +2151,8 @@ onMounted(async () => {
   gap: 8px;
   margin-top: 9px;
   padding: 8px 10px;
-  font-size: 11px;
-  line-height: 1.65;
+  font-size: 13px;
+  line-height: 1.7;
   background: var(--bg-page);
   border-radius: 7px;
 }
@@ -2144,12 +2182,12 @@ onMounted(async () => {
 
 .cw-resource-list span {
   width: 34px;
-  font-size: 10.5px;
+  font-size: 12px;
   color: var(--text-faint);
 }
 
 .cw-resource-list em {
-  font-size: 10px;
+  font-size: 12px;
   font-style: normal;
   color: var(--text-faint);
 }
@@ -2157,8 +2195,13 @@ onMounted(async () => {
 .cw-evidence-mini {
   margin-top: 9px;
   font-family: var(--font-mono);
-  font-size: 9.5px;
+  font-size: 12px;
   color: var(--text-faint);
+}
+
+.cw-student .cw-evidence-mini {
+  font-family: var(--font-body);
+  color: var(--text-sub);
 }
 
 .cw-action-tools {
@@ -2191,18 +2234,18 @@ onMounted(async () => {
 }
 
 .cw-cases span {
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .cw-cases strong {
   grid-row: span 2;
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   color: var(--accent);
 }
 
 .cw-cases em {
-  font-size: 10px;
+  font-size: 12px;
   font-style: normal;
   color: var(--text-faint);
 }
@@ -2230,7 +2273,7 @@ onMounted(async () => {
 }
 
 .cw-record-detail span {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-faint);
 }
 
@@ -2251,14 +2294,15 @@ onMounted(async () => {
 }
 
 .cw-section-title span {
-  font: 9.5px/1.4 var(--font-mono);
-  letter-spacing: 1.4px;
+  font: 12px/1.5 var(--font-body);
+  font-weight: 600;
+  letter-spacing: 0;
   color: var(--accent);
 }
 
 .cw-section-title h2 {
   margin: 4px 0;
-  font-size: 22px;
+  font-size: 24px;
   color: var(--text-main);
 }
 
@@ -2298,13 +2342,13 @@ onMounted(async () => {
 
 .checkup-list strong,
 .checkup-actions strong {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--text-main);
 }
 
 .checkup-list small,
 .checkup-actions small {
-  font-size: 10.5px;
+  font-size: 12px;
   line-height: 1.6;
   color: var(--text-sub);
 }
@@ -2321,7 +2365,7 @@ onMounted(async () => {
   border-radius: 999px;
   background: var(--accent-soft);
   color: var(--accent);
-  font-size: 9.5px;
+  font-size: 12px;
 }
 
 .checkup-cta {
@@ -2355,8 +2399,40 @@ onMounted(async () => {
     width: 100%;
   }
 
+  .cw-head h1 {
+    font-size: 26px;
+  }
+
+  .cw-head-actions :deep(.el-button) {
+    flex: 1 1 auto;
+  }
+
   .cw-steps {
     grid-template-columns: 1fr;
+  }
+
+  .cw-student .cw-steps {
+    display: flex;
+    overflow-x: auto;
+    gap: 8px;
+    margin-right: -12px;
+    padding: 2px 12px 12px 2px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: thin;
+  }
+
+  .cw-student .cw-steps button {
+    flex: 0 0 184px;
+    min-height: 84px;
+    padding: 12px;
+    scroll-snap-align: start;
+  }
+
+  .cw-student .cw-step-copy small {
+    display: block;
+    overflow: visible;
+    font-size: 12px;
+    line-height: 1.5;
   }
 
   .cw-stat-grid,
@@ -2367,6 +2443,11 @@ onMounted(async () => {
 
   .cw-card {
     padding: 14px;
+  }
+
+  .cw-student-hero h2,
+  .cw-plan-head h2 {
+    font-size: 23px;
   }
 
   .cw-plan-side {
@@ -2385,4 +2466,5 @@ onMounted(async () => {
     font-size: 15px;
   }
 }
+
 </style>

@@ -9,11 +9,11 @@ const STORAGE_KEY = 'ai-tutor-model-config'
  * 开发模式可在模型设置页临时填写本机密钥；不要把密钥写回源码。
  */
 export const DEFAULT_MODEL_CONFIG = {
-  configVersion: '2026-11-06-adaptive-learner-v2',
-  provider: 'deepseek',
-  baseUrl: 'https://api.deepseek.com/v1',
+  configVersion: '2026-11-15-gpt56-sol',
+  provider: 'openai-next',
+  baseUrl: 'https://api.openai-next.com/v1',
   apiKey: '',
-  model: 'deepseek-chat',
+  model: 'gpt-5.6-sol',
   temperature: 0.3,
   ttsBaseUrl: 'https://api.stepfun.com/v1',
   ttsApiKey: '',
@@ -43,6 +43,9 @@ function isLegacyDefaultPrompt(value) {
 
 /** DeepSeek 常用对话模型，供配置页下拉选择 */
 export const DEEPSEEK_MODELS = ['deepseek-chat', 'deepseek-reasoner']
+
+/** 竞赛版主模型（OpenAI 兼容网关，服务端代理托管密钥） */
+export const OPENAI_NEXT_MODELS = ['gpt-5.6-sol']
 
 /** 历史 StepFun 模型保留，方便手动切回 */
 export const STEPFUN_MODELS = ['step-5-preview', 'step-3.5-flash', 'step-3.7-flash']

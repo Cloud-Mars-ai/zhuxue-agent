@@ -5,6 +5,8 @@
     "title": "智慧学伴 · 七年级数学赛方模拟学情数据",
     "grade": "七年级",
     "subject": "数学",
+    "ownerTeacherId": "T003",
+    "ownerTeacher": "李老师",
     "sourceType": "official-competition-package",
     "official": true,
     "disclaimer": "已接入赛方公开模拟学情数据，仅限本次比赛开发、分析与展示使用，不得引入真实学生个人信息。",

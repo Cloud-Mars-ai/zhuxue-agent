@@ -95,39 +95,67 @@ function upstreamError(status, detail) {
   return error
 }
 
+/** 文本模型配置：优先 AI_*（OpenAI 兼容，默认 gpt-5.6-sol），兼容旧 DEEPSEEK_* */
+export function textModelConfig() {
+  const usingAi = !!process.env.AI_API_KEY
+  const apiKey = process.env.AI_API_KEY || process.env.DEEPSEEK_API_KEY || ''
+  const baseUrl = (
+    (usingAi ? process.env.AI_BASE_URL : process.env.DEEPSEEK_BASE_URL) ||
+    (usingAi ? 'https://api.openai-next.com/v1' : 'https://api.deepseek.com/v1')
+  ).replace(/\/+$/, '')
+  const model = usingAi
+    ? process.env.AI_MODEL || 'gpt-5.6-sol'
+    : process.env.DEEPSEEK_MODEL || 'deepseek-chat'
+  const reasoningEffort = usingAi ? process.env.AI_REASONING_EFFORT || 'medium' : ''
+  return { apiKey, baseUrl, model, reasoningEffort, provider: usingAi ? 'ai' : 'deepseek' }
+}
+
+async function postChat(config, payload) {
+  return fetch(`${config.baseUrl}/chat/completions`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${config.apiKey}`,
+    },
+    body: JSON.stringify(payload),
+    signal: AbortSignal.timeout(120_000),
+  })
+}
+
 async function handleChat(req, res) {
-  const apiKey = process.env.DEEPSEEK_API_KEY || ''
-  if (!apiKey) {
+  const config = textModelConfig()
+  if (!config.apiKey) {
     sendJson(res, 503, {
       error: {
-        message: '服务端尚未配置 DEEPSEEK_API_KEY，前端将使用演示缓存。',
+        message: '服务端尚未配置 AI_API_KEY，前端将使用演示缓存。',
       },
     })
     return
   }
   const body = await readJson(req)
-  const baseUrl = (process.env.DEEPSEEK_BASE_URL || 'https://api.deepseek.com/v1').replace(
-    /\/+$/,
-    '',
-  )
-  const upstream = await fetch(`${baseUrl}/chat/completions`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
-      model: process.env.DEEPSEEK_MODEL || body.model || 'deepseek-chat',
-      messages: cleanMessages(body.messages),
-      temperature: Math.max(0, Math.min(2, Number(body.temperature) || 0.3)),
-      max_tokens: Math.max(64, Math.min(16_000, Number(body.max_tokens) || 2048)),
-      ...(body.response_format?.type === 'json_object'
-        ? { response_format: { type: 'json_object' } }
-        : {}),
-    }),
-    signal: AbortSignal.timeout(90_000),
+  const base = {
+    model: config.model,
+    messages: cleanMessages(body.messages),
+    ...(body.response_format?.type === 'json_object'
+      ? { response_format: { type: 'json_object' } }
+      : {}),
+    ...(config.reasoningEffort ? { reasoning_effort: config.reasoningEffort } : {}),
+  }
+  let upstream = await postChat(config, {
+    ...base,
+    temperature: Math.max(0, Math.min(2, Number(body.temperature) || 0.3)),
+    max_tokens: Math.max(64, Math.min(16_000, Number(body.max_tokens) || 2048)),
   })
-  const text = await upstream.text()
+  let text = await upstream.text()
+  // 推理模型常拒绝 temperature/max_tokens：400 时用最小参数集重试一次
+  if (upstream.status === 400) {
+    console.warn('[ai-proxy] chat 400, retry with minimal params:', text.slice(0, 300))
+    upstream = await postChat(config, base)
+    text = await upstream.text()
+  }
+  if (!upstream.ok) {
+    console.error('[ai-proxy] chat upstream error:', upstream.status, text.slice(0, 500))
+  }
   if (BLOCKED_PATTERNS.some((pattern) => pattern.test(text))) {
     sendJson(res, 422, {
       error: {
@@ -218,11 +246,14 @@ export async function handleAiProxy(req, res, urlPath) {
   }
   try {
     if (urlPath === '/api/health') {
+      const text = textModelConfig()
       sendJson(res, 200, {
         ok: true,
-        textModelConfigured: !!process.env.DEEPSEEK_API_KEY,
+        textModelConfigured: !!text.apiKey,
         ttsConfigured: !!process.env.STEPFUN_API_KEY,
-        textModel: process.env.DEEPSEEK_MODEL || 'deepseek-chat',
+        textModel: text.model,
+        textProvider: text.provider,
+        reasoningEffort: text.reasoningEffort || null,
         ttsModel: process.env.STEPFUN_TTS_MODEL || 'stepaudio-3-tts',
       })
       return

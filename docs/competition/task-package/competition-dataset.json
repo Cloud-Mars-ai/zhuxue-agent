@@ -5,6 +5,8 @@
     "title": "智慧学伴 · 七年级数学赛方模拟学情数据",
     "grade": "七年级",
     "subject": "数学",
+    "ownerTeacherId": "T003",
+    "ownerTeacher": "李老师",
     "sourceType": "official-competition-package",
     "official": true,
     "disclaimer": "已接入赛方公开模拟学情数据，仅限本次比赛开发、分析与展示使用，不得引入真实学生个人信息。",
@@ -2678,6 +2680,386 @@
         "对应具体学习卡与题目",
         "说明提示顺序、完成标准和调整条件"
       ]
+    }
+  ],
+  "fieldDefinitions": [
+    {
+      "table": "课程要求",
+      "field": "主题编号",
+      "type": "文本",
+      "meaning": "学习主题的编号",
+      "format": "T01—T03",
+      "example": "T01",
+      "whenEmpty": "—"
+    },
+    {
+      "table": "课程要求",
+      "field": "主题",
+      "type": "文本",
+      "meaning": "学习主题名称",
+      "format": "",
+      "example": "代数式与整式运算",
+      "whenEmpty": "—"
+    },
+    {
+      "table": "课程要求",
+      "field": "主题目标",
+      "type": "文本",
+      "meaning": "该主题的学习目标",
+      "format": "",
+      "example": "能用代数式表示简单数量关系……",
+      "whenEmpty": "—"
+    },
+    {
+      "table": "课程要求",
+      "field": "指标编号",
+      "type": "文本",
+      "meaning": "观察指标的编号",
+      "format": "主题编号+I+序号",
+      "example": "T01I1",
+      "whenEmpty": "—"
+    },
+    {
+      "table": "课程要求",
+      "field": "观察指标",
+      "type": "文本",
+      "meaning": "指标的具体内容",
+      "format": "",
+      "example": "表示数量关系并代入求值",
+      "whenEmpty": "—"
+    },
+    {
+      "table": "课程要求",
+      "field": "课标整理编号",
+      "type": "文本",
+      "meaning": "对应课程标准条目的整理编号",
+      "format": "CR01—CR03",
+      "example": "CR01",
+      "whenEmpty": "—"
+    },
+    {
+      "table": "课程要求",
+      "field": "课标文件页／正文页",
+      "type": "文本",
+      "meaning": "在“课程标准_2022.pdf”中的位置",
+      "format": "PDF文件页／课标印刷页码",
+      "example": "62／55",
+      "whenEmpty": "—"
+    },
+    {
+      "table": "课程要求",
+      "field": "教材正文页",
+      "type": "文本",
+      "meaning": "对应教材内容的印刷页码范围",
+      "format": "册别+起止页码，多段用“；”分隔",
+      "example": "上册68—109",
+      "whenEmpty": "—"
+    },
+    {
+      "table": "题目与材料",
+      "field": "材料编号",
+      "type": "文本",
+      "meaning": "题目、学习卡或教材条目的编号",
+      "format": "Q001—Q054为题目，L01—L03为学习卡，B01—B08为教材切片",
+      "example": "Q043",
+      "whenEmpty": "—"
+    },
+    {
+      "table": "题目与材料",
+      "field": "主题编号",
+      "type": "文本",
+      "meaning": "材料所属主题",
+      "format": "T01—T03",
+      "example": "T03",
+      "whenEmpty": "教材条目未标注主题"
+    },
+    {
+      "table": "题目与材料",
+      "field": "材料类型",
+      "type": "文本",
+      "meaning": "材料的类别",
+      "format": "题目、学习卡、教材",
+      "example": "题目",
+      "whenEmpty": "—"
+    },
+    {
+      "table": "题目与材料",
+      "field": "题型",
+      "type": "文本",
+      "meaning": "题目的类型",
+      "format": "选择题、填空题、解答题",
+      "example": "解答题",
+      "whenEmpty": "非题目材料"
+    },
+    {
+      "table": "题目与材料",
+      "field": "题干或内容",
+      "type": "文本",
+      "meaning": "题目题干，或学习卡、教材条目的内容",
+      "format": "",
+      "example": "解不等式：-2x+3<11。",
+      "whenEmpty": "—"
+    },
+    {
+      "table": "题目与材料",
+      "field": "选项",
+      "type": "文本",
+      "meaning": "选择题的选项",
+      "format": "每行一个选项，以A.—D.开头",
+      "example": "A. 3x与3x²",
+      "whenEmpty": "非选择题"
+    },
+    {
+      "table": "题目与材料",
+      "field": "参考答案",
+      "type": "文本",
+      "meaning": "题目的参考答案",
+      "format": "选择题为选项字母",
+      "example": "x>-4",
+      "whenEmpty": "非题目材料"
+    },
+    {
+      "table": "题目与材料",
+      "field": "参考解析",
+      "type": "文本",
+      "meaning": "参考解题思路",
+      "format": "解答题各步之间用“；”分隔",
+      "example": "两边减3得-2x<8；……",
+      "whenEmpty": "非题目材料"
+    },
+    {
+      "table": "题目与材料",
+      "field": "满分",
+      "type": "整数",
+      "meaning": "题目满分",
+      "format": "选择题、填空题为1，解答题为3",
+      "example": "3",
+      "whenEmpty": "非题目材料"
+    },
+    {
+      "table": "题目与材料",
+      "field": "评分点",
+      "type": "文本",
+      "meaning": "题目的评分点及分值",
+      "format": "每行一个：评分点编号 内容 分值；评分点编号为材料编号+P+序号",
+      "example": "Q043P2 除以负数时反向 1分",
+      "whenEmpty": "非题目材料"
+    },
+    {
+      "table": "题目与材料",
+      "field": "指标编号",
+      "type": "文本",
+      "meaning": "材料对应的观察指标",
+      "format": "题目对应一个指标；学习卡可对应多个，用“、”分隔",
+      "example": "T03I1",
+      "whenEmpty": "教材条目未标注指标"
+    },
+    {
+      "table": "题目与材料",
+      "field": "来源或资料文件",
+      "type": "文本",
+      "meaning": "材料来源或文件位置",
+      "format": "题目与学习卡为“赛事新编”；教材为切片文件路径",
+      "example": "5_课程标准及相关教学资源/B01_相关资料切片.pdf",
+      "whenEmpty": "—"
+    },
+    {
+      "table": "模拟学生",
+      "field": "学生编号",
+      "type": "文本",
+      "meaning": "模拟学生的编号",
+      "format": "D01—D40",
+      "example": "D01",
+      "whenEmpty": "—"
+    },
+    {
+      "table": "模拟学生",
+      "field": "模拟班级编号",
+      "type": "文本",
+      "meaning": "学生所在模拟班",
+      "format": "DC01、DC02",
+      "example": "DC01",
+      "whenEmpty": "—"
+    },
+    {
+      "table": "模拟学生",
+      "field": "年级",
+      "type": "整数",
+      "meaning": "学生年级",
+      "format": "7",
+      "example": "7",
+      "whenEmpty": "—"
+    },
+    {
+      "table": "测验节点",
+      "field": "节点编号",
+      "type": "文本",
+      "meaning": "测验节点的编号",
+      "format": "N01、N02",
+      "example": "N01",
+      "whenEmpty": "—"
+    },
+    {
+      "table": "测验节点",
+      "field": "模拟测验日期",
+      "type": "日期",
+      "meaning": "该节点的测验日期",
+      "format": "YYYY-MM-DD",
+      "example": "2026-01-20",
+      "whenEmpty": "—"
+    },
+    {
+      "table": "测验节点",
+      "field": "已教及测量主题",
+      "type": "文本",
+      "meaning": "截至该节点已教并测量的主题",
+      "format": "主题编号，用“、”分隔",
+      "example": "T01、T02",
+      "whenEmpty": "—"
+    },
+    {
+      "table": "测验节点",
+      "field": "说明",
+      "type": "文本",
+      "meaning": "节点的教学进度说明",
+      "format": "",
+      "example": "模拟上学期期末：……",
+      "whenEmpty": "—"
+    },
+    {
+      "table": "测验节点",
+      "field": "可用题目编号",
+      "type": "文本",
+      "meaning": "该节点可以出现的题目",
+      "format": "材料编号，用“、”分隔",
+      "example": "Q001、Q002、……",
+      "whenEmpty": "—"
+    },
+    {
+      "table": "作答记录",
+      "field": "记录编号",
+      "type": "文本",
+      "meaning": "每行记录的编号",
+      "format": "DR+四位序号，每行唯一",
+      "example": "DR0001",
+      "whenEmpty": "—"
+    },
+    {
+      "table": "作答记录",
+      "field": "学生编号",
+      "type": "文本",
+      "meaning": "作答学生，关联“模拟学生”",
+      "format": "D01—D40",
+      "example": "D01",
+      "whenEmpty": "—"
+    },
+    {
+      "table": "作答记录",
+      "field": "材料编号",
+      "type": "文本",
+      "meaning": "所答题目，关联“题目与材料”",
+      "format": "Q001—Q054",
+      "example": "Q043",
+      "whenEmpty": "—"
+    },
+    {
+      "table": "作答记录",
+      "field": "主题编号",
+      "type": "文本",
+      "meaning": "所答题目的主题",
+      "format": "T01—T03",
+      "example": "T03",
+      "whenEmpty": "—"
+    },
+    {
+      "table": "作答记录",
+      "field": "节点编号",
+      "type": "文本",
+      "meaning": "作答所属测验节点，关联“测验节点”",
+      "format": "N01、N02",
+      "example": "N02",
+      "whenEmpty": "—"
+    },
+    {
+      "table": "作答记录",
+      "field": "作答事件编号",
+      "type": "文本",
+      "meaning": "一次作答的编号；重新提交或复核改分时沿用同一编号",
+      "format": "学生编号-节点编号-材料编号",
+      "example": "D01-N02-Q043",
+      "whenEmpty": "—"
+    },
+    {
+      "table": "作答记录",
+      "field": "修订版本",
+      "type": "整数",
+      "meaning": "同一作答事件的版本号",
+      "format": "从1开始，每次重新提交或复核改分加1",
+      "example": "1",
+      "whenEmpty": "—"
+    },
+    {
+      "table": "作答记录",
+      "field": "模拟提交时间",
+      "type": "日期时间",
+      "meaning": "提交或评分的时间",
+      "format": "ISO 8601，北京时间，精确到秒",
+      "example": "2026-06-17T14:27:05+08:00",
+      "whenEmpty": "—"
+    },
+    {
+      "table": "作答记录",
+      "field": "评分状态",
+      "type": "文本",
+      "meaning": "该条记录的评分状态",
+      "format": "已评分、待评分、未作答",
+      "example": "已评分",
+      "whenEmpty": "—"
+    },
+    {
+      "table": "作答记录",
+      "field": "得分",
+      "type": "整数",
+      "meaning": "该条记录的得分",
+      "format": "0到满分之间的整数",
+      "example": "1",
+      "whenEmpty": "待评分或未作答"
+    },
+    {
+      "table": "作答记录",
+      "field": "满分",
+      "type": "整数",
+      "meaning": "所答题目的满分",
+      "format": "1或3",
+      "example": "3",
+      "whenEmpty": "—"
+    },
+    {
+      "table": "作答记录",
+      "field": "学生最终作答",
+      "type": "文本",
+      "meaning": "学生写下的最终答案",
+      "format": "选择题为选项字母；填空题为填写内容；解答题为最终结论",
+      "example": "x<-4",
+      "whenEmpty": "未作答"
+    },
+    {
+      "table": "作答记录",
+      "field": "解答过程",
+      "type": "文本",
+      "meaning": "解答题的作答步骤",
+      "format": "每步一行，以“1. ”“2. ”编号",
+      "example": "1. -2x<11-3\n2. -2x<8\n3. x<-4",
+      "whenEmpty": "非解答题，或未作答"
+    },
+    {
+      "table": "作答记录",
+      "field": "评分点得分",
+      "type": "文本",
+      "meaning": "各评分点的得分",
+      "format": "评分点编号=得分，多个用“；”分隔",
+      "example": "Q043P1=1；Q043P2=0；Q043P3=0",
+      "whenEmpty": "待评分或未作答"
     }
   ],
   "learningRecords": [
