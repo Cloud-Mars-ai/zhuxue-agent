@@ -1,5 +1,6 @@
 <template>
   <svg
+    ref="svgRef"
     class="rp-stage-svg"
     viewBox="0 0 1000 560"
     preserveAspectRatio="xMidYMid meet"
@@ -10,13 +11,14 @@
       :key="item.el.id"
       class="rp-el"
       :class="item.state"
+      :data-el-id="item.el.id"
       v-html="item.svg"
     ></g>
   </svg>
 </template>
 
 <script setup>
-import { ref, watch, computed, onBeforeUnmount } from 'vue'
+import { ref, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { buildElement } from './elements'
 
 const props = defineProps({
@@ -27,6 +29,7 @@ const props = defineProps({
 
 const EXIT_MS = 380
 const rendered = ref([])
+const svgRef = ref(null)
 let exitTimer = 0
 
 function toItem(el, state) {
@@ -45,11 +48,14 @@ function syncScene(next) {
   // 退场：标记后延时移除
   const exiting = rendered.value.filter((item) => !nextIds.has(item.el.id))
   // 持续存在：数据更新则重算 svg（不动画）
+  const changedIds = []
   const staying = rendered.value
     .filter((item) => nextIds.has(item.el.id))
     .map((item) => {
       const fresh = next.find((el) => el.id === item.el.id)
-      const svg = JSON.stringify(fresh) === JSON.stringify(item.el) ? item.svg : toItem(fresh, 'stay').svg
+      const same = JSON.stringify(fresh) === JSON.stringify(item.el)
+      if (!same) changedIds.push(fresh.id)
+      const svg = same ? item.svg : toItem(fresh, 'stay').svg
       return { el: fresh, svg, state: 'stay' }
     })
   // 新入场
@@ -61,6 +67,35 @@ function syncScene(next) {
       rendered.value = rendered.value.filter((item) => item.state !== 'out')
     }, EXIT_MS)
   }
+  syncQa(changedIds)
+}
+
+/** QA 揭晓：内容变化的题目重置揭晓状态；为新按钮绑定原生点击（阻止冒泡，避免误推进步骤） */
+function syncQa(changedIds) {
+  nextTick(() => {
+    const svg = svgRef.value
+    if (!svg) return
+    for (const id of changedIds) {
+      const g = svg.querySelector(`g[data-el-id="${id}"]`)
+      if (g) g.removeAttribute('data-revealed')
+    }
+    svg.querySelectorAll('.rp-qa-btn').forEach((btn) => {
+      if (btn.__qaBound) return
+      btn.__qaBound = true
+      const toggle = (e) => {
+        e.stopPropagation()
+        e.preventDefault()
+        const g = btn.closest('.rp-el')
+        if (!g) return
+        if (g.getAttribute('data-revealed') === '1') g.removeAttribute('data-revealed')
+        else g.setAttribute('data-revealed', '1')
+      }
+      btn.addEventListener('click', toggle)
+      btn.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') toggle(e)
+      })
+    })
+  })
 }
 
 watch(
@@ -69,6 +104,7 @@ watch(
   { immediate: true, deep: false },
 )
 
+onMounted(() => syncQa([]))
 onBeforeUnmount(() => window.clearTimeout(exitTimer))
 </script>
 
@@ -91,6 +127,36 @@ onBeforeUnmount(() => window.clearTimeout(exitTimer))
 .rp-el.out {
   animation: rp-out 0.38s ease-in both;
   pointer-events: none;
+}
+
+/* —— 快问快答：先问后答，点击揭晓（v-html 内容需 :deep 穿透作用域） —— */
+:deep(.rp-qa-btn) {
+  cursor: pointer;
+}
+
+:deep(.rp-qa-btn):hover rect {
+  filter: brightness(1.07);
+}
+
+:deep(.rp-qa-btn:focus-visible) {
+  outline: none;
+}
+
+:deep(.rp-qa-btn:focus-visible) rect {
+  stroke: #2a2721;
+  stroke-width: 2.4;
+}
+
+:deep(.rp-qa-ans) {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  pointer-events: none;
+}
+
+.rp-el[data-revealed] :deep(.rp-qa-ans) {
+  opacity: 1;
+  transform: none;
 }
 
 @keyframes rp-pop {

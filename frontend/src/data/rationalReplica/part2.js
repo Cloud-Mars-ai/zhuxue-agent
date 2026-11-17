@@ -121,7 +121,7 @@ export default [
             from: -2,
             to: 2,
             fracTicks: [
-              { v: -1 / 3, lab: '-1/3', c: K.blue },
+              { v: -1 / 3, c: K.blue },
               { v: -2 / 3 },
             ],
             arcs: [{ kind: 'bracket', a: -1, b: 0, dy: 72, lab: '3 等份', c: K.orange }],
@@ -147,9 +147,9 @@ export default [
             from: -2,
             to: 2,
             fracTicks: [
-              { v: -1 / 3, lab: '-1/3', c: K.blue },
+              { v: -1 / 3, c: K.blue },
               { v: -2 / 3 },
-              { v: 0.5, lab: '0.5', c: K.red },
+              { v: 0.5, c: K.red },
             ],
             arcs: [{ kind: 'bracket', a: -1, b: 0, dy: 72, lab: '3 等份', c: K.orange }],
             originRing: true,
@@ -175,11 +175,11 @@ export default [
             from: -2,
             to: 2,
             fracTicks: [
-              { v: -1 / 3, lab: '-1/3', c: K.blue },
+              { v: -1 / 3, c: K.blue },
               { v: -2 / 3 },
-              { v: 0.5, lab: '0.5', c: K.red },
+              { v: 0.5, c: K.red },
               { v: -1.2 },
-              { v: -1.4, lab: '-1.4', c: K.blue },
+              { v: -1.4, c: K.blue },
               { v: -1.6 },
               { v: -1.8 },
             ],
@@ -226,8 +226,8 @@ export default [
             from: -3,
             to: 4,
             fracTicks: [
-              { v: -1.7, lab: '-1.7', c: K.blue },
-              { v: 3.2, lab: '3.2', c: K.red },
+              { v: -1.7, c: K.blue },
+              { v: 3.2, c: K.red },
             ],
             pts: [
               { v: -1.7, lab: '-1.7', c: K.blue, labSize: 15 },
@@ -248,8 +248,8 @@ export default [
             from: -3,
             to: 4,
             fracTicks: [
-              { v: -1.7, lab: '-1.7', c: K.blue },
-              { v: 3.2, lab: '3.2', c: K.red },
+              { v: -1.7, c: K.blue },
+              { v: 3.2, c: K.red },
             ],
             pts: [
               { v: -1.7, lab: '-1.7', c: K.blue, labSize: 15 },
@@ -487,6 +487,9 @@ export default [
             ],
           },
           { id: 'f1-t', type: 'text', x: 170, y: 150, t: '分母是 7 的放一起，分母是 8 的放一起', s: 18, c: K.sub },
+          { id: 'ring-a', type: 'ring', x: 203, y: 185, rx: 43, ry: 22, c: K.red, sw: 2.2 },
+          { id: 'ring-b', type: 'ring', x: 347, y: 185, rx: 78, ry: 22, c: K.blue, sw: 2.2 },
+          { id: 'ring-c', type: 'ring', x: 492, y: 185, rx: 54, ry: 22, c: K.red, sw: 2.2 },
         ],
       },
       {
@@ -508,6 +511,9 @@ export default [
             ],
           },
           { id: 'f1-t', type: 'text', x: 170, y: 150, t: '先把减法变成加法，再换位置', s: 18, c: K.sub },
+          { id: 'ring-a', type: 'ring', x: 203, y: 185, rx: 43, ry: 22, c: K.red, sw: 2.2 },
+          { id: 'ring-b', type: 'ring', x: 378, y: 185, rx: 109, ry: 22, c: K.blue, sw: 2.2 },
+          { id: 'ring-c', type: 'ring', x: 541, y: 185, rx: 32, ry: 22, c: K.red, sw: 2.2 },
         ],
       },
       {
@@ -524,7 +530,7 @@ export default [
       },
       {
         say: '哎，这式子看着有些别扭呀，哈哈，原来是负一裸奔了，你得给它加个括号，把符号都隔开才行。现在再算三加负一，那就是二了，是不是非常好算？',
-        drop: ['f1', 'f1-t', 'f2', 'f3'],
+        drop: ['f1', 'f1-t', 'f2', 'f3', 'ring-a', 'ring-b', 'ring-c'],
         add: [
           { id: 'g1', type: 'text', x: 320, y: 160, t: '负数不能裸奔，要加括号', s: 20, c: K.red, b: true },
           { id: 'g2', type: 'eqline', x: 320, y: 250, s: 32, parts: [{ t: '3 ＋ (-1) ＝ 2' }], box: 'green' },
@@ -680,24 +686,29 @@ export default [
         say: '以后遇到减法的题目，都先把它转化为加法，然后再进行加法计算就成了。学会了这个技能，不妨刷几个小题练练手。五减七就是五加上负七，七比较大，所以结果是负的，数值是七减五，结果就是负二。',
         drop: ['x1', 'x2', 'x3'],
         add: [
-          { id: 'p1', type: 'eqline', x: 300, y: 190, s: 26, parts: [{ t: '5 － 7 ＝ 5 ＋ (-7) ＝ -2' }] },
+          { id: 'q-t', type: 'text', x: 500, y: 105, t: '练一练', s: 28, b: true, c: K.red, align: 'middle' },
+          { id: 'q-s', type: 'text', x: 500, y: 141, t: '减法先转化成加法，再计算', s: 18, c: K.sub, align: 'middle' },
+          { id: 'p1', type: 'eqline', x: 300, y: 190, s: 26, parts: [{ t: '5 － 7 ＝ 5 ＋ (-7)' }, { t: ' ＝ -2', c: K.green, b: true }] },
+          { id: 'p1-t', type: 'text', x: 700, y: 190, t: '7 更大 → 结果为负', s: 16, c: K.sub },
         ],
       },
       {
         say: '负六减八就是负六加上负八，都是负的，结果也还是负的，数值会累加等于负十四。',
         add: [
-          { id: 'p2', type: 'eqline', x: 300, y: 265, s: 26, parts: [{ t: '-6 － 8 ＝ -6 ＋ (-8) ＝ -14' }] },
+          { id: 'p2', type: 'eqline', x: 300, y: 265, s: 26, parts: [{ t: '-6 － 8 ＝ -6 ＋ (-8)' }, { t: ' ＝ -14', c: K.green, b: true }] },
+          { id: 'p2-t', type: 'text', x: 700, y: 265, t: '同号 → 数值累加', s: 16, c: K.sub },
         ],
       },
       {
         say: '负三减负四就是负三加上四，四更大，结果就是正的，数值是四减三，结果等于正一，正号可以省略，就是一。',
         add: [
-          { id: 'p3', type: 'eqline', x: 300, y: 340, s: 26, parts: [{ t: '-3 － (-4) ＝ -3 ＋ 4 ＝ 1' }] },
+          { id: 'p3', type: 'eqline', x: 300, y: 340, s: 26, parts: [{ t: '-3 － (-4) ＝ -3 ＋ 4' }, { t: ' ＝ 1', c: K.green, b: true }] },
+          { id: 'p3-t', type: 'text', x: 700, y: 340, t: '4 更大 → 结果为正', s: 16, c: K.sub },
         ],
       },
       {
         say: '最后这个例子好长呀，而且有加又有减，那怎么办呢？别害怕，教你一招，遇到这样有加又有减的式子，先把减法都转化为加法，减三就变成了加负三，减负二就变成了加上二，这个式子就等于负五加负三加七加二，这样你只要按照顺序做加法就可以了。',
-        drop: ['p1', 'p2', 'p3'],
+        drop: ['p1', 'p2', 'p3', 'q-t', 'q-s', 'p1-t', 'p2-t', 'p3-t'],
         add: [
           { id: 'm1', type: 'eqline', x: 250, y: 170, s: 26, parts: [{ t: '(-5) － 3 ＋ 7 － (-2)' }] },
           { id: 'm2', type: 'eqline', x: 250, y: 245, s: 26, parts: [{ t: '＝ (-5) ＋ (-3) ＋ 7 ＋ 2' }], box: 'green' },

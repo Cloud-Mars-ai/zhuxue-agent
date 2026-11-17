@@ -72,6 +72,34 @@ export function textWidth(t, s) {
   return w * s
 }
 
+/** 按宽度估算折行（CJK 逐字断行；结束标点不作行首，允许轻微出溢） */
+export function wrapText(t, s, maxW) {
+  const lines = []
+  const hang = '，。！？；：、）》」』…·'
+  let line = ''
+  for (const ch of String(t)) {
+    if (ch === '\n') {
+      lines.push(line)
+      line = ''
+      continue
+    }
+    if (line && textWidth(line + ch, s) > maxW) {
+      if (hang.includes(ch)) {
+        line += ch
+        lines.push(line)
+        line = ''
+        continue
+      }
+      lines.push(line)
+      line = ch
+    } else {
+      line += ch
+    }
+  }
+  if (line) lines.push(line)
+  return lines.length ? lines : ['']
+}
+
 /** 通用文本（可选底色框 / 下划线） */
 function text(el) {
   const s = el.s || 20
@@ -93,23 +121,27 @@ function text(el) {
   return out
 }
 
-/** 叠分数：sign + num/den */
+/** 叠分数：sign + num/den（横线与分子分母严格居中，符号垂直居中于分数） */
 function frac(el) {
   const s = el.s || 20
   const c = el.c || C.ink
   const sign = el.sign || ''
-  const w = Math.max(textWidth(el.num, s * 0.82), textWidth(el.den, s * 0.82))
+  const fs = s * 0.82
+  const w = Math.max(textWidth(el.num, fs), textWidth(el.den, fs))
   const signW = sign ? textWidth(sign, s) + 2 : 0
   const x = el.x
   const y = el.y
-  const numW = textWidth(el.num, s * 0.82)
-  const denW = textWidth(el.den, s * 0.82)
+  const numW = textWidth(el.num, fs)
+  const denW = textWidth(el.den, fs)
   const barW = w + 8
+  const cx = x + signW + barW / 2 // 分子/分母共同中心，与横线中点对齐
+  const barY = y + s * 0.048 // 横线落在分子底部与分母顶部之间的中点
+  const signY = y + s * 0.4 // 符号垂直居中于整个分数
   return (
-    (sign ? `<text x="${x}" y="${y - s * 0.18}" font-size="${s}" fill="${c}" text-anchor="start">${esc(sign)}</text>` : '') +
-    `<text x="${x + signW + (barW - numW) / 2}" y="${y - s * 0.28}" font-size="${(s * 0.82).toFixed(1)}" fill="${c}" text-anchor="middle">${esc(el.num)}</text>` +
-    `<line x1="${x + signW}" y1="${y + 2}" x2="${x + signW + barW}" y2="${y + 2}" stroke="${c}" stroke-width="2" stroke-linecap="round"/>` +
-    `<text x="${x + signW + (barW - denW) / 2}" y="${y + s * 0.95}" font-size="${(s * 0.82).toFixed(1)}" fill="${c}" text-anchor="middle">${esc(el.den)}</text>`
+    (sign ? `<text x="${x}" y="${signY.toFixed(1)}" font-size="${s}" fill="${c}" text-anchor="start">${esc(sign)}</text>` : '') +
+    `<text x="${cx.toFixed(1)}" y="${(y - s * 0.28).toFixed(1)}" font-size="${fs.toFixed(1)}" fill="${c}" text-anchor="middle">${esc(el.num)}</text>` +
+    `<line x1="${(x + signW).toFixed(1)}" y1="${barY.toFixed(1)}" x2="${(x + signW + barW).toFixed(1)}" y2="${barY.toFixed(1)}" stroke="${c}" stroke-width="2" stroke-linecap="round"/>` +
+    `<text x="${cx.toFixed(1)}" y="${(y + s * 0.95).toFixed(1)}" font-size="${fs.toFixed(1)}" fill="${c}" text-anchor="middle">${esc(el.den)}</text>`
   )
 }
 
@@ -162,7 +194,8 @@ function thermo(el) {
   out += `<rect x="${x + 4 * sc}" y="${top + 6 * sc}" width="${tubeW - 8 * sc}" height="${(zeroY - top - 6 * sc).toFixed(1)}" fill="${C.red}" opacity="0.85"/>`
   // 球泡
   out += `<circle cx="${x + tubeW / 2}" cy="${bottom}" r="${17 * sc}" fill="${C.red}" stroke="${C.line}" stroke-width="2.4"/>`
-  // 刻度
+  // 刻度 + 标签（记录位置供高亮）
+  const labs = {}
   for (const m of marks) {
     const my = zeroY - m * unit
     const isZero = m === 0
@@ -170,18 +203,25 @@ function thermo(el) {
     const lc = isZero ? C.ink : m > 0 ? C.red : C.blue
     out += `<line x1="${x + tubeW + 3}" y1="${my}" x2="${x + tubeW + 3 + tw}" y2="${my}" stroke="${lc}" stroke-width="${isZero ? 2.6 : 1.8}" stroke-linecap="round"/>`
     const label = isZero ? '0' : m > 0 ? String(m) : `-${-m}`
-    out += `<text x="${x + tubeW + 8 + tw}" y="${my + 5 * sc}" font-size="${15 * sc}" fill="${lc}" font-weight="${isZero ? 700 : 400}">${label}</text>`
+    const lx = x + tubeW + 8 + tw
+    const ly = my + 5 * sc
+    labs[m] = { lx, ly, label }
+    out += `<text x="${lx}" y="${ly}" font-size="${15 * sc}" fill="${lc}" font-weight="${isZero ? 700 : 400}">${label}</text>`
     if (jit(id, `m${m}`) > 0.4) {
       out += `<line x1="${x + 3}" y1="${my}" x2="${x + 9}" y2="${my}" stroke="${lc}" stroke-width="1.4"/>`
     }
   }
+  // 高亮刻度：对照原视频，强调做在右侧文字上——标签加彩、加大、加软底签，不在管柱上画圈
+  for (const h of el.hi || []) {
+    const p = labs[h]
+    if (!p) continue
+    const hc = h > 0 ? C.red : h < 0 ? C.blue : C.ink
+    const hlw = textWidth(p.label, 17 * sc) + 14
+    out += `<rect x="${(p.lx - 7).toFixed(1)}" y="${(p.ly - 14 * sc).toFixed(1)}" width="${hlw.toFixed(1)}" height="${(21 * sc).toFixed(1)}" rx="${(9 * sc).toFixed(1)}" fill="#fffdf6" stroke="${hc}" stroke-width="2" opacity="0.96"/>`
+    out += `<text x="${p.lx.toFixed(1)}" y="${p.ly.toFixed(1)}" font-size="${(17 * sc).toFixed(1)}" fill="${hc}" font-weight="700">${p.label}</text>`
+  }
   // °C
   out += `<text x="${x + tubeW / 2}" y="${top - 12 * sc}" font-size="${17 * sc}" fill="${C.ink}" text-anchor="middle" font-style="italic">℃</text>`
-  // 高亮刻度（hi: [10,20] 画红圈）
-  for (const h of el.hi || []) {
-    const hy = zeroY - h * unit
-    out += `<circle cx="${x + tubeW / 2}" cy="${hy}" r="${13 * sc}" fill="none" stroke="${C.red}" stroke-width="2.6" opacity="0.95"/>`
-  }
   return out
 }
 
@@ -204,7 +244,11 @@ function numberline(el) {
     const tx = X(v)
     const isZero = v === 0
     out += `<line x1="${tx.toFixed(1)}" y1="${y - 5}" x2="${tx.toFixed(1)}" y2="${y + 5}" stroke="${isZero ? C.ink : C.line}" stroke-width="${isZero ? 2.8 : 1.8}" stroke-linecap="round"/>`
-    out += `<text x="${tx.toFixed(1)}" y="${y + 26}" font-size="${el.labelSize || 16}" fill="${isZero ? C.ink : C.sub}" text-anchor="middle" font-weight="${isZero ? 700 : 400}">${v}</text>`
+    // 轴上 pts 已在同值标注（彩色加粗）时，轴下不再重复渲染该整数，避免同值双标签
+    const dupPt = (el.pts || []).some((p) => p.lab && p.v === v)
+    if (!dupPt) {
+      out += `<text x="${tx.toFixed(1)}" y="${y + 26}" font-size="${el.labelSize || 16}" fill="${isZero ? C.ink : C.sub}" text-anchor="middle" font-weight="${isZero ? 700 : 400}">${v}</text>`
+    }
   }
   // 分数刻度（fracTicks: [{v, lab}]，lab 支持 '3/5' 形式）
   for (const f of el.fracTicks || []) {
@@ -612,42 +656,137 @@ function road(el) {
   return out
 }
 
-/** 分类树（大括号两级） */
+/**
+ * 分类树（大括号两级：根 → 分支 → 叶子）
+ * - 叶子用彩底圆角签，示例数字统一绿色
+ * - 可选 bg: {x,y,w,h,title,tc} 软面板，树在面板内容区内水平/垂直居中
+ * - 分支大括号对齐各支的子项组，括号列全局对齐
+ */
 function tree(el) {
-  const x = el.x
-  const y = el.y
-  const rowH = el.rowH || 74
-  const id = el.id || 'tree'
-  let out = ''
-  // 根
-  out += `<text x="${x}" y="${y + rowH / 2 + 6}" font-size="19" fill="${C.ink}" font-weight="700">${esc(el.root || '有理数')}</text>`
-  const bx = x + 66
+  const S = el.s || 1
   const branches = el.branches || []
-  const totalH = branches.length * rowH
-  // 根大括号
-  out += `<path d="M ${bx} ${y + 2} Q ${bx + 12} ${y + totalH / 2} ${bx} ${y + totalH - 2}" fill="none" stroke="${C.line}" stroke-width="2.4"/>`
+  const rootLabel = el.root || '有理数'
+  const rootS = 30 * S
+  const brS = 26 * S
+  const kidS = 22 * S
+  const numS = 22 * S
+  const kidH = 56 * S
+  const brPad = 15 * S
+  const brGap = 20 * S
+
+  /* ---- 第一遍：相对 x0=0 的宽度 ---- */
+  const rootW = textWidth(rootLabel, rootS)
+  const brace1X = rootW + 12 * S
+  const brX = brace1X + 20 * S
+  let brLabelW = 0
+  for (const br of branches) brLabelW = Math.max(brLabelW, textWidth(br.label, brS))
+  const brace2X = brX + brLabelW + 14 * S
+  const kidX = brace2X + 20 * S
+  const allKids = []
+  for (const br of branches) for (const k of br.children || []) allKids.push(k)
+  let chipW = 0
+  for (const k of allKids) chipW = Math.max(chipW, textWidth(k.label, kidS) + 22 * S)
+  const numX = kidX + chipW + 22 * S
+  const numFW = (n) => {
+    if (typeof n === 'string' && n.includes('/')) {
+      const i = n.indexOf('/')
+      const sign = n.startsWith('-') ? '-' : ''
+      const nu = sign ? n.slice(1, i) : n.slice(0, i)
+      const de = n.slice(i + 1)
+      const fs = numS * 0.82
+      const signW = sign ? textWidth(sign, numS) + 2 : 0
+      const barW = Math.max(textWidth(nu, fs), textWidth(de, fs)) + 8
+      return signW + barW + 16 * S
+    }
+    return textWidth(n, numS) + 16 * S
+  }
+  let numsW = 0
+  for (const k of allKids) {
+    let w = 0
+    for (const n of k.nums || []) w += numFW(n)
+    numsW = Math.max(numsW, w)
+  }
+  const treeW = numX + numsW
+
+  /* ---- 第二遍：定位 ---- */
+  const brH = branches.map((br) => (br.children || []).length * kidH + brPad * 2)
+  const totalH = brH.reduce((a, b) => a + b, 0) + brGap * Math.max(0, branches.length - 1)
+  let x0
+  let cy0
+  if (el.bg && el.bg.w && el.bg.h) {
+    const bg = el.bg
+    const topPad = bg.title ? 40 * S : 18 * S
+    const region = { x: bg.x + 18 * S, y: bg.y + topPad, w: bg.w - 36 * S, h: bg.h - topPad - 18 * S }
+    x0 = region.x + Math.max(0, (region.w - treeW) / 2)
+    cy0 = region.y + region.h / 2
+  } else {
+    x0 = el.x
+    cy0 = el.y
+  }
+  const top = cy0 - totalH / 2
+  const brCenters = []
+  {
+    let cur = top
+    for (const h of brH) {
+      brCenters.push(cur + h / 2)
+      cur += h + brGap
+    }
+  }
+  const maxX = x0 + treeW
+
+  let out = ''
+  /* ---- 背景软面板 ---- */
+  if (el.bg && el.bg.w && el.bg.h) {
+    const bg = el.bg
+    out += `<rect x="${bg.x}" y="${bg.y}" width="${bg.w}" height="${bg.h}" rx="16" fill="#fffdf6" stroke="${C.line}" stroke-width="1.6" opacity="0.92"/>`
+    if (bg.title) {
+      const tw = textWidth(bg.title, 18 * S) + 24 * S
+      out += `<rect x="${bg.x + 18}" y="${bg.y - 13}" width="${tw.toFixed(1)}" height="${26 * S}" rx="13" fill="${bg.tc || C.red}"/>`
+      out += `<text x="${(bg.x + 18 + tw / 2).toFixed(1)}" y="${(bg.y + 6).toFixed(1)}" font-size="${18 * S}" fill="#ffffff" text-anchor="middle" font-weight="700">${esc(bg.title)}</text>`
+    }
+  }
+
+  /* ---- 根 ---- */
+  const rootCY = (brCenters[0] + brCenters[brCenters.length - 1]) / 2
+  out += `<text x="${x0.toFixed(1)}" y="${(rootCY + rootS * 0.35).toFixed(1)}" font-size="${rootS}" fill="${C.ink}" font-weight="700">${esc(rootLabel)}</text>`
+  const b1 = x0 + brace1X
+  const bTop = brCenters[0] - brH[0] / 2 + 6 * S
+  const bBot = brCenters[brCenters.length - 1] + brH[brH.length - 1] / 2 - 6 * S
+  out += `<path d="M ${b1.toFixed(1)} ${bTop.toFixed(1)} Q ${(b1 + 13 * S).toFixed(1)} ${rootCY.toFixed(1)} ${b1.toFixed(1)} ${bBot.toFixed(1)}" fill="none" stroke="${C.line}" stroke-width="2.6"/>`
+
+  /* ---- 分支 ---- */
   branches.forEach((br, bi) => {
-    const by = y + bi * rowH + rowH / 2
-    out += `<text x="${bx + 20}" y="${by + 6}" font-size="18" fill="${br.c || C.ink}" font-weight="700">${esc(br.label)}</text>`
+    const bc = br.c || C.ink
+    const by = brCenters[bi]
+    out += `<text x="${(x0 + brX).toFixed(1)}" y="${(by + brS * 0.35).toFixed(1)}" font-size="${brS}" fill="${bc}" font-weight="700">${esc(br.label)}</text>`
     const kids = br.children || []
-    const kx = bx + 20 + textWidth(br.label, 18) + 16
-    // 分支大括号
-    out += `<path d="M ${kx} ${by - rowH / 2 + 8} Q ${kx + 10} ${by} ${kx} ${by + rowH / 2 - 8}" fill="none" stroke="${br.c || C.line}" stroke-width="2.2"/>`
+    const kTop = by - brH[bi] / 2 + brPad
+    const kBot = by + brH[bi] / 2 - brPad
+    const b2 = x0 + brace2X
+    out += `<path d="M ${b2.toFixed(1)} ${(kTop - 4 * S).toFixed(1)} Q ${(b2 + 12 * S).toFixed(1)} ${by.toFixed(1)} ${b2.toFixed(1)} ${(kBot + 4 * S).toFixed(1)}" fill="none" stroke="${bc}" stroke-width="2.4"/>`
     kids.forEach((kid, ki) => {
-      const ky = by - rowH / 2 + 8 + (ki + 0.5) * ((rowH - 16) / kids.length)
-      out += `<text x="${kx + 16}" y="${ky + 5}" font-size="16.5" fill="${kid.c || C.ink}">${esc(kid.label)}</text>`
-      // 数字列表（支持 "250"、"-2015"、"4/2" 分数）
-      let nx = kx + 16 + textWidth(kid.label, 16.5) + 12
+      const ky = kTop + (ki + 0.5) * kidH
+      const kc = kid.c || C.ink
+      const chipH = kidS + 10 * S
+      const chipY = ky - chipH / 2
+      const chipX = x0 + kidX
+      // 叶子标签：彩底圆角签
+      out += `<rect x="${chipX.toFixed(1)}" y="${chipY.toFixed(1)}" width="${chipW.toFixed(1)}" height="${chipH.toFixed(1)}" rx="${(chipH / 2).toFixed(1)}" fill="${kc}" opacity="0.10"/>`
+      out += `<rect x="${chipX.toFixed(1)}" y="${chipY.toFixed(1)}" width="${chipW.toFixed(1)}" height="${chipH.toFixed(1)}" rx="${(chipH / 2).toFixed(1)}" fill="none" stroke="${kc}" stroke-width="1.8" opacity="0.85"/>`
+      out += `<text x="${(chipX + 11 * S).toFixed(1)}" y="${(ky + kidS * 0.35).toFixed(1)}" font-size="${kidS}" fill="${kc}" font-weight="700">${esc(kid.label)}</text>`
+      // 示例数字：绿色，支持 4/2 与 -1/101 形式
+      let nx = x0 + numX
       for (const n of kid.nums || []) {
         if (typeof n === 'string' && n.includes('/')) {
-          const [nu, de] = n.split('/')
-          out += `<g transform="translate(${nx} ${ky})">${frac({ x: 0, y: 0, num: nu, den: de, s: 15, c: kid.c || C.ink })}</g>`
-          const fw = Math.max(textWidth(nu, 12), textWidth(de, 12)) + 14
-          nx += fw + 10
+          const i = n.indexOf('/')
+          const sign = n.startsWith('-') ? '-' : ''
+          const nu = sign ? n.slice(1, i) : n.slice(0, i)
+          const de = n.slice(i + 1)
+          out += `<g transform="translate(${nx.toFixed(1)} ${ky.toFixed(1)})">${frac({ x: 0, y: 0, num: nu, den: de, sign, s: numS * 0.92, c: C.green })}</g>`
         } else {
-          out += `<text x="${nx}" y="${ky + 5}" font-size="16.5" fill="${kid.c || C.ink}">${esc(n)}</text>`
-          nx += textWidth(n, 16.5) + 10
+          out += `<text x="${nx.toFixed(1)}" y="${(ky + numS * 0.35).toFixed(1)}" font-size="${numS}" fill="${C.green}">${esc(n)}</text>`
         }
+        nx += numFW(n)
       }
     })
   })
@@ -702,6 +841,100 @@ function ring(el) {
   return `<ellipse cx="${el.x}" cy="${el.y}" rx="${el.rx || 16}" ry="${el.ry || 20}" fill="none" stroke="${el.c || C.red}" stroke-width="${el.sw || 2.8}" opacity="0.95"/>`
 }
 
+/**
+ * 分类换算行：左侧彩色类别胶囊 + 右侧换算式（parts 支持文本与 frac 混排）
+ * 用于「都能写成俩整数之比」这类逐类换算页，一行一卡、通栏排布
+ */
+function catrow(el) {
+  const s = el.s || 24
+  const x = el.x
+  const y = el.y
+  const w = el.w || 780
+  const h = el.h || 72
+  const c = el.c || C.red
+  const baseY = y + h / 2
+  let out = ''
+  // 卡片（同色淡底 + 细边）
+  out += `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="12" fill="${c}" opacity="0.07"/>`
+  out += `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="12" fill="none" stroke="${c}" stroke-width="2" opacity="0.5"/>`
+  // 类别胶囊
+  const lw = textWidth(el.label, s) + 28
+  const lh = s + 16
+  out += `<rect x="${x + 14}" y="${(baseY - lh / 2).toFixed(1)}" width="${lw.toFixed(1)}" height="${lh}" rx="${lh / 2}" fill="${c}"/>`
+  out += `<text x="${(x + 14 + lw / 2).toFixed(1)}" y="${(baseY + s * 0.35).toFixed(1)}" font-size="${s}" fill="#ffffff" text-anchor="middle" font-weight="700">${esc(el.label)}</text>`
+  // 换算式（文本与分数共用垂直中线）
+  let nx = x + 14 + lw + 28
+  for (const p of el.parts || []) {
+    if (p.frac) {
+      const fs = p.s || s
+      const sign = p.frac.sign || ''
+      const barW = Math.max(textWidth(p.frac.num, fs * 0.82), textWidth(p.frac.den, fs * 0.82)) + 8
+      const signW = sign ? textWidth(sign, fs) + 2 : 0
+      out += `<g transform="translate(${nx.toFixed(1)} ${baseY.toFixed(1)})">${frac({ x: 0, y: 0, num: p.frac.num, den: p.frac.den, sign, s: fs, c: p.c || C.ink })}</g>`
+      nx += signW + barW + 14
+    } else {
+      const ts = p.s || s
+      out += `<text x="${nx.toFixed(1)}" y="${(baseY + ts * 0.35).toFixed(1)}" font-size="${ts}" fill="${p.c || C.ink}" font-weight="${p.b ? 700 : 400}">${esc(p.t)}</text>`
+      nx += textWidth(p.t, ts) + 12
+    }
+  }
+  return out
+}
+
+/**
+ * 快问快答：先展示问题，点击「揭晓答案」按钮后显示答案
+ * - 按钮带 class="rp-qa-btn"，由 ReplicaStage 绑定原生点击（阻止冒泡，不推进步骤）
+ * - 答案组带 class="rp-qa-ans"，默认隐藏；父级 <g> 带上 data-revealed 后淡入
+ */
+function qa(el) {
+  const x = el.x
+  const y = el.y
+  const w = el.w || 720
+  const c = el.c || C.red
+  const qs = el.qs || 26
+  const as = el.as || 24
+  const pad = 26
+  const innerW = w - pad * 2 - 46
+  let out = ''
+  // 问题卡
+  const qLines = wrapText(el.q || '', qs, innerW)
+  const qLH = qs * 1.5
+  const qH = 44 + qLines.length * qLH
+  out += `<rect x="${x}" y="${y}" width="${w}" height="${qH.toFixed(1)}" rx="14" fill="#fffdf6" stroke="${c}" stroke-width="2.2"/>`
+  out += `<rect x="${x + pad}" y="${y + 18}" width="34" height="34" rx="10" fill="${c}"/>`
+  out += `<text x="${x + pad + 17}" y="${y + 42}" font-size="20" fill="#ffffff" text-anchor="middle" font-weight="700" font-style="italic" font-family="Georgia, serif">Q</text>`
+  qLines.forEach((line, i) => {
+    out += `<text x="${x + pad + 46}" y="${(y + 46 + i * qLH).toFixed(1)}" font-size="${qs}" fill="${C.ink}" font-weight="700">${esc(line)}</text>`
+  })
+  // 揭晓按钮
+  const btnY = y + qH + 14
+  const btnW = 176
+  const btnH = 44
+  out += `<g class="rp-qa-btn" role="button" tabindex="0" aria-label="点击揭晓答案">`
+  out += `<rect x="${x + pad}" y="${btnY.toFixed(1)}" width="${btnW}" height="${btnH}" rx="${btnH / 2}" fill="${c}"/>`
+  out += `<text x="${x + pad + btnW / 2}" y="${(btnY + btnH / 2 + 7).toFixed(1)}" font-size="17" fill="#ffffff" text-anchor="middle" font-weight="700">${esc(el.btn || '点击揭晓答案')}</text>`
+  out += `</g>`
+  // 答案卡（默认隐藏，揭晓后淡入）
+  const aLines = wrapText(el.a || '', as, w - pad * 2 - 40)
+  const aLH = as * 1.5
+  const tipH = el.tip ? 30 : 0
+  const aY = btnY + btnH + 16
+  const aH = 44 + aLines.length * aLH + tipH
+  out += `<g class="rp-qa-ans">`
+  out += `<rect x="${x}" y="${aY.toFixed(1)}" width="${w}" height="${aH.toFixed(1)}" rx="14" fill="${C.green}" opacity="0.08"/>`
+  out += `<rect x="${x}" y="${aY.toFixed(1)}" width="${w}" height="${aH.toFixed(1)}" rx="14" fill="none" stroke="${C.green}" stroke-width="2" opacity="0.55"/>`
+  out += `<rect x="${x + pad}" y="${aY + 18}" width="34" height="34" rx="10" fill="${C.green}"/>`
+  out += `<text x="${x + pad + 17}" y="${aY + 42}" font-size="20" fill="#ffffff" text-anchor="middle" font-weight="700" font-style="italic" font-family="Georgia, serif">A</text>`
+  aLines.forEach((line, i) => {
+    out += `<text x="${x + pad + 46}" y="${(aY + 46 + i * aLH).toFixed(1)}" font-size="${as}" fill="${C.ink}" font-weight="700">${esc(line)}</text>`
+  })
+  if (el.tip) {
+    out += `<text x="${x + pad + 46}" y="${(aY + 46 + aLines.length * aLH + 14).toFixed(1)}" font-size="17" fill="${C.red}" font-weight="700">${esc(el.tip)}</text>`
+  }
+  out += `</g>`
+  return out
+}
+
 /* ---------- 注册表 ---------- */
 
 export const BUILDERS = {
@@ -727,6 +960,8 @@ export const BUILDERS = {
   bubble,
   qmark,
   ring,
+  catrow,
+  qa,
 }
 
 /** 构建单个元素（未注册类型抛错，便于数据校验） */

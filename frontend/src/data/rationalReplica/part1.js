@@ -110,7 +110,7 @@ export default [
       },
       {
         say: '回忆一下，你小学学过的数是不是都是正数？确实，像一、二、三、四、三点八、四点五、零点八八循环、二分之派等等，都是正数。',
-        drop: ['plain-eq'],
+        drop: ['plain-eq', 'sign-t'],
         add: [
           { id: 'elem-lab', type: 'text', x: 340, y: 235, t: '小学学过的数（几乎都是正数）', s: 18, c: K.sub },
           {
@@ -214,54 +214,48 @@ export default [
         say: '小学的时候你学过整数、分数还有小数，像零和三就是整数，三分之一、五分之六就是分数，而零点七、三点八、零点三三循环还有派，这些都是小数。',
         drop: ['def-p', 'def-t'],
         add: [
-          { id: 'g1-lab', type: 'text', x: 150, y: 150, t: '整数', s: 20, b: true },
-          { id: 'g1-eq', type: 'eqline', x: 150, y: 200, s: 26, parts: [{ t: '0' }, { t: '      ' }, { t: '3' }] },
-          { id: 'g2-lab', type: 'text', x: 150, y: 300, t: '分数', s: 20, b: true },
-          { id: 'g2-f1', type: 'frac', x: 170, y: 365, num: '1', den: '3', s: 24 },
-          { id: 'g2-f2', type: 'frac', x: 300, y: 365, num: '6', den: '5', s: 24 },
-          { id: 'g3-lab', type: 'text', x: 560, y: 150, t: '小数', s: 20, b: true },
-          { id: 'g3-eq', type: 'eqline', x: 560, y: 200, s: 26, parts: [{ t: '0.7' }, { t: '   ' }, { t: '3.8' }, { t: '   ' }, { t: '0.33…' }, { t: '   ' }, { t: 'π' }] },
+          { id: 'g1', type: 'catrow', x: 90, y: 100, w: 820, h: 78, s: 24, c: K.red, label: '整数', parts: [{ t: '0' }, { t: '        ' }, { t: '3' }] },
+          { id: 'g2', type: 'catrow', x: 90, y: 198, w: 820, h: 78, s: 24, c: K.blue, label: '分数', parts: [{ frac: { num: '1', den: '3' }, s: 24 }, { t: '        ' }, { frac: { num: '6', den: '5' }, s: 24 }] },
+          { id: 'g3', type: 'catrow', x: 90, y: 296, w: 820, h: 78, s: 24, c: K.orange, label: '小数', parts: [{ t: '0.7' }, { t: '     ' }, { t: '3.8' }, { t: '     ' }, { t: '0.33…' }, { t: '     ' }, { t: 'π' }] },
         ],
       },
       {
         say: '这一大堆数长相千差万别，但本质上来讲其实就两类，前面这一大坨是一类，后面的派则属于另一类。',
+        drop: ['g1', 'g2', 'g3'],
         add: [
-          { id: 'same', type: 'text', x: 260, y: 250, t: '同一类', s: 20, b: true, c: K.green },
-          { id: 'other', type: 'text', x: 720, y: 250, t: '另一类', s: 20, b: true, c: K.red },
-          { id: 'key', type: 'text', x: 300, y: 450, t: '凭啥？就凭都能写成俩整数之比', s: 22, b: true, box: 'green' },
+          { id: 'grp-a', type: 'catrow', x: 90, y: 118, w: 820, h: 88, s: 26, c: K.green, label: '同一类', parts: [{ t: '0' }, { t: '    ' }, { t: '3' }, { t: '    ' }, { frac: { num: '1', den: '3' }, s: 24 }, { t: '    ' }, { frac: { num: '6', den: '5' }, s: 24 }, { t: '    ' }, { t: '0.7' }, { t: '    ' }, { t: '3.8' }, { t: '    ' }, { t: '0.33…' }] },
+          { id: 'grp-b', type: 'catrow', x: 90, y: 236, w: 820, h: 88, s: 26, c: K.red, label: '另一类', parts: [{ t: 'π' }] },
+          { id: 'key', type: 'text', x: 300, y: 390, t: '凭啥？就凭都能写成俩整数之比', s: 22, b: true, box: 'green' },
         ],
       },
       {
         say: '纳尼？前面这一坨居然是一类，凭啥呢？就凭它们都能写成俩整数之比。你看，零和三就可以分别写成零比一和三比一，都是俩整数的比吧？',
-        drop: ['g1-lab', 'g1-eq', 'g2-lab', 'g2-f1', 'g2-f2', 'g3-lab', 'g3-eq', 'same', 'other', 'key'],
+        drop: ['grp-a', 'grp-b', 'key'],
         add: [
-          { id: 'r1', type: 'eqline', x: 200, y: 180, s: 28, parts: [{ t: '0 ＝ 0∶1' }, { t: '          ' }, { t: '3 ＝ 3∶1' }] },
+          { id: 'r1', type: 'catrow', x: 90, y: 100, w: 820, h: 78, s: 26, c: K.red, label: '整数', parts: [{ t: '0 ＝ 0∶1' }, { t: '            ' }, { t: '3 ＝ 3∶1' }] },
         ],
       },
       {
         say: '而三分之一、五分之六就是一比三、六比五，还是俩整数的比。',
         add: [
-          { id: 'r2-f1', type: 'frac', x: 200, y: 270, num: '1', den: '3', s: 24 },
-          { id: 'r2-t1', type: 'text', x: 255, y: 258, t: '＝ 1∶3', s: 24 },
-          { id: 'r2-f2', type: 'frac', x: 450, y: 270, num: '6', den: '5', s: 24 },
-          { id: 'r2-t2', type: 'text', x: 505, y: 258, t: '＝ 6∶5', s: 24 },
+          { id: 'r2', type: 'catrow', x: 90, y: 198, w: 820, h: 78, s: 26, c: K.blue, label: '分数', parts: [{ frac: { num: '1', den: '3' }, s: 24 }, { t: ' ＝ 1∶3' }, { t: '          ' }, { frac: { num: '6', den: '5' }, s: 24 }, { t: ' ＝ 6∶5' }] },
         ],
       },
       {
         say: '至于有限小数零点七，其实就是十分之七，而三点八就等于十分之三十八，约分一下就是五分之十九，它们还是俩整数的比。',
         add: [
-          { id: 'r3', type: 'eqline', x: 200, y: 350, s: 24, parts: [{ t: '0.7 ＝ 7∶10' }, { t: '        ' }, { t: '3.8 ＝ 38∶10 ＝ 19∶5' }] },
+          { id: 'r3', type: 'catrow', x: 90, y: 296, w: 820, h: 78, s: 24, c: K.orange, label: '有限小数', parts: [{ t: '0.7 ＝ 7∶10' }, { t: '          ' }, { t: '3.8 ＝ 38∶10 ＝ 19∶5' }] },
         ],
       },
       {
         say: '最麻烦的是零点三三循环这样的循环小数，它吧其实就是一除以三所得的商，写成分数的形式就是一比三，你看还是俩整数的比。',
         add: [
-          { id: 'r4', type: 'eqline', x: 200, y: 420, s: 24, parts: [{ t: '0.33… ＝ 1 ÷ 3 ＝ 1∶3' }] },
+          { id: 'r4', type: 'catrow', x: 90, y: 394, w: 820, h: 78, s: 24, c: K.green, label: '循环小数', parts: [{ t: '0.33… ＝ 1 ÷ 3 ＝ 1∶3' }] },
         ],
       },
       {
         say: '所以刚才这一大堆数都能写成俩整数的比，因此就是同一类数了。',
-        drop: ['r1', 'r2-f1', 'r2-t1', 'r2-f2', 'r2-t2', 'r3', 'r4'],
+        drop: ['r1', 'r2', 'r3', 'r4'],
         add: [
           { id: 'cls', type: 'text', x: 270, y: 230, t: '都能写成俩整数之比 ⇒ 同一类数', s: 28, b: true, box: 'green' },
         ],
@@ -396,9 +390,8 @@ export default [
           {
             id: 'tree1',
             type: 'tree',
-            x: 150,
-            y: 80,
-            rowH: 78,
+            s: 1,
+            bg: { x: 90, y: 50, w: 820, h: 462, title: '第一种分法：先按 整数 / 分数，再按 符号', tc: K.red },
             root: '有理数',
             branches: [
               {
@@ -420,8 +413,7 @@ export default [
               },
             ],
           },
-          { id: 'side1', type: 'text', x: 560, y: 130, t: '按符号继续细分', s: 20, b: true },
-          { id: 'side2', type: 'text', x: 560, y: 170, t: '整数 → 正整数、负整数、零', s: 18, c: K.sub },
+          { id: 'note1', type: 'text', x: 500, y: 536, t: '先按 整数 / 分数 分成两大类，再按符号继续细分', s: 17, c: K.sub, align: 'middle' },
         ],
       },
       {
@@ -430,9 +422,8 @@ export default [
           {
             id: 'tree1',
             type: 'tree',
-            x: 150,
-            y: 80,
-            rowH: 78,
+            s: 1,
+            bg: { x: 90, y: 50, w: 820, h: 462, title: '第一种分法：先按 整数 / 分数，再按 符号', tc: K.red },
             root: '有理数',
             branches: [
               {
@@ -454,6 +445,7 @@ export default [
               },
             ],
           },
+          { id: 'note1', type: 'text', x: 500, y: 536, t: '整数按符号分三类：正整数、负整数、零', s: 17, c: K.sub, align: 'middle' },
         ],
       },
       {
@@ -462,9 +454,8 @@ export default [
           {
             id: 'tree1',
             type: 'tree',
-            x: 150,
-            y: 80,
-            rowH: 78,
+            s: 1,
+            bg: { x: 90, y: 50, w: 820, h: 462, title: '第一种分法：先按 整数 / 分数，再按 符号', tc: K.red },
             root: '有理数',
             branches: [
               {
@@ -486,19 +477,18 @@ export default [
               },
             ],
           },
-          { id: 'side2', type: 'text', x: 560, y: 200, t: '分数 → 正分数、负分数（没有零）', s: 18, c: K.sub },
+          { id: 'note1', type: 'text', x: 500, y: 536, t: '分数按符号分两类：正分数、负分数（分数没有零）', s: 17, c: K.sub, align: 'middle' },
         ],
       },
       {
         say: '刚才的分类思路是把有理数先按照整数、分数来分，再按照符号来分。那能不能反过来，先按符号来分，再按整数、分数来分呢？答案是肯定的，还是这一堆数，先根据符号把它们分为正数和负数。',
-        drop: ['tree1', 'side1', 'side2'],
+        drop: ['tree1', 'note1'],
         add: [
           {
             id: 'tree2',
             type: 'tree',
-            x: 150,
-            y: 70,
-            rowH: 76,
+            s: 0.86,
+            bg: { x: 90, y: 50, w: 820, h: 462, title: '第二种分法：先按 符号，再按 整数 / 分数', tc: K.blue },
             root: '有理数',
             branches: [
               { label: '正数', c: K.red, children: [{ label: '正整数', c: K.red }, { label: '正分数', c: K.red }] },
@@ -506,7 +496,7 @@ export default [
               { label: '零', c: K.sub, children: [{ label: '0', c: K.sub }] },
             ],
           },
-          { id: 'side3', type: 'text', x: 560, y: 120, t: '第二种分法：先符号，再整数/分数', s: 20, b: true },
+          { id: 'note2', type: 'text', x: 500, y: 536, t: '先按符号分成 正数 / 负数 / 零，再按 整数 / 分数 细分', s: 17, c: K.sub, align: 'middle' },
         ],
       },
       {
@@ -515,9 +505,8 @@ export default [
           {
             id: 'tree2',
             type: 'tree',
-            x: 150,
-            y: 70,
-            rowH: 76,
+            s: 0.86,
+            bg: { x: 90, y: 50, w: 820, h: 462, title: '第二种分法：先按 符号，再按 整数 / 分数', tc: K.blue },
             root: '有理数',
             branches: [
               {
@@ -544,7 +533,7 @@ export default [
       {
         say: '哎呀，我居然又把零给漏掉了，零既非正也非负，所以必须独立于正负之外自成一类。以后凡是遇到按符号进行分类的情形，一定不要忘了考虑零这个非正非负的家伙呀。',
         add: [
-          { id: 'zero-warn', type: 'text', x: 560, y: 240, t: '按符号分类，别忘了零！', s: 20, b: true, c: K.red },
+          { id: 'note2', type: 'text', x: 500, y: 536, t: '注意：按符号分类，一定别忘了零！', s: 19, b: true, c: K.red, align: 'middle' },
         ],
       },
       {
@@ -552,7 +541,7 @@ export default [
       },
       {
         say: '比较一下前后这两种分类方式，你就会发觉，不管分类的顺序如何，最后都是五类数，正整数、正分数、负整数、负分数，然后就是非正非负的家伙零。',
-        drop: ['tree2', 'side3', 'zero-warn'],
+        drop: ['tree2', 'note2'],
         add: [
           { id: 'five-t', type: 'text', x: 500, y: 150, t: '不管怎么分，都是这五类', s: 26, b: true, align: 'middle' },
           { id: 'c1', type: 'text', x: 260, y: 220, t: '正整数', s: 22, c: K.red, b: true, box: 'red' },
@@ -703,7 +692,7 @@ export default [
             fracTicks: [
               { v: 0.2 },
               { v: 0.4 },
-              { v: 0.6, lab: '3/5', c: K.green },
+              { v: 0.6, c: K.green },
               { v: 0.8 },
             ],
             arcs: [{ kind: 'bracket', a: 0, b: 1, dy: 72, lab: '0～1 分成 5 等份', c: K.orange }],
@@ -739,9 +728,9 @@ export default [
             fracTicks: [
               { v: 0.2 },
               { v: 0.4 },
-              { v: 0.6, lab: '3/5', c: K.green },
+              { v: 0.6, c: K.green },
               { v: 0.8 },
-              { v: -0.6, lab: '-3/5', c: K.green },
+              { v: -0.6, c: K.green },
             ],
             arcs: [
               { kind: 'bracket', a: 0, b: 1, dy: 72, lab: '0～1 分成 5 等份', c: K.orange },
@@ -779,13 +768,13 @@ export default [
             fracTicks: [
               { v: 0.2 },
               { v: 0.4 },
-              { v: 0.6, lab: '3/5', c: K.green },
+              { v: 0.6, c: K.green },
               { v: 0.8 },
-              { v: -0.6, lab: '-3/5', c: K.green },
+              { v: -0.6, c: K.green },
             ],
             arcs: [
               { kind: 'bracket', a: 0, b: 1, dy: 72, lab: '单位长度', c: K.red },
-              { kind: 'bracket', a: -1, b: 0, dy: 72, lab: '单位长度', c: K.red },
+              { kind: 'bracket', a: -1, b: 0, dy: 72, c: K.red },
             ],
             originRing: true,
             pts: [
@@ -831,9 +820,9 @@ export default [
             fracTicks: [
               { v: 0.2 },
               { v: 0.4 },
-              { v: 0.6, lab: '3/5', c: K.green },
+              { v: 0.6, c: K.green },
               { v: 0.8 },
-              { v: -0.6, lab: '-3/5', c: K.green },
+              { v: -0.6, c: K.green },
             ],
             arcs: [
               { kind: 'walk', a: 0, b: 3, lab: '向右 3 个单位长度', c: K.red },
@@ -860,6 +849,7 @@ export default [
       },
       {
         say: '那么问题来了，数轴上点的移动又该咋办呢？一个点从原点出发，先向右移动三个单位长度，再向左移动五个单位长度到达 A 点，求 A 点所表示的数。',
+        drop: ['o-lab', 'd-lab'],
         add: [
           {
             id: 'nl',
@@ -949,7 +939,7 @@ export default [
       },
       {
         say: '看出来了吧？对于数轴上点的移动问题，只要画出数轴，把数变成点向左右走就可以了。最后来总结一下，对于数轴你要记住这三点。第一，数轴的三要素，原点、正方向和单位长度。第二，数轴上的点均匀分布，原点右边是正数，原点左边是负数。第三，对于点的移动问题，你只要先画出数轴，然后搞清楚点从哪出发，往哪走，以及走多少就行。',
-        drop: ['nl', 'ans-eq', 'o-lab', 'd-lab', 'tri-p', 'tri-1', 'tri-2', 'tri-3'],
+        drop: ['nl', 'ans-eq', 'tri-p', 'tri-1', 'tri-2', 'tri-3'],
         add: [
           { id: 'sum-p', type: 'panel', x: 240, y: 120, w: 520, h: 280, title: '数轴 · 记住三点', tc: K.red },
           { id: 'sum-1', type: 'text', x: 270, y: 185, t: '① 三要素：原点、正方向、单位长度', s: 20 },
@@ -1001,7 +991,7 @@ export default [
       {
         say: '像这种数值相同、符号相反的两个数，就叫互为相反数，简称相反数。',
         add: [
-          { id: 'def', type: 'text', x: 300, y: 150, t: '相反数：数值相同、符号相反', s: 26, b: true },
+          { id: 'def', type: 'text', x: 300, y: 112, t: '相反数：数值相同、符号相反', s: 26, b: true },
         ],
       },
       {
@@ -1075,7 +1065,7 @@ export default [
       },
       {
         say: '好了，最后来总结一下，所谓相反数就是数值相同、符号相反的俩数。关于这个概念，你得注意这三点。首先，俩数互为相反数，一定会关于原点对称，所以零的相反数还是零。其次，求一个数的相反数，只要在它前面添个负号，像 a 的相反数就是负 a。最后，正号可以省略，而两个负号可以相互抵消，像负负二就是正二。为师这就讲完了，徒儿们速速刷题去吧。',
-        drop: ['a-eq', 'nn'],
+        drop: ['a-eq', 'nn', 'def', 'nl'],
         add: [
           { id: 'sum-p', type: 'panel', x: 240, y: 120, w: 520, h: 260, title: '相反数 · 三点', tc: K.red },
           { id: 'sum-1', type: 'text', x: 270, y: 185, t: '① 互为相反数 ⇔ 关于原点对称（0 的相反数是 0）', s: 19 },
@@ -1166,7 +1156,8 @@ export default [
               { v: 3, lab: '3', c: K.red },
             ],
           },
-          { id: 'abs-t', type: 'text', x: 440, y: 150, t: '绝对值', s: 36, b: true, c: K.red, align: 'middle' },
+          { id: 'abs-t', type: 'text', x: 500, y: 88, t: '绝对值', s: 36, b: true, c: K.red, align: 'middle' },
+          { id: 'abs-sub', type: 'text', x: 500, y: 124, t: '一个数到原点的距离', s: 22, c: K.red, align: 'middle', u: true },
           { id: 'abs-eq', type: 'eqline', x: 330, y: 215, s: 24, parts: [{ t: '丨a丨 ＝ a 到原点的距离' }] },
         ],
       },
@@ -1209,27 +1200,28 @@ export default [
         drop: ['e1', 'e2', 'e3'],
         add: [
           { id: 'nl', type: 'numberline', x: 220, y: 330, w: 560, from: -5, to: 5, originRing: true, pts: [{ v: 0, lab: '0', c: K.ink }] },
-          { id: 'c1', type: 'eqline', x: 300, y: 180, s: 26, parts: [{ t: 'a ＞ 0', c: K.red, b: true }, { t: '  ⇒  丨a丨 ＝ a' }] },
-          { id: 'c2', type: 'eqline', x: 300, y: 245, s: 26, parts: [{ t: 'a ＜ 0', c: K.blue, b: true }, { t: '  ⇒  丨a丨 ＝ -a' }] },
-          { id: 'c3', type: 'eqline', x: 300, y: 310, s: 26, parts: [{ t: 'a ＝ 0', c: K.ink, b: true }, { t: '  ⇒  丨a丨 ＝ 0' }] },
+          { id: 'c1', type: 'eqline', x: 250, y: 180, s: 26, parts: [{ t: 'a ＞ 0', c: K.red, b: true }, { t: '  ⇒  丨a丨 ＝ a' }] },
+          { id: 'c2', type: 'eqline', x: 250, y: 245, s: 26, parts: [{ t: 'a ＜ 0', c: K.blue, b: true }, { t: '  ⇒  丨a丨 ＝ -a' }] },
+          { id: 'c3', type: 'eqline', x: 250, y: 310, s: 26, parts: [{ t: 'a ＝ 0', c: K.ink, b: true }, { t: '  ⇒  丨a丨 ＝ 0' }] },
         ],
       },
       {
         say: '讲到这儿，相信你已经明白绝对值怎么求了。正数的绝对值是它本身，负数的绝对值是它的相反数，零的绝对值还是零。那如果给你一个任意的数 a，它的绝对值又是几呢？你肯定在想，这要分情况吧，看看 a 是正、是负还是零。对喽，就是这个思路。',
         drop: ['c1', 'c2', 'c3'],
         add: [
-          { id: 'case-p', type: 'panel', x: 250, y: 130, w: 500, h: 250, title: '任意 a 的绝对值', tc: K.red },
-          { id: 'case-1', type: 'text', x: 280, y: 195, t: '先判断符号，再求绝对值', s: 22, b: true },
-          { id: 'case-2', type: 'text', x: 280, y: 250, t: '丨a丨 ＝ a（a＞0）／ 0（a＝0）／ -a（a＜0）', s: 20 },
-          { id: 'case-3', type: 'text', x: 280, y: 300, t: '这里的 - 表示「相反」的意思', s: 18, c: K.sub },
+          { id: 'case-p', type: 'panel', x: 250, y: 158, w: 500, h: 230, title: '任意 a 的绝对值', tc: K.red },
+          { id: 'case-1', type: 'text', x: 280, y: 210, t: '先判断符号，再求绝对值', s: 22, b: true },
+          { id: 'case-2', type: 'text', x: 280, y: 258, t: '丨a丨 ＝ a（a＞0）／ 0（a＝0）／ -a（a＜0）', s: 20 },
+          { id: 'case-3', type: 'text', x: 280, y: 312, t: '这里的 - 表示「相反」的意思', s: 18, c: K.sub },
         ],
       },
       {
         say: '如果 a 大于零，那么 a 的绝对值就是它本身，也就是 a。如果 a 等于零，那么 a 的绝对值就是零。如果 a 小于零，那么 a 的绝对值就是它的相反数，也就是负 a。这儿的符号表示相反的意思。OK，你记住一定要先判断符号，再求绝对值。',
         add: [
-          { id: 'case-2', type: 'text', x: 280, y: 250, t: '丨a丨 ＝ a（a＞0）' , s: 20 },
-          { id: 'case-2b', type: 'text', x: 280, y: 285, t: '丨a丨 ＝ 0（a＝0）', s: 20 },
-          { id: 'case-2c', type: 'text', x: 280, y: 320, t: '丨a丨 ＝ -a（a＜0）', s: 20 },
+          { id: 'case-2', type: 'text', x: 280, y: 258, t: '丨a丨 ＝ a（a＞0）' , s: 20 },
+          { id: 'case-2b', type: 'text', x: 280, y: 293, t: '丨a丨 ＝ 0（a＝0）', s: 20 },
+          { id: 'case-2c', type: 'text', x: 280, y: 328, t: '丨a丨 ＝ -a（a＜0）', s: 20 },
+          { id: 'case-3', type: 'text', x: 280, y: 360, t: '这里的 - 表示「相反」的意思', s: 18, c: K.sub },
         ],
       },
       {
@@ -1254,7 +1246,7 @@ export default [
               { v: -3, lab: '-3', c: K.blue, ring: true },
             ],
           },
-          { id: 'pa-eq', type: 'eqline', x: 340, y: 150, s: 26, parts: [{ t: '丨a丨 ＝ 3  ⇒  a ＝ ±3' }], box: 'green' },
+          { id: 'pa-eq', type: 'eqline', x: 380, y: 205, s: 26, parts: [{ t: '丨a丨 ＝ 3  ⇒  a ＝ ±3' }], box: 'green' },
         ],
       },
       {
@@ -1274,8 +1266,8 @@ export default [
               { v: -3, lab: '-3', c: K.blue },
             ],
           },
-          { id: 'pa-eq', type: 'eqline', x: 300, y: 150, s: 24, parts: [{ t: '丨a丨 ＝ a  ⇒  a 是非负数（a ≥ 0）' }], box: 'green' },
-          { id: 'pa-t', type: 'text', x: 300, y: 210, t: '非负数 ＝ 大于或等于零的数', s: 20 },
+          { id: 'pa-eq', type: 'eqline', x: 300, y: 190, s: 24, parts: [{ t: '丨a丨 ＝ a  ⇒  a 是非负数（a ≥ 0）' }], box: 'green' },
+          { id: 'pa-t', type: 'text', x: 300, y: 250, t: '非负数 ＝ 大于或等于零的数', s: 20 },
         ],
       },
       {
@@ -1283,11 +1275,11 @@ export default [
         drop: ['pa-eq', 'pa-t'],
         add: [
           { id: 'nl', type: 'numberline', x: 220, y: 330, w: 560, from: -5, to: 5, originRing: true, pts: [] },
-          { id: 'sum-p', type: 'panel', x: 240, y: 120, w: 520, h: 280, title: '绝对值 · 总结', tc: K.red },
-          { id: 'sum-1', type: 'text', x: 270, y: 185, t: '① 丨a丨 ＝ 数轴上 a 到原点的距离', s: 20 },
-          { id: 'sum-2', type: 'text', x: 270, y: 235, t: '② a＞0：丨a丨＝a；a＝0：丨a丨＝0；a＜0：丨a丨＝-a', s: 19 },
-          { id: 'sum-3', type: 'text', x: 270, y: 285, t: '③ 先判断符号，再求绝对值', s: 20 },
-          { id: 'sum-4', type: 'text', x: 270, y: 340, t: '丨a丨 ＝ 3 ⇒ a ＝ ±3（两个答案）', s: 18, c: K.sub },
+          { id: 'sum-p', type: 'panel', x: 240, y: 158, w: 520, h: 230, title: '绝对值 · 总结', tc: K.red },
+          { id: 'sum-1', type: 'text', x: 270, y: 210, t: '① 丨a丨 ＝ 数轴上 a 到原点的距离', s: 20 },
+          { id: 'sum-2', type: 'text', x: 270, y: 258, t: '② a＞0：丨a丨＝a；a＝0：丨a丨＝0；a＜0：丨a丨＝-a', s: 19 },
+          { id: 'sum-3', type: 'text', x: 270, y: 306, t: '③ 先判断符号，再求绝对值', s: 20 },
+          { id: 'sum-4', type: 'text', x: 270, y: 352, t: '丨a丨 ＝ 3 ⇒ a ＝ ±3（两个答案）', s: 18, c: K.sub },
         ],
       },
     ],
