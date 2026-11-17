@@ -21,7 +21,7 @@ export default [
         say: '这个视频我要来讲讲什么是正数和负数。温度计你肯定见过，它以零度为分界点。',
         add: [
           { id: 'th', type: 'thermo', x: 150, y: 120, s: 1 },
-          { id: 'cap', type: 'text', x: 330, y: 170, t: '温度计', s: 26, b: true, font: 'brush' },
+          { id: 'cap', type: 'text', x: 330, y: 150, t: '温度计', s: 26, b: true, font: 'brush' },
         ],
       },
       {
@@ -36,8 +36,8 @@ export default [
         say: '这些比零大的数就是所谓的正数，而比零小的数就是所谓的负数。',
         add: [
           { id: 'th', type: 'thermo', x: 150, y: 120, s: 1 },
-          { id: 'pos-lab', type: 'text', x: 340, y: 190, t: '比零大 → 正数', s: 24, b: true, c: K.red },
-          { id: 'neg-lab', type: 'text', x: 340, y: 320, t: '比零小 → 负数', s: 24, b: true, c: K.blue },
+          { id: 'pos-lab', type: 'text', x: 340, y: 195, t: '比零大 → 正数', s: 24, b: true, c: K.red },
+          { id: 'neg-lab', type: 'text', x: 340, y: 355, t: '比零小 → 负数', s: 24, b: true, c: K.blue },
         ],
       },
       {
@@ -132,8 +132,8 @@ export default [
         drop: ['elem-eq', 'pi', 'elem-lab'],
         add: [
           { id: 'th', type: 'thermo', x: 150, y: 120, s: 1, hi: [0] },
-          { id: 'zero-note', type: 'text', x: 340, y: 260, t: '0：分界点，非正非负', s: 24, b: true },
-          { id: 'zero-note2', type: 'text', x: 340, y: 300, t: '它是一个没有符号的数', s: 18, c: K.sub },
+          { id: 'zero-note', type: 'text', x: 340, y: 265, t: '0：分界点，非正非负', s: 24, b: true },
+          { id: 'zero-note2', type: 'text', x: 340, y: 312, t: '它是一个没有符号的数', s: 18, c: K.sub },
         ],
       },
       {

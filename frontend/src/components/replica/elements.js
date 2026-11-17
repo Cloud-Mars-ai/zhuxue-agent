@@ -180,20 +180,23 @@ function thermo(el) {
   const y = el.y
   const sc = el.s || 1
   const tubeW = 26 * sc
-  const top = y
-  const bottom = y + 240 * sc
-  const zeroY = y + 150 * sc
   const unit = 6 * sc // 每度像素
+  const zeroY = y + 150 * sc
+  // 管柱覆盖 ±30° 全量程：原视频 30° 上方留管头、-30° 下方接管泡；
+  // 早期版本管长固定 240px，±30° 刻度落在管外（反馈「温度计太短」）
+  const span = 30 * unit
+  const top = zeroY - span - 14 * sc
+  const bottom = zeroY + span + 8 * sc
   const marks = [30, 20, 10, 0, -10, -20, -30]
   const id = el.id || 'thermo'
   let out = ''
   // 玻璃管
-  out += `<rect x="${x}" y="${top}" width="${tubeW}" height="${240 * sc}" rx="${tubeW / 2}" fill="#fdfcf8" stroke="${C.line}" stroke-width="2.4"/>`
+  out += `<rect x="${x}" y="${top.toFixed(1)}" width="${tubeW}" height="${(bottom - top).toFixed(1)}" rx="${tubeW / 2}" fill="#fdfcf8" stroke="${C.line}" stroke-width="2.4"/>`
   // 液柱（零上红、零下蓝）
   out += `<rect x="${x + 4 * sc}" y="${zeroY}" width="${tubeW - 8 * sc}" height="${(bottom - zeroY - 4 * sc).toFixed(1)}" fill="${C.blue}" opacity="0.85"/>`
   out += `<rect x="${x + 4 * sc}" y="${top + 6 * sc}" width="${tubeW - 8 * sc}" height="${(zeroY - top - 6 * sc).toFixed(1)}" fill="${C.red}" opacity="0.85"/>`
   // 球泡
-  out += `<circle cx="${x + tubeW / 2}" cy="${bottom}" r="${17 * sc}" fill="${C.red}" stroke="${C.line}" stroke-width="2.4"/>`
+  out += `<circle cx="${x + tubeW / 2}" cy="${bottom.toFixed(1)}" r="${17 * sc}" fill="${C.red}" stroke="${C.line}" stroke-width="2.4"/>`
   // 刻度 + 标签（记录位置供高亮）
   const labs = {}
   for (const m of marks) {
