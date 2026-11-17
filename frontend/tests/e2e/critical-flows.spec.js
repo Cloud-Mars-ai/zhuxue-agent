@@ -768,9 +768,12 @@ test('课程编译器可在无项目时运行离线实验并给出组间指标',
   await expect(page.getByRole('heading', { name: /把课程生成过程变成可验证的对象/ })).toBeVisible()
   // 首次进入会注入自动生成的演示课程（已编译，带 IR 与校验报告）；
   // 没有任何已编译课程时会显示「还没有已编译的课程」提示，实验与评测始终可用。
-  // 课程下拉的浮层里也有一份拷贝（teleport 到 body），取第一个可见的已选项。
+  // 演示样例为双课程（有理数在前、管理在后），header 下拉显示任一即算注入成功；
+  // 课程下拉的浮层里也有一份拷贝（teleport 到 body），取 DOM 序第一个即可。
   await expect(
-    page.getByText('计划职能：类型、过程与组织控制衔接').first(),
+    page
+      .getByText(/有理数：从正负分界到混合运算|计划职能：类型、过程与组织控制衔接/)
+      .first(),
   ).toBeVisible()
 
   await page.getByRole('tab', { name: '实验与评测' }).click()
@@ -846,53 +849,51 @@ test('演示课程支持小测作答、讲稿播放与完课报告', async ({ pa
   await expect(dialog).toBeHidden()
 })
 
-test('有理数演示课程：深链直达、讲稿播放、小测作答与完课报告', async ({ page }) => {
+test('有理数视频复刻：深链直达、点击推进、章节抽屉与键盘步进', async ({ page }) => {
   await seedUser(page, 'student')
-  // 首次进入自动注入两份演示课程；有理数课程 id 见 src/mock/demoCourseRational.js
+  // 复刻课程不走课程编排管线：/learn/course-demo-youshushu 直接渲染复刻播放器
   await page.goto('/learn/course-demo-youshushu')
-  await expect(page.getByTestId('board-canvas')).toBeVisible()
+  const stage = page.getByTestId('replica-stage')
+  await expect(stage).toBeVisible()
 
-  // 讲稿播放条：播放 → 自动展开讲稿层 → 暂停
-  const playButton = page.locator('.playback-bar .play-button')
-  await expect(playButton).toHaveAttribute('aria-label', '播放讲解')
-  await expect(page.locator('.beat-counter')).toHaveText(/^1\/\d+$/)
-  await playButton.click()
-  await expect(playButton).toHaveAttribute('aria-label', '暂停讲解')
-  await expect(page.locator('.script-live')).toBeVisible()
-  await playButton.click()
-  await expect(playButton).toHaveAttribute('aria-label', '播放讲解')
+  // 首章标题与步数（ch01 正数和负数，17 步；数据契约见 src/data/rationalReplica）
+  await expect(page.locator('.rp-chapter-no')).toHaveText('第 1 个视频')
+  await expect(page.locator('.rp-title')).toHaveText('正数和负数')
+  await expect(page.locator('.rp-step-count')).toHaveText('1 / 17')
 
-  // 分拍步进：下一拍使 beat 计数 +1
-  const counter = page.locator('.beat-counter')
-  const before = Number((await counter.textContent()).split('/')[0])
-  await page.getByRole('button', { name: '下一拍' }).click()
-  const after = Number((await counter.textContent()).split('/')[0])
-  expect(after).toBe(before + 1)
+  // 舞台渲染 SVG 元素，字幕条有讲解词
+  expect(await stage.locator('svg').count()).toBeGreaterThan(0)
+  expect(((await page.locator('.rp-subtitle-text').textContent()) || '').trim().length).toBeGreaterThan(0)
 
-  // 切换到小测场景（第 7 场：有理数核心快问快答，2 题）
-  await page.locator('.scene-rail button', { hasText: '有理数核心快问快答' }).click()
-  const quizStage = page.locator('.quiz-stage')
-  await expect(quizStage).toBeVisible()
-  await expect(page.locator('.quiz-counter')).toHaveText('第 1 / 2 题')
+  // 点击舞台推进一步，再退回一步
+  await stage.click()
+  await expect(page.locator('.rp-step-count')).toHaveText('2 / 17')
+  await page.getByRole('button', { name: '‹ 上一步' }).click()
+  await expect(page.locator('.rp-step-count')).toHaveText('1 / 17')
 
-  // 选择选项 → 提交 → 立即判定并给出解析，选项锁定
-  await quizStage.locator('.quiz-options button').first().click()
-  await quizStage.getByRole('button', { name: '提交答案' }).click()
-  await expect(page.locator('.quiz-verdict')).toBeVisible()
-  await expect(page.locator('.quiz-explanation')).toBeVisible()
-  await expect(quizStage.locator('.quiz-options button').first()).toBeDisabled()
+  // 键盘步进（→ / ←）
+  await page.keyboard.press('ArrowRight')
+  await expect(page.locator('.rp-step-count')).toHaveText('2 / 17')
+  await page.keyboard.press('ArrowLeft')
+  await expect(page.locator('.rp-step-count')).toHaveText('1 / 17')
 
-  // 下一题推进题目进度
-  await quizStage.getByRole('button', { name: '下一题' }).click()
-  await expect(page.locator('.quiz-counter')).toHaveText('第 2 / 2 题')
+  // 章节抽屉：22 章齐全，可跳章
+  await page.getByRole('button', { name: '章节列表' }).click()
+  await expect(page.locator('.rp-drawer-item')).toHaveCount(22)
+  await page.locator('.rp-drawer-item').nth(21).click()
+  await expect(page.locator('.rp-title')).toHaveText('有理数概念 · 快问快答')
+  await expect(page.locator('.rp-step-count')).toHaveText('1 / 9')
 
-  // 完课报告：footer 按钮打开总结弹层，统计项齐全
-  await page.locator('.lesson-footer .finish-button').click()
-  const dialog = page.getByRole('dialog', { name: '完课总结' })
-  await expect(dialog).toBeVisible()
-  await expect(dialog.locator('.complete-stats')).toBeVisible()
-  await dialog.getByRole('button', { name: '留在本页' }).click()
-  await expect(dialog).toBeHidden()
+  // 末章末步：进度点点到最后一拍 → 完课卡片
+  await page.locator('.rp-dot').nth(8).click()
+  const finish = page.getByTestId('replica-finish')
+  await expect(finish).toBeVisible()
+  await expect(finish.getByText('为师这就讲完了，徒儿们速速刷题去吧！')).toBeVisible()
+
+  // 「再看一遍」回到首章第一步
+  await finish.getByRole('button', { name: '再看一遍' }).click()
+  await expect(page.locator('.rp-chapter-no')).toHaveText('第 1 个视频')
+  await expect(page.locator('.rp-step-count')).toHaveText('1 / 17')
 })
 
 test('赛事工作台的真实字号、窄屏动线和底栏避让通过浏览器验收', async ({ page }) => {

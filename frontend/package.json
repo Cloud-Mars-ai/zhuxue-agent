@@ -24,6 +24,9 @@
     "sync:competition-data": "node scripts/sync-competition-data.mjs",
     "export:competition": "node scripts/export-competition-package.mjs",
     "gen:demo-course": "node --import ./scripts/lib/register-alias.mjs scripts/generate-demo-course.mjs",
+    "test:md": "node scripts/test-markdown.mjs",
+    "test:api": "node scripts/test-api-connectivity.mjs",
+    "test:replica-data": "node scripts/test-replica-data.mjs",
     "gen:rational-course": "node --import ./scripts/lib/register-alias.mjs scripts/generate-rational-course.mjs"
   },
   "dependencies": {

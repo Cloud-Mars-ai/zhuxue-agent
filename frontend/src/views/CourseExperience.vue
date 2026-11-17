@@ -3,6 +3,7 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import BoardCanvas from '@/components/BoardCanvas.vue'
+import VideoReplicaPlayer from '@/views/VideoReplicaPlayer.vue'
 import CourseCompleteCard from '@/components/course/CourseCompleteCard.vue'
 import { useCourseStudioStore } from '@/stores/courseStudio'
 import { COURSE_SCENE_LABELS, summarizeCourseProject } from '@/utils/courseStudio'
@@ -20,6 +21,9 @@ const missing = ref(false)
 const selectedSceneId = ref('')
 const scriptOpen = ref(false)
 const projectId = computed(() => String(route.params.projectId || ''))
+// 有理数视频复刻课程：不走课程编排管线，直接渲染「点击推进」式复刻播放器
+const REPLICA_COURSE_IDS = ['course-demo-youshushu']
+const isReplica = computed(() => REPLICA_COURSE_IDS.includes(projectId.value))
 const project = computed(() => studio.find(projectId.value))
 const stats = computed(() =>
   project.value ? summarizeCourseProject(project.value) : { totalMinutes: 0 },
@@ -145,6 +149,10 @@ async function ensureGeneration() {
 }
 
 onMounted(async () => {
+  if (isReplica.value) {
+    loading.value = false
+    return
+  }
   await studio.load()
   if (!project.value) {
     missing.value = true
@@ -342,7 +350,8 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="experience-page">
+  <VideoReplicaPlayer v-if="isReplica" class="replica-embed" />
+  <div v-else class="experience-page">
     <header class="experience-topbar">
       <button type="button" class="back-button" @click="backToStudio">← 返回编排</button>
       <div class="experience-brand">
@@ -1631,4 +1640,11 @@ onBeforeUnmount(() => {
       flex-wrap: wrap;
     }
   }
+</style>
+
+<style scoped>
+/* 有理数视频复刻播放器：standalone 页面下撑满视口 */
+.replica-embed {
+  height: 100vh;
+}
 </style>
