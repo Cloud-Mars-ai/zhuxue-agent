@@ -22,7 +22,8 @@
     "test:pedagogy": "node scripts/test-pedagogy.mjs",
     "sync:competition-data": "node scripts/sync-competition-data.mjs",
     "export:competition": "node scripts/export-competition-package.mjs",
-    "gen:demo-course": "node --import ./scripts/lib/register-alias.mjs scripts/generate-demo-course.mjs"
+    "gen:demo-course": "node --import ./scripts/lib/register-alias.mjs scripts/generate-demo-course.mjs",
+    "gen:rational-course": "node --import ./scripts/lib/register-alias.mjs scripts/generate-rational-course.mjs"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.2",

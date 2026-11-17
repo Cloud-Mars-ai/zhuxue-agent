@@ -846,6 +846,55 @@ test('演示课程支持小测作答、讲稿播放与完课报告', async ({ pa
   await expect(dialog).toBeHidden()
 })
 
+test('有理数演示课程：深链直达、讲稿播放、小测作答与完课报告', async ({ page }) => {
+  await seedUser(page, 'student')
+  // 首次进入自动注入两份演示课程；有理数课程 id 见 src/mock/demoCourseRational.js
+  await page.goto('/learn/course-demo-youshushu')
+  await expect(page.getByTestId('board-canvas')).toBeVisible()
+
+  // 讲稿播放条：播放 → 自动展开讲稿层 → 暂停
+  const playButton = page.locator('.playback-bar .play-button')
+  await expect(playButton).toHaveAttribute('aria-label', '播放讲解')
+  await expect(page.locator('.beat-counter')).toHaveText(/^1\/\d+$/)
+  await playButton.click()
+  await expect(playButton).toHaveAttribute('aria-label', '暂停讲解')
+  await expect(page.locator('.script-live')).toBeVisible()
+  await playButton.click()
+  await expect(playButton).toHaveAttribute('aria-label', '播放讲解')
+
+  // 分拍步进：下一拍使 beat 计数 +1
+  const counter = page.locator('.beat-counter')
+  const before = Number((await counter.textContent()).split('/')[0])
+  await page.getByRole('button', { name: '下一拍' }).click()
+  const after = Number((await counter.textContent()).split('/')[0])
+  expect(after).toBe(before + 1)
+
+  // 切换到小测场景（第 7 场：有理数核心快问快答，2 题）
+  await page.locator('.scene-rail button', { hasText: '有理数核心快问快答' }).click()
+  const quizStage = page.locator('.quiz-stage')
+  await expect(quizStage).toBeVisible()
+  await expect(page.locator('.quiz-counter')).toHaveText('第 1 / 2 题')
+
+  // 选择选项 → 提交 → 立即判定并给出解析，选项锁定
+  await quizStage.locator('.quiz-options button').first().click()
+  await quizStage.getByRole('button', { name: '提交答案' }).click()
+  await expect(page.locator('.quiz-verdict')).toBeVisible()
+  await expect(page.locator('.quiz-explanation')).toBeVisible()
+  await expect(quizStage.locator('.quiz-options button').first()).toBeDisabled()
+
+  // 下一题推进题目进度
+  await quizStage.getByRole('button', { name: '下一题' }).click()
+  await expect(page.locator('.quiz-counter')).toHaveText('第 2 / 2 题')
+
+  // 完课报告：footer 按钮打开总结弹层，统计项齐全
+  await page.locator('.lesson-footer .finish-button').click()
+  const dialog = page.getByRole('dialog', { name: '完课总结' })
+  await expect(dialog).toBeVisible()
+  await expect(dialog.locator('.complete-stats')).toBeVisible()
+  await dialog.getByRole('button', { name: '留在本页' }).click()
+  await expect(dialog).toBeHidden()
+})
+
 test('赛事工作台的真实字号、窄屏动线和底栏避让通过浏览器验收', async ({ page }) => {
   await seedUser(page, 'teacher')
   await page.setViewportSize({ width: 1440, height: 900 })

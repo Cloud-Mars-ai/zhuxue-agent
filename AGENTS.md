@@ -32,6 +32,7 @@ npm run dev          # 5173
 npm run build        # 2–3s，chunk 体积警告属既有问题
 npm start            # build + node server.mjs（4173，深链接验证用）
 npm run build:offline# 单文件离线版
+npm run gen:rational-course # 有理数样例课程重新生成（Step 5，密钥读 ~/.workbuddy/models.json）
 ```
 
 演示账号：`student` / `student2` / `ta` / `teacher` / `admin`，密码均 `123456`。

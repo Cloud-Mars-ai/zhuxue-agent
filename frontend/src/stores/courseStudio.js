@@ -115,22 +115,33 @@ export const useCourseStudioStore = defineStore('courseStudio', () => {
     loadingPromise = (async () => {
       const saved = await idbGet(STORAGE_KEY)
       let list = (Array.isArray(saved) ? saved : []).map(normalizeProject).filter(Boolean)
-      // 首次进入（本机没有任何课程）时注入「自动生成的系统性演示课程」，
+      // 首次进入（本机没有任何课程）时注入两份「自动生成的系统性演示课程」：
+      // 有理数（七年级数学，22 个原视频精炼生成）在前，管理学科演示课程在后，
       // 保证发布链接开箱即有完整体验；ownerId='demo' 不参与「最近课程」
       // 自动选中，只在列表展示，用户可点开体验或直接生成自己的课程。
       if (!list.length) {
+        const seeds = []
+        try {
+          const { DEMO_COURSE_RATIONAL_PROJECT } = await import('@/mock/demoCourseRational')
+          if (DEMO_COURSE_RATIONAL_PROJECT) {
+            seeds.push(normalizeProject({ ...DEMO_COURSE_RATIONAL_PROJECT, ownerId: 'demo' }))
+          }
+        } catch (error) {
+          console.warn('[course-studio] rational demo course seed skipped:', error)
+        }
         try {
           const { DEMO_COURSE_PROJECT } = await import('@/mock/demoCourse')
-          const seeded = DEMO_COURSE_PROJECT
-            ? normalizeProject({ ...DEMO_COURSE_PROJECT, ownerId: 'demo' })
-            : null
-          if (seeded) {
-            projects.value = [seeded]
-            await persist()
-            list = projects.value
+          if (DEMO_COURSE_PROJECT) {
+            seeds.push(normalizeProject({ ...DEMO_COURSE_PROJECT, ownerId: 'demo' }))
           }
         } catch (error) {
           console.warn('[course-studio] demo course seed skipped:', error)
+        }
+        const seeded = seeds.filter(Boolean)
+        if (seeded.length) {
+          projects.value = seeded
+          await persist()
+          list = projects.value
         }
       }
       projects.value = list

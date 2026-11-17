@@ -431,3 +431,16 @@
 - 全量测试：`test:text-repair` 34 ✓、`test:visualization` 26 ✓、`test:competition` ✓、`test:course-script` 36 ✓，共 96 项通过。
 - `vite build` 2.59s 成功（courseStudio chunk 252.62 kB，超出 500kB 告警线属既有问题）。
 - 离线兜底：所有新能力均带本地确定性模板（`buildLocalCourseScript`/`buildLocalBoardLesson`/`buildLocalCourseBlueprint`），模型不可用时降级为"演示缓存"。
+
+---
+
+## 9. 有理数样例课程落地记录（2026-11-17）
+
+§3 复用映射的「样板间」：把 22 个原视频（`D:/临时/七年级/01有理数`）按本报告结论生成了一份完整课程，作为平台第二个内置样例（与管理学科演示课程并存，首次进入工作室一并注入，有理数在前）。
+
+- **生成管线**：`frontend/scripts/generate-rational-course.mjs`（`npm run gen:rational-course`）——与 `generate-demo-course.mjs` 同构的三阶段管线（蓝图 → IR 校验/修复 → 场景编译 → 讲稿 beats），差异：模型走阶跃星辰 Step 5 Preview（`api.stepfun.com/v1`，密钥读 `~/.workbuddy/models.json`）、学科域 `math7`、材料为 `frontend/scripts/data/rational-materials.md`（22 视频精炼 + §9.1 语言风格契约注入每次调用）、课程 id 固定 `course-demo-youshushu`（深链 `/learn/course-demo-youshushu`）。
+- **产物**：`frontend/src/mock/demoCourseRational.js`——《有理数：从正负分界到混合运算》8 场景（4 讲解 / 1 小测 / 2 应用 / 1 复盘）、128 拍讲稿、2 道小测；IR 门禁 0 error 0 warning，全场景过板书/讲稿合约复检。
+- **风格还原**：为师/徒儿人设、设问三连（「那么问题来了」「有小伙伴说」）、隐喻系统（正数国火拼/向后转/汪星人/警察巡逻/温度计）、口诀（奇负偶正、除变乘、小数化分数、负数不能裸奔、指数管辖范围）、三点总结 +「速速刷题去吧」CTA；板书用满 16 种 block（classification-tree 三把尺子、number-line 交互、wrong-first 错解先行、question 即时思考等）。
+- **质量修正**：生成后人工复核 128 拍 + 全部 block，修正 12 处（quiz 确认拍「0 没有符号」事实错误、场景 8 超纲「零次幂」、场景 5 拍-块不对齐、场景 1 拍-块不对齐、场景 5 口头禅过量 20 处清零）。
+- **接线**：`src/stores/courseStudio.js` 首注入改双样例（rational 在前）；E2E 新增 `有理数演示课程：深链直达、讲稿播放、小测作答与完课报告`。
+- **已知取舍**：quiz 2 题（契约下限）；证据账本有据率 43%（math7 不做材料溯源，仅验算术，属预期）；T6 角色走位等 P2 仍未做（见 §8.2）。
