@@ -9,14 +9,25 @@ import { usePersonaStore } from '@/stores/persona'
 import SpeakButton from '@/components/SpeakButton.vue'
 import { isEnabled } from '@/config/flags'
 import { sendChat } from '@/api/chat'
+import { useIntegrationStore } from '@/stores/integration'
+import { renderMd, toPlainText } from '@/utils/md'
+import {
+  buildConversationMarkdown,
+  saveToObsidian,
+  downloadMarkdown,
+  buildFileName,
+  copyMarkdown as copyToClipboard,
+} from '@/utils/obsidian'
 import { matchIntent, buildTodoActions } from '@/utils/intent'
 import { getDailyRecommendations } from '@/utils/recommend'
+import { HIDE_MANAGEMENT } from '@/utils/mgmtHide'
 
 const router = useRouter()
 const route = useRoute()
 const modelStore = useModelStore()
 const userStore = useUserStore()
 const personaStore = usePersonaStore()
+const integrationStore = useIntegrationStore()
 
 // 主动问候：进入答疑页即展示欢迎语与推荐操作
 const WELCOME = {
@@ -109,6 +120,78 @@ function clearChat() {
   messages.value = [WELCOME]
 }
 
+/* ---------- 今日思考卡片：可关闭，选择记在本机 ---------- */
+const RECO_HIDDEN_KEY = 'ai-tutor-daily-reco-hidden'
+const recoHidden = ref(false)
+try {
+  recoHidden.value = window.localStorage.getItem(RECO_HIDDEN_KEY) === '1'
+} catch {
+  // localStorage 不可用时保持默认展示
+}
+
+function hideRecommendations() {
+  recoHidden.value = true
+  try {
+    window.localStorage.setItem(RECO_HIDDEN_KEY, '1')
+  } catch {
+    // 忽略持久化失败
+  }
+}
+
+function showRecommendations() {
+  recoHidden.value = false
+  try {
+    window.localStorage.removeItem(RECO_HIDDEN_KEY)
+  } catch {
+    // 忽略持久化失败
+  }
+}
+
+/* ---------- 导出：Markdown / Obsidian ---------- */
+const obsidianOn = computed(() => integrationStore.config.obsidianEnabled)
+
+// 管理学内容临时隐藏：导出标题/文件名不出现管理学课程名
+const courseLabel = computed(() => (HIDE_MANAGEMENT ? '当前课程' : COURSE.name))
+
+function buildExportMarkdown() {
+  return buildConversationMarkdown({
+    title: `助学对话 · ${courseLabel.value}`,
+    messages: messages.value,
+    meta: {
+      course: courseLabel.value,
+      model: modelStore.config.model,
+    },
+  })
+}
+
+function handleDownloadMarkdown() {
+  const text = buildExportMarkdown()
+  downloadMarkdown(text, buildFileName(`助学对话-${courseLabel.value}`))
+  ElMessage.success('已导出 Markdown，可直接放入 Obsidian Vault')
+}
+
+async function handleSaveObsidian() {
+  try {
+    const result = await saveToObsidian({
+      config: integrationStore.config,
+      title: `助学对话 · ${courseLabel.value}`,
+      content: buildExportMarkdown(),
+    })
+    ElMessage.success(result.message)
+  } catch (err) {
+    ElMessage.error(err.message || '导出失败')
+  }
+}
+
+async function handleCopy(content) {
+  try {
+    await copyToClipboard(content)
+    ElMessage.success('已复制这条回答的 Markdown')
+  } catch (err) {
+    ElMessage.error(err.message || '复制失败')
+  }
+}
+
 function handleEnter(e) {
   // Enter 发送，Shift+Enter 换行
   if (e.key === 'Enter' && !e.shiftKey) {
@@ -136,8 +219,24 @@ onMounted(() => {
         <el-tag v-if="knowledgeOn" size="small" type="success" effect="plain" class="ml8">
           课程材料已接入
         </el-tag>
+        <el-tag
+          v-if="modelStore.config.platformContextEnabled"
+          size="small"
+          type="info"
+          effect="plain"
+          class="ml8"
+        >
+          已读取平台数据
+        </el-tag>
       </span>
-      <el-button text type="primary" @click="clearChat">清空对话</el-button>
+      <div class="toolbar-actions">
+        <el-button v-if="recoHidden" text @click="showRecommendations">显示今日思考</el-button>
+        <el-button text @click="handleDownloadMarkdown">导出 Markdown</el-button>
+        <el-button v-if="obsidianOn" text type="primary" @click="handleSaveObsidian">
+          存到 Obsidian
+        </el-button>
+        <el-button text type="primary" @click="clearChat">清空对话</el-button>
+      </div>
     </div>
 
     <el-alert v-if="!isConfigured" type="warning" :closable="false" show-icon class="config-tip">
@@ -153,7 +252,13 @@ onMounted(() => {
     <div ref="listRef" class="msg-list">
       <div v-for="(m, i) in messages" :key="i" class="msg" :class="m.role">
         <div class="bubble">
-          <span class="bubble-text">{{ m.content }}</span>
+          <!-- 助手回答按 Markdown 渲染（标题/列表/表格/代码块），不再暴露 ** 之类的原始标记 -->
+          <div
+            v-if="m.role === 'assistant'"
+            class="bubble-text md-body"
+            v-html="renderMd(m.content)"
+          ></div>
+          <span v-else class="bubble-text">{{ m.content }}</span>
           <div v-if="m.actions?.length" class="action-cards">
             <el-button
               v-for="a in m.actions"
@@ -178,7 +283,17 @@ onMounted(() => {
               {{ t.label }}｜{{ t.desc }}
             </el-button>
           </div>
-          <SpeakButton v-if="m.role === 'assistant'" :text="m.content" />
+          <div class="bubble-foot">
+            <SpeakButton v-if="m.role === 'assistant'" :text="toPlainText(m.content)" />
+            <button
+              v-if="m.role === 'assistant'"
+              type="button"
+              class="msg-tool"
+              @click.stop="handleCopy(m.content)"
+            >
+              复制 Markdown
+            </button>
+          </div>
         </div>
       </div>
       <div v-if="sending" class="msg assistant">
@@ -189,7 +304,10 @@ onMounted(() => {
       </div>
     </div>
 
-    <div class="daily-reco">
+    <div v-if="!recoHidden" class="daily-reco">
+      <button type="button" class="daily-close" aria-label="隐藏今日思考" @click="hideRecommendations">
+        ×
+      </button>
       <div class="daily-head">
         <span class="daily-title">今天值得想一想</span>
         <span class="daily-sub">基于你的练习记录 · 每天刷新</span>
@@ -255,6 +373,14 @@ onMounted(() => {
   margin-left: 8px;
 }
 
+.toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
 .config-tip {
   margin-bottom: 12px;
 }
@@ -286,6 +412,36 @@ onMounted(() => {
 
 .bubble-text {
   white-space: pre-wrap;
+}
+
+/* 助手气泡走 Markdown 渲染，交给 .md-* 类控制块级排版 */
+.bubble-text.md-body {
+  white-space: normal;
+}
+
+.bubble-text.md-body :deep(.md-p:last-child) {
+  margin-bottom: 0;
+}
+
+.bubble-foot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.msg-tool {
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: 11.5px;
+  color: var(--text-faint);
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.msg-tool:hover {
+  color: var(--brand);
 }
 
 .msg.user .bubble {
@@ -336,7 +492,37 @@ onMounted(() => {
 }
 
 .daily-reco {
+  position: relative;
   padding: 8px 0 10px;
+  /* 低干扰：整块降到 75% 透明度，鼠标悬停时略微回暖，保证仍可读 */
+  opacity: 0.75;
+  transition: opacity 0.18s ease;
+}
+
+.daily-reco:hover {
+  opacity: 0.92;
+}
+
+.daily-close {
+  position: absolute;
+  top: 2px;
+  right: 0;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-faint);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.daily-close:hover {
+  background: var(--panel-sub, rgba(0, 0, 0, 0.05));
+  color: var(--text-main);
 }
 
 .daily-head {
@@ -344,16 +530,17 @@ onMounted(() => {
   align-items: baseline;
   gap: 8px;
   margin-bottom: 8px;
+  padding-right: 26px;
 }
 
 .daily-title {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--text-main);
 }
 
 .daily-sub {
-  font-size: 11.5px;
+  font-size: 10.5px;
   color: var(--text-faint);
 }
 
@@ -378,15 +565,15 @@ onMounted(() => {
 }
 
 .daily-text {
-  font-size: 12.5px;
-  line-height: 1.55;
+  font-size: 11.5px;
+  line-height: 1.5;
   color: var(--text-main);
 }
 
 .daily-reason {
-  margin-top: 5px;
-  font-size: 11px;
-  line-height: 1.5;
+  margin-top: 4px;
+  font-size: 10px;
+  line-height: 1.45;
   color: var(--text-faint);
 }
 

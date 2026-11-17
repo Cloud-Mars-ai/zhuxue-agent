@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessageBox } from 'element-plus'
 import { COURSE } from '@/mock/data'
+import { HIDE_MANAGEMENT } from '@/utils/mgmtHide'
 import { useUserStore } from '@/stores/user'
 import { useThemeStore } from '@/stores/theme'
 import { useDeviceStore } from '@/stores/device'
@@ -185,15 +186,18 @@ async function handleLogout() {
       </el-menu>
 
       <div v-if="!isTablet" class="side-extra">
-        <div class="side-label">继续学习</div>
-        <div class="side-course" @click="router.push(continueTarget)">
-          <span class="side-course-tag">{{ currentChapter.status }}</span>
-          <div class="side-course-title">{{ currentChapter.title }}</div>
-          <div class="side-course-meta">{{ sideProgress }}% · 第 8 周</div>
-          <div class="side-progress"><span :style="{ width: `${sideProgress}%` }" /></div>
-        </div>
+        <!-- 管理学内容临时隐藏：侧栏「继续学习」卡片含管理学章节名，整块隐藏 -->
+        <template v-if="!HIDE_MANAGEMENT">
+          <div class="side-label">继续学习</div>
+          <div class="side-course" @click="router.push(continueTarget)">
+            <span class="side-course-tag">{{ currentChapter.status }}</span>
+            <div class="side-course-title">{{ currentChapter.title }}</div>
+            <div class="side-course-meta">{{ sideProgress }}% · 第 8 周</div>
+            <div class="side-progress"><span :style="{ width: `${sideProgress}%` }" /></div>
+          </div>
+        </template>
 
-        <div class="side-label side-label-gap">最近活动</div>
+        <div class="side-label" :class="{ 'side-label-gap': HIDE_MANAGEMENT }">最近活动</div>
         <div v-if="recentActivities.length" class="side-activities">
           <div v-for="a in recentActivities" :key="a.id" class="side-activity">
             <span class="side-activity-dot" />

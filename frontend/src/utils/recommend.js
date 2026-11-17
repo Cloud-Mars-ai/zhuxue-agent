@@ -1,5 +1,6 @@
 import { COURSE } from '@/mock/data'
 import { COURSE_OUTLINE } from '@/mock/courseOutline'
+import { HIDE_MANAGEMENT } from './mgmtHide'
 
 /**
  * 每日推荐主题（S1-4 主动式提问的最小可行版本）
@@ -143,8 +144,35 @@ export function buildRecommendations(persona, currentChapter = '') {
   return items.slice(0, 3)
 }
 
+/**
+ * 管理学内容临时隐藏期间的通用推荐：不引用任何课程章节，
+ * 避免答疑页露出管理学章节名（需求见 utils/mgmtHide.js）。
+ */
+function buildGenericRecommendations() {
+  return [
+    {
+      id: 'generic-feynman',
+      text: '帮我用一句自己的话说清最近学的核心概念',
+      reason: '费曼技巧：能讲明白才算真学会',
+    },
+    {
+      id: 'generic-drill',
+      text: '给我 3 道由易到难的练习题巩固一下',
+      reason: '先保温再提升，难度循序渐进',
+    },
+    {
+      id: 'generic-note',
+      text: '把今天的笔记整理成一页速查表',
+      reason: '趁热归档，复习时少翻记录',
+    },
+  ]
+}
+
 /** 带缓存的入口：同一天、同一学习状态下返回同一组推荐 */
 export function getDailyRecommendations(persona, currentChapter = '') {
+  // 管理学内容临时隐藏：直接返回通用推荐，且不走缓存——
+  // 避免隐藏开关打开前写入的章节推荐（含管理学章节名）当天残留可见。
+  if (HIDE_MANAGEMENT) return buildGenericRecommendations()
   const cached = loadCache(persona)
   if (cached) return cached
   const list = buildRecommendations(persona, currentChapter)

@@ -18,6 +18,7 @@ import {
 import { learnerProfileLabel } from '@/utils/learnerProfile'
 import { downloadBoardLesson } from '@/utils/boardDownload'
 import { repairText } from '@/utils/textRepair'
+import { isHiddenDemoCourse } from '@/utils/mgmtHide'
 
 const route = useRoute()
 const router = useRouter()
@@ -43,6 +44,11 @@ const showSetup = ref(true)
 
 const project = computed(() =>
   projectId.value ? studio.find(projectId.value) : null,
+)
+// 管理学内容临时隐藏：管理演示课仍注入 store（深链 /learn/... 可直达），
+// 但不在「最近课程」列表露出（需求见 utils/mgmtHide.js）。
+const visibleProjects = computed(() =>
+  studio.projects.filter((item) => !isHiddenDemoCourse(item.id)),
 )
 const projectStats = computed(() =>
   project.value ? summarizeCourseProject(project.value) : { sceneCount: 0, totalMinutes: 0 },
@@ -109,10 +115,11 @@ function syncDraftFromProject(value) {
 onMounted(async () => {
   await Promise.all([studio.load(), knowledgeStore.load()])
   const requested = queryValue(route.query.project)
+  // 管理学内容临时隐藏：被隐藏的演示课不作为自动选中目标（显式点开列表除外）
   const target =
-    (requested && studio.find(String(requested))) ||
-    studio.latestFor(userStore.user?.id) ||
-    null
+    [requested ? studio.find(String(requested)) : null, studio.latestFor(userStore.user?.id)].find(
+      (item) => item && !isHiddenDemoCourse(item.id),
+    ) || null
   if (target) {
     projectId.value = target.id
     syncDraftFromProject(target)
@@ -682,10 +689,10 @@ function formatTime(value) {
         <section class="studio-card projects-card">
           <div class="aside-head">
             <h3>最近课程</h3>
-            <span>{{ studio.projects.length }}</span>
+            <span>{{ visibleProjects.length }}</span>
           </div>
           <button
-            v-for="item in studio.projects.slice(0, 5)"
+            v-for="item in visibleProjects.slice(0, 5)"
             :key="item.id"
             type="button"
             class="project-link"
@@ -699,7 +706,7 @@ function formatTime(value) {
             <em v-if="item.demo" class="demo-badge">演示</em>
             <em v-else>{{ item.status === 'ready' ? '完成' : item.status === 'generating' ? '生成中' : '大纲' }}</em>
           </button>
-          <p v-if="!studio.projects.length" class="empty-note">还没有课程，先生成第一份大纲。</p>
+          <p v-if="!visibleProjects.length" class="empty-note">还没有课程，先生成第一份大纲。</p>
         </section>
       </aside>
     </div>

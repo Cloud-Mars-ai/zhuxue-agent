@@ -16,6 +16,7 @@ import { useHomeworkStore } from '@/stores/homework'
 import { useForumStore } from '@/stores/forum'
 import { diagnoseGaps } from '@/utils/diagnose'
 import { buildFeed } from '@/utils/feed'
+import { HIDE_MANAGEMENT, isHiddenDemoCourse } from '@/utils/mgmtHide'
 import { importMaterialFile } from '@/utils/materialImport'
 import { repairText } from '@/utils/textRepair'
 import { compileCourseBlueprint } from '@/api/courseStudio'
@@ -44,8 +45,18 @@ const latestPosts = computed(() => forumStore.sortedPosts.slice(0, 3))
 
 // 内置演示课程（有理数 / 管理）：开箱可体验的完整样例。
 // 课程工作台页侧栏不可达（极简侧栏设计），这里给课程主页一个稳定入口。
+// 管理学内容临时隐藏期间，管理演示课不出现在列表（种子与深链不受影响）。
 const demoCourses = computed(() =>
-  courseStudioStore.projects.filter((project) => project.demo).slice(0, 4),
+  courseStudioStore.projects
+    .filter((project) => project.demo && !isHiddenDemoCourse(project.id))
+    .slice(0, 4),
+)
+
+// AI协助卡片文案：管理学内容隐藏期间改为中性表述（可随开关一键恢复）
+const askCardSub = computed(() =>
+  HIDE_MANAGEMENT
+    ? '基于课程教材与课件构建的知识库，支持课后答疑与苏格拉底式引导提问。'
+    : '基于《管理学》教材与课件构建的知识库，支持课后答疑与苏格拉底式引导提问。',
 )
 
 // 本节课案例：老师从案例池选用后，课堂主页置顶展示（M3）
@@ -58,15 +69,6 @@ const customMaterials = computed(() => knowledgeStore.materials.filter((item) =>
 /* ==================================================
  * 双风格设计方案（示意 A-1 / B-1）数据
  * ================================================== */
-
-// 问候语：按当地时间
-const greeting = computed(() => {
-  const h = new Date().getHours()
-  if (h < 6) return '凌晨好'
-  if (h < 12) return '上午好'
-  if (h < 18) return '下午好'
-  return '晚上好'
-})
 
 // 当前进行中的章节（方案中的「第 3 章 进行中」）
 const currentChapter = computed(
@@ -658,9 +660,6 @@ onMounted(async () => {
           <button class="hero-tab" type="button" @click="router.push('/app/ask')">AI协助</button>
         </div>
 
-        <div class="hero-kicker">
-          {{ greeting }}，{{ userStore.name || '同学' }} · 《{{ COURSE.name }}》第 8 周
-        </div>
         <h1 class="hero-title">{{ heroTitle }}</h1>
         <p v-if="heroSubtitle" class="hero-sub">{{ heroSubtitle }}</p>
 
@@ -1027,7 +1026,7 @@ onMounted(async () => {
         <div class="card">
           <h3 class="card-title">AI协助</h3>
           <p class="text-sub">
-            基于《管理学》教材与课件构建的知识库，支持课后答疑与苏格拉底式引导提问。
+            {{ askCardSub }}
           </p>
           <el-button type="primary" plain class="w-full" @click="router.push('/app/ask')">开始提问</el-button>
         </div>
@@ -1128,13 +1127,6 @@ onMounted(async () => {
   color: var(--text-main);
   font-weight: 600;
   box-shadow: 0 1px 3px rgba(74, 62, 38, 0.08);
-}
-
-.hero-kicker {
-  margin-bottom: 14px;
-  font-size: 12.5px;
-  letter-spacing: 0.7px;
-  color: var(--text-faint);
 }
 
 .hero-title {

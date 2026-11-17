@@ -5,6 +5,7 @@ import { showConfirmDialog, showToast } from 'vant'
 import { useUserStore, DISCIPLINE_OPTIONS } from '@/stores/user'
 import { useThemeStore, THEMES } from '@/stores/theme'
 import { COURSE } from '@/mock/data'
+import { HIDE_MANAGEMENT } from '@/utils/mgmtHide'
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -82,7 +83,8 @@ function toggleMock() {
       </div>
     </div>
 
-    <van-cell-group inset title="我的课程">
+    <!-- 管理学内容临时隐藏：「我的课程」单元格含管理学课程名，整组隐藏 -->
+    <van-cell-group v-if="!HIDE_MANAGEMENT" inset title="我的课程">
       <van-cell title="课程名称" :value="COURSE.name" />
       <van-cell title="任课教师" :value="COURSE.teacher" />
       <van-cell title="学期" :value="COURSE.term" />
