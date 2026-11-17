@@ -8,6 +8,12 @@ import { auditLedger } from '@/utils/evidenceLedger'
 import { repairDeep } from '@/utils/textRepair'
 import { isEnabled } from '@/config/flags'
 import { normalizeLearnerProfile } from '@/utils/learnerProfile'
+import {
+  DEMO_SEED_IDS,
+  planDemoSeed,
+  readDismissedDemoIds,
+  rememberDismissedDemoId,
+} from '@/utils/demoSeed'
 
 const STORAGE_KEY = 'course-studio-projects-v1'
 const MAX_PROJECTS = 12
@@ -115,31 +121,38 @@ export const useCourseStudioStore = defineStore('courseStudio', () => {
     loadingPromise = (async () => {
       const saved = await idbGet(STORAGE_KEY)
       let list = (Array.isArray(saved) ? saved : []).map(normalizeProject).filter(Boolean)
-      // 首次进入（本机没有任何课程）时注入两份「自动生成的系统性演示课程」：
-      // 有理数（七年级数学，22 个原视频精炼生成）在前，管理学科演示课程在后，
-      // 保证发布链接开箱即有完整体验；ownerId='demo' 不参与「最近课程」
-      // 自动选中，只在列表展示，用户可点开体验或直接生成自己的课程。
-      if (!list.length) {
+      // 演示课程幂等补插（有理数在前，管理演示课程在后）：
+      // 早期只在「本机没有任何课程」时注入，老用户本地已有数据时永远看不到
+      // 后来新增的样例；现改为每次加载按 ID 补齐缺失样例。
+      // 约束：用户主动删过的样例记入 dismissed 不再复活；课程数已达
+      // MAX_PROJECTS 上限时跳过补插（宁可没有样例，不挤掉用户自己的课程）。
+      const dismissed = readDismissedDemoIds()
+      const missing = planDemoSeed({
+        existingIds: list.map((project) => project.id),
+        dismissedIds: dismissed,
+        room: Math.max(0, MAX_PROJECTS - list.length),
+      })
+      if (missing.length) {
         const seeds = []
-        try {
-          const { DEMO_COURSE_RATIONAL_PROJECT } = await import('@/mock/demoCourseRational')
-          if (DEMO_COURSE_RATIONAL_PROJECT) {
-            seeds.push(normalizeProject({ ...DEMO_COURSE_RATIONAL_PROJECT, ownerId: 'demo' }))
+        for (const seedId of missing) {
+          try {
+            const mod =
+              seedId === 'course-demo-youshushu'
+                ? await import('@/mock/demoCourseRational')
+                : await import('@/mock/demoCourse')
+            const project =
+              seedId === 'course-demo-youshushu'
+                ? mod.DEMO_COURSE_RATIONAL_PROJECT
+                : mod.DEMO_COURSE_PROJECT
+            // ownerId='demo' 不参与「最近课程」自动选中，只在列表展示，
+            // 用户可点开体验或直接生成自己的课程。
+            if (project) seeds.push(normalizeProject({ ...project, ownerId: 'demo' }))
+          } catch (error) {
+            console.warn('[course-studio] demo course seed skipped:', seedId, error)
           }
-        } catch (error) {
-          console.warn('[course-studio] rational demo course seed skipped:', error)
         }
-        try {
-          const { DEMO_COURSE_PROJECT } = await import('@/mock/demoCourse')
-          if (DEMO_COURSE_PROJECT) {
-            seeds.push(normalizeProject({ ...DEMO_COURSE_PROJECT, ownerId: 'demo' }))
-          }
-        } catch (error) {
-          console.warn('[course-studio] demo course seed skipped:', error)
-        }
-        const seeded = seeds.filter(Boolean)
-        if (seeded.length) {
-          projects.value = seeded
+        if (seeds.length) {
+          projects.value = [...seeds, ...list]
           await persist()
           list = projects.value
         }
@@ -310,7 +323,12 @@ export const useCourseStudioStore = defineStore('courseStudio', () => {
   }
 
   async function remove(projectId) {
+    const target = projects.value.find((project) => project.id === projectId)
     projects.value = projects.value.filter((project) => project.id !== projectId)
+    // 演示课程被用户主动删除时记入 dismissed，避免下次加载幂等补插又放回来
+    if (target?.demo || DEMO_SEED_IDS.includes(projectId)) {
+      rememberDismissedDemoId(projectId)
+    }
     await persist()
   }
 

@@ -42,6 +42,12 @@ const overallProgress = computed(() => {
 
 const latestPosts = computed(() => forumStore.sortedPosts.slice(0, 3))
 
+// 内置演示课程（有理数 / 管理）：开箱可体验的完整样例。
+// 课程工作台页侧栏不可达（极简侧栏设计），这里给课程主页一个稳定入口。
+const demoCourses = computed(() =>
+  courseStudioStore.projects.filter((project) => project.demo).slice(0, 4),
+)
+
 // 本节课案例：老师从案例池选用后，课堂主页置顶展示（M3）
 const currentCase = computed(() => casesStore.currentCase())
 
@@ -523,6 +529,8 @@ function startSelfTest(chapter) {
 
 onMounted(async () => {
   await knowledgeStore.ensureLoaded()
+  // 幂等：加载课程列表并补齐缺失的内置演示样例（老用户也能看到有理数样例）
+  courseStudioStore.load().catch(() => {})
   migrateLegacyUploads()
   homeworkStore.load()
 })
@@ -888,6 +896,29 @@ onMounted(async () => {
           </div>
         </section>
       </div>
+
+      <section v-if="demoCourses.length" class="card demo-courses-card" data-testid="demo-courses">
+        <div class="card-head">
+          <span class="card-title">内置演示课程</span>
+          <span class="card-sub">开箱可体验的完整课程样例</span>
+        </div>
+        <div class="demo-course-list">
+          <button
+            v-for="course in demoCourses"
+            :key="course.id"
+            type="button"
+            class="demo-course-item"
+            @click="router.push(`/learn/${course.id}`)"
+          >
+            <span class="demo-course-badge">演示</span>
+            <div class="demo-course-main">
+              <strong>{{ course.title }}</strong>
+              <small>{{ course.chapter }} · {{ course.outlines.length }} 场</small>
+            </div>
+            <span class="demo-course-arrow">›</span>
+          </button>
+        </div>
+      </section>
 
       <section class="primary-grid" data-testid="yun-grid">
         <div
@@ -1764,6 +1795,71 @@ onMounted(async () => {
 
 .feed-row:last-child {
   border-bottom: none;
+}
+
+/* 内置演示课程区：极简侧栏下课程工作台的稳定入口 */
+.demo-courses-card {
+  margin-top: 14px;
+  padding: 16px 18px;
+}
+
+.demo-course-list {
+  display: grid;
+  gap: 8px;
+}
+
+.demo-course-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  background: var(--card-bg);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.demo-course-item:hover {
+  border-color: var(--brand, #4a6cf7);
+  transform: translateY(-1px);
+}
+
+.demo-course-badge {
+  flex: none;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--card-border);
+  background: var(--surface-2);
+  font-size: 11px;
+  color: var(--text-sub);
+}
+
+.demo-course-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.demo-course-main strong {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.demo-course-main small {
+  font-size: 11.5px;
+  color: var(--text-faint);
+}
+
+.demo-course-arrow {
+  flex: none;
+  font-size: 16px;
+  color: var(--text-faint);
 }
 
 .feed-dot {

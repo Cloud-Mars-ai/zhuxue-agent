@@ -20,6 +20,7 @@
     "test:course-compiler": "node scripts/test-course-compiler.mjs",
     "test:alignment": "node scripts/test-alignment.mjs",
     "test:pedagogy": "node scripts/test-pedagogy.mjs",
+    "test:demo-seed": "node scripts/test-demo-seed.mjs",
     "sync:competition-data": "node scripts/sync-competition-data.mjs",
     "export:competition": "node scripts/export-competition-package.mjs",
     "gen:demo-course": "node --import ./scripts/lib/register-alias.mjs scripts/generate-demo-course.mjs",
